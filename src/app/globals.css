@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --background: #040406;
+  --foreground: #ffffff;
+  --muted: #9194a1;
+  --accent: #def135;
+  --font-articulat: "Articulat CF", "articulat-cf";
+  --font-favorit-mono:
+    "ABC Favorit Mono Trial", "ABC Favorit Mono", "abc-favorit-mono";
+}
+
+@theme inline {
+  /* Token map:
+     --color-border: #2e3038
+     --color-panel: #121318
+     --color-muted: #9194a1
+     --color-muted-2: #abaebb
+     --color-muted-3: #c7c9d1
+     --color-muted-4: #e3e4e9
+     --color-muted-5: #5e616e
+     --color-border-light: #e4e4e7
+     --color-ink: #040406
+     --color-accent: #def135
+     --spacing-page: 120rem (1920px)
+     --spacing-content: 96rem (1536px)
+     --spacing-gutter: 12rem (192px)
+     --text-15: 0.9375rem (15px)
+     --text-28: 1.75rem (28px)
+     --text-32: 2rem (32px)
+     --text-44: 2.75rem (44px)
+     --text-52: 3.25rem (52px)
+     --text-64: 4rem (64px)
+     --leading-1125: 1.125
+  */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: #2e3038;
+  --color-border-light: #e4e4e7;
+  --color-panel: #121318;
+  --color-muted: #9194a1;
+  --color-muted-2: #abaebb;
+  --color-muted-3: #c7c9d1;
+  --color-muted-4: #e3e4e9;
+  --color-muted-5: #5e616e;
+  --color-muted-6: #71717a;
+  --color-ink: #040406;
+  --color-accent: #def135;
+  --color-slate: #464853;
+  --color-blue: #3580f1;
+  --color-cyan: #35f1e4;
+  --color-blue-glow: #0095e6;
+  --spacing-page: 120rem;
+  --spacing-content: 96rem;
+  --spacing-gutter: 12rem;
+  --text-15: 0.9375rem;
+  --text-28: 1.75rem;
+  --text-32: 2rem;
+  --text-44: 2.75rem;
+  --text-52: 3.25rem;
+  --text-64: 4rem;
+  --leading-1125: 1.125;
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-articulat);
+  --font-brand: var(--font-favorit-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: articulat-cf, sans-serif;
+  font-feature-settings: "ss02" 1;
+}
+
+.font-brand {
+  font-family: var(--font-brand), var(--font-mono), ui-monospace, SFMono-Regular,
+    Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
