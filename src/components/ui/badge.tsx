@@ -1,53 +1,48 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { HTMLAttributes } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-type BadgeVariant = "dark" | "light";
+const badgeVariants = cva('inline-flex w-fit items-center font-semibold tracking-tight', {
+  variants: {
+    variant: {
+      default: 'text-muted-foreground',
+      uppercase: 'uppercase text-muted-foreground',
+      filled: 'rounded-full bg-muted-foreground font-semibold text-secondary',
+      outline: 'rounded-full border border-muted-foreground font-semibold text-foreground',
+    },
+    size: {
+      sm: 'text-sm leading-none',
+      md: 'text-sm leading-none',
+      lg: 'text-sm leading-none lg:text-base lg:leading-none',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'lg',
+  },
+});
 
-export type BadgeProps = HTMLAttributes<HTMLDivElement> & {
-  variant?: BadgeVariant;
-  labelClassName?: string;
-  children: ReactNode;
-};
+export interface BadgeProps
+  extends HTMLAttributes<HTMLSpanElement>,
+    VariantProps<typeof badgeVariants> {}
 
-const variantClasses: Record<BadgeVariant, string> = {
-  dark: "rounded-[6px] border border-border px-3 py-2",
-  light: "rounded-[6px] border border-[rgba(4,4,6,0.2)] px-3 py-2",
-};
-
-const dotByVariant: Record<BadgeVariant, ReactNode> = {
-  dark: (
-    <div className="relative h-[10px] w-[10px] shrink-0">
-      <span className="absolute inset-0 rounded-[2px] bg-blue-glow blur-[5px]" />
-      <span className="absolute inset-0 rounded-[2px] bg-cyan blur-[2px]" />
-      <span className="absolute inset-0 rounded-[2px] bg-cyan" />
-    </div>
-  ),
-  light: <div className="h-[10px] w-[10px] shrink-0 rounded-[2px] bg-blue" />,
-};
-
-export default function Badge({
-  variant = "dark",
-  className,
-  labelClassName,
-  children,
-  ...props
-}: BadgeProps) {
-  const classes = cn(
-    "inline-flex items-center gap-2.5",
-    variantClasses[variant],
-    className,
-  );
-  const labelClasses = cn(
-    "font-mono text-sm uppercase",
-    variant === "light" ? "text-ink" : "text-white",
-    labelClassName,
-  );
-
+function Badge({ className, variant = 'default', size = 'lg', ...props }: BadgeProps) {
   return (
-    <div className={classes} {...props}>
-      {dotByVariant[variant]}
-      <span className={labelClasses}>{children}</span>
-    </div>
+    <span
+      className={cn(
+        badgeVariants({ size, variant }),
+        ['outline', 'filled'].includes(variant ?? '') && {
+          'h-5 px-2': size === 'sm',
+          'h-5 px-2 lg:h-6 lg:px-3': size === 'md',
+          'h-6 px-3 lg:h-7 lg:px-3.5 lg:text-sm lg:leading-none': size === 'lg',
+        },
+        variant === 'uppercase' && 'text-[0.8125rem] leading-none lg:text-sm lg:leading-none',
+        className,
+      )}
+      {...props}
+    />
   );
 }
+
+export { Badge, badgeVariants };

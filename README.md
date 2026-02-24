@@ -1,115 +1,135 @@
-# Unkey
+# Project Guide
 
-## Table of Contents
+This document explains how to run, build, and maintain the project locally.
 
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-  - [Learn more](#learn-more)
-  - [Deploy on Vercel](#deploy-on-vercel)
-- [Project Structure](#project-structure)
-- [Code Style](#code-style)
-  - [ESLint](#eslint)
-  - [Prettier](#prettier)
-  - [VS Code](#vs-code)
+## Technology Stack
+
+- [Next.js](https://nextjs.org/) - application framework and routing
+- [Tailwind CSS](https://tailwindcss.com/) - utility-first styling
+- [shadcn/ui](https://ui.shadcn.com/) - reusable UI component patterns built on Radix primitives
+
+## Requirements
+
+- Node.js 20+
+- pnpm 10+
 
 ## Getting Started
 
-1. Clone this repository
+Run all commands from the project root (this folder):
 
 ```bash
-git clone <repo-url>
+pnpm install
+pnpm dev
 ```
 
-2. Install dependencies
+The app will be available at `http://localhost:3000`.
+
+If environment variables are required for a specific setup:
 
 ```bash
-npm install
+cp .env.example .env
 ```
 
-## Usage
+## Development Workflow
 
-### Run the website
+1. Start the dev server with `pnpm dev`.
+2. Add or update routes in `src/app`.
+3. Build reusable UI in `src/components/ui`.
+4. Build page-specific sections in `src/components/pages/<slug>`
+5. Compose pages from those sections inside route files under `src/app`.
+6. Run quality checks before committing:
+   - `pnpm lint`
+   - `pnpm typecheck`
+   - `pnpm build`
 
-```bash
-npm run dev
-```
+## Available Scripts
 
-Open http://localhost:3000 with your browser to see the result.
-
-### Build the website
-
-```bash
-npm run build
-```
-
-### Run the built website
-
-```bash
-npm run start
-```
-
-### Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-### Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `pnpm dev` - start Next.js in development mode
+- `pnpm build` - create a production build
+- `pnpm start` - run the production server
+- `pnpm lint` - run ESLint
+- `pnpm lint:fix` - run ESLint with auto-fixes
+- `pnpm format` - check formatting with Prettier
+- `pnpm format:fix` - format files with Prettier
+- `pnpm typecheck` - run TypeScript type checks
 
 ## Project Structure
 
 ```text
-├── public
-│   ├── favicon          — Favicon assets (light + dark)
-│   ├── og-images        — Open Graph social preview images
-│   ├── robots.txt
-│   └── hero-*.mp4|webm  — Hero section video assets
-├── src
-│   ├── app              — Next.js App Router (root layout, page, global styles)
-│   ├── components
-│   │   ├── pages/home   — Homepage component and section components
-│   │   └── ui           — Shared UI primitives (badge, button, card, container)
-│   ├── images           — Static images organized by page and section
-│   ├── lib              — Utility functions (cn helper)
-│   └── types            — TypeScript type declarations
-├── next.config.ts       — Next.js configuration (SVG loader, image formats, headers)
-├── postcss.config.mjs   — PostCSS configuration for Tailwind CSS v4
-├── tsconfig.json        — TypeScript configuration
-└── tailwind.config.js   — Tailwind CSS configuration
+.
+├─ public/                    # static assets served as-is
+├─ src/
+│  ├─ app/                    # Next.js App Router (routes, layouts, not-found)
+│  ├─ components/
+│  │  ├─ ui/                  # shared UI primitives
+│  │  └─ pages/
+│  │     ├─ home/             # components used only by the Home page
+│  │     └─ <slug>/           # components used only by one specific page
+│  ├─ content/                # markdown content grouped by feature/page
+│  ├─ configs/                # app and website configuration
+│  ├─ constants/              # static constants
+│  ├─ contexts/               # React providers/contexts
+│  ├─ hooks/                  # reusable React hooks
+│  ├─ lib/                    # utilities and framework helpers
+│  ├─ styles/                 # global and feature styles
+│  └─ types/                  # shared TypeScript types
+├─ next.config.ts             # Next.js configuration
+├─ postcss.config.mjs         # PostCSS configuration
+├─ tailwind.plugins.mjs       # Tailwind plugin setup
+├─ eslint.config.mjs          # ESLint configuration
+└─ package.json
 ```
 
-## Code Style
+## Website Config
 
-### ESLint
+Website-level settings are defined in `src/configs/website-config.ts`.
 
-[ESLint](https://eslint.org/) helps find and fix code style issues and force developers to follow the same rules.
+Use this config for branding, metadata defaults, and repository links. Common fields:
 
-```bash
-npm run lint
+- `projectName` - project name used in UI and metadata
+- `metaThemeColors.light` / `metaThemeColors.dark` - browser theme colors
+- `defaultSocialImage` - default OG/social preview image
+- `githubOrg` / `githubRepo` - repository metadata for links/integrations
+
+Example:
+
+```ts
+const config = {
+  projectName: '<YOUR_PROJECT_NAME>',
+  metaThemeColors: {
+    light: '#ffffff',
+    dark: '#09090b',
+  },
+  defaultSocialImage: '/social-previews/index.jpg',
+};
 ```
 
-### Prettier
+## Content Directory
 
-[Prettier](https://prettier.io/) helps to format code based on defined rules.
+Content lives in `src/content` and is organized by folders per section/page type.
 
-### VS Code
+Example structure:
 
-Recommended extensions:
-
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-After installation, enable "ESLint on save" by adding to your VS Code settings.json:
-
-```json
-"editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-}
+```text
+src/content/
+├─ blog/
+├─ docs/
+└─ legal/
 ```
 
-To enable Prettier, go to Preferences → Settings → search "Format". Set `esbenp.prettier-vscode` as the default formatter and enable "Format On Save".
+Rules for this project:
+
+- Use Markdown only (`.md` files).
+- Keep content grouped by folder (for example: `docs/`, `blog/`, `legal/`).
+- Use nested folders when you need hierarchy inside a section.
+
+### Documentation (`/docs`) Conventions
+
+For the `/docs` section, this project follows the same page conventions as FumaDocs. Use the official [FumaDocs page conventions](https://www.fumadocs.dev/docs/page-conventions) as the primary reference when creating or editing docs pages.
+
+## Build and Output
+
+- Run `pnpm build` to generate the production build in `.next/`.
+- Run `pnpm start` to serve the compiled build.
+- `postbuild` can generate sitemap files and `robots.txt` via `next-sitemap`.
+- Generated/runtime directories such as `.next/`, `.turbo/`, and `node_modules/` are not source files.

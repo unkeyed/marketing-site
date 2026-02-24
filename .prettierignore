@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+.yarn/
+
+# Next.js build outputs
+/.next/
+/out/
+/build
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing and coverage
+/coverage
+.nyc_output
+test-results/
+playwright-report/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment files
+.env
+.env*.local
+
+# Generated files (sitemaps, robots)
+public/sitemap*.xml
+public/robots.txt
+
+# IDE and OS
+.DS_Store
+.vscode/
+.idea/
+
+# Deployment
+.vercel
+.netlify
+
+# Misc
+*.pem
+.eslintcache
