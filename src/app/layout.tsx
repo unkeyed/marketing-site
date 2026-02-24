@@ -7,7 +7,10 @@ export default function RootLayout({
 }>) {
   return (
     // suppressHydrationWarning added according to https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/ido5ixw.css" />
+      </head>
       {children}
     </html>
   );

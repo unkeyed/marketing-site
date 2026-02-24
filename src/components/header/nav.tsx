@@ -1,11 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
 import { cn } from '@/lib/utils';
-import { Link } from '@/components/ui/link';
 
 interface IHeaderNavProps {
   className?: string;
@@ -25,35 +26,28 @@ function Nav({ className, items }: IHeaderNavProps) {
   );
 
   return (
-    <nav className={cn('flex', className)} onMouseLeave={() => setHoveredIndex(null)}>
-      {items.map(({ href, label }, index) => {
+    <nav
+      className={cn('flex items-center gap-10', className)}
+      onMouseLeave={() => setHoveredIndex(null)}
+    >
+      {items.map(({ href, label, children }, index) => {
         const isActive = index === activeIndex;
         const isHovered = index === hoveredIndex;
-        const shouldShowActive = isActive && hoveredIndex === null;
-        const shouldShowHighlight = isHovered || shouldShowActive;
+        const hasChildren = Array.isArray(children);
 
         return (
-          <Link
+          <NextLink
             key={index}
-            href={href}
-            data-active={shouldShowActive}
-            data-hovered={isHovered}
+            href={href ?? '#'}
             onMouseEnter={() => setHoveredIndex(index)}
             className={cn(
-              'relative gap-x-1.5 rounded-full px-3.5 py-2 text-sm leading-none tracking-normal transition-colors data-[active=true]:text-foreground data-[hovered=true]:text-foreground',
-              isActive ? 'text-foreground' : 'text-foreground/80',
+              'inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-[-0.35px] transition-colors',
+              isHovered ? 'text-gray-30' : 'text-background',
             )}
-            size="none"
-            variant="ghost"
           >
-            <span
-              className={cn(
-                'pointer-events-none absolute inset-0 rounded-full bg-muted transition-opacity duration-300',
-                shouldShowHighlight ? 'opacity-100' : 'opacity-0',
-              )}
-            />
-            <span className="relative z-10">{label}</span>
-          </Link>
+            {label}
+            {hasChildren && <ChevronDown className="size-3.5 opacity-70" strokeWidth={2} />}
+          </NextLink>
         );
       })}
     </nav>

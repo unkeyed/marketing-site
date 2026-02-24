@@ -4,40 +4,17 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  cn(
-    'relative inline-flex w-fit items-center justify-center gap-1 whitespace-nowrap rounded-md text-sm font-medium tracking-tight transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_a]:relative [&_a]:z-10',
-    'before:absolute before:cursor-pointer before:inset-0 before:border before:border-transparent before:rounded-[inherit] before:bg-transparent before:opacity-0 before:transition-opacity before:ease-in-out hover:before:opacity-100',
-  ),
+  'inline-flex w-fit items-center justify-center gap-1 whitespace-nowrap rounded-md text-sm font-medium tracking-tight transition duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: cn(
-          'bg-primary',
-          // INFO: use foreground and primary-foreground color in case of darken button color
-          'text-primary-foreground before:bg-black/15 dark:before:bg-black/25',
-          // INFO: use black text color in case of light button color
-          // "text-black before:bg-black/10 dark:before:bg-black/15",
-        ),
-        destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary:
-          'border border-secondary-foreground/10 before:-inset-px before:bg-black/5 dark:before:bg-white/8 bg-secondary text-secondary-foreground',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
-      },
-      size: {
-        default:
-          'h-10 rounded-md px-5 text-sm leading-none lg:h-11 lg:rounded-lg lg:text-base lg:leading-none',
-        xs: 'h-6 rounded px-2.5 text-xs leading-none',
-        sm: 'h-8 rounded-md px-4 text-[0.8125rem]',
-        md: 'h-10 rounded-md px-4 text-[0.8125rem]',
-        icon: 'size-9',
+        primary: 'bg-foreground text-background hover:bg-gray-90',
+        secondary: 'border border-foreground text-foreground hover:bg-gray-12',
+        dark: 'border border-foreground bg-black text-foreground backdrop-blur-[10px] hover:bg-foreground/10',
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: 'primary',
     },
   },
 );
@@ -48,10 +25,8 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-function Button({ className, variant, size, asChild = false, children, ...rest }: ButtonProps) {
-  const classes = cn(buttonVariants({ variant, size }), className);
-  const baseTextClasses =
-    'relative z-10 inline-flex whitespace-nowrap items-center justify-center gap-1 w-full';
+function Button({ className, variant, asChild = false, children, ...rest }: ButtonProps) {
+  const classes = cn(buttonVariants({ variant }), className);
 
   if (asChild && React.isValidElement(children)) {
     const elementToClone = children as React.ReactElement<
@@ -61,13 +36,12 @@ function Button({ className, variant, size, asChild = false, children, ...rest }
       ...rest,
       'data-slot': 'button',
       className: cn(classes, elementToClone.props.className),
-      children: <span className={baseTextClasses}>{elementToClone.props.children}</span>,
     });
   }
 
   return (
     <button className={classes} data-slot="button" {...rest}>
-      <span className={baseTextClasses}>{children}</span>
+      {children}
     </button>
   );
 }

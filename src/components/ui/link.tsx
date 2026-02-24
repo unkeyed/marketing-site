@@ -7,31 +7,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const linkVariants = cva(
-  'inline-flex items-center gap-x-1.5 rounded font-medium tracking-tight transition-colors duration-300 [&_svg]:shrink-0',
+  'inline-flex h-11 items-center justify-center gap-1 px-6 text-sm font-medium leading-none tracking-[-0.35px] transition duration-200 ease-in-out',
   {
     variants: {
       variant: {
-        default: 'text-primary hover:text-primary/85',
-        muted: 'text-muted-foreground hover:text-secondary-foreground/80',
-        foreground: 'text-foreground hover:text-foreground/80',
-        ghost: '',
-      },
-      size: {
-        default: '[&_svg]:size-4',
-        sm: 'text-sm [&_svg]:size-3.5',
-        lg: 'gap-x-[0.175rem] text-base lg:text-lg [&_svg]:size-4.5',
-        none: '',
-      },
-      animation: {
-        none: '',
-        'arrow-right':
-          '[&_svg]:transition-transform [&_svg]:duration-300 hover:[&_svg]:translate-x-0.5',
+        primary: 'bg-foreground text-background hover:bg-gray-90',
+        secondary: 'border bg-transparent border-foreground text-foreground hover:bg-gray-12',
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
-      animation: 'none',
+      variant: 'primary',
     },
   },
 );
@@ -41,18 +26,17 @@ export interface LinkProps<T extends string = string>
     VariantProps<typeof linkVariants> {
   asChild?: boolean;
   href: string | URL | Route<T>;
-  animation?: 'none' | 'arrow-right';
 }
 
 const Link = React.forwardRef<HTMLAnchorElement, LinkProps<string>>(
-  ({ className, variant, size, animation, asChild = false, href, ...props }, ref) => {
+  ({ className, variant, asChild = false, href, ...props }, ref) => {
     const Comp = asChild ? Slot : 'a';
     const isInternalLink = typeof href === 'string' && href.startsWith('/');
 
     if (isInternalLink) {
       return (
         <NextLink
-          className={cn(linkVariants({ variant, size, animation, className }))}
+          className={cn(linkVariants({ variant, className }))}
           href={href}
           ref={ref}
           {...props}
@@ -62,7 +46,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps<string>>(
 
     return (
       <Comp
-        className={cn(linkVariants({ variant, size, animation, className }))}
+        className={cn(linkVariants({ variant, className }))}
         href={href.toString()}
         ref={ref}
         {...props}

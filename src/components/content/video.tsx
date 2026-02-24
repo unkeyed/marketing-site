@@ -127,7 +127,7 @@ const Video = ({
                         exit={{ opacity: 0, y: 16 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <MediaControlBar className="h-12 w-full overflow-hidden rounded-lg border border-border bg-popover px-1 shadow-[0_0.25rem_0.625rem_0rem_hsla(var(--background)/.2)] md:px-2.5">
+                        <MediaControlBar className="h-12 w-full overflow-hidden rounded-lg border border-border bg-popover px-1 shadow-[0_0.25rem_0.625rem_0rem_color-mix(in_srgb,var(--color-background)_20%,transparent)] md:px-2.5">
                           <MediaPlayButton className="outline-hidden">
                             <span slot="play">
                               <PlayIcon className="size-4 md:size-5" />

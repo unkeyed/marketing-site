@@ -1,7 +1,11 @@
 import type { IMenuSocialItem } from '@/types/common';
 
 export const MENUS = {
-  header: [],
+  header: [
+    { label: 'Resources', href: '/resources', children: [] },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Docs', href: '/docs' },
+  ],
   footer: {
     main: [],
     social: [

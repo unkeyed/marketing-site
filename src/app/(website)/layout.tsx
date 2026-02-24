@@ -24,7 +24,6 @@ export default async function RootLayout({
 }>) {
   return (
     <>
-      <link rel="stylesheet" href="https://use.typekit.net/ido5ixw.css" />
       <body
         className={`flex min-h-svh flex-col bg-background ${inter.variable} font-sans antialiased`}
       >
