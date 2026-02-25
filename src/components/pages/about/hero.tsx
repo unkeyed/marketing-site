@@ -1,0 +1,48 @@
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
+
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+
+export interface IAboutHeroValue {
+  title: string;
+  description: string;
+}
+
+interface IAboutHeroProps {
+  title: React.ReactNode;
+  description: React.ReactNode;
+  values: IAboutHeroValue[];
+}
+
+export default function AboutHero({ title, description, values }: IAboutHeroProps) {
+  return (
+    <section className="border-b border-gray-20">
+      <div className={cn(CONTAINER, 'py-16 md:py-20 xl:pt-29 xl:pb-27')}>
+        <div className="grid gap-12 px-24 xl:grid-cols-[1fr_1fr] xl:gap-48">
+          <div className="flex flex-col">
+            <h1 className="font-heading text-4xl leading-[1.125] font-normal whitespace-pre-wrap text-foreground md:text-5xl lg:text-6xl xl:text-[64px]">
+              {title}
+            </h1>
+            <p className="mt-12 font-sans text-xl leading-[1.375] font-normal tracking-[-0.015em] text-muted-foreground xl:max-w-128">
+              {description}
+            </p>
+          </div>
+
+          <ul className="mt-11 grid gap-8 sm:grid-cols-2 sm:gap-x-16 sm:gap-y-11">
+            {values.map((value) => (
+              <li key={value.title} className="flex flex-col gap-1.5">
+                <h2 className="font-sans text-base leading-[1.375] font-medium text-foreground">
+                  {value.title}
+                </h2>
+                <p className="font-sans text-base leading-[1.375] font-normal text-gray-80">
+                  {value.description}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
