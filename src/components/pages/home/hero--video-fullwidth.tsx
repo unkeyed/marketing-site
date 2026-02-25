@@ -81,6 +81,7 @@ export default function HeroVideoFullwidth({
           muted
           playsInline
           preload="metadata"
+          aria-hidden="true"
           className="pointer-events-none absolute inset-0 hidden h-full w-full origin-top scale-[1.02] object-cover object-top sm:block"
         >
           {videos.map((v) => (

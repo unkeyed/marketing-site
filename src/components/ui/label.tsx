@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
-const labelVariants = cva('inline-flex items-center rounded-[6px] border', {
+const labelVariants = cva('inline-flex items-center tracking-[0.03em] rounded-[6px] border', {
   variants: {
     variant: {
       dark: 'border-gray-20',

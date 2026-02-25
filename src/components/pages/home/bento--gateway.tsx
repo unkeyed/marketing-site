@@ -13,6 +13,8 @@ interface IGatewayCard {
   imageClassName?: string;
   imageWrapperClassName?: string;
   textWidthClass?: string;
+  layout?: 'split' | 'overlay';
+  textStyle?: 'plain' | 'marked';
   fullBleedImage?: boolean;
   useTextBackground?: boolean;
   gridClassName: string;
@@ -31,23 +33,29 @@ function GatewayCard({
   imageClassName = 'object-cover',
   imageWrapperClassName,
   textWidthClass = 'max-w-[352px]',
+  layout: layoutProp,
+  textStyle: textStyleProp,
   fullBleedImage = false,
   useTextBackground = false,
   className,
 }: Omit<IGatewayCard, 'gridClassName'> & { className?: string }) {
-  const textContent = useTextBackground ? (
-    <span className="inline bg-background box-decoration-clone px-1.5 py-2 leading-[1.75]">
-      <span className="font-medium text-white">{title}.</span> <span>{body}</span>
-    </span>
-  ) : (
-    <>
-      <span className="font-medium text-white">{title}.</span> <span>{body}</span>
-    </>
-  );
+  const layout = layoutProp ?? (fullBleedImage ? 'overlay' : 'split');
+  const textStyle = textStyleProp ?? (useTextBackground ? 'marked' : 'plain');
+
+  const textContent =
+    textStyle === 'marked' ? (
+      <mark className="inline bg-background box-decoration-clone pt-0 pr-8 pb-5.5 pl-0 text-inherit">
+        <span className="font-medium text-white">{title}.</span> <span>{body}</span>
+      </mark>
+    ) : (
+      <>
+        <span className="font-medium text-white">{title}.</span> <span>{body}</span>
+      </>
+    );
 
   const textBlock = (
     <p className="relative z-10 px-6 pt-6 pb-3 text-base leading-snug text-gray-80 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
-      <span className={`block max-w-full ${textWidthClass}`}>{textContent}</span>
+      <span className={`block ${textWidthClass}`}>{textContent}</span>
     </p>
   );
 
@@ -61,31 +69,30 @@ function GatewayCard({
     />
   );
 
-  if (fullBleedImage) {
-    return (
-      <div
-        className={cn(
-          'relative h-full w-full overflow-hidden border border-gray-20 bg-background',
-          className,
-        )}
-      >
-        {imageWrapperClassName ? <div className={imageWrapperClassName}>{imgEl}</div> : imgEl}
-        {textBlock}
-      </div>
-    );
-  }
+  const imageBlock = (
+    <div
+      className={cn(
+        layout === 'overlay'
+          ? 'absolute inset-0 overflow-hidden'
+          : 'relative z-0 min-h-0 overflow-hidden',
+      )}
+    >
+      {imageWrapperClassName ? <div className={imageWrapperClassName}>{imgEl}</div> : imgEl}
+    </div>
+  );
 
   return (
     <div
       className={cn(
-        'grid h-full w-full grid-rows-[auto_1fr] overflow-hidden border border-gray-20 bg-background',
+        'h-full w-full overflow-hidden border border-gray-20 bg-background',
+        layout === 'overlay' ? 'relative' : 'grid grid-rows-[auto_1fr]',
         className,
       )}
     >
-      {textBlock}
-      <div className="relative z-0 min-h-0 overflow-hidden">
-        {imageWrapperClassName ? <div className={imageWrapperClassName}>{imgEl}</div> : imgEl}
-      </div>
+      <>
+        {textBlock}
+        {imageBlock}
+      </>
     </div>
   );
 }
@@ -93,13 +100,13 @@ function GatewayCard({
 export default function BentoGateway({ heading, cards }: IGatewayProps) {
   return (
     <section className="pt-20 md:pt-[140px] xl:pt-[260px]">
-      <div className={cn(CONTAINER, 'flex flex-col items-center gap-8')}>
-        <Label labelClassName="tracking-[0.42px]">Gateway</Label>
-        <h2 className="max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
+      <div className={cn(CONTAINER, 'flex flex-col items-center')}>
+        <Label>Gateway</Label>
+        <h2 className="max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] xl:mt-8 xl:text-[52px]">
           {heading}
         </h2>
 
-        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:mt-10 xl:mt-[57px] xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
+        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:mt-10 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
           {cards.map((card) => (
             <li key={card.title} className={card.gridClassName}>
               <GatewayCard

@@ -27,12 +27,21 @@ interface IBuildDeployProps {
   panels: IBuildDeployPanel[];
 }
 
-function ContentPanel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean }) {
+function ContentPanel({
+  row,
+  isLast,
+  stickyHeight,
+}: {
+  row: IBuildDeployPanel;
+  isLast: boolean;
+  stickyHeight: number;
+}) {
   return (
     <li>
       <div
         id={row.id}
-        className="grid min-h-[628px] scroll-mt-16 grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
+        style={{ scrollMarginTop: stickyHeight }}
+        className="grid min-h-[628px] grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
       >
         <div
           className={cn(
@@ -88,7 +97,20 @@ function ContentPanel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean
 
 export default function FeaturesBuildDeploy({ heading, description, panels }: IBuildDeployProps) {
   const [activeTab, setActiveTab] = useState(panels[0]?.id ?? '');
+  const [headerHeight, setHeaderHeight] = useState(200);
   const isClickScrolling = useRef(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const h = Math.round(entry.borderBoxSize[0].blockSize);
+      setHeaderHeight((prev) => (prev === h ? prev : h));
+    });
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const elements = panels
@@ -118,7 +140,7 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
           }
         }
       },
-      { rootMargin: '-64px 0px -40% 0px', threshold: 0 },
+      { rootMargin: `-${headerHeight}px 0px -40% 0px`, threshold: 0 },
     );
 
     for (const el of elements) {
@@ -126,7 +148,7 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
     }
 
     return () => observer.disconnect();
-  }, [panels]);
+  }, [panels, headerHeight]);
 
   const handleTabClick = useCallback((id: string) => {
     setActiveTab(id);
@@ -143,54 +165,73 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
 
   return (
     <section className="pt-20 md:pt-30 xl:pt-45">
-      <div className={cn(CONTAINER, 'flex flex-col pt-8 md:pt-12 xl:pt-20')}>
-        <Label className="w-fit" labelClassName="tracking-[0.42px]">
-          Build & Deploy
-        </Label>
-
-        <div className="mt-6 grid gap-5 lg:mt-8 lg:grid-cols-[60fr_40fr] lg:gap-8">
-          <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
-            {heading}
-          </h2>
-          <p className="max-w-[416px] text-[20px] leading-snug tracking-[-0.01em] text-gray-70 md:text-xl lg:mt-[31px] lg:ml-auto">
-            {description}
-          </p>
+      <div className={CONTAINER}>
+        <div className="pt-8 md:pt-12 xl:pt-20">
+          <Label>Build & Deploy</Label>
         </div>
 
-        <div className="mt-8 md:mt-12 xl:mt-20">
-          <div className="sticky top-0 z-10 h-16 overflow-x-auto border-b border-gray-20 bg-background [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <ul
-              role="tablist"
-              aria-label="Build and deploy steps"
-              className="grid h-full min-w-[660px] grid-cols-5 md:w-full md:min-w-0"
-            >
-              {panels.map((row, index) => (
-                <li key={row.id}>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={activeTab === row.id}
-                    aria-controls={row.id}
-                    onClick={() => handleTabClick(row.id)}
-                    className={cn(
-                      'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-4 text-base leading-[1.125] font-normal transition-colors sm:text-lg md:text-xl',
-                      index === panels.length - 1 && 'border-r',
-                      activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
-                    )}
-                  >
-                    {row.tabLabel}
-                  </button>
-                </li>
-              ))}
-            </ul>
+        <div>
+          <div ref={headerRef} className="sticky top-0 z-10 bg-background">
+            <div className="grid gap-5 pt-6 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-8">
+              <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
+                {heading}
+              </h2>
+              <p className="max-w-[416px] text-[20px] leading-snug tracking-[-0.01em] text-gray-70 md:text-xl lg:mt-[31px] lg:ml-auto">
+                {description}
+              </p>
+            </div>
+
+            <div className="mt-8 h-16 overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:mt-12 xl:mt-20 [&::-webkit-scrollbar]:hidden">
+              <ul
+                role="tablist"
+                aria-label="Build and deploy steps"
+                className="grid h-full min-w-[660px] grid-cols-5 md:w-full md:min-w-0"
+              >
+                {panels.map((row, index) => (
+                  <li key={row.id}>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === row.id}
+                      aria-controls={row.id}
+                      onClick={() => handleTabClick(row.id)}
+                      className={cn(
+                        'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-4 text-base leading-[1.125] font-normal transition-colors sm:text-lg md:text-xl',
+                        index === panels.length - 1 && 'border-r',
+                        activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
+                      )}
+                    >
+                      {row.tabLabel}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <ul className="-mt-px list-none">
-            {panels.map((row, index) => (
-              <ContentPanel key={row.id} row={row} isLast={index === panels.length - 1} />
-            ))}
-          </ul>
+          {panels.length > 1 && (
+            <ul className="-mt-px list-none">
+              {panels.slice(0, -1).map((row) => (
+                <ContentPanel
+                  key={row.id}
+                  row={row}
+                  isLast={false}
+                  stickyHeight={headerHeight}
+                />
+              ))}
+            </ul>
+          )}
         </div>
+
+        {panels.length > 0 && (
+          <ul className="-mt-px list-none">
+            <ContentPanel
+              row={panels[panels.length - 1]}
+              isLast
+              stickyHeight={headerHeight}
+            />
+          </ul>
+        )}
       </div>
     </section>
   );
