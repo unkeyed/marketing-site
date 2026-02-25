@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const labelVariants = cva(
-  'inline-flex items-center tracking-[0.03em] leading-snug rounded-[6px] border',
+  'text-sm inline-flex items-center w-fit tracking-[0.03em] leading-snug rounded-[6px] border',
   {
     variants: {
       variant: {
@@ -13,7 +13,7 @@ const labelVariants = cva(
       },
       size: {
         sm: 'gap-2 px-2.5 py-1.5',
-        md: 'gap-2.5 px-3 py-2',
+        md: 'gap-2.5 px-3 py-1.75',
         lg: 'gap-3 px-4 py-2.5',
         plain: 'gap-2.5 p-0 border-none',
       },

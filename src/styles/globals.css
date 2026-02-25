@@ -138,7 +138,7 @@
 
 @utility font-display {
   font-family: articulat-cf, sans-serif;
-  font-feature-settings: 'ss02' 1;
+  font-feature-settings: 'ss01' 1;
 }
 
 @utility border-gradient {
@@ -170,6 +170,7 @@
 @layer utilities {
   body {
     font-family: var(--font-sans);
+    font-feature-settings: 'ss01' 1;
   }
 }
 

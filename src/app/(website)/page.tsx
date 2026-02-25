@@ -275,9 +275,7 @@ const contentData = {
     heading: (
       <>
         Start small, scale to global traffic, and{' '}
-        <span className="inline-flex h-[34px] items-center bg-yellow px-[4px] sm:h-[38px] lg:h-[42px]">
-          stay protected
-        </span>{' '}
+        <mark>stay protected</mark>{' '}
         without managing infrastructure manually.
       </>
     ),

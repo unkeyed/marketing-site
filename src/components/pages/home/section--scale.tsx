@@ -1,10 +1,9 @@
 import Image from 'next/image';
-import NextLink from 'next/link';
 
 import { Label } from '@/components/ui/label';
+import { Link } from '@/components/ui/link';
 
-const CONTAINER =
-  'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IScaleFeature {
   title: string;
@@ -33,31 +32,22 @@ export default function SectionScale({
       <div className={`${CONTAINER} relative py-16 md:py-24 xl:py-[192px]`}>
         <div className="flex flex-col gap-8 lg:flex-row lg:justify-between">
           <div className="flex max-w-[704px] flex-col gap-8">
-            <Label
-              variant="light"
-              className="w-[88px]"
-              labelClassName="leading-snug tracking-[0.42px]"
-            >
-              Scale
-            </Label>
-            <h2 className="text-balance font-display text-[30px] leading-[1.2] text-background sm:text-[36px] lg:text-[44px] lg:leading-[1.25]">
+            <Label variant="light">Scale</Label>
+            <h2 className="font-display text-[30px] leading-[1.2] text-balance text-background sm:text-[36px] lg:text-[44px] lg:leading-[1.25] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-[27px] [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:pr-1 [&_mark]:pb-2 [&_mark]:pl-1 [&_mark]:text-black md:[&_mark]:h-[34px] lg:[&_mark]:h-[42px]">
               {heading}
             </h2>
           </div>
-          <div className="flex max-w-[416px] flex-col gap-6 lg:pt-[75px]">
-            <p className="text-lg leading-snug tracking-[-0.2px] text-gray-20 md:text-xl">
+          <div className="flex max-w-[416px] flex-col gap-4.5 lg:pt-[75px]">
+            <p className="text-lg leading-snug tracking-[-0.01em] text-gray-20 md:text-xl">
               {description}
             </p>
-            <NextLink
-              href={buttonHref}
-              className="h-[44px] w-fit bg-background px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-white"
-            >
+            <Link href={buttonHref} variant="primaryBlack" className="w-fit">
               {buttonLabel}
-            </NextLink>
+            </Link>
           </div>
         </div>
 
-        <ul className="mt-14 grid grid-cols-1 gap-10 sm:grid-cols-2 xl:mt-[200px] xl:grid-cols-4 xl:gap-6">
+        <ul className="mt-14 grid grid-cols-1 gap-10 sm:grid-cols-2 xl:mt-40 xl:grid-cols-[repeat(4,minmax(0,320px))] xl:justify-between">
           {features.map((item) => (
             <li className="flex max-w-[320px] flex-col gap-8 xl:gap-[44px]" key={item.title}>
               <Image
