@@ -22,9 +22,9 @@ export default function FeatureProduction({ label, items }: IProductionProps) {
               <span className="absolute inset-0 rounded-[2px] bg-cyan blur-[2px]" />
               <span className="absolute inset-0 rounded-[2px] bg-cyan" />
             </span>
-            <span className="font-mono text-sm uppercase tracking-[0.42px] text-white">
+            <h2 className="font-mono text-sm uppercase tracking-[0.42px] text-white">
               {label}
-            </span>
+            </h2>
           </div>
         </div>
         <div className="flex flex-col gap-8 md:gap-12 lg:flex-row lg:gap-24">

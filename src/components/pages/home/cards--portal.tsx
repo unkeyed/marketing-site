@@ -1,8 +1,9 @@
 import Image from 'next/image';
+import NextLink from 'next/link';
 
 import { cn, splitLeadSentence } from '@/lib/utils';
 
-import BadgeGlowDot from './badge--glow-dot';
+import { Label } from '@/components/ui/label';
 
 const CONTAINER =
   'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
@@ -18,6 +19,7 @@ interface IPortalProps {
   heading: string;
   subheading: string;
   buttonLabel: string;
+  buttonHref: string;
   cards: IPortalCard[];
 }
 
@@ -56,42 +58,49 @@ function PortalCard({
   );
 }
 
-export default function CardsPortal({ heading, subheading, buttonLabel, cards }: IPortalProps) {
+export default function CardsPortal({
+  heading,
+  subheading,
+  buttonLabel,
+  buttonHref,
+  cards,
+}: IPortalProps) {
   return (
     <section className="pt-20 md:pt-[140px] xl:pt-[229px]">
       <div className={cn(CONTAINER, 'flex flex-col gap-8')}>
-        <BadgeGlowDot
+        <Label
           className="h-[35px] w-[220px]"
           labelClassName="leading-snug tracking-[0.3px]"
         >
           AIO Developer Portal
-        </BadgeGlowDot>
+        </Label>
 
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <h2 className="max-w-[960px] font-display text-[30px] leading-[1.125] text-white sm:text-[36px] xl:text-[44px]">
             {heading}
             <span className="block text-[#9194a1]">{subheading}</span>
           </h2>
-          <button
-            type="button"
+          <NextLink
+            href={buttonHref}
             className="h-[44px] w-[139px] bg-white px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-[#040406] lg:mt-14"
           >
             {buttonLabel}
-          </button>
+          </NextLink>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 xl:mt-[56px] xl:grid-cols-3 xl:gap-0">
+        <ul className="mt-4 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 xl:mt-[56px] xl:grid-cols-3 xl:gap-0">
           {cards.map((item, index) => (
-            <PortalCard
-              key={item.graphicAlt}
-              text={item.text}
-              graphic={item.graphic}
-              graphicAlt={item.graphicAlt}
-              textWidthClass={item.textWidthClass}
-              className={index > 0 ? 'xl:-ml-px' : undefined}
-            />
+            <li key={item.graphicAlt}>
+              <PortalCard
+                text={item.text}
+                graphic={item.graphic}
+                graphicAlt={item.graphicAlt}
+                textWidthClass={item.textWidthClass}
+                className={index > 0 ? 'xl:-ml-px' : undefined}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

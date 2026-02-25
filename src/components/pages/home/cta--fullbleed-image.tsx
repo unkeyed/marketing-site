@@ -25,10 +25,12 @@ export default function CtaFullbleedImage({
       <div
         className={`${CONTAINER} relative z-10 flex h-full flex-col pt-12 pb-10 md:pt-[64px] md:pb-[51px]`}
       >
-        <div className="max-w-[576px] font-display text-[28px] leading-[1.125] text-white md:text-[32px]">
-          <span className="block">{heading}</span>
-          <span className="block text-[#9194a1]">{subheading}</span>
-        </div>
+        <h2 className="max-w-[576px] font-display text-[28px] leading-[1.125] text-white md:text-[32px]">
+          {heading}
+        </h2>
+        <p className="max-w-[576px] font-display text-[28px] leading-[1.125] text-[#9194a1] md:text-[32px]">
+          {subheading}
+        </p>
         <NextLink
           href={buttonHref}
           className="mt-auto inline-flex h-[44px] w-[134px] items-center justify-center bg-white px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-[#040406]"

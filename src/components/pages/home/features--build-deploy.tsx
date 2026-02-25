@@ -1,11 +1,12 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
 
-import BadgeGlowDot from './badge--glow-dot';
-
-const CONTAINER =
-  'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IBuildDeployPanel {
   id: string;
@@ -16,7 +17,7 @@ interface IBuildDeployPanel {
   image: string;
   imageAlt: string;
   hasLogos?: boolean;
-  logos?: { alt: string; src: string; className: string }[];
+  logos?: { alt: string; src: string; width: number; height: number; className: string }[];
   textTopClass?: string;
 }
 
@@ -28,10 +29,10 @@ interface IBuildDeployProps {
 
 function ContentPanel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean }) {
   return (
-    <>
+    <li>
       <div
         id={row.id}
-        className="grid min-h-[628px] grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
+        className="scroll-mt-16 grid min-h-[628px] grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
       >
         <div
           className={cn(
@@ -40,20 +41,24 @@ function ContentPanel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean
           )}
         >
           <div className="flex flex-col gap-4 sm:gap-5">
-            <div className="flex flex-col text-[24px] leading-[1.125] tracking-[-0.56px] sm:text-[28px]">
-              <p className="text-white">{row.title}</p>
-              <p className="text-[#9194a1]">{row.subtitle}</p>
+            <div className="text-[24px] leading-[1.125] tracking-[-0.02em] sm:text-[28px]">
+              <h3 className="text-white">{row.title}</h3>
+              <p className="text-gray-60">{row.subtitle}</p>
             </div>
-            <p className="max-w-[448px] text-base leading-snug text-gray-90">{row.body}</p>
+            <p className="max-w-md text-base leading-snug text-gray-90">{row.body}</p>
           </div>
           {row.hasLogos && row.logos && (
-            <div className="mt-8 lg:mb-[140px]">
-              <div className="flex flex-wrap items-end gap-4 sm:gap-6">
-                {row.logos.map((logo) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={logo.alt} alt={logo.alt} className={logo.className} src={logo.src} />
-                ))}
-              </div>
+            <div className="mt-8 flex flex-wrap items-end gap-4 sm:gap-6 lg:mt-[183px]">
+              {row.logos.map((logo) => (
+                <Image
+                  key={logo.alt}
+                  alt={logo.alt}
+                  width={logo.width}
+                  height={logo.height}
+                  className={logo.className}
+                  src={logo.src}
+                />
+              ))}
             </div>
           )}
         </div>
@@ -70,57 +75,124 @@ function ContentPanel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean
       </div>
       {!isLast && (
         <div
-          className="h-16 border-l border-r border-gray-20"
+          className="h-16 border-r border-l border-gray-20"
           style={{
             backgroundImage:
               'repeating-linear-gradient(135deg, rgba(46,48,56,0.45) 0 1px, rgba(0,0,0,0) 1px 8px)',
           }}
         />
       )}
-    </>
+    </li>
   );
 }
 
 export default function FeaturesBuildDeploy({ heading, description, panels }: IBuildDeployProps) {
+  const [activeTab, setActiveTab] = useState(panels[0]?.id ?? '');
+  const isClickScrolling = useRef(false);
+
+  useEffect(() => {
+    const elements = panels
+      .map((p) => document.getElementById(p.id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (elements.length === 0) return;
+
+    const intersectingIds = new Set<string>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isClickScrolling.current) return;
+
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            intersectingIds.add(entry.target.id);
+          } else {
+            intersectingIds.delete(entry.target.id);
+          }
+        }
+
+        for (const panel of panels) {
+          if (intersectingIds.has(panel.id)) {
+            setActiveTab(panel.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-64px 0px -40% 0px', threshold: 0 },
+    );
+
+    for (const el of elements) {
+      observer.observe(el);
+    }
+
+    return () => observer.disconnect();
+  }, [panels]);
+
+  const handleTabClick = useCallback(
+    (id: string) => {
+      setActiveTab(id);
+      isClickScrolling.current = true;
+
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          isClickScrolling.current = false;
+        }, 800);
+      }
+    },
+    [],
+  );
+
   return (
-    <section className="pt-20 md:pt-[120px] xl:pt-[180px]">
-      <div className={cn(CONTAINER, 'flex flex-col')}>
-        <div className="pt-8 md:pt-12 xl:pt-[80px]">
-          <BadgeGlowDot className="w-fit" labelClassName="tracking-[0.42px]">
-            Build & Deploy
-          </BadgeGlowDot>
+    <section className="pt-20 md:pt-30 xl:pt-45">
+      <div className={cn(CONTAINER, 'flex flex-col pt-8 md:pt-12 xl:pt-20')}>
+        <Label className="w-fit" labelClassName="tracking-[0.42px]">
+          Build & Deploy
+        </Label>
 
-          <div className="mt-6 grid gap-5 lg:mt-8 lg:grid-cols-[60fr_40fr] lg:gap-8">
-            <h2 className="font-display text-[30px] leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
-              {heading}
-            </h2>
-            <p className="max-w-[416px] text-lg leading-snug tracking-[-0.2px] text-gray-70 md:text-xl lg:mt-[31px] lg:ml-auto">
-              {description}
-            </p>
-          </div>
-
-          <div className="mt-8 h-16 overflow-x-auto border-b border-gray-20 md:mt-12 xl:mt-[80px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="grid h-full min-w-[660px] grid-cols-5 md:min-w-0 md:w-full">
-              {panels.map((row, index) => (
-                <div
-                  key={row.id}
-                  className={cn(
-                    'flex h-full w-full items-center justify-center border-l border-t border-gray-20 px-4 text-base leading-[1.125] font-normal sm:text-lg md:text-xl',
-                    index === panels.length - 1 && 'border-r',
-                    index === 0 ? 'bg-panel text-white' : 'text-[#9194a1]',
-                  )}
-                >
-                  <span>{row.tabLabel}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="mt-6 grid gap-5 lg:mt-8 lg:grid-cols-[60fr_40fr] lg:gap-8">
+          <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
+            {heading}
+          </h2>
+          <p className="max-w-[416px] text-[20px] leading-snug tracking-[-0.01em] text-gray-70 md:text-xl lg:mt-[31px] lg:ml-auto">
+            {description}
+          </p>
         </div>
 
-        <div className="-mt-px">
-          {panels.map((row, index) => (
-            <ContentPanel key={row.id} row={row} isLast={index === panels.length - 1} />
-          ))}
+        <div className="mt-8 md:mt-12 xl:mt-20">
+          <div className="sticky top-0 z-10 h-16 overflow-x-auto border-b border-gray-20 bg-background [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <ul
+              role="tablist"
+              aria-label="Build and deploy steps"
+              className="grid h-full min-w-[660px] grid-cols-5 md:w-full md:min-w-0"
+            >
+              {panels.map((row, index) => (
+                <li key={row.id}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === row.id}
+                    aria-controls={row.id}
+                    onClick={() => handleTabClick(row.id)}
+                    className={cn(
+                      'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-4 text-base leading-[1.125] font-normal transition-colors sm:text-lg md:text-xl',
+                      index === panels.length - 1 && 'border-r',
+                      activeTab === row.id ? 'bg-panel text-white' : 'text-gray-60',
+                    )}
+                  >
+                    {row.tabLabel}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <ul className="-mt-px list-none">
+            {panels.map((row, index) => (
+              <ContentPanel key={row.id} row={row} isLast={index === panels.length - 1} />
+            ))}
+          </ul>
         </div>
       </div>
     </section>

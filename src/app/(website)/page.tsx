@@ -138,21 +138,29 @@ const contentData = {
           {
             alt: 'Python',
             src: '/images/home/build-deploy/logos/python.svg',
+            width: 112,
+            height: 28,
             className: 'h-[28px] w-[112px]',
           },
           {
             alt: 'TypeScript',
             src: '/images/home/build-deploy/logos/typescript.svg',
+            width: 110,
+            height: 28,
             className: 'h-[28px] w-[110px]',
           },
           {
             alt: 'Go',
             src: '/images/home/build-deploy/logos/go.svg',
+            width: 75,
+            height: 28,
             className: 'h-[28px] w-[75px]',
           },
           {
             alt: 'Java',
             src: '/images/home/build-deploy/logos/java.svg',
+            width: 97,
+            height: 40,
             className: 'h-[40px] w-[97px]',
           },
         ],
@@ -276,6 +284,7 @@ const contentData = {
     description:
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
     buttonLabel: 'Read the docs',
+    buttonHref: '/docs',
     features: [
       {
         title: 'Multi-region routing',
@@ -304,6 +313,7 @@ const contentData = {
     subheading: 'Every request is logged. Every decision is visible.',
     dashboardImage: '/images/home/observe/dashboard.png',
     buttonLabel: 'Read the docs',
+    buttonHref: '/docs',
     columns: [
       {
         lead: 'Automatic logs and metrics collection.',
@@ -327,6 +337,7 @@ const contentData = {
     heading: 'First-class developer experience for your users.',
     subheading: 'API keys, usage, and docs\u2014ready out of the box.',
     buttonLabel: 'Try the Portal',
+    buttonHref: '/portal',
     cards: [
       {
         text: 'Zero code required. A fully hosted developer portal with nothing to build or maintain.',
