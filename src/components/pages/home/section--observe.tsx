@@ -29,7 +29,7 @@ export default function SectionObserve({
     <section className="mt-20 md:mt-[140px] xl:mt-[200px]">
       <div className={`${CONTAINER} flex flex-col`}>
         <div className="relative h-[420px] max-[351px]:h-[500px] md:h-[520px] xl:h-[610px]">
-          <div className="absolute top-0 left-0 z-[1] h-[220px] w-full bg-ink max-[351px]:h-[300px] md:h-[200px] xl:h-[187px] xl:max-w-[960px]" />
+          <div className="absolute top-0 left-0 z-[1] h-[220px] w-full bg-background max-[351px]:h-[300px] md:h-[200px] xl:h-[187px] xl:max-w-[960px]" />
           <div className="relative z-10 flex h-[220px] w-full flex-col gap-6 pb-5 max-[351px]:h-[300px] max-[351px]:pb-12 md:h-[200px] xl:h-[187px] xl:max-w-[960px] xl:gap-8">
             <BadgeGlowDot
               className="h-[35px] w-[106px]"

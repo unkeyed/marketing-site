@@ -25,9 +25,33 @@
   --color-background: #040406;
   --color-foreground: #ffffff;
 
+  --color-blue: #2d46c5;
+  --color-blue-2: #3756f3;
+
+  --color-orange: #f5841f;
+  --color-orange-2: #ffb12a;
+
+  --color-yellow: #def135;
+
+  --color-gray-98: #f9fafb;
+  --color-gray-94: #eeeff1;
   --color-gray-90: #e3e4e9;
+  --color-gray-80: #c7c9d1;
+  --color-gray-70: #abaebb;
+  --color-gray-60: #9194a1;
+  --color-gray-50: #777a88;
+  --color-gray-40: #60606c;
   --color-gray-30: #464853;
+  --color-gray-20: #2e3038;
   --color-gray-12: #1c1d22;
+  --color-gray-10: #494949;
+  --color-gray-8: #121317;
+  --color-gray-5: #0b0c0e;
+
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-display: articulat-cf, sans-serif;
 
   /* ui/dialog, ui/drawer, ui/search-dialog, ui/select, content/video, content/code-block-wrapper */
   --color-popover: hsl(240 10% 3.9%);
@@ -59,23 +83,12 @@
   --color-input: hsl(240 3.7% 15.9%);
   --color-ring: hsl(215 90% 81%);
 
-  /* pages/home/* — ink, panel, borders, accent */
-  --color-ink: #040406;
-  --color-uw-border: #2e3038;
+  /* Refactor (legacy colors kept intentionally) */
   --color-panel: #121318;
-  --color-uw-accent: #def135;
-
-  /* pages/home/*  */
-  --color-muted-2: #abaebb;
-  --color-muted-3: #c7c9d1;
-  --color-muted-4: #e3e4e9;
   --color-muted-5: #5e616e;
-
-  /* pages/home/section--scale, feature--production, badge--glow-dot */
   --color-cyan: #35f1e4;
   --color-blue-glow: #0095e6;
-  --color-slate: #464853;
-  --color-blue: #3580f1;
+  --color-legacy-blue: #3580f1;
 
   /* pages/home/*, docs */
   --spacing-content: 96rem;
@@ -84,13 +97,6 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
-
-  /* body (globals.css @layer utilities) */
-  --font-sans:
-    var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
-  /* pages/home/* — заголовки секций */
-  --font-display: articulat-cf, sans-serif;
 
   /* ui/accordion */
   --animate-accordion-down: accordion-down 0.2s ease-out;

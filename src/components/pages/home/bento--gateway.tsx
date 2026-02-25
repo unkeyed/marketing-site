@@ -38,7 +38,7 @@ function GatewayCard({
   className,
 }: Omit<IGatewayCard, 'gridClassName'> & { className?: string }) {
   const textContent = useTextBackground ? (
-    <span className="inline box-decoration-clone bg-ink px-1.5 py-2 leading-[1.75]">
+    <span className="inline box-decoration-clone bg-background px-1.5 py-2 leading-[1.75]">
       <span className="font-medium text-white">{title}.</span> <span>{body}</span>
     </span>
   ) : (
@@ -48,7 +48,7 @@ function GatewayCard({
   );
 
   const textBlock = (
-    <p className="relative z-10 px-6 pt-6 pb-3 text-base leading-snug text-muted-3 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
+    <p className="relative z-10 px-6 pt-6 pb-3 text-base leading-snug text-gray-80 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
       <span className={`block max-w-full ${textWidthClass}`}>{textContent}</span>
     </p>
   );
@@ -67,7 +67,7 @@ function GatewayCard({
     return (
       <div
         className={cn(
-          'relative w-full overflow-hidden border border-uw-border bg-ink',
+          'relative w-full overflow-hidden border border-gray-20 bg-background',
           className,
         )}
       >
@@ -80,7 +80,7 @@ function GatewayCard({
   return (
     <div
       className={cn(
-        'grid w-full grid-rows-[auto_1fr] overflow-hidden border border-uw-border bg-ink',
+        'grid w-full grid-rows-[auto_1fr] overflow-hidden border border-gray-20 bg-background',
         className,
       )}
     >

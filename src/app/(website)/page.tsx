@@ -75,7 +75,7 @@ const contentData = {
     heading: (
       <>
         {'Unify your fragmented API stack with a single control plane for\n'}
-        <span className="inline-flex h-[27px] items-center bg-uw-accent px-[4px] text-black box-decoration-clone md:h-[34px] lg:h-[42px]">
+        <span className="inline-flex h-[27px] items-center bg-yellow px-[4px] text-black box-decoration-clone md:h-[34px] lg:h-[42px]">
           access and traffic.
         </span>
       </>
@@ -271,7 +271,7 @@ const contentData = {
     heading: (
       <>
         Start small, scale to global traffic, and{' '}
-        <span className="inline-flex h-[34px] items-center bg-uw-accent px-[4px] sm:h-[38px] lg:h-[42px]">
+        <span className="inline-flex h-[34px] items-center bg-yellow px-[4px] sm:h-[38px] lg:h-[42px]">
           stay protected
         </span>{' '}
         without managing infrastructure manually.
@@ -379,7 +379,7 @@ export const metadata: Metadata = getMetadata({
 
 export default function HomePage() {
   return (
-    <main className="relative w-full overflow-x-clip bg-ink text-white">
+    <main className="relative w-full overflow-x-clip bg-background text-white">
       <HeroVideoFullwidth {...contentData.hero} />
       <FeaturesControlPlane {...contentData.controlPlane} />
       <FeaturesBuildDeploy {...contentData.buildDeploy} />

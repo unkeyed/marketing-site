@@ -17,7 +17,7 @@ export default function BadgeGlowDot({
     <div
       className={cn(
         'inline-flex items-center gap-2.5 rounded-[6px] border px-3 py-2',
-        isDark ? 'border-uw-border' : 'border-[rgba(4,4,6,0.2)]',
+        isDark ? 'border-gray-20' : 'border-[rgba(4,4,6,0.2)]',
         className,
       )}
     >
@@ -28,12 +28,12 @@ export default function BadgeGlowDot({
           <span className="absolute inset-0 rounded-[2px] bg-cyan" />
         </span>
       ) : (
-        <span className="h-[10px] w-[10px] rounded-[2px] bg-blue" />
+        <span className="h-[10px] w-[10px] rounded-[2px] bg-legacy-blue" />
       )}
       <span
         className={cn(
           'font-mono text-sm uppercase',
-          isDark ? 'text-white' : 'text-ink',
+          isDark ? 'text-white' : 'text-background',
           labelClassName,
         )}
       >

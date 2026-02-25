@@ -59,7 +59,7 @@ export default function HeroVideoFullwidth({
   }, []);
 
   return (
-    <section className="relative z-0 -mt-13.5 w-full border-b border-uw-border">
+    <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
       <div
         className="relative h-[600px] w-full overflow-hidden md:h-[min(800px,100svh)] xl:h-[min(1136px,100svh)]"
         style={{

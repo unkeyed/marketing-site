@@ -32,11 +32,11 @@ export default function FeatureProduction({ label, items }: IProductionProps) {
             <div className="flex flex-1 gap-5" key={item.title}>
               <div className="flex w-px flex-col self-stretch">
                 <div className="h-[30px] w-px shrink-0 bg-white" />
-                <div className="w-px flex-1 bg-uw-border" />
+                <div className="w-px flex-1 bg-gray-20" />
               </div>
               <div className="flex flex-col gap-2 text-lg md:text-xl">
                 <p className="leading-normal font-medium text-white">{item.title}</p>
-                <p className="leading-snug text-muted-2">{item.text}</p>
+                <p className="leading-snug text-gray-70">{item.text}</p>
               </div>
             </div>
           ))}

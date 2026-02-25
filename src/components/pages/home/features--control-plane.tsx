@@ -37,7 +37,7 @@ function FeatureCard({
   return (
     <div
       className={cn(
-        'flex h-[429px] flex-col overflow-hidden border border-uw-border bg-ink px-6 pb-6 pt-[26px] xl:px-8 xl:pb-8',
+        'flex h-[429px] flex-col overflow-hidden border border-gray-20 bg-background px-6 pb-6 pt-[26px] xl:px-8 xl:pb-8',
         className,
       )}
     >
@@ -51,7 +51,7 @@ function FeatureCard({
           src={graphic}
         />
       </div>
-      <p className="text-base leading-snug text-muted-3">
+      <p className="text-base leading-snug text-gray-80">
         <span className="font-medium text-white">{lead}</span>
         {rest ? <span> {rest}</span> : null}
       </p>
@@ -66,12 +66,12 @@ export default function FeaturesControlPlane({ heading, description, cards }: IC
         <div className="relative sm:pl-8">
           <div
             aria-hidden
-            className="absolute -top-20 bottom-0 left-0 hidden w-px bg-uw-border sm:block md:-top-[120px] xl:-top-[213px]"
+            className="absolute -top-20 bottom-0 left-0 hidden w-px bg-gray-20 sm:block md:-top-[120px] xl:-top-[213px]"
           />
           <h2 className="max-w-[639px] whitespace-pre-line font-display text-[28px] leading-[1.125] text-white md:text-[36px] lg:text-[44px]">
             {heading}
           </h2>
-          <p className="mt-6 max-w-[576px] text-lg leading-snug tracking-[-0.2px] text-muted-2 lg:mt-[44px] lg:text-xl">
+          <p className="mt-6 max-w-[576px] text-lg leading-snug tracking-[-0.2px] text-gray-70 lg:mt-[44px] lg:text-xl">
             {description}
           </p>
           <div className="mt-10 md:mt-16 xl:mt-[142px]" />

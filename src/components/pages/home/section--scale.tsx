@@ -32,17 +32,17 @@ export default function SectionScale({ heading, description, buttonLabel, featur
             >
               Scale
             </BadgeGlowDot>
-            <h2 className="text-balance font-display text-[30px] leading-[1.2] text-ink sm:text-[36px] lg:text-[44px] lg:leading-[1.25]">
+            <h2 className="text-balance font-display text-[30px] leading-[1.2] text-background sm:text-[36px] lg:text-[44px] lg:leading-[1.25]">
               {heading}
             </h2>
           </div>
           <div className="flex max-w-[416px] flex-col gap-6 lg:pt-[75px]">
-            <p className="text-lg leading-snug tracking-[-0.2px] text-uw-border md:text-xl">
+            <p className="text-lg leading-snug tracking-[-0.2px] text-gray-20 md:text-xl">
               {description}
             </p>
             <button
               type="button"
-              className="h-[44px] w-fit bg-ink px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-white"
+              className="h-[44px] w-fit bg-background px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-white"
             >
               {buttonLabel}
             </button>
@@ -60,10 +60,10 @@ export default function SectionScale({ heading, description, buttonLabel, featur
                 src={item.icon}
               />
               <div className="flex flex-col gap-5">
-                <p className="font-display text-[24px] leading-[1.125] text-ink md:text-[28px]">
+                <p className="font-display text-[24px] leading-[1.125] text-background md:text-[28px]">
                   {item.title}
                 </p>
-                <p className="text-base leading-snug tracking-[-0.16px] text-slate">
+                <p className="text-base leading-snug tracking-[-0.16px] text-gray-30">
                   {item.text}
                 </p>
               </div>

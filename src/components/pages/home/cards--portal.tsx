@@ -33,7 +33,7 @@ function PortalCard({
   return (
     <div
       className={cn(
-        'relative flex h-[460px] w-full flex-col overflow-hidden border border-uw-border bg-ink md:h-[500px] xl:h-[528px]',
+        'relative flex h-[460px] w-full flex-col overflow-hidden border border-gray-20 bg-background md:h-[500px] xl:h-[528px]',
         className,
       )}
     >
@@ -49,7 +49,7 @@ function PortalCard({
       <p className="absolute bottom-8 left-8 right-8 z-10 text-base leading-snug">
         <span className={cn('block', textWidthClass)}>
           <span className="font-medium text-white">{lead}</span>
-          {rest ? <span className="text-muted-3"> {rest}</span> : null}
+          {rest ? <span className="text-gray-80"> {rest}</span> : null}
         </span>
       </p>
     </div>
