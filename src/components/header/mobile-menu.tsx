@@ -1,158 +1,215 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
 import { cn } from '@/lib/utils';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Icons } from '@/components/icons';
+import { Link } from '@/components/ui/link';
 
 interface MobileMenuProps {
   items: IMenuItem[];
 }
 
-function hasActiveDescendant(item: IMenuItem, currentPath: string): boolean {
-  if (item.href === currentPath) return true;
-  if (item.children) {
-    return item.children.some((child) => hasActiveDescendant(child, currentPath));
-  }
-  return false;
-}
-
-interface RecursiveMenuItemComponentProps {
-  item: IMenuItem;
-  depth: number;
-  currentPath: string;
-}
-
-function RecursiveMenuItemComponent({ item, depth, currentPath }: RecursiveMenuItemComponentProps) {
-  const hasChildren = Array.isArray(item.children) && item.children.length > 0;
-  const isActive = hasActiveDescendant(item, currentPath);
-  const [isOpen, setIsOpen] = useState(isActive);
-
-  useEffect(() => {
-    if (isActive) {
-      setIsOpen(true);
-    }
-  }, [isActive, currentPath]);
-
-  if (hasChildren) {
-    return (
-      <li>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CollapsibleTrigger className="group flex h-9 w-full items-center justify-between rounded px-0 text-left text-sm font-medium text-foreground transition-colors hover:text-primary [&[data-state=open]>svg]:rotate-90">
-            {item.href ? (
-              <Link href={item.href} className="text-base leading-snug font-medium tracking-tight">
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-base leading-snug font-medium tracking-tight text-foreground">
-                {item.label}
-              </span>
-            )}
-            <ChevronRight className="size-4 shrink-0 transition-transform duration-200" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="overflow-hidden">
-            {item.children && <RecursiveMenu items={item.children} depth={depth + 1} />}
-          </CollapsibleContent>
-        </Collapsible>
-      </li>
-    );
-  }
-
-  return (
-    <li>
-      <Link
-        href={item.href ?? '#'}
-        className={cn(
-          'flex h-9 flex-1 items-center text-base leading-snug font-medium tracking-tight hover:text-primary',
-          isActive ? 'text-primary' : 'text-foreground',
-        )}
-      >
-        {item.label}
-      </Link>
-    </li>
-  );
-}
-
-function RecursiveMenu({ items, depth = 0 }: { items: IMenuItem[]; depth?: number }) {
-  const pathname = usePathname();
-
-  return (
-    <ul className={cn('flex flex-col', depth > 0 && 'border-l border-border pl-4')}>
-      {items.map((item, idx) => (
-        <RecursiveMenuItemComponent key={idx} item={item} depth={depth} currentPath={pathname} />
-      ))}
-    </ul>
-  );
-}
-
 function MobileMenu({ items }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     setOpen(false);
+    setExpandedIndex(null);
   }, [pathname]);
 
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open);
-  }, []);
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
-  if (!items || items.length === 0) {
-    return null;
-  }
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    if (open) {
+      document.addEventListener('keydown', handleEscape);
+    }
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [open]);
 
-  // TODO: Consider how we can fix the positioning issues of the menu documentation button
-  //  and make sure background scroll position is calculated correctly.
+  if (!items || items.length === 0) return null;
+
   return (
-    <Drawer
-      open={open}
-      onOpenChange={onOpenChange}
-      shouldScaleBackground={false}
-      preventScrollRestoration
-    >
-      <DrawerTrigger className="relative ml-4 flex size-6 text-foreground outline-hidden lg:hidden">
-        <span className="absolute -inset-3 lg:hidden" />
-        <svg
-          className="-mr-1.5 shrink-0"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3.99902 7.71436H19.999"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="relative z-[60] flex size-11 items-center justify-center bg-foreground lg:hidden"
+        aria-expanded={open}
+        aria-label={open ? 'Close menu' : 'Open menu'}
+      >
+        <div className="relative size-5">
+          <span
+            className={cn(
+              'absolute left-0 block h-[1.5px] w-full bg-background transition-all duration-300',
+              open ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-1',
+            )}
           />
-          <path
-            d="M3.99902 16.2856H19.999"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <span
+            className={cn(
+              'absolute left-0 top-1/2 block h-[1.5px] w-full -translate-y-1/2 bg-background transition-opacity duration-300',
+              open ? 'opacity-0' : 'opacity-100',
+            )}
           />
-        </svg>
-        <span className="sr-only">Open menu</span>
-      </DrawerTrigger>
-      <DrawerContent className="flex h-[45dvh] flex-col rounded-t-xl border border-border p-0 lg:hidden">
-        <DrawerTitle className="sr-only">Menu</DrawerTitle>
-        <div className="flex flex-1 flex-col overflow-y-auto px-5 pt-6 pb-12 md:px-8">
-          <RecursiveMenu items={items} />
+          <span
+            className={cn(
+              'absolute left-0 block h-[1.5px] w-full bg-background transition-all duration-300',
+              open ? 'bottom-1/2 translate-y-1/2 -rotate-45' : 'bottom-1',
+            )}
+          />
         </div>
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 w-full bg-linear-to-b from-transparent to-background"
-          aria-hidden
-        />
-      </DrawerContent>
-    </Drawer>
+      </button>
+
+      {/* Backdrop */}
+      <div
+        className={cn(
+          'fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 lg:hidden',
+          open ? 'opacity-100' : 'pointer-events-none opacity-0',
+        )}
+        onClick={() => setOpen(false)}
+        aria-hidden
+      />
+
+      {/* Panel */}
+      <div
+        className={cn(
+          'absolute left-5 right-5 top-full z-50 max-h-[calc(100dvh-60px)] overflow-y-auto bg-foreground shadow-2xl transition-all duration-300 md:left-8 md:right-8 lg:hidden xl:left-10 xl:right-10',
+          open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0',
+        )}
+      >
+        <div className="px-5 py-5">
+          <nav className="flex flex-col">
+            {items.map((item, index) => {
+              const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+              const isExpanded = expandedIndex === index;
+
+              if (hasChildren) {
+                return (
+                  <div key={index} className="border-b border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                      className="flex w-full items-center justify-between py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                    >
+                      {item.label}
+                      <ChevronDown
+                        className={cn(
+                          'size-4 opacity-70 transition-transform duration-200',
+                          isExpanded && 'rotate-180',
+                        )}
+                        strokeWidth={2}
+                      />
+                    </button>
+                    <div
+                      className={cn(
+                        'grid transition-all duration-200',
+                        isExpanded
+                          ? 'grid-rows-[1fr] opacity-100'
+                          : 'grid-rows-[0fr] opacity-0',
+                      )}
+                    >
+                      <div className="overflow-hidden">
+                        <ul className="flex flex-col gap-1 pb-3">
+                          {item.children!.map((child, ci) => (
+                            <li key={ci}>
+                              <NextLink
+                                href={child.href ?? '#'}
+                                className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-white/5"
+                                onClick={() => setOpen(false)}
+                              >
+                                {child.icon && (
+                                  <div className="flex size-9 shrink-0 items-center justify-center border border-gray-70">
+                                    <Image
+                                      src={child.icon}
+                                      alt=""
+                                      width={20}
+                                      height={20}
+                                      className="size-5"
+                                      aria-hidden
+                                    />
+                                  </div>
+                                )}
+                                <div className="flex flex-col gap-1.5">
+                                  <span className="text-sm leading-none font-medium tracking-tight text-background">
+                                    {child.label}
+                                  </span>
+                                  {child.description && (
+                                    <span className="text-xs leading-tight tracking-tight text-gray-40">
+                                      {child.description}
+                                    </span>
+                                  )}
+                                </div>
+                              </NextLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <NextLink
+                  key={index}
+                  href={item.href ?? '#'}
+                  className="border-b border-white/10 py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.label}
+                </NextLink>
+              );
+            })}
+          </nav>
+
+          <div className="mt-5 flex flex-col gap-2">
+            <div className="flex gap-1">
+              <Link href="https://unkey.dev/discord" className="flex-1">
+                Discord
+              </Link>
+              <Link href="https://github.com/unkeyed/unkey" className="flex-1 gap-1">
+                <Icons.github className="text-background" size={18} />
+                <span>5.1k</span>
+              </Link>
+            </div>
+            <div className="flex gap-1">
+              <Link
+                href="/app/login"
+                variant="secondary"
+                className="flex-1 border-gray-70 text-background"
+              >
+                Login
+              </Link>
+              <Link
+                href="/app/sign-up"
+                className="flex-1 bg-background text-foreground hover:bg-gray-12"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
