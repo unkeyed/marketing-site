@@ -42,7 +42,7 @@ const contentData = {
       },
       {
         alt: 'Mintlify logo',
-        src: '/images/home/hero/logos/mintlify-text.svg',
+        src: '/images/home/hero/logos/mintlify.svg',
         width: 106,
         height: 28,
         wrapperClassName: 'h-[28px] w-[106px]',
@@ -75,7 +75,7 @@ const contentData = {
     heading: (
       <>
         {'Unify your fragmented API stack with a single control plane for\n'}
-        <span className="inline-flex h-[27px] items-center bg-yellow px-[4px] text-black box-decoration-clone md:h-[34px] lg:h-[42px]">
+        <span className="inline-flex h-[27px] items-center bg-yellow box-decoration-clone px-[4px] text-black md:h-[34px] lg:h-[42px]">
           access and traffic.
         </span>
       </>
@@ -114,8 +114,7 @@ const contentData = {
     ],
   },
   buildDeploy: {
-    heading:
-      'Deploy in minutes. Roll back in seconds. Ship with confidence at any scale.',
+    heading: 'Deploy in minutes. Roll back in seconds. Ship with confidence at any scale.',
     description:
       'Infrastructure that moves with your code. Review changes in preview, then promote the exact version you tested.',
     panels: [
@@ -235,8 +234,7 @@ const contentData = {
         body: 'Enforce request rules early to catch bad traffic before it hits your API.',
         graphic: '/images/home/gateway/validation.png',
         graphicAlt: 'Validation graphic',
-        imageWrapperClassName:
-          'absolute inset-6 md:inset-8 xl:right-[31px] overflow-hidden',
+        imageWrapperClassName: 'absolute inset-6 md:inset-8 xl:right-[31px] overflow-hidden',
         imageClassName: 'object-cover object-left-top',
         gridClassName:
           'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
@@ -365,8 +363,7 @@ const pageData = {
   pathname: '/',
   metadata: {
     title: 'Home',
-    description:
-      'Unkey brings API deployment, gateways, and observability into one platform.',
+    description: 'Unkey brings API deployment, gateways, and observability into one platform.',
     pathname: '/',
   },
 };
