@@ -75,9 +75,7 @@ const contentData = {
     heading: (
       <>
         {'Unify your fragmented API stack with a single control plane for\n'}
-        <span className="inline-flex h-[27px] items-center bg-yellow box-decoration-clone px-[4px] text-black md:h-[34px] lg:h-[42px]">
-          access and traffic.
-        </span>
+        <mark>access and traffic.</mark>
       </>
     ),
     description:
@@ -86,7 +84,7 @@ const contentData = {
       {
         id: 'branch',
         title: 'Branch Overview',
-        body: 'Faster to ship. Go from code to running API in minutes. Test safely, promote when ready, roll back if needed.',
+        body: 'Faster to ship. Go from code to running API in minutes. Test safely, promote when ready, roll back if needed.',
         graphic: '/images/home/control-plane/branch.png',
         graphicAlt: 'Branch overview graphic',
       },

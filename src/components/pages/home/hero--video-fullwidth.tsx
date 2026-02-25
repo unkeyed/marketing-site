@@ -62,7 +62,7 @@ export default function HeroVideoFullwidth({
   return (
     <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
       <div
-        className="relative h-150 w-full overflow-hidden bg-cover bg-top md:h-[min(800px,100svh)] xl:h-[min(1136px,100svh)]"
+        className="relative h-150 w-full overflow-hidden bg-cover bg-top md:h-[min(calc(var(--spacing)*200),100svh)] xl:h-[min(calc(var(--spacing)*284),100svh)]"
         style={{ backgroundImage: `url('${background.src}')` }}
       >
         <Image
@@ -103,7 +103,7 @@ export default function HeroVideoFullwidth({
             'relative z-10 flex h-full flex-col justify-end pb-8 md:pb-12 xl:pb-16',
           )}
         >
-          <h1 className="text-7 max-w-176 font-display leading-[1.125] font-normal whitespace-pre-wrap text-white sm:text-4xl md:text-[44px] lg:text-[52px] xl:text-[64px]">
+          <h1 className="text-7 max-w-176 font-display leading-[1.125] font-normal whitespace-pre-wrap text-white sm:text-4xl md:text-[calc(var(--spacing)*11)] lg:text-[calc(var(--spacing)*13)] xl:text-[calc(var(--spacing)*16)]">
             {title}
           </h1>
 
