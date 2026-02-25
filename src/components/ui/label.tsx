@@ -3,23 +3,27 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
-const labelVariants = cva('inline-flex items-center tracking-[0.03em] rounded-[6px] border', {
-  variants: {
-    variant: {
-      dark: 'border-gray-20',
-      light: 'border-[rgba(4,4,6,0.2)]',
+const labelVariants = cva(
+  'inline-flex items-center tracking-[0.03em] leading-snug rounded-[6px] border',
+  {
+    variants: {
+      variant: {
+        dark: 'border-gray-20',
+        light: 'border-[rgba(4,4,6,0.2)]',
+      },
+      size: {
+        sm: 'gap-2 px-2.5 py-1.5',
+        md: 'gap-2.5 px-3 py-2',
+        lg: 'gap-3 px-4 py-2.5',
+        plain: 'gap-2.5 p-0 border-none',
+      },
     },
-    size: {
-      sm: 'gap-2 px-2.5 py-1.5',
-      md: 'gap-2.5 px-3 py-2',
-      lg: 'gap-3 px-4 py-2.5',
+    defaultVariants: {
+      variant: 'dark',
+      size: 'md',
     },
   },
-  defaultVariants: {
-    variant: 'dark',
-    size: 'md',
-  },
-});
+);
 
 const labelTextVariants = cva('font-mono uppercase', {
   variants: {
@@ -31,6 +35,7 @@ const labelTextVariants = cva('font-mono uppercase', {
       sm: 'text-xs',
       md: 'text-sm',
       lg: 'text-base',
+      plain: 'text-sm',
     },
   },
   defaultVariants: {
@@ -43,6 +48,7 @@ const dotSizeMap: Record<string, string> = {
   sm: 'h-2 w-2',
   md: 'h-[10px] w-[10px]',
   lg: 'h-3 w-3',
+  plain: 'h-[10px] w-[10px]',
 };
 
 export interface LabelProps

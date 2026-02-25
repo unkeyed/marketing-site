@@ -1,5 +1,6 @@
-const CONTAINER =
-  'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+import { Label } from '@/components/ui/label';
+
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IProductionItem {
   title: string;
@@ -13,23 +14,17 @@ interface IProductionProps {
 
 export default function FeatureProduction({ label, items }: IProductionProps) {
   return (
-    <section className="pt-12 md:pt-[80px]">
+    <section aria-labelledby="production-heading" className="pt-12 md:pt-[80px]">
+      <h2 className="sr-only" id="production-heading">
+        {label}
+      </h2>
       <div className={`${CONTAINER} grid gap-8 lg:grid-cols-[1fr_3fr] lg:gap-0`}>
         <div className="flex items-start pt-[7px]">
-          <div className="flex items-center gap-2.5">
-            <span className="relative h-[10px] w-[10px]">
-              <span className="absolute inset-0 rounded-[2px] bg-blue-glow blur-[5px]" />
-              <span className="absolute inset-0 rounded-[2px] bg-cyan blur-[2px]" />
-              <span className="absolute inset-0 rounded-[2px] bg-cyan" />
-            </span>
-            <h2 className="font-mono text-sm uppercase tracking-[0.42px] text-white">
-              {label}
-            </h2>
-          </div>
+          <Label size="plain">{label}</Label>
         </div>
         <div className="flex flex-col gap-8 md:gap-12 lg:flex-row lg:gap-24">
-          {items.map((item) => (
-            <div className="flex flex-1 gap-5" key={item.title}>
+          {items.map((item, index) => (
+            <div className="flex flex-1 gap-5" key={`${item.title}-${index}`}>
               <div className="flex w-px flex-col self-stretch">
                 <div className="h-[30px] w-px shrink-0 bg-white" />
                 <div className="w-px flex-1 bg-gray-20" />
