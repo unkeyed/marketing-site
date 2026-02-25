@@ -59,7 +59,8 @@ function Nav({ className, items }: IHeaderNavProps) {
                 aria-expanded={isOpen}
                 aria-haspopup="true"
                 className={cn(
-                  'inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-tight transition-colors',
+                  'relative inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-tight transition-colors',
+                  isOpen && 'after:absolute after:left-0 after:top-full after:h-4.5 after:w-full',
                   isHovered ? 'text-gray-30' : 'text-background',
                 )}
               >
@@ -75,7 +76,7 @@ function Nav({ className, items }: IHeaderNavProps) {
 
               <div
                 className={cn(
-                  'absolute top-full left-0 w-82.5 pt-4.5 transition-all duration-200',
+                  'absolute top-full left-0 mt-4.5 w-82.5 transition-all duration-200',
                   isOpen
                     ? 'visible translate-y-0 opacity-100'
                     : 'invisible -translate-y-2 opacity-0',

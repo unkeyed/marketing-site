@@ -141,7 +141,7 @@ export default function HeroVideoFullwidth({
           ))}
           <li className="shrink-0">
             <NextLink
-              className="text-base leading-snug font-normal tracking-[-0.01em] text-gray-60"
+              className="text-base leading-snug font-normal tracking-[-0.01em] text-gray-60 transition-colors hover:text-foreground"
               href={customersLink.href}
             >
               {customersLink.label}
