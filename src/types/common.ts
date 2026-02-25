@@ -8,6 +8,8 @@ import { type TSocialIcons } from '@/components/icons';
 export interface IMenuItem {
   label: string;
   href: Route<string> | URL;
+  description?: string;
+  icon?: string;
   children?: IMenuItem[];
 }
 

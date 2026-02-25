@@ -41,7 +41,7 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
           <Nav className="hidden lg:flex" items={menuItems} />
         </div>
 
-        <div className="hidden items-center gap-16 lg:flex">
+        <nav aria-label="Actions" className="hidden items-center gap-16 lg:flex">
           <div className="flex items-center gap-1">
             <Link href="https://unkey.dev/discord">Discord</Link>
             <Link href="https://github.com/unkeyed/unkey" className="gap-1">
@@ -56,7 +56,7 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
             </Link>
             <Link href="/app/sign-up">Sign Up</Link>
           </div>
-        </div>
+        </nav>
 
         <MobileMenu items={menuItems} />
       </div>
