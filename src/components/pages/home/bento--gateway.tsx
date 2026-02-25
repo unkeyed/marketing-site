@@ -1,11 +1,9 @@
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
-
 import { Label } from '@/components/ui/label';
 
-const CONTAINER =
-  'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IGatewayCard {
   title: string;
@@ -38,7 +36,7 @@ function GatewayCard({
   className,
 }: Omit<IGatewayCard, 'gridClassName'> & { className?: string }) {
   const textContent = useTextBackground ? (
-    <span className="inline box-decoration-clone bg-background px-1.5 py-2 leading-[1.75]">
+    <span className="inline bg-background box-decoration-clone px-1.5 py-2 leading-[1.75]">
       <span className="font-medium text-white">{title}.</span> <span>{body}</span>
     </span>
   ) : (
@@ -67,7 +65,7 @@ function GatewayCard({
     return (
       <div
         className={cn(
-          'relative w-full overflow-hidden border border-gray-20 bg-background',
+          'relative h-full w-full overflow-hidden border border-gray-20 bg-background',
           className,
         )}
       >
@@ -80,7 +78,7 @@ function GatewayCard({
   return (
     <div
       className={cn(
-        'grid w-full grid-rows-[auto_1fr] overflow-hidden border border-gray-20 bg-background',
+        'grid h-full w-full grid-rows-[auto_1fr] overflow-hidden border border-gray-20 bg-background',
         className,
       )}
     >

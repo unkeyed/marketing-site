@@ -32,7 +32,7 @@ function ContentPanel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean
     <li>
       <div
         id={row.id}
-        className="scroll-mt-16 grid min-h-[628px] grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
+        className="grid min-h-[628px] scroll-mt-16 grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
       >
         <div
           className={cn(
@@ -128,21 +128,18 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
     return () => observer.disconnect();
   }, [panels]);
 
-  const handleTabClick = useCallback(
-    (id: string) => {
-      setActiveTab(id);
-      isClickScrolling.current = true;
+  const handleTabClick = useCallback((id: string) => {
+    setActiveTab(id);
+    isClickScrolling.current = true;
 
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => {
-          isClickScrolling.current = false;
-        }, 800);
-      }
-    },
-    [],
-  );
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        isClickScrolling.current = false;
+      }, 800);
+    }
+  }, []);
 
   return (
     <section className="pt-20 md:pt-30 xl:pt-45">
@@ -178,7 +175,7 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
                     className={cn(
                       'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-4 text-base leading-[1.125] font-normal transition-colors sm:text-lg md:text-xl',
                       index === panels.length - 1 && 'border-r',
-                      activeTab === row.id ? 'bg-panel text-white' : 'text-gray-60',
+                      activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
                     )}
                   >
                     {row.tabLabel}
