@@ -14,7 +14,10 @@ interface IProductionProps {
 
 export default function FeatureProduction({ label, items }: IProductionProps) {
   return (
-    <section aria-labelledby="production-heading" className="pt-12 md:pt-[80px]">
+    <section
+      aria-labelledby="production-heading"
+      className="pt-12 pb-20 md:pt-[80px] md:pb-[140px] xl:pb-[200px]"
+    >
       <h2 className="sr-only" id="production-heading">
         {label}
       </h2>

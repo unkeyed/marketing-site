@@ -1,12 +1,10 @@
 import Image from 'next/image';
-import NextLink from 'next/link';
 
 import { cn, splitLeadSentence } from '@/lib/utils';
-
 import { Label } from '@/components/ui/label';
+import { Link } from '@/components/ui/link';
 
-const CONTAINER =
-  'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IPortalCard {
   text: string;
@@ -48,7 +46,7 @@ function PortalCard({
           src={graphic}
         />
       </div>
-      <p className="absolute bottom-8 left-8 right-8 z-10 text-base leading-snug">
+      <p className="relative z-10 mt-auto px-8 pb-8 text-base leading-snug">
         <span className={cn('block', textWidthClass)}>
           <span className="font-medium text-white">{lead}</span>
           {rest ? <span className="text-gray-80"> {rest}</span> : null}
@@ -67,28 +65,18 @@ export default function CardsPortal({
 }: IPortalProps) {
   return (
     <section className="pt-20 md:pt-[140px] xl:pt-[229px]">
-      <div className={cn(CONTAINER, 'flex flex-col gap-8')}>
-        <Label
-          className="h-[35px] w-[220px]"
-          labelClassName="leading-snug tracking-[0.3px]"
-        >
-          AIO Developer Portal
-        </Label>
+      <div className={cn(CONTAINER, 'flex flex-col')}>
+        <Label>AIO Developer Portal</Label>
 
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div className="mt-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <h2 className="max-w-[960px] font-display text-[30px] leading-[1.125] text-white sm:text-[36px] xl:text-[44px]">
             {heading}
-            <span className="block text-[#9194a1]">{subheading}</span>
+            <span className="block text-gray-60">{subheading}</span>
           </h2>
-          <NextLink
-            href={buttonHref}
-            className="h-[44px] w-[139px] bg-white px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-[#040406] lg:mt-14"
-          >
-            {buttonLabel}
-          </NextLink>
+          <Link href={buttonHref}>{buttonLabel}</Link>
         </div>
 
-        <ul className="mt-4 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 xl:mt-[56px] xl:grid-cols-3 xl:gap-0">
+        <ul className="mt-4 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 xl:mt-16 xl:grid-cols-3 xl:gap-0">
           {cards.map((item, index) => (
             <li key={item.graphicAlt}>
               <PortalCard

@@ -27,9 +27,9 @@ export default function SectionScale({
   features,
 }: IScaleProps) {
   return (
-    <section className="relative mt-20 md:mt-[140px] xl:mt-[200px]">
+    <section className="relative py-16 md:py-24 xl:pt-48 xl:pb-51">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]" />
-      <div className={`${CONTAINER} relative py-16 md:py-24 xl:py-[192px]`}>
+      <div className={`${CONTAINER} relative`}>
         <div className="flex flex-col gap-8 lg:flex-row lg:justify-between">
           <div className="flex max-w-[704px] flex-col gap-8">
             <Label variant="light">Scale</Label>
@@ -47,9 +47,9 @@ export default function SectionScale({
           </div>
         </div>
 
-        <ul className="mt-14 grid grid-cols-1 gap-10 sm:grid-cols-2 xl:mt-40 xl:grid-cols-[repeat(4,minmax(0,320px))] xl:justify-between">
+        <ul className="mt-14 grid grid-cols-1 gap-10 sm:grid-cols-2 xl:mt-40 xl:grid-cols-[repeat(4,minmax(0,321px))] xl:justify-between">
           {features.map((item) => (
-            <li className="flex max-w-[320px] flex-col gap-8 xl:gap-[44px]" key={item.title}>
+            <li className="flex max-w-[321px] flex-col gap-8 xl:gap-[44px]" key={item.title}>
               <Image
                 alt={item.title}
                 width={148}
@@ -58,10 +58,10 @@ export default function SectionScale({
                 src={item.icon}
               />
               <div className="flex flex-col gap-5">
-                <h3 className="font-display text-[24px] leading-[1.125] text-background md:text-[28px]">
+                <h3 className="font-display text-2xl leading-[1.125] text-background md:text-[28px]">
                   {item.title}
                 </h3>
-                <p className="text-base leading-snug tracking-[-0.16px] text-gray-30">
+                <p className="text-base leading-snug tracking-[-0.01em] text-gray-30">
                   {item.text}
                 </p>
               </div>
