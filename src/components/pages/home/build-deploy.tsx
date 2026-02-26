@@ -122,8 +122,6 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isClickScrolling.current) return;
-
         for (const entry of entries) {
           if (entry.isIntersecting) {
             intersectingIds.add(entry.target.id);
@@ -131,6 +129,8 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
             intersectingIds.delete(entry.target.id);
           }
         }
+
+        if (isClickScrolling.current) return;
 
         for (const panel of panels) {
           if (intersectingIds.has(panel.id)) {
@@ -151,15 +151,19 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
   const handleTabClick = useCallback((id: string) => {
     setActiveTab(id);
-    isClickScrolling.current = true;
 
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(() => {
-        isClickScrolling.current = false;
-      }, 800);
-    }
+    if (!el) return;
+
+    isClickScrolling.current = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const unlock = () => {
+      isClickScrolling.current = false;
+    };
+    window.addEventListener('scrollend', unlock, { once: true });
+    const fallback = setTimeout(unlock, 1500);
+    window.addEventListener('scrollend', () => clearTimeout(fallback), { once: true });
   }, []);
 
   return (
