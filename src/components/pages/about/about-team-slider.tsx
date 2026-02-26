@@ -29,7 +29,7 @@ const TEAM_SLIDER_ITEMS = [
   },
   {
     id: '4',
-    width: 518,
+    width: 460,
     caption: 'Lunch refuel',
     imageSrc: '/images/about/team/cooking_crew.jpg',
     imageClassName: '',
@@ -53,7 +53,7 @@ const TEAM_SLIDER_ITEMS = [
     width: 384,
     caption: 'James recruiting',
     imageSrc: '/images/about/team/james_fence.jpg',
-    imageClassName: '',
+    imageClassName: 'object-top sm:object-center',
   },
   {
     id: '8',
@@ -81,28 +81,32 @@ const TEAM_SLIDER_ITEMS = [
 export default function AboutTeamSlider() {
   return (
     <Carousel
-      className="relative mt-16 w-full"
+      className="relative mt-10 w-full md:mt-16"
       opts={{ loop: true, align: 'center' }}
       aria-label="Team photos"
     >
-      <CarouselContent className="-ml-0 gap-5 pr-5 pl-5">
+      <CarouselContent className="-ml-0 gap-4 pr-5 pl-5 md:gap-5">
         {TEAM_SLIDER_ITEMS.map((item) => (
           <CarouselItem
             key={item.id}
-            className={cn('flex basis-auto flex-col gap-[12px] pl-0')}
-            style={{ minWidth: item.width }}
+            className={cn(
+              'flex basis-auto flex-col gap-3 pl-0',
+              'w-[calc(100vw-2.5rem)] min-w-0 sm:w-[var(--item-width)] md:min-w-[var(--item-width)]',
+            )}
+            style={{ ['--item-width' as string]: `${item.width}px` }}
           >
-            <figure className="flex flex-col gap-[12px]">
+            <figure className="flex w-full flex-col gap-3">
               <div
-                className={cn('relative h-96 shrink-0 overflow-hidden rounded-lg bg-muted')}
-                style={{ width: item.width }}
+                className={cn(
+                  'relative h-64 w-full shrink-0 overflow-hidden rounded-lg bg-muted md:h-80 xl:h-96',
+                )}
               >
                 <Image
                   src={item.imageSrc}
                   alt={item.caption}
                   fill
                   className={cn('object-cover', item.imageClassName)}
-                  sizes={`${item.width}px`}
+                  sizes="(max-width: 768px) calc(100vw - 2.5rem), 460px"
                 />
               </div>
               <figcaption className="font-mono text-[15px] leading-[1.375] font-medium text-muted-foreground">

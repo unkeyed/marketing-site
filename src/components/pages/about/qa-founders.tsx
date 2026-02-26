@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24';
 
 export interface IAboutQaItem {
   question: string;
@@ -25,14 +25,14 @@ interface IAboutQaFoundersProps {
 
 export default function AboutQaFounders({ qaItems, quote, founders }: IAboutQaFoundersProps) {
   return (
-    <div className={cn(CONTAINER, 'pt-16 pb-20 md:pt-20 xl:pt-41 xl:pb-49')}>
-      <div className="flex justify-between px-24">
-        <dl className="flex max-w-160 flex-col gap-9.5">
+    <div className={cn(CONTAINER, 'pt-12 pb-16 md:pt-20 md:pb-20 xl:pt-41 xl:pb-49')}>
+      <div className="flex flex-col gap-10 xl:flex-row xl:justify-between xl:gap-16">
+        <dl className="flex max-w-160 flex-col gap-8 md:gap-9.5">
           {qaItems.map((item, index) => (
-            <div key={index} className="flex flex-col gap-5">
+            <div key={index} className="flex flex-col gap-4 md:gap-5">
               <div className="h-px w-full shrink-0 bg-gray-20" aria-hidden />
               <div className="grid grid-cols-1 gap-x-16 gap-y-0.5 xl:grid-cols-[224px_1fr]">
-                <dt className="font-sans text-2xl leading-[1.375] font-normal tracking-[-0.48px] text-foreground">
+                <dt className="font-sans text-xl leading-[1.375] font-normal tracking-[-0.48px] text-foreground md:text-2xl">
                   {item.question}
                 </dt>
                 <dd className="font-sans text-[15px] leading-[1.5] font-normal tracking-[-0.375px] text-gray-70">
@@ -43,11 +43,11 @@ export default function AboutQaFounders({ qaItems, quote, founders }: IAboutQaFo
           ))}
         </dl>
 
-        <div className="flex max-w-128 flex-col gap-20">
-          <blockquote className="text-[32px] leading-[1.25] font-normal text-foreground">
+        <div className="flex max-w-127 flex-col gap-12 md:gap-20">
+          <blockquote className="font-sans text-xl leading-[1.25] font-normal text-foreground md:text-2xl xl:text-[32px]">
             {quote}
           </blockquote>
-          <div className="flex flex-wrap gap-10 xl:gap-16">
+          <div className="flex flex-wrap gap-8 md:gap-10 xl:gap-16">
             {founders.map((founder) => (
               <div key={founder.name} className="flex items-start gap-4.5">
                 <Image

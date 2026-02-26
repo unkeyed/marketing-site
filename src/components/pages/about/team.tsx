@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import AboutTeamSlider from './about-team-slider';
 import AboutQaFounders, { IAboutFounder, IAboutQaItem } from './qa-founders';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)]';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24';
 
 interface IAboutTeamSectionProps {
   title: React.ReactNode;
@@ -26,11 +26,11 @@ export default function AboutTeamSection({
   founders,
 }: IAboutTeamSectionProps) {
   return (
-    <section className="pt-20 md:pt-32">
-      <div className={cn(CONTAINER, 'flex flex-col px-24')}>
+    <section className="pt-12 md:pt-32">
+      <div className={cn(CONTAINER, 'flex flex-col')}>
         <Label>{badgeLabel}</Label>
 
-        <div className="mt-7">
+        <div className="mt-5 md:mt-8">
           <h2 className="font-heading text-[30px] leading-[1.125] whitespace-pre-wrap text-white sm:text-[40px] xl:text-[44px]">
             {title}
             <br />

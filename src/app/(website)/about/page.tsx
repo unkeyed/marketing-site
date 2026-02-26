@@ -11,7 +11,7 @@ export const metadata = getMetadata({
   pathname: '/about',
 });
 
-const сontent = {
+const contentData = {
   title: (
     <>
       {'API management\r\nfor '}
@@ -116,8 +116,16 @@ const сontent = {
     description:
       "Unkey is supported by leading investors and founders who've built and scaled some of today's most trusted developer platforms.",
     list: [
-      { name: 'Timothy Chen', role: 'GP, Essence VC', imageSrc: '/images/about/investors/Timothy_Chen.png' },
-      { name: 'Liu Jiang', role: 'GP, Sunflower Capital', imageSrc: '/images/about/investors/Liu_Jiang.png' },
+      {
+        name: 'Timothy Chen',
+        role: 'GP, Essence VC',
+        imageSrc: '/images/about/investors/Timothy_Chen.png',
+      },
+      {
+        name: 'Liu Jiang',
+        role: 'GP, Sunflower Capital',
+        imageSrc: '/images/about/investors/Liu_Jiang.png',
+      },
       {
         name: 'Allison Pickens',
         role: 'GP, The New Normal Fund',
@@ -133,13 +141,21 @@ const сontent = {
         role: 'Former CEO, GitHub',
         imageSrc: '/images/about/investors/Tom_Preston-Werner.png',
       },
-      { name: 'Theo Browne', role: 'CEO, Ping Labs', imageSrc: '/images/about/investors/Theo_Browne.png' },
+      {
+        name: 'Theo Browne',
+        role: 'CEO, Ping Labs',
+        imageSrc: '/images/about/investors/Theo_Browne.png',
+      },
       {
         name: 'Paul Copplestone',
         role: 'CEO, Supabase',
         imageSrc: '/images/about/investors/Paul_Copplestone.png',
       },
-      { name: 'Ant Wilson', role: 'CTO, Supabase', imageSrc: '/images/about/investors/Ant_Wilson.png' },
+      {
+        name: 'Ant Wilson',
+        role: 'CTO, Supabase',
+        imageSrc: '/images/about/investors/Ant_Wilson.png',
+      },
       {
         name: 'Rory Wilding',
         role: 'Head of Growth, Supabase',
@@ -165,7 +181,7 @@ const сontent = {
     cards: [
       {
         href: '#',
-        imageSrc: '/images/about/blog/flow_editor.png',
+        imageSrc: '/images/about/blog/flow_editor.jpg',
         imageAlt: 'Building a flow editor',
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -173,7 +189,7 @@ const сontent = {
       },
       {
         href: '#',
-        imageSrc: '/images/about/blog/serverless.png',
+        imageSrc: '/images/about/blog/serverless.jpg',
         imageAlt: "Why we're leaving serverless",
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -181,7 +197,7 @@ const сontent = {
       },
       {
         href: '#',
-        imageSrc: '/images/about/blog/no_signup.png',
+        imageSrc: '/images/about/blog/no_signup.jpg',
         imageAlt: 'No Signup Required',
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -201,11 +217,15 @@ const сontent = {
 export default function AboutPage() {
   return (
     <main>
-      <AboutHero title={сontent.title} description={сontent.description} values={сontent.values} />
-      <AboutTeamSection {...сontent.team} />
-      <AboutInvestors {...сontent.investors} />
-      <AboutBlog {...сontent.blog} />
-      <CtaFullbleedImage {...сontent.cta} />
+      <AboutHero
+        title={contentData.title}
+        description={contentData.description}
+        values={contentData.values}
+      />
+      <AboutTeamSection {...contentData.team} />
+      <AboutInvestors {...contentData.investors} />
+      <AboutBlog {...contentData.blog} />
+      <CtaFullbleedImage {...contentData.cta} />
     </main>
   );
 }

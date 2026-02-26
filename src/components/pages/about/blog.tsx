@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-24';
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24';
 
 export interface IAboutBlogCard {
   href: string;
@@ -39,7 +39,7 @@ function BlogCard({ card }: { card: IAboutBlogCard }) {
           alt={card.imageAlt}
           fill
           className="object-cover"
-          sizes="(max-width: 1024px) 100vw, 33vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -63,21 +63,24 @@ function BlogCard({ card }: { card: IAboutBlogCard }) {
 export default function AboutBlog({ label, heading, ctaLabel, ctaHref, cards }: IAboutBlogProps) {
   return (
     <section className="border-t border-gray-20">
-      <div className={cn(CONTAINER, 'py-16 md:py-20 xl:pt-50 xl:pb-0')}>
-        <div className="flex flex-col gap-10 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
-          <div className="flex flex-col gap-8">
+      <div className={cn(CONTAINER, 'py-12 md:py-20 xl:pt-50 xl:pb-0')}>
+        <div className="flex flex-col gap-8 md:gap-10 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
+          <div className="flex flex-col gap-6 md:gap-8">
             <Label>{label}</Label>
             <h2 className="max-w-[767px] font-heading text-3xl leading-[1.125] text-foreground sm:text-4xl xl:text-[44px]">
               {heading}
             </h2>
           </div>
-          <Button asChild className="shrink-0 rounded-md px-5 py-2.5 text-base">
+          <Button
+            asChild
+            className="w-full shrink-0 rounded-md px-5 py-2.5 text-base sm:w-fit xl:w-auto"
+          >
             <NextLink href={ctaHref}>{ctaLabel}</NextLink>
           </Button>
         </div>
 
         <ul
-          className="mt-12 grid gap-8 sm:grid-cols-2 xl:mt-16 xl:grid-cols-3 xl:gap-8"
+          className="mt-10 grid gap-6 sm:gap-8 md:grid-cols-2 xl:mt-16 xl:grid-cols-3 xl:gap-8"
           role="list"
         >
           {cards.map((card) => (
