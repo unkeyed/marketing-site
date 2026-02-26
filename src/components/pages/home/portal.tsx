@@ -24,7 +24,7 @@ function PortalCard({
   text,
   graphic,
   graphicAlt,
-  textWidthClass = 'max-w-[374px]',
+  textWidthClass = 'max-w-93.5',
   className,
 }: IPortalCard & { className?: string }) {
   const { lead, rest } = splitLeadSentence(text);
@@ -63,7 +63,7 @@ export default function Portal({
   cards,
 }: IPortalProps) {
   return (
-    <section className="pt-20 md:pt-35 xl:pt-[229px]">
+    <section className="pt-20 pb-20 md:pt-35 md:pb-35 xl:pt-57.25 xl:pb-50">
       <Container className="flex flex-col">
         <Label>AIO Developer Portal</Label>
 

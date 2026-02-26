@@ -21,23 +21,23 @@ export default function Production({ label, items }: IProductionProps) {
         {label}
       </h2>
       <Container className="grid gap-8 lg:grid-cols-[1fr_3fr] lg:gap-0">
-        <div className="flex items-start pt-[7px]">
+        <div className="flex items-start pt-1.75">
           <Label size="plain">{label}</Label>
         </div>
-        <div className="flex flex-col gap-8 sm:gap-10 md:gap-12 lg:flex-row lg:gap-24">
+        <ul className="flex flex-col gap-8 sm:gap-10 md:gap-12 lg:flex-row lg:gap-24">
           {items.map((item, index) => (
-            <div className="flex flex-1 gap-5" key={`${item.title}-${index}`}>
+            <li className="flex flex-1 gap-5" key={`${item.title}-${index}`}>
               <div className="flex w-px flex-col self-stretch">
-                <div className="h-[30px] w-px shrink-0 bg-white" />
+                <div className="h-7.5 w-px shrink-0 bg-white" />
                 <div className="w-px flex-1 bg-gray-20" />
               </div>
               <div className="flex flex-col gap-2 text-lg md:text-xl">
                 <p className="leading-normal font-medium text-white">{item.title}</p>
                 <p className="leading-snug text-gray-70">{item.text}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </Container>
     </section>
   );

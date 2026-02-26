@@ -27,15 +27,15 @@ export default function Observe({
   columns,
 }: IObserveProps) {
   return (
-    <section className="mt-20 md:mt-35 xl:mt-50">
+    <section className="pt-20 md:pt-35 xl:pt-50">
       <Container>
-        <div className="relative h-[460px] sm:h-[500px] md:h-130 xl:h-158">
-          <div className="absolute top-0 left-0 z-[1] h-[170px] w-full bg-background sm:h-[188px] md:h-50 xl:h-[187px] xl:max-w-240" />
-          <div className="relative z-10 flex h-[170px] w-full flex-col gap-5 pb-4 sm:h-[188px] sm:gap-6 sm:pb-5 md:h-50 xl:h-[187px] xl:max-w-240 xl:gap-8">
+        <div className="relative h-115 sm:h-125 md:h-130 xl:h-158">
+          <div className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240" />
+          <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:gap-6 sm:pb-5 md:h-50 xl:h-46.75 xl:max-w-240 xl:gap-8">
             <Label>Observe</Label>
             <h2 className="max-w-240 font-display text-[30px] leading-[1.125] text-white sm:text-[36px] xl:text-[44px]">
               {heading}
-              <span className="block text-[#9194a1]">{subheading}</span>
+              <span className="block text-gray-60">{subheading}</span>
             </h2>
           </div>
           <Image
@@ -43,7 +43,7 @@ export default function Observe({
             width={3072}
             height={1202}
             sizes="100vw"
-            className="absolute top-[108px] left-0 z-0 h-[352px] w-full object-cover object-[74%_50%] sm:top-[122px] sm:h-[378px] md:top-15 md:h-115 lg:top-13 lg:h-[470px] lg:object-center xl:top-[1px] xl:h-158"
+            className="absolute top-27 left-0 z-0 h-88 w-full object-cover object-[74%_50%] sm:top-30.5 sm:h-94.5 md:top-15 md:h-115 lg:top-13 lg:h-117.5 lg:object-center xl:top-[1px] xl:h-158"
             src={dashboardImage}
           />
         </div>
@@ -54,7 +54,7 @@ export default function Observe({
               <li className="max-w-96" key={column.lead}>
                 <p>
                   <span className="font-medium text-white">{column.lead} </span>
-                  <span className="text-[#9194a1]">{column.rest}</span>
+                  <span className="text-gray-60">{column.rest}</span>
                 </p>
               </li>
             ))}

@@ -32,11 +32,11 @@ export default function Scale({
         <div className="flex flex-col gap-7 sm:gap-8 md:gap-9 lg:flex-row lg:justify-between">
           <div className="flex max-w-176 flex-col gap-6 sm:gap-7 md:gap-8">
             <Label variant="light">Scale</Label>
-            <h2 className="font-display text-[30px] leading-[1.2] text-balance text-background sm:text-[36px] md:text-[40px] lg:text-[44px] lg:leading-[1.25] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-[27px] [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:pr-1 [&_mark]:pb-2 [&_mark]:pl-1 [&_mark]:text-black md:[&_mark]:h-[38px] lg:[&_mark]:h-[42px]">
+            <h2 className="font-display text-[30px] leading-[1.2] text-balance text-background sm:text-[36px] md:text-[40px] lg:text-[44px] lg:leading-[1.25] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-6.75 [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:pr-1 [&_mark]:pb-2 [&_mark]:pl-1 [&_mark]:text-black md:[&_mark]:h-9.5 lg:[&_mark]:h-10.5">
               {heading}
             </h2>
           </div>
-          <div className="flex max-w-[30rem] flex-col gap-4 sm:max-w-[34rem] md:max-w-[37rem] md:gap-4.5 lg:max-w-104 lg:pt-[75px]">
+          <div className="flex max-w-[30rem] flex-col gap-4 sm:max-w-[34rem] md:max-w-[37rem] md:gap-4.5 lg:max-w-104 lg:pt-18.75">
             <p className="text-base leading-snug tracking-[-0.01em] text-gray-20 sm:text-lg md:text-xl">
               {description}
             </p>

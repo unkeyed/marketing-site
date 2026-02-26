@@ -40,12 +40,12 @@ function Panel({
       <div
         id={row.id}
         style={{ scrollMarginTop: stickyHeight }}
-        className="grid min-h-[560px] grid-cols-1 sm:min-h-157 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
+        className="grid min-h-140 grid-cols-1 sm:min-h-157 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
       >
         <div
           className={cn(
             'flex flex-col border border-gray-20 px-5 py-8 sm:py-10 md:px-10 md:py-12 lg:border-r-0 lg:px-16 lg:py-0 xl:px-24',
-            row.textTopClass ?? 'lg:pt-[137px]',
+            row.textTopClass ?? 'lg:pt-34.25',
           )}
         >
           <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
@@ -56,7 +56,7 @@ function Panel({
             <p className="max-w-md text-[15px] leading-snug text-gray-90 sm:text-base">{row.body}</p>
           </div>
           {row.hasLogos && row.logos && (
-            <div className="mt-8 flex flex-wrap items-end gap-4 sm:mt-10 sm:gap-6 md:mt-12 lg:mt-24 xl:mt-[183px]">
+            <div className="mt-8 flex flex-wrap items-end gap-4 sm:mt-10 sm:gap-6 md:mt-12 lg:mt-24 xl:mt-45.75">
               {row.logos.map((logo) => (
                 <Image
                   key={logo.alt}
@@ -178,12 +178,12 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
               <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
                 {heading}
               </h2>
-              <p className="max-w-104 text-lg leading-snug tracking-[-0.01em] text-gray-70 sm:text-[20px] md:text-xl lg:mt-[31px] lg:ml-auto">
+              <p className="max-w-104 text-lg leading-snug tracking-[-0.01em] text-gray-70 sm:text-[20px] md:text-xl lg:mt-7.75 lg:ml-auto">
                 {description}
               </p>
             </div>
 
-            <div className="mx-[-20px] mt-8 h-16 overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:mx-[-32px] md:mt-12 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
+            <div className="-mx-5 mt-8 h-16 overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
               <ul
                 role="tablist"
                 aria-label="Build and deploy steps"
@@ -212,7 +212,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
           </div>
 
           {panels.length > 1 && (
-            <ul className="-mt-px mx-[-20px] list-none md:mx-[-32px] xl:mx-0">
+            <ul className="-mt-px -mx-5 list-none md:-mx-8 xl:mx-0">
               {panels.slice(0, -1).map((row) => (
                 <Panel
                   key={row.id}
@@ -226,7 +226,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
         </div>
 
         {panels.length > 0 && (
-          <ul className="-mt-px mx-[-20px] list-none md:mx-[-32px] xl:mx-0">
+          <ul className="-mt-px -mx-5 list-none md:-mx-8 xl:mx-0">
             <Panel
               row={panels[panels.length - 1]}
               isLast

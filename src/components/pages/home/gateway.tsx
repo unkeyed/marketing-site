@@ -54,7 +54,7 @@ function Card({
 
   const textBlock = (
     <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
-      <span className={`block ${textWidthClass}`}>{textContent}</span>
+      <span className={cn('block', textWidthClass)}>{textContent}</span>
     </p>
   );
 
@@ -88,10 +88,8 @@ function Card({
         className,
       )}
     >
-      <>
-        {textBlock}
-        {imageBlock}
-      </>
+      {textBlock}
+      {imageBlock}
     </div>
   );
 }
