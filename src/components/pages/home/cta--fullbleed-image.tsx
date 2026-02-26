@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import NextLink from 'next/link';
 
-const CONTAINER =
-  'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+import { Link } from '@/components/ui/link';
+
+const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface ICtaFullbleedProps {
   heading: string;
@@ -28,15 +28,12 @@ export default function CtaFullbleedImage({
         <h2 className="max-w-[576px] font-display text-[28px] leading-[1.125] text-white md:text-[32px]">
           {heading}
         </h2>
-        <p className="max-w-[576px] font-display text-[28px] leading-[1.125] text-[#9194a1] md:text-[32px]">
+        <p className="max-w-[576px] font-display text-[28px] leading-[1.125] text-gray-60 md:text-[32px]">
           {subheading}
         </p>
-        <NextLink
-          href={buttonHref}
-          className="mt-auto inline-flex h-[44px] w-[134px] items-center justify-center bg-white px-5 py-3.5 text-base leading-none font-medium tracking-[-0.4px] text-[#040406]"
-        >
+        <Link href={buttonHref} className="mt-auto w-fit">
           {buttonLabel}
-        </NextLink>
+        </Link>
       </div>
     </section>
   );
