@@ -1,21 +1,13 @@
-import { Inter } from 'next/font/google';
-import NextLink from 'next/link';
 import { MENUS } from '@/constants/menus';
 import { Providers } from '@/contexts';
 
-import { Button } from '@/components/ui/button';
+import { Link } from '@/components/ui/link';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 
-const inter = Inter({
-  weight: ['400', '500', '600'],
-  subsets: ['latin'],
-  variable: '--font-inter',
-});
-
 export default function NotFound() {
   return (
-    <body className={`flex min-h-svh flex-col bg-background ${inter.variable} font-sans antialiased`}>
+    <div className="flex min-h-svh flex-col bg-background">
       <Providers>
         <Header menuItems={MENUS.header} />
         <main className="flex grow">
@@ -29,14 +21,14 @@ export default function NotFound() {
                 We know this isn&apos;t where you intended to land, but we hope you have some fun
                 while you&apos;re here.
               </p>
-              <Button className="mt-6 xl:mt-8" asChild>
-                <NextLink href="/">Go to homepage</NextLink>
-              </Button>
+              <Link className="mt-6 xl:mt-8" href="/">
+                Go to homepage
+              </Link>
             </div>
           </section>
         </main>
         <Footer />
       </Providers>
-    </body>
+    </div>
   );
 }

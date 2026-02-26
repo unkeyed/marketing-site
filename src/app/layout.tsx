@@ -1,4 +1,11 @@
 import '@/styles/globals.css';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
 
 export default function RootLayout({
   children,
@@ -11,7 +18,7 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/ido5ixw.css" />
       </head>
-      {children}
+      <body className={`bg-background ${inter.variable} font-sans antialiased`}>{children}</body>
     </html>
   );
 }
