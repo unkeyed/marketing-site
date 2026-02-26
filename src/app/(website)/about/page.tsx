@@ -1,9 +1,11 @@
+import { homeContentData } from '@/constants/home';
+
 import { getMetadata } from '@/lib/get-metadata';
 import Blog from '@/components/pages/about/blog';
 import Hero from '@/components/pages/about/hero';
 import Investors from '@/components/pages/about/investors';
 import TeamSection from '@/components/pages/about/team';
-import CtaFullbleedImage from '@/components/pages/home/cta--fullbleed-image';
+import Cta from '@/components/pages/home/cta';
 
 export const metadata = getMetadata({
   title: 'About',
@@ -200,13 +202,6 @@ const contentData = {
       },
     ],
   },
-  cta: {
-    heading: 'Turn your API stack into one workflow.',
-    subheading: 'Start for free, integrate in minutes, and scale when you need to.',
-    buttonLabel: 'Start for free',
-    buttonHref: '/placeholder',
-    backgroundImage: '/images/home/cta/visual.png',
-  },
 };
 
 export default function AboutPage() {
@@ -220,7 +215,7 @@ export default function AboutPage() {
       <TeamSection {...contentData.team} />
       <Investors {...contentData.investors} />
       <Blog {...contentData.blog} />
-      <CtaFullbleedImage {...contentData.cta} />
+      <Cta {...homeContentData.cta} />
     </main>
   );
 }

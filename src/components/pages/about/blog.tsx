@@ -61,7 +61,7 @@ function BlogCard({ card }: { card: IBlogCard }) {
 export default function Blog({ label, heading, ctaLabel, ctaHref, cards }: IBlogProps) {
   return (
     <section className="border-t border-gray-20">
-      <div className="container py-12 md:py-20 xl:pt-50 xl:pb-0">
+      <div className="container py-12 md:py-20 xl:pt-50 xl:pb-0 xl:pb-50">
         <div className="flex flex-col gap-8 md:gap-10 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
           <div className="flex flex-col gap-6 md:gap-8">
             <Label>{label}</Label>
