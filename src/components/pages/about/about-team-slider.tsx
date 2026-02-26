@@ -7,18 +7,25 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 
 const TEAM_SLIDER_ITEMS = [
   {
-    id: '1',
-    width: 460,
-    caption: 'Cooking breakfast',
-    imageSrc: '/images/about/team/breakfast.jpg',
+    id: '7',
+    width: 340,
+    caption: 'James recruiting',
+    imageSrc: '/images/about/team/james_fence.jpg',
+    imageClassName: 'object-top sm:object-center',
+  },
+  {
+    id: '4',
+    width: 518,
+    caption: 'Lunch refuel',
+    imageSrc: '/images/about/team/cooking_crew.jpg',
     imageClassName: '',
   },
   {
-    id: '2',
-    width: 384,
-    caption: 'Art intensifies',
-    imageSrc: '/images/about/team/art_intensifies.jpg',
-    imageClassName: '',
+    id: '9',
+    width: 300,
+    caption: 'CEO + CTO',
+    imageSrc: '/images/about/team/mike_morning_neck_exercise.jpg',
+    imageClassName: 'object-left',
   },
   {
     id: '3',
@@ -27,13 +34,7 @@ const TEAM_SLIDER_ITEMS = [
     imageSrc: '/images/about/team/dom_thinking.jpg',
     imageClassName: '',
   },
-  {
-    id: '4',
-    width: 460,
-    caption: 'Lunch refuel',
-    imageSrc: '/images/about/team/cooking_crew.jpg',
-    imageClassName: '',
-  },
+
   {
     id: '5',
     width: 460,
@@ -49,13 +50,6 @@ const TEAM_SLIDER_ITEMS = [
     imageClassName: '',
   },
   {
-    id: '7',
-    width: 384,
-    caption: 'James recruiting',
-    imageSrc: '/images/about/team/james_fence.jpg',
-    imageClassName: 'object-top sm:object-center',
-  },
-  {
     id: '8',
     width: 384,
     caption: 'Deep in thought',
@@ -63,17 +57,24 @@ const TEAM_SLIDER_ITEMS = [
     imageClassName: '',
   },
   {
-    id: '9',
-    width: 300,
-    caption: 'CEO + CTO',
-    imageSrc: '/images/about/team/mike_morning_neck_exercise.jpg',
-    imageClassName: 'object-left',
-  },
-  {
     id: '10',
     width: 340,
     caption: 'Caffeinated',
     imageSrc: '/images/about/team/yardwork.jpg',
+    imageClassName: '',
+  },
+  {
+    id: '2',
+    width: 460,
+    caption: 'Art intensifies',
+    imageSrc: '/images/about/team/art_intensifies.jpg',
+    imageClassName: '',
+  },
+  {
+    id: '1',
+    width: 384,
+    caption: 'Cooking breakfast',
+    imageSrc: '/images/about/team/breakfast.jpg',
     imageClassName: '',
   },
 ] as const;
