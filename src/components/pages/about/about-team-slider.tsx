@@ -82,6 +82,7 @@ export default function AboutTeamSlider() {
   return (
     <Carousel
       className="relative mt-10 w-full md:mt-16"
+      tabIndex={0}
       opts={{ loop: true, align: 'center' }}
       aria-label="Team photos"
     >
