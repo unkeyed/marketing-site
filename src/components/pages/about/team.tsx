@@ -31,7 +31,7 @@ export default function AboutTeamSection({
         <Label>{badgeLabel}</Label>
 
         <div className="mt-5 md:mt-8">
-          <h2 className="font-heading text-[30px] leading-[1.125] whitespace-pre-wrap text-white sm:text-[40px] xl:text-[44px]">
+          <h2 className="font-display text-[30px] leading-[1.125] whitespace-pre-wrap text-white sm:text-[40px] xl:text-[44px]">
             {title}
             <br />
             <span className="text-gray-60">{subtitle}</span>

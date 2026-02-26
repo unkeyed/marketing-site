@@ -209,7 +209,7 @@
   }
 
   :where(:focus-visible) {
-    @apply focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2;
+    @apply focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-hidden;
   }
   /*
     Apply focus ring and rounded styles to all <a> elements without a class.

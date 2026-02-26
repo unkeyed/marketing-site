@@ -32,7 +32,7 @@ export default function AboutInvestors({
         <div className="flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
           <div className="flex flex-col gap-5 md:gap-7">
             <Label variant="light">{label}</Label>
-            <h2 className="font-heading text-3xl leading-[1.125] text-background sm:text-4xl xl:max-w-[640px] xl:text-[44px] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-[1em] [&_mark]:min-h-[0.6em] [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:px-1.5 [&_mark]:pb-0.5 [&_mark]:text-black">
+            <h2 className="font-display text-3xl leading-[1.125] text-background sm:text-4xl xl:max-w-[640px] xl:text-[44px] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-[1em] [&_mark]:min-h-[0.6em] [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:px-1.5 [&_mark]:pb-0.5 [&_mark]:text-black">
               {heading}
             </h2>
           </div>

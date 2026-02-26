@@ -67,7 +67,7 @@ export default function AboutBlog({ label, heading, ctaLabel, ctaHref, cards }: 
         <div className="flex flex-col gap-8 md:gap-10 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
           <div className="flex flex-col gap-6 md:gap-8">
             <Label>{label}</Label>
-            <h2 className="max-w-[767px] font-heading text-3xl leading-[1.125] text-foreground sm:text-4xl xl:text-[44px]">
+            <h2 className="max-w-[767px] font-display text-3xl leading-[1.125] text-foreground sm:text-4xl xl:text-[44px]">
               {heading}
             </h2>
           </div>
