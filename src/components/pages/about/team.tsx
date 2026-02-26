@@ -1,45 +1,43 @@
-import * as React from 'react';
+import { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 
-import AboutTeamSlider from './about-team-slider';
-import AboutQaFounders, { IAboutFounder, IAboutQaItem } from './qa-founders';
+import QaFounders, { IFounder, IQaItem } from './qa-founders';
+import TeamSlider from './team-slider';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24';
-
-interface IAboutTeamSectionProps {
-  title: React.ReactNode;
-  subtitle: React.ReactNode;
+interface ITeamSectionProps {
+  title: ReactNode;
+  subtitle: ReactNode;
   badgeLabel: string;
-  qaItems: IAboutQaItem[];
-  quote: React.ReactNode;
-  founders: IAboutFounder[];
+  qaItems: IQaItem[];
+  quote: ReactNode;
+  founders: IFounder[];
 }
 
-export default function AboutTeamSection({
+export default function TeamSection({
   title,
   subtitle,
   badgeLabel,
   qaItems,
   quote,
   founders,
-}: IAboutTeamSectionProps) {
+}: ITeamSectionProps) {
   return (
     <section className="pt-12 md:pt-32">
-      <div className={cn(CONTAINER, 'flex flex-col')}>
+      <div className="container flex flex-col">
         <Label>{badgeLabel}</Label>
 
         <div className="mt-5 md:mt-8">
-          <h2 className="font-display text-[30px] leading-[1.125] whitespace-pre-wrap text-white sm:text-[40px] xl:text-[44px]">
+          <h2 className="font-display text-[30px] leading-[1.125] whitespace-pre-wrap text-foreground sm:text-[40px] xl:text-[44px]">
             {title}
             <br />
             <span className="text-gray-60">{subtitle}</span>
           </h2>
         </div>
       </div>
-      <AboutTeamSlider />
-      <AboutQaFounders qaItems={qaItems} quote={quote} founders={founders} />
+      <TeamSlider />
+      <QaFounders qaItems={qaItems} quote={quote} founders={founders} />
     </section>
   );
 }

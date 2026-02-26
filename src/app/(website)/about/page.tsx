@@ -1,8 +1,8 @@
 import { getMetadata } from '@/lib/get-metadata';
-import AboutBlog from '@/components/pages/about/blog';
-import AboutHero from '@/components/pages/about/hero';
-import AboutInvestors from '@/components/pages/about/investors';
-import AboutTeamSection from '@/components/pages/about/team';
+import Blog from '@/components/pages/about/blog';
+import Hero from '@/components/pages/about/hero';
+import Investors from '@/components/pages/about/investors';
+import TeamSection from '@/components/pages/about/team';
 import CtaFullbleedImage from '@/components/pages/home/cta--fullbleed-image';
 
 export const metadata = getMetadata({
@@ -212,14 +212,14 @@ const contentData = {
 export default function AboutPage() {
   return (
     <main>
-      <AboutHero
+      <Hero
         title={contentData.title}
         description={contentData.description}
         values={contentData.values}
       />
-      <AboutTeamSection {...contentData.team} />
-      <AboutInvestors {...contentData.investors} />
-      <AboutBlog {...contentData.blog} />
+      <TeamSection {...contentData.team} />
+      <Investors {...contentData.investors} />
+      <Blog {...contentData.blog} />
       <CtaFullbleedImage {...contentData.cta} />
     </main>
   );

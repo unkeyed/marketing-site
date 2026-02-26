@@ -6,9 +6,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24';
-
-export interface IAboutBlogCard {
+export interface IBlogCard {
   href: string;
   imageSrc: string;
   imageAlt: string;
@@ -18,20 +16,20 @@ export interface IAboutBlogCard {
   authorAvatars?: string[];
 }
 
-export interface IAboutBlogProps {
+export interface IBlogProps {
   label: string;
   heading: ReactNode;
   ctaLabel: string;
   ctaHref: string;
-  cards: IAboutBlogCard[];
+  cards: IBlogCard[];
 }
 
-function BlogCard({ card }: { card: IAboutBlogCard }) {
+function BlogCard({ card }: { card: IBlogCard }) {
   return (
     <NextLink href={card.href} className="group flex min-w-0 flex-1 flex-col gap-3">
       <div
         className={cn(
-          'relative aspect-[448/252] w-full overflow-hidden rounded-md border border-gray-20 bg-gray-8',
+          'relative aspect-[448/252] w-full overflow-hidden border border-gray-20 bg-gray-8',
         )}
       >
         <Image
@@ -60,10 +58,10 @@ function BlogCard({ card }: { card: IAboutBlogCard }) {
   );
 }
 
-export default function AboutBlog({ label, heading, ctaLabel, ctaHref, cards }: IAboutBlogProps) {
+export default function Blog({ label, heading, ctaLabel, ctaHref, cards }: IBlogProps) {
   return (
     <section className="border-t border-gray-20">
-      <div className={cn(CONTAINER, 'py-12 md:py-20 xl:pt-50 xl:pb-0')}>
+      <div className="container py-12 md:py-20 xl:pt-50 xl:pb-0">
         <div className="flex flex-col gap-8 md:gap-10 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
           <div className="flex flex-col gap-6 md:gap-8">
             <Label>{label}</Label>
@@ -73,7 +71,7 @@ export default function AboutBlog({ label, heading, ctaLabel, ctaHref, cards }: 
           </div>
           <Button
             asChild
-            className="w-full shrink-0 rounded-md px-5 py-2.5 text-base sm:w-fit xl:w-auto"
+            className="w-full shrink-0 rounded-none px-5 py-2.5 text-base sm:w-fit xl:w-auto"
           >
             <NextLink href={ctaHref}>{ctaLabel}</NextLink>
           </Button>

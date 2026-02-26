@@ -4,35 +4,28 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24';
-
-export interface IAboutInvestor {
+export interface IInvestor {
   name: string;
   role: string;
   imageSrc: string;
   imageAlt?: string;
 }
 
-export interface IAboutInvestorsProps {
+export interface IInvestorsProps {
   label: string;
   heading: ReactNode;
   description: string;
-  list: IAboutInvestor[];
+  list: IInvestor[];
 }
 
-export default function AboutInvestors({
-  label,
-  heading,
-  description,
-  list,
-}: IAboutInvestorsProps) {
+export default function Investors({ label, heading, description, list }: IInvestorsProps) {
   return (
     <section className="bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]">
-      <div className={cn(CONTAINER, 'py-12 md:py-20 xl:pt-46 xl:pb-49')}>
+      <div className="container py-12 md:py-20 xl:pt-46 xl:pb-49">
         <div className="flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
           <div className="flex flex-col gap-5 md:gap-7">
             <Label variant="light">{label}</Label>
-            <h2 className="font-display text-3xl leading-[1.125] text-background sm:text-4xl xl:max-w-[640px] xl:text-[44px] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-[1em] [&_mark]:min-h-[0.6em] [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:px-1.5 [&_mark]:pb-0.5 [&_mark]:text-black">
+            <h2 className="marked-title font-display text-3xl leading-[1.125] text-background sm:text-4xl xl:max-w-[640px] xl:text-[44px]">
               {heading}
             </h2>
           </div>

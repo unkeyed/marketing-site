@@ -79,7 +79,7 @@ const TEAM_SLIDER_ITEMS = [
   },
 ] as const;
 
-export default function AboutTeamSlider() {
+export default function TeamSlider() {
   return (
     <Carousel
       className="relative mt-10 w-full md:mt-16"
@@ -100,7 +100,7 @@ export default function AboutTeamSlider() {
             <figure className="flex w-full flex-col gap-3">
               <div
                 className={cn(
-                  'relative h-64 w-full shrink-0 overflow-hidden rounded-lg bg-muted md:h-80 xl:h-96',
+                  'relative h-64 w-full shrink-0 overflow-hidden bg-muted md:h-80 xl:h-96',
                 )}
               >
                 <Image
