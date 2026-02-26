@@ -26,8 +26,8 @@ interface IAboutQaFoundersProps {
 export default function AboutQaFounders({ qaItems, quote, founders }: IAboutQaFoundersProps) {
   return (
     <div className={cn(CONTAINER, 'pt-12 pb-16 md:pt-20 md:pb-20 xl:pt-41 xl:pb-49')}>
-      <div className="flex flex-col gap-10 xl:flex-row xl:justify-between xl:gap-16">
-        <dl className="flex max-w-160 flex-col gap-8 md:gap-9.5">
+      <div className="flex flex-col gap-16 lg:flex-row lg:justify-between lg:gap-16">
+        <dl className="flex flex-col gap-8 md:gap-9.5 lg:max-w-120 xl:max-w-160">
           {qaItems.map((item, index) => (
             <div key={index} className="flex flex-col gap-4 md:gap-5">
               <div className="h-px w-full shrink-0 bg-gray-20" aria-hidden />
@@ -43,7 +43,7 @@ export default function AboutQaFounders({ qaItems, quote, founders }: IAboutQaFo
           ))}
         </dl>
 
-        <div className="flex max-w-127 flex-col gap-12 md:gap-20">
+        <div className="flex max-w-127 flex-col gap-12 lg:gap-20">
           <blockquote className="font-sans text-xl leading-[1.25] font-normal text-foreground md:text-2xl xl:text-[32px]">
             {quote}
           </blockquote>

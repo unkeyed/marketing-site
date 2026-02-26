@@ -14,14 +14,10 @@ export const metadata = getMetadata({
 const contentData = {
   title: (
     <>
-      {'API management\r\nfor '}
-      <span className="inline-flex h-[1em] min-h-[0.6em] items-center bg-yellow box-decoration-clone px-1.5 text-background">
-        fast and
-      </span>
-      <br />
-      <span className="inline-flex h-[1em] min-h-[0.6em] items-center bg-yellow box-decoration-clone px-1.5 text-background">
-        scalable
-      </span>
+      {'API management\nfor '}
+      <mark>fast and</mark>
+      {'\n'}
+      <mark>scalable</mark>
       {' software.'}
     </>
   ),
@@ -106,11 +102,9 @@ const contentData = {
     label: 'Investors',
     heading: (
       <>
-        Backed by{' '}
-        <span className="inline-flex h-[1em] min-h-[0.6em] items-center bg-yellow box-decoration-clone px-1.5 text-background">
-          the finest minds
-        </span>{' '}
-        in modern infrastructure
+        {'Backed by '}
+        <mark>the finest minds</mark>
+        {' in modern infrastructure'}
       </>
     ),
     description:
@@ -172,7 +166,8 @@ const contentData = {
     label: 'Blog',
     heading: (
       <>
-        Explore insights, tips, and updates{' '}
+        Explore insights, tips, and updates
+        <br />
         <span className="text-gray-60">directly from our team members.</span>
       </>
     ),
