@@ -141,6 +141,10 @@
   font-feature-settings: 'ss01' 1;
 }
 
+@utility container {
+  @apply mx-auto w-full max-w-[calc(var(--spacing-content)+5rem)] px-5 md:px-8 xl:px-10;
+}
+
 @utility border-gradient {
   @apply border border-transparent bg-origin-border;
   mask:

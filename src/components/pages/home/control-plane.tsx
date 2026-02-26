@@ -1,18 +1,18 @@
+import type { ReactNode } from 'react';
+
 import Image from 'next/image';
 
 import { cn, splitLeadSentence } from '@/lib/utils';
-import Container from '@/components/pages/home/container';
 
 interface IControlPlaneCard {
   id: string;
   title: string;
   body: string;
   graphic: string;
-  graphicAlt: string;
 }
 
 interface IControlPlaneProps {
-  heading: React.ReactNode;
+  heading: ReactNode;
   description: string;
   cards: IControlPlaneCard[];
 }
@@ -21,13 +21,11 @@ function Card({
   title,
   body,
   graphic,
-  graphicAlt,
   className,
 }: {
   title: string;
   body: string;
   graphic: string;
-  graphicAlt: string;
   className?: string;
 }) {
   const { lead, rest } = splitLeadSentence(body);
@@ -42,7 +40,7 @@ function Card({
       <h3 className="font-mono text-[15px] leading-tight text-gray-40">{title}</h3>
       <div className="relative min-h-42.5 flex-1 sm:min-h-52.5">
         <Image
-          alt={graphicAlt}
+          alt=""
           width={320}
           height={293}
           sizes="(min-width: 1280px) 25vw, (min-width: 640px) 300px, 384px"
@@ -61,7 +59,7 @@ function Card({
 export default function ControlPlane({ heading, description, cards }: IControlPlaneProps) {
   return (
     <section className="pt-20 md:pt-30 xl:pt-57.25">
-      <Container className="relative flex flex-col">
+      <div className="container relative flex flex-col">
         <div className="relative sm:pl-8">
           <div
             aria-hidden
@@ -83,7 +81,6 @@ export default function ControlPlane({ heading, description, cards }: IControlPl
                 title={card.title}
                 body={card.body}
                 graphic={card.graphic}
-                graphicAlt={card.graphicAlt}
                 className={cn(
                   'w-full sm:w-75 sm:shrink-0 sm:snap-start md:w-85 xl:w-auto xl:flex-1',
                   index > 0 && 'sm:-ml-px',
@@ -92,7 +89,7 @@ export default function ControlPlane({ heading, description, cards }: IControlPl
             ))}
           </ul>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

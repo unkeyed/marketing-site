@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Viewport } from 'next';
 import config from '@/configs/website-config';
 import { MENUS } from '@/constants/menus';
@@ -13,7 +14,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <Providers>

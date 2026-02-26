@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
+
 import Image from 'next/image';
 
-import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
 
@@ -11,7 +12,7 @@ interface IScaleFeature {
 }
 
 interface IScaleProps {
-  heading: React.ReactNode;
+  heading: ReactNode;
   description: string;
   buttonLabel: string;
   buttonHref: string;
@@ -28,7 +29,7 @@ export default function Scale({
   return (
     <section className="relative py-14 sm:py-18 md:py-22 lg:pt-30 lg:pb-34 xl:pt-48 xl:pb-51">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]" />
-      <Container className="relative">
+      <div className="container relative">
         <div className="flex flex-col gap-7 sm:gap-8 md:gap-9 lg:flex-row lg:justify-between">
           <div className="flex max-w-176 flex-col gap-6 sm:gap-7 md:gap-8">
             <Label variant="light">Scale</Label>
@@ -67,7 +68,7 @@ export default function Scale({
             </li>
           ))}
         </ul>
-      </Container>
+      </div>
     </section>
   );
 }

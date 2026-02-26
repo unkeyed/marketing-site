@@ -1,3 +1,5 @@
+import { createElement, Fragment } from 'react';
+
 export const homeContentData = {
   hero: {
     title: 'The Developer Platform for Modern APIs',
@@ -5,7 +7,6 @@ export const homeContentData = {
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
     primaryCta: { label: 'Start for free', href: '/placeholder' },
     secondaryCta: { label: 'View on GitHub', href: '/placeholder' },
-    background: { src: '/images/home/hero/hero-bg.png' },
     poster: { src: '/images/home/hero/hero-poster.jpg', width: 1920, height: 1080 },
     videos: [
       { src: '/hero-av1.mp4', type: 'video/mp4; codecs="av01.0.05M.08"' },
@@ -65,11 +66,11 @@ export const homeContentData = {
     ],
   },
   controlPlane: {
-    heading: (
-      <>
-        {'Unify your fragmented API stack with a single control plane for\n'}
-        <mark>access and traffic.</mark>
-      </>
+    heading: createElement(
+      Fragment,
+      null,
+      'Unify your fragmented API stack with a single control plane for\n',
+      createElement('mark', null, 'access and traffic.'),
     ),
     description:
       'Stop assembling your API stack piece by piece. Running APIs at scale usually means juggling hosting, gateways, rate limits, and monitoring across multiple vendors.',
@@ -79,28 +80,24 @@ export const homeContentData = {
         title: 'Branch Overview',
         body: 'Faster to ship. Go from code to running API in minutes. Test safely, promote when ready, roll back if needed.',
         graphic: '/images/home/control-plane/branch.png',
-        graphicAlt: 'Branch overview graphic',
       },
       {
         id: 'keys',
         title: 'Manage API Keys',
         body: 'Safer by default. Protect every endpoint with keys, rate limits, and instant access revocation out of the box.',
         graphic: '/images/home/control-plane/keys.png',
-        graphicAlt: 'API keys graphic',
       },
       {
         id: 'control',
         title: 'Control Plane',
         body: 'Simpler to run. One platform for deployments, gateways, and observability.',
         graphic: '/images/home/control-plane/control.png',
-        graphicAlt: 'Control plane graphic',
       },
       {
         id: 'usage',
         title: 'Usage 30 Days',
         body: 'Visible from day one. Every request logged. Every decision tracked. Debug issues before users notice.',
         graphic: '/images/home/control-plane/usage.png',
-        graphicAlt: 'Usage analytics graphic',
       },
     ],
   },
@@ -116,7 +113,6 @@ export const homeContentData = {
         subtitle: 'Git-based deploys, zero setup',
         body: 'Link your Git repository once and deploy automatically on every push. No complex pipelines or manual steps needed.',
         image: '/images/home/build-deploy/connect.png',
-        imageAlt: 'Connect repository interface',
       },
       {
         id: 'deploy',
@@ -125,7 +121,6 @@ export const homeContentData = {
         subtitle: 'Any language, any framework',
         body: 'Run real containers that stay online, keeping the serverless feel while avoiding short-lived runtimes.',
         image: '/images/home/build-deploy/deploy.png',
-        imageAlt: 'Container runtime configuration',
         hasLogos: true,
         logos: [
           {
@@ -165,7 +160,6 @@ export const homeContentData = {
         subtitle: 'Test every commit before it ships',
         body: 'Test changes in a separate environment, then promote when the results look right.',
         image: '/images/home/build-deploy/preview.png',
-        imageAlt: 'Preview deployments list',
       },
       {
         id: 'ship',
@@ -174,7 +168,6 @@ export const homeContentData = {
         subtitle: 'Instant rollbacks, no guesswork',
         body: 'Keep releases safe with fast rollback paths, switch back instantly without redeploying. The previous production instance stays running for 30 minutes.',
         image: '/images/home/build-deploy/ship.png',
-        imageAlt: 'Rollback to version interface',
       },
       {
         id: 'validate',
@@ -183,7 +176,6 @@ export const homeContentData = {
         subtitle: 'Branch protection & OpenAPI checks',
         body: 'Make it really hard to ship broken APIs. OpenAPI diffs automatically flag breaking changes before they hit production.',
         image: '/images/home/build-deploy/validate.png',
-        imageAlt: 'View changes diff interface',
         textTopClass: 'lg:pt-[126px]',
       },
     ],
@@ -196,7 +188,6 @@ export const homeContentData = {
         title: 'Auth + Keys',
         body: 'Manage API keys end to end and control who can call what.',
         graphic: '/images/home/gateway/auth.png',
-        graphicAlt: 'Auth and keys graphic',
         fullBleedImage: true,
         useTextBackground: true,
         imageWrapperClassName: 'absolute inset-6 md:inset-8 overflow-hidden',
@@ -209,7 +200,6 @@ export const homeContentData = {
         title: 'Global platform',
         body: 'Edge gateway enforces access and routes requests to the closest instance for low latency.',
         graphic: '/images/home/gateway/global.png',
-        graphicAlt: 'Global platform graphic',
         fullBleedImage: true,
         imageClassName:
           'max-[425px]:object-contain max-[425px]:object-bottom min-[426px]:object-cover min-[426px]:object-top',
@@ -221,7 +211,6 @@ export const homeContentData = {
         title: 'Rate limits',
         body: 'Set limits per IP, user, or key and enforce them close to your users.',
         graphic: '/images/home/gateway/rate.png',
-        graphicAlt: 'Rate limits graphic',
         imageWrapperClassName:
           'absolute inset-4 xl:left-7 xl:right-7 xl:top-7 xl:bottom-8 overflow-hidden',
         imageClassName: 'object-cover object-left-top',
@@ -232,7 +221,6 @@ export const homeContentData = {
         title: 'Validation',
         body: 'Enforce request rules early to catch bad traffic before it hits your API.',
         graphic: '/images/home/gateway/validation.png',
-        graphicAlt: 'Validation graphic',
         imageWrapperClassName: 'absolute inset-6 md:inset-8 xl:right-[31px] overflow-hidden',
         imageClassName: 'object-cover object-left-top',
         gridClassName:
@@ -242,7 +230,6 @@ export const homeContentData = {
         title: 'Analytics',
         body: 'Access real-time insights into your API usage without adding custom instrumentation.',
         graphic: '/images/home/gateway/analytics.png',
-        graphicAlt: 'Analytics graphic',
         fullBleedImage: true,
         textWidthClass: 'max-w-96',
         imageClassName: 'object-cover',
@@ -265,11 +252,12 @@ export const homeContentData = {
     ],
   },
   scale: {
-    heading: (
-      <>
-        Start small, scale to global traffic, and <mark>stay protected</mark> without managing
-        infrastructure manually.
-      </>
+    heading: createElement(
+      Fragment,
+      null,
+      'Start small, scale to global traffic, and ',
+      createElement('mark', null, 'stay protected'),
+      ' without managing infrastructure manually.',
     ),
     description:
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
@@ -325,26 +313,23 @@ export const homeContentData = {
   },
   portal: {
     heading: 'First-class developer experience for your users.',
-    subheading: 'API keys, usage, and docs—ready out of the box.',
+    subheading: 'API keys, usage, and docs-ready out of the box.',
     buttonLabel: 'Try the Portal',
     buttonHref: '/portal',
     cards: [
       {
         text: 'Zero code required. A fully hosted developer portal with nothing to build or maintain.',
         graphic: '/images/home/portal/zero.png',
-        graphicAlt: 'Portal zero code graphic',
         textWidthClass: 'max-w-[374px]',
       },
       {
         text: 'Beautiful API docs. OpenAPI-generated documentation, hosted by Unkey and always in sync.',
         graphic: '/images/home/portal/docs.png',
-        graphicAlt: 'Portal documentation graphic',
         textWidthClass: 'max-w-[411px]',
       },
       {
         text: 'Keys and usage, self-serve. Users manage their API keys and view usage without support requests.',
         graphic: '/images/home/portal/keys.png',
-        graphicAlt: 'Portal keys graphic',
         textWidthClass: 'max-w-[409px]',
       },
     ],

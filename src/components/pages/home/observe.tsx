@@ -1,6 +1,5 @@
 import Image from 'next/image';
 
-import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
 
@@ -28,7 +27,7 @@ export default function Observe({
 }: IObserveProps) {
   return (
     <section className="pt-20 md:pt-35 xl:pt-50">
-      <Container>
+      <div className="container">
         <div className="relative h-115 sm:h-125 md:h-130 xl:h-158">
           <div className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240" />
           <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:gap-6 sm:pb-5 md:h-50 xl:h-46.75 xl:max-w-240 xl:gap-8">
@@ -39,7 +38,7 @@ export default function Observe({
             </h2>
           </div>
           <Image
-            alt="Observability dashboard"
+            alt=""
             width={3072}
             height={1202}
             sizes="100vw"
@@ -63,7 +62,7 @@ export default function Observe({
             {buttonLabel}
           </Link>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

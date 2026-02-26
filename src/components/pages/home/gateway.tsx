@@ -2,13 +2,11 @@ import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
-import Container from '@/components/pages/home/container';
 
 interface IGatewayCard {
   title: string;
   body: string;
   graphic: string;
-  graphicAlt: string;
   imageClassName?: string;
   imageWrapperClassName?: string;
   textWidthClass?: string;
@@ -28,7 +26,6 @@ function Card({
   title,
   body,
   graphic,
-  graphicAlt,
   imageClassName = 'object-cover',
   imageWrapperClassName,
   textWidthClass = 'max-w-88',
@@ -60,7 +57,7 @@ function Card({
 
   const imgEl = (
     <Image
-      alt={graphicAlt}
+      alt=""
       className={imageClassName}
       fill
       sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -97,7 +94,7 @@ function Card({
 export default function Gateway({ heading, cards }: IGatewayProps) {
   return (
     <section className="pt-20 md:pt-35 xl:pt-65">
-      <Container className="flex flex-col items-center">
+      <div className="container flex flex-col items-center">
         <Label>Gateway</Label>
         <h2 className="mt-4 max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] md:text-[44px] lg:text-[48px] xl:mt-8 xl:text-[52px]">
           {heading}
@@ -110,7 +107,6 @@ export default function Gateway({ heading, cards }: IGatewayProps) {
                 title={card.title}
                 body={card.body}
                 graphic={card.graphic}
-                graphicAlt={card.graphicAlt}
                 imageClassName={card.imageClassName}
                 imageWrapperClassName={card.imageWrapperClassName}
                 textWidthClass={card.textWidthClass}
@@ -120,7 +116,7 @@ export default function Gateway({ heading, cards }: IGatewayProps) {
             </li>
           ))}
         </ul>
-      </Container>
+      </div>
     </section>
   );
 }

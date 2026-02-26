@@ -1,14 +1,12 @@
 import Image from 'next/image';
 
 import { cn, splitLeadSentence } from '@/lib/utils';
-import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
 
 interface IPortalCard {
   text: string;
   graphic: string;
-  graphicAlt: string;
   textWidthClass?: string;
 }
 
@@ -23,7 +21,6 @@ interface IPortalProps {
 function PortalCard({
   text,
   graphic,
-  graphicAlt,
   textWidthClass = 'max-w-93.5',
   className,
 }: IPortalCard & { className?: string }) {
@@ -38,7 +35,7 @@ function PortalCard({
     >
       <div className="absolute inset-x-0 top-0 bottom-14 overflow-hidden sm:bottom-10 md:bottom-6 lg:bottom-0">
         <Image
-          alt={graphicAlt}
+          alt=""
           fill
           sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
           className="object-contain object-top"
@@ -64,7 +61,7 @@ export default function Portal({
 }: IPortalProps) {
   return (
     <section className="pt-20 pb-20 md:pt-35 md:pb-35 xl:pt-57.25 xl:pb-50">
-      <Container className="flex flex-col">
+      <div className="container flex flex-col">
         <Label>AIO Developer Portal</Label>
 
         <div className="mt-8 flex flex-col gap-5 sm:mt-9 md:mt-10 md:gap-6 lg:flex-row lg:items-end lg:justify-between xl:mt-8 xl:gap-5">
@@ -77,18 +74,17 @@ export default function Portal({
 
         <ul className="mt-4 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-0 xl:mt-16 xl:grid-cols-3 xl:gap-0">
           {cards.map((item, index) => (
-            <li key={item.graphicAlt}>
+            <li key={item.graphic}>
               <PortalCard
                 text={item.text}
                 graphic={item.graphic}
-                graphicAlt={item.graphicAlt}
                 textWidthClass={item.textWidthClass}
                 className={index > 0 ? 'lg:-ml-px xl:-ml-px' : undefined}
               />
             </li>
           ))}
         </ul>
-      </Container>
+      </div>
     </section>
   );
 }

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 
@@ -10,7 +12,7 @@ const inter = Inter({
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     // suppressHydrationWarning added according to https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app

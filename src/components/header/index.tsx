@@ -33,9 +33,9 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
               className="block h-7 w-auto shrink-0"
               src={logoSrc}
               alt={logoAlt}
-              width={82}
+              width={83}
               height={28}
-              unoptimized
+              priority
             />
           </NextLink>
           <Nav className="hidden lg:flex" items={menuItems} />

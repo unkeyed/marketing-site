@@ -1,4 +1,6 @@
-type IconProps = React.SVGProps<SVGSVGElement> & {
+import type { SVGProps } from 'react';
+
+type IconProps = SVGProps<SVGSVGElement> & {
   size?: number;
   width?: number;
   height?: number;

@@ -5,14 +5,12 @@ import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 import { Link } from '@/components/ui/link';
-import Container from '@/components/pages/home/container';
 
 interface IHeroProps {
   title: string;
   description: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
-  background: { src: string };
   poster: { src: string; width: number; height: number };
   videos: { src: string; type: string }[];
   logos: {
@@ -29,7 +27,6 @@ export default function Hero({
   description,
   primaryCta,
   secondaryCta,
-  background,
   poster,
   videos,
   logos,
@@ -57,17 +54,14 @@ export default function Hero({
 
   return (
     <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
-      <div
-        className="relative h-136 w-full overflow-hidden bg-cover bg-top sm:h-150 md:h-[min(47rem,100svh)] lg:h-[min(51rem,100svh)] xl:h-[min(71rem,100svh)]"
-        style={{ backgroundImage: `url('${background.src}')` }}
-      >
+      <div className="relative h-136 w-full overflow-hidden sm:h-150 md:h-[min(47rem,100svh)] lg:h-[min(51rem,100svh)] xl:h-[min(71rem,100svh)]">
         <Image
           src={poster.src}
           alt=""
           fill
           priority
           sizes="100vw"
-          className="pointer-events-none origin-top scale-[1.02] object-cover object-top"
+          className="pointer-events-none origin-top scale-[1.02] object-cover object-top sm:hidden"
         />
 
         <video
@@ -77,6 +71,7 @@ export default function Hero({
           muted
           playsInline
           preload="metadata"
+          poster={poster.src}
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 hidden h-full w-full origin-top scale-[1.02] object-cover object-top sm:block"
         >
@@ -86,15 +81,11 @@ export default function Hero({
         </video>
 
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-91.5"
-          style={{
-            background:
-              'linear-gradient(180deg, rgba(4,4,6,0) 19%, rgba(4,4,6,0.17) 45%, rgba(4,4,6,1) 89%)',
-          }}
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-91.5 bg-[linear-gradient(180deg,rgba(4,4,6,0)_19%,rgba(4,4,6,0.17)_45%,rgba(4,4,6,1)_89%)]"
           aria-hidden="true"
         />
 
-        <Container className="relative z-10 flex h-full flex-col justify-end pb-8 md:pb-12 lg:pb-14 xl:pb-16">
+        <div className="relative z-10 container flex h-full flex-col justify-end pb-8 md:pb-12 lg:pb-14 xl:pb-16">
           <h1 className="max-w-70 font-display text-4xl leading-[1.125] font-normal whitespace-pre-wrap text-white sm:max-w-126 sm:text-5xl md:max-w-120 md:text-[2.625rem] lg:max-w-140 lg:text-[3.25rem] xl:max-w-176 xl:text-[4rem]">
             {title}
           </h1>
@@ -112,10 +103,10 @@ export default function Hero({
               </Link>
             </div>
           </div>
-        </Container>
+        </div>
       </div>
 
-      <Container>
+      <div className="container">
         <ul className="-mx-4 flex items-center gap-6 overflow-x-auto px-4 pt-8 pb-6 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:justify-between lg:gap-0 lg:overflow-visible lg:pt-12 lg:pb-10.5 [&::-webkit-scrollbar]:hidden">
           {logos.map((logo) => (
             <li
@@ -123,16 +114,17 @@ export default function Hero({
               className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
             >
               <Image
+                className="h-full w-full"
                 alt={logo.alt}
                 width={logo.width}
                 height={logo.height}
-                className="h-full w-full"
                 src={logo.src}
+                priority
               />
             </li>
           ))}
         </ul>
-      </Container>
+      </div>
     </section>
   );
 }

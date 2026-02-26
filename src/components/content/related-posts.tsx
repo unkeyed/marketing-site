@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import NextLink from 'next/link';
 
 import { type IAuthorData } from '@/types/common';
@@ -94,7 +96,7 @@ interface IRelatedPostsProps {
   className?: string;
   title?: string;
   titleId?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function RelatedPosts({ className, title, titleId, children }: IRelatedPostsProps) {

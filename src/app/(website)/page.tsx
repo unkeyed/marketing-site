@@ -4,7 +4,7 @@ import { getMetadata } from '@/lib/get-metadata';
 import Gateway from '@/components/pages/home/gateway';
 import Portal from '@/components/pages/home/portal';
 import Cta from '@/components/pages/home/cta';
-import { homeContentData, homePageData } from '@/components/pages/home/data/content-data';
+import { homeContentData, homePageData } from '@/constants/home';
 import Production from '@/components/pages/home/production';
 import BuildDeploy from '@/components/pages/home/build-deploy';
 import ControlPlane from '@/components/pages/home/control-plane';

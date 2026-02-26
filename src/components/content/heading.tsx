@@ -1,5 +1,6 @@
 'use client';
 
+import type { HTMLAttributes, MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import copy from 'copy-to-clipboard';
@@ -11,7 +12,7 @@ import { cn } from '@/lib/utils';
 
 interface HeadingProps {
   tag: 'h2' | 'h3';
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   id?: string;
 }
@@ -41,12 +42,12 @@ function Heading({
   className,
   id,
   ...rest
-}: HeadingProps & React.HTMLAttributes<HTMLHeadingElement>) {
+}: HeadingProps & HTMLAttributes<HTMLHeadingElement>) {
   const pathname = usePathname();
   const [copied, setCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleCopyClick = (e: React.MouseEvent) => {
+  const handleCopyClick = (e: MouseEvent) => {
     e.preventDefault();
 
     const url = `${location.origin}${pathname}#${id}`;

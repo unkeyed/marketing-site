@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
-import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 
 interface IBuildDeployPanel {
@@ -14,7 +13,6 @@ interface IBuildDeployPanel {
   subtitle: string;
   body: string;
   image: string;
-  imageAlt: string;
   hasLogos?: boolean;
   logos?: { alt: string; src: string; width: number; height: number; className: string }[];
   textTopClass?: string;
@@ -53,7 +51,9 @@ function Panel({
               <h3 className="text-white">{row.title}</h3>
               <p className="text-gray-60">{row.subtitle}</p>
             </div>
-            <p className="max-w-md text-[15px] leading-snug text-gray-90 sm:text-base">{row.body}</p>
+            <p className="max-w-md text-[15px] leading-snug text-gray-90 sm:text-base">
+              {row.body}
+            </p>
           </div>
           {row.hasLogos && row.logos && (
             <div className="mt-8 flex flex-wrap items-end gap-4 sm:mt-10 sm:gap-6 md:mt-12 lg:mt-24 xl:mt-45.75">
@@ -72,7 +72,7 @@ function Panel({
         </div>
         <div className="border-x border-b border-gray-20 lg:border">
           <Image
-            alt={row.imageAlt}
+            alt=""
             width={1536}
             height={1256}
             sizes="(min-width: 1024px) 50vw, 100vw"
@@ -168,7 +168,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
   return (
     <section className="pt-20 md:pt-30 xl:pt-45">
-      <Container>
+      <div className="container">
         <div className="pt-8 md:pt-12 xl:pt-20">
           <Label>Build & Deploy</Label>
         </div>
@@ -176,7 +176,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
         <div>
           <div
             ref={headerRef}
-            className="-mx-5 sticky top-0 z-10 bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
+            className="sticky top-0 z-10 -mx-5 bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
           >
             <div className="grid gap-4 pt-6 sm:gap-5 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-8">
               <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
@@ -194,7 +194,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
                 className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0"
               >
                 {panels.map((row, index) => (
-                  <li key={row.id}>
+                  <li key={row.id} role="presentation">
                     <button
                       type="button"
                       role="tab"
@@ -216,29 +216,20 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
           </div>
 
           {panels.length > 1 && (
-            <ul className="-mt-px -mx-5 list-none md:-mx-8 xl:mx-0">
+            <ul className="-mx-5 -mt-px list-none md:-mx-8 xl:mx-0">
               {panels.slice(0, -1).map((row) => (
-                <Panel
-                  key={row.id}
-                  row={row}
-                  isLast={false}
-                  stickyHeight={headerHeight}
-                />
+                <Panel key={row.id} row={row} isLast={false} stickyHeight={headerHeight} />
               ))}
             </ul>
           )}
         </div>
 
         {panels.length > 0 && (
-          <ul className="-mt-px -mx-5 list-none md:-mx-8 xl:mx-0">
-            <Panel
-              row={panels[panels.length - 1]}
-              isLast
-              stickyHeight={headerHeight}
-            />
+          <ul className="-mx-5 -mt-px list-none md:-mx-8 xl:mx-0">
+            <Panel row={panels[panels.length - 1]} isLast stickyHeight={headerHeight} />
           </ul>
         )}
-      </Container>
+      </div>
     </section>
   );
 }
