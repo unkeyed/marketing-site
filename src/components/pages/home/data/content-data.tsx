@@ -77,7 +77,7 @@ export const homeContentData = {
       {
         id: 'branch',
         title: 'Branch Overview',
-        body: 'Faster to ship. Go from code to running API in minutes. Test safely, promote when ready, roll back if needed.',
+        body: 'Faster to ship. Go from code to running API in minutes. Test safely, promote when ready, roll back if needed.',
         graphic: '/images/home/control-plane/branch.png',
         graphicAlt: 'Branch overview graphic',
       },
@@ -203,7 +203,7 @@ export const homeContentData = {
         imageClassName: 'object-cover object-bottom',
         textWidthClass: 'max-w-88',
         gridClassName:
-          'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
       },
       {
         title: 'Global platform',
@@ -215,7 +215,7 @@ export const homeContentData = {
           'max-[425px]:object-contain max-[425px]:object-bottom min-[426px]:object-cover min-[426px]:object-top',
         textWidthClass: 'max-w-90',
         gridClassName:
-          'min-h-[540px] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
+          'min-h-[480px] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
       },
       {
         title: 'Rate limits',
@@ -226,7 +226,7 @@ export const homeContentData = {
           'absolute inset-4 xl:left-7 xl:right-7 xl:top-7 xl:bottom-8 overflow-hidden',
         imageClassName: 'object-cover object-left-top',
         gridClassName:
-          'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
       },
       {
         title: 'Validation',
@@ -236,7 +236,7 @@ export const homeContentData = {
         imageWrapperClassName: 'absolute inset-6 md:inset-8 xl:right-[31px] overflow-hidden',
         imageClassName: 'object-cover object-left-top',
         gridClassName:
-          'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
       },
       {
         title: 'Analytics',
@@ -247,7 +247,7 @@ export const homeContentData = {
         textWidthClass: 'max-w-96',
         imageClassName: 'object-cover',
         gridClassName:
-          'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',
       },
     ],
   },

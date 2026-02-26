@@ -15,7 +15,7 @@ export default function Production({ label, items }: IProductionProps) {
   return (
     <section
       aria-labelledby="production-heading"
-      className="pt-12 pb-20 md:pt-[80px] md:pb-[140px] xl:pb-[200px]"
+      className="pt-12 pb-20 md:pt-20 md:pb-35 xl:pb-50"
     >
       <h2 className="sr-only" id="production-heading">
         {label}
@@ -24,7 +24,7 @@ export default function Production({ label, items }: IProductionProps) {
         <div className="flex items-start pt-[7px]">
           <Label size="plain">{label}</Label>
         </div>
-        <div className="flex flex-col gap-8 md:gap-12 lg:flex-row lg:gap-24">
+        <div className="flex flex-col gap-8 sm:gap-10 md:gap-12 lg:flex-row lg:gap-24">
           {items.map((item, index) => (
             <div className="flex flex-1 gap-5" key={`${item.title}-${index}`}>
               <div className="flex w-px flex-col self-stretch">

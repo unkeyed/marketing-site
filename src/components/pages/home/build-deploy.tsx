@@ -40,23 +40,23 @@ function Panel({
       <div
         id={row.id}
         style={{ scrollMarginTop: stickyHeight }}
-        className="grid min-h-[628px] grid-cols-1 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
+        className="grid min-h-[560px] grid-cols-1 sm:min-h-157 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
       >
         <div
           className={cn(
-            'flex flex-col border border-gray-20 px-5 py-10 md:px-10 lg:border-r-0 lg:px-16 lg:py-0 xl:px-24',
+            'flex flex-col border border-gray-20 px-5 py-8 sm:py-10 md:px-10 md:py-12 lg:border-r-0 lg:px-16 lg:py-0 xl:px-24',
             row.textTopClass ?? 'lg:pt-[137px]',
           )}
         >
-          <div className="flex flex-col gap-4 sm:gap-5">
-            <div className="text-[24px] leading-[1.125] tracking-[-0.02em] sm:text-[28px]">
+          <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
+            <div className="text-[24px] leading-[1.125] tracking-[-0.02em] sm:text-[26px] md:text-[28px]">
               <h3 className="text-white">{row.title}</h3>
               <p className="text-gray-60">{row.subtitle}</p>
             </div>
-            <p className="max-w-md text-base leading-snug text-gray-90">{row.body}</p>
+            <p className="max-w-md text-[15px] leading-snug text-gray-90 sm:text-base">{row.body}</p>
           </div>
           {row.hasLogos && row.logos && (
-            <div className="mt-8 flex flex-wrap items-end gap-4 sm:gap-6 lg:mt-[183px]">
+            <div className="mt-8 flex flex-wrap items-end gap-4 sm:mt-10 sm:gap-6 md:mt-12 lg:mt-24 xl:mt-[183px]">
               {row.logos.map((logo) => (
                 <Image
                   key={logo.alt}
@@ -170,21 +170,24 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
         </div>
 
         <div>
-          <div ref={headerRef} className="sticky top-0 z-10 bg-background">
-            <div className="grid gap-5 pt-6 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-8">
+          <div
+            ref={headerRef}
+            className="-mx-5 sticky top-0 z-10 bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
+          >
+            <div className="grid gap-4 pt-6 sm:gap-5 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-8">
               <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
                 {heading}
               </h2>
-              <p className="max-w-[416px] text-[20px] leading-snug tracking-[-0.01em] text-gray-70 md:text-xl lg:mt-[31px] lg:ml-auto">
+              <p className="max-w-104 text-lg leading-snug tracking-[-0.01em] text-gray-70 sm:text-[20px] md:text-xl lg:mt-[31px] lg:ml-auto">
                 {description}
               </p>
             </div>
 
-            <div className="mt-8 h-16 overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:mt-12 xl:mt-20 [&::-webkit-scrollbar]:hidden">
+            <div className="mx-[-20px] mt-8 h-16 overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:mx-[-32px] md:mt-12 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
               <ul
                 role="tablist"
                 aria-label="Build and deploy steps"
-                className="grid h-full min-w-[660px] grid-cols-5 md:w-full md:min-w-0"
+                className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0"
               >
                 {panels.map((row, index) => (
                   <li key={row.id}>
@@ -195,7 +198,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
                       aria-controls={row.id}
                       onClick={() => handleTabClick(row.id)}
                       className={cn(
-                        'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-4 text-base leading-[1.125] font-normal transition-colors sm:text-lg md:text-xl',
+                        'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-3 text-base leading-[1.125] font-normal transition-colors sm:px-4 sm:text-lg md:text-xl',
                         index === panels.length - 1 && 'border-r',
                         activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
                       )}
@@ -209,7 +212,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
           </div>
 
           {panels.length > 1 && (
-            <ul className="-mt-px list-none">
+            <ul className="-mt-px mx-[-20px] list-none md:mx-[-32px] xl:mx-0">
               {panels.slice(0, -1).map((row) => (
                 <Panel
                   key={row.id}
@@ -223,7 +226,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
         </div>
 
         {panels.length > 0 && (
-          <ul className="-mt-px list-none">
+          <ul className="-mt-px mx-[-20px] list-none md:mx-[-32px] xl:mx-0">
             <Panel
               row={panels[panels.length - 1]}
               isLast

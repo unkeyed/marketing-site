@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
-import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
+import Container from '@/components/pages/home/container';
 
 interface IGatewayCard {
   title: string;
@@ -31,7 +31,7 @@ function Card({
   graphicAlt,
   imageClassName = 'object-cover',
   imageWrapperClassName,
-  textWidthClass = 'max-w-[352px]',
+  textWidthClass = 'max-w-88',
   layout: layoutProp,
   textStyle: textStyleProp,
   fullBleedImage = false,
@@ -53,7 +53,7 @@ function Card({
     );
 
   const textBlock = (
-    <p className="relative z-10 px-6 pt-6 pb-3 text-base leading-snug text-gray-80 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
+    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
       <span className={`block ${textWidthClass}`}>{textContent}</span>
     </p>
   );
@@ -96,19 +96,16 @@ function Card({
   );
 }
 
-export default function Gateway({
-  heading,
-  cards,
-}: IGatewayProps) {
+export default function Gateway({ heading, cards }: IGatewayProps) {
   return (
-    <section className="pt-20 md:pt-[140px] xl:pt-[260px]">
+    <section className="pt-20 md:pt-35 xl:pt-65">
       <Container className="flex flex-col items-center">
         <Label>Gateway</Label>
-        <h2 className="max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] xl:mt-8 xl:text-[52px]">
+        <h2 className="mt-4 max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] md:text-[44px] lg:text-[48px] xl:mt-8 xl:text-[52px]">
           {heading}
         </h2>
 
-        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:mt-10 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
+        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
           {cards.map((card) => (
             <li key={card.title} className={card.gridClassName}>
               <Card
