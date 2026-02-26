@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
 
+import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IObserveColumn {
   lead: string;
@@ -20,7 +19,7 @@ interface IObserveProps {
   columns: IObserveColumn[];
 }
 
-export default function SectionObserve({
+export default function Observe({
   heading,
   subheading,
   dashboardImage,
@@ -30,7 +29,7 @@ export default function SectionObserve({
 }: IObserveProps) {
   return (
     <section className="mt-20 md:mt-[140px] xl:mt-[200px]">
-      <div className={CONTAINER}>
+      <Container>
         <div className="relative h-[420px] max-[351px]:h-[500px] md:h-[520px] xl:h-[632px]">
           <div className="absolute top-0 left-0 z-[1] h-[220px] w-full bg-background max-[351px]:h-[300px] md:h-[200px] xl:h-[187px] xl:max-w-[960px]" />
           <div className="relative z-10 flex h-[220px] w-full flex-col gap-6 pb-5 max-[351px]:h-[300px] max-[351px]:pb-12 md:h-[200px] xl:h-[187px] xl:max-w-[960px] xl:gap-8">
@@ -65,7 +64,7 @@ export default function SectionObserve({
             {buttonLabel}
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

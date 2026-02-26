@@ -12,9 +12,10 @@ import { cn } from '@/lib/utils';
 interface IHeaderNavProps {
   className?: string;
   items: IMenuItem[];
+  ariaLabel?: string;
 }
 
-function Nav({ className, items }: IHeaderNavProps) {
+function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavProps) {
   const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
@@ -29,6 +30,7 @@ function Nav({ className, items }: IHeaderNavProps) {
 
   return (
     <nav
+      aria-label={ariaLabel}
       className={cn('flex items-center gap-10', className)}
       onMouseLeave={() => {
         setHoveredIndex(null);
@@ -44,7 +46,7 @@ function Nav({ className, items }: IHeaderNavProps) {
           return (
             <div
               key={index}
-              className="relative"
+              className="relative flex items-center justify-center"
               onMouseEnter={() => {
                 setHoveredIndex(index);
                 setOpenDropdown(index);
@@ -59,8 +61,8 @@ function Nav({ className, items }: IHeaderNavProps) {
                 aria-expanded={isOpen}
                 aria-haspopup="true"
                 className={cn(
-                  'relative inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-tight transition-colors',
-                  isOpen && 'after:absolute after:left-0 after:top-full after:h-4.5 after:w-full',
+                  'relative inline-flex items-center gap-0.5 p-0 text-sm leading-none font-medium tracking-tight transition-colors',
+                  isOpen && 'after:absolute after:top-full after:left-0 after:h-4.5 after:w-full',
                   isHovered ? 'text-gray-30' : 'text-background',
                 )}
               >
@@ -77,9 +79,7 @@ function Nav({ className, items }: IHeaderNavProps) {
               <div
                 className={cn(
                   'absolute top-full left-0 mt-4.5 w-82.5 transition-all duration-200',
-                  isOpen
-                    ? 'visible translate-y-0 opacity-100'
-                    : 'invisible -translate-y-2 opacity-0',
+                  isOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
                 <ul
@@ -133,7 +133,7 @@ function Nav({ className, items }: IHeaderNavProps) {
             aria-current={index === activeIndex ? 'page' : undefined}
             onMouseEnter={() => setHoveredIndex(index)}
             className={cn(
-              'inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-[-0.35px] transition-colors',
+              'inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-tight transition-colors',
               isHovered ? 'text-gray-30' : 'text-background',
             )}
           >

@@ -1,9 +1,8 @@
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
+import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IGatewayCard {
   title: string;
@@ -25,7 +24,7 @@ interface IGatewayProps {
   cards: IGatewayCard[];
 }
 
-function GatewayCard({
+function Card({
   title,
   body,
   graphic,
@@ -97,10 +96,13 @@ function GatewayCard({
   );
 }
 
-export default function BentoGateway({ heading, cards }: IGatewayProps) {
+export default function Gateway({
+  heading,
+  cards,
+}: IGatewayProps) {
   return (
     <section className="pt-20 md:pt-[140px] xl:pt-[260px]">
-      <div className={cn(CONTAINER, 'flex flex-col items-center')}>
+      <Container className="flex flex-col items-center">
         <Label>Gateway</Label>
         <h2 className="max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] xl:mt-8 xl:text-[52px]">
           {heading}
@@ -109,7 +111,7 @@ export default function BentoGateway({ heading, cards }: IGatewayProps) {
         <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:mt-10 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
           {cards.map((card) => (
             <li key={card.title} className={card.gridClassName}>
-              <GatewayCard
+              <Card
                 title={card.title}
                 body={card.body}
                 graphic={card.graphic}
@@ -123,7 +125,7 @@ export default function BentoGateway({ heading, cards }: IGatewayProps) {
             </li>
           ))}
         </ul>
-      </div>
+      </Container>
     </section>
   );
 }

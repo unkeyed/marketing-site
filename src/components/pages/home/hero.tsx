@@ -2,14 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import NextLink from 'next/link';
 
 import { cn } from '@/lib/utils';
 import { Link } from '@/components/ui/link';
+import Container from '@/components/pages/home/container';
 
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
-
-interface IHeroVideoFullwidthProps {
+interface IHeroProps {
   title: string;
   description: string;
   primaryCta: { label: string; href: string };
@@ -24,10 +22,9 @@ interface IHeroVideoFullwidthProps {
     height: number;
     wrapperClassName?: string;
   }[];
-  customersLink: { label: string; href: string };
 }
 
-export default function HeroVideoFullwidth({
+export default function Hero({
   title,
   description,
   primaryCta,
@@ -36,8 +33,7 @@ export default function HeroVideoFullwidth({
   poster,
   videos,
   logos,
-  customersLink,
-}: IHeroVideoFullwidthProps) {
+}: IHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -62,7 +58,7 @@ export default function HeroVideoFullwidth({
   return (
     <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
       <div
-        className="relative h-150 w-full overflow-hidden bg-cover bg-top md:h-[min(calc(var(--spacing)*200),100svh)] xl:h-[min(calc(var(--spacing)*284),100svh)]"
+        className="relative h-136 w-full overflow-hidden bg-cover bg-top sm:h-150 md:h-[min(47rem,100svh)] lg:h-[min(51rem,100svh)] xl:h-[min(71rem,100svh)]"
         style={{ backgroundImage: `url('${background.src}')` }}
       >
         <Image
@@ -98,21 +94,16 @@ export default function HeroVideoFullwidth({
           aria-hidden="true"
         />
 
-        <div
-          className={cn(
-            CONTAINER,
-            'relative z-10 flex h-full flex-col justify-end pb-8 md:pb-12 xl:pb-16',
-          )}
-        >
-          <h1 className="text-7 max-w-176 font-display leading-[1.125] font-normal whitespace-pre-wrap text-white sm:text-4xl md:text-[calc(var(--spacing)*11)] lg:text-[calc(var(--spacing)*13)] xl:text-[calc(var(--spacing)*16)]">
+        <Container className="relative z-10 flex h-full flex-col justify-end pb-8 md:pb-12 lg:pb-14 xl:pb-16">
+          <h1 className="max-w-70 font-display text-4xl leading-[1.125] font-normal whitespace-pre-wrap text-white sm:max-w-126 sm:text-5xl md:max-w-120 md:text-[2.625rem] lg:max-w-140 lg:text-[3.25rem] xl:max-w-176 xl:text-[4rem]">
             {title}
           </h1>
 
-          <div className="mt-4 flex flex-col gap-5 md:mt-5 md:flex-row md:items-end md:justify-between">
-            <p className="max-w-132.75 text-base leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60">
+          <div className="mt-4 flex flex-col gap-7 md:mt-5 md:flex-row md:items-end md:justify-between md:gap-5">
+            <p className="max-w-132.75 text-sm leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60 sm:text-base">
               {description}
             </p>
-            <div className="flex shrink-0 items-center gap-3">
+            <div className="mt-1 flex w-full shrink-0 flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap md:mt-0">
               <Link href={primaryCta.href} variant="primary">
                 {primaryCta.label}
               </Link>
@@ -121,11 +112,11 @@ export default function HeroVideoFullwidth({
               </Link>
             </div>
           </div>
-        </div>
+        </Container>
       </div>
 
-      <div className={CONTAINER}>
-        <ul className="flex items-center gap-6 overflow-x-auto pt-8 pb-6 [scrollbar-width:none] lg:justify-between lg:gap-0 lg:overflow-visible lg:pt-12 lg:pb-10.5 [&::-webkit-scrollbar]:hidden">
+      <Container>
+        <ul className="-mx-4 flex items-center gap-6 overflow-x-auto px-4 pt-8 pb-6 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:justify-between lg:gap-0 lg:overflow-visible lg:pt-12 lg:pb-10.5 [&::-webkit-scrollbar]:hidden">
           {logos.map((logo) => (
             <li
               key={logo.alt}
@@ -140,16 +131,8 @@ export default function HeroVideoFullwidth({
               />
             </li>
           ))}
-          <li className="shrink-0">
-            <NextLink
-              className="text-base leading-snug font-normal tracking-[-0.01em] text-gray-60 transition-colors hover:text-foreground"
-              href={customersLink.href}
-            >
-              {customersLink.label}
-            </NextLink>
-          </li>
         </ul>
-      </div>
+      </Container>
     </section>
   );
 }

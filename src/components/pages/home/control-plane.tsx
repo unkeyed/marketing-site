@@ -1,8 +1,7 @@
 import Image from 'next/image';
 
 import { cn, splitLeadSentence } from '@/lib/utils';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
+import Container from '@/components/pages/home/container';
 
 interface IControlPlaneCard {
   id: string;
@@ -18,7 +17,7 @@ interface IControlPlaneProps {
   cards: IControlPlaneCard[];
 }
 
-function FeatureCard({
+function Card({
   title,
   body,
   graphic,
@@ -59,10 +58,10 @@ function FeatureCard({
   );
 }
 
-export default function FeaturesControlPlane({ heading, description, cards }: IControlPlaneProps) {
+export default function ControlPlane({ heading, description, cards }: IControlPlaneProps) {
   return (
     <section className="pt-20 md:pt-30 xl:pt-[229px]">
-      <div className={cn(CONTAINER, 'relative flex flex-col')}>
+      <Container className="relative flex flex-col">
         <div className="relative sm:pl-8">
           <div
             aria-hidden
@@ -79,7 +78,7 @@ export default function FeaturesControlPlane({ heading, description, cards }: IC
         <div className="relative z-10 mt-10 snap-x snap-mandatory scroll-pl-5 overflow-x-auto [scrollbar-width:none] sm:-mx-5 md:-mx-8 md:mt-16 md:scroll-pl-8 xl:mx-0 xl:mt-40 xl:snap-none xl:scroll-pl-0 xl:overflow-visible [&::-webkit-scrollbar]:hidden">
           <ul className="flex flex-col items-center gap-4 sm:w-max sm:flex-row sm:items-stretch sm:gap-0 sm:px-5 md:px-8 xl:w-auto xl:px-0">
             {cards.map((card, index) => (
-              <FeatureCard
+              <Card
                 key={card.id}
                 title={card.title}
                 body={card.body}
@@ -93,7 +92,7 @@ export default function FeaturesControlPlane({ heading, description, cards }: IC
             ))}
           </ul>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

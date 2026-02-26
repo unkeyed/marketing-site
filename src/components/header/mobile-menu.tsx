@@ -8,8 +8,8 @@ import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
 import { cn } from '@/lib/utils';
-import { Icons } from '@/components/icons';
 import { Link } from '@/components/ui/link';
+import { Icons } from '@/components/icons';
 
 interface MobileMenuProps {
   items: IMenuItem[];
@@ -53,7 +53,7 @@ function MobileMenu({ items }: MobileMenuProps) {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="relative z-[60] flex size-11 items-center justify-center bg-foreground lg:hidden"
+        className="relative z-60 flex size-11 items-center justify-center bg-foreground lg:hidden"
         aria-expanded={open}
         aria-label={open ? 'Close menu' : 'Open menu'}
       >
@@ -66,7 +66,7 @@ function MobileMenu({ items }: MobileMenuProps) {
           />
           <span
             className={cn(
-              'absolute left-0 top-1/2 block h-[1.5px] w-full -translate-y-1/2 bg-background transition-opacity duration-300',
+              'absolute top-1/2 left-0 block h-[1.5px] w-full -translate-y-1/2 bg-background transition-opacity duration-300',
               open ? 'opacity-0' : 'opacity-100',
             )}
           />
@@ -82,7 +82,7 @@ function MobileMenu({ items }: MobileMenuProps) {
       {/* Backdrop */}
       <div
         className={cn(
-          'fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 lg:hidden',
+          'fixed inset-0 z-40 bg-background/50 transition-opacity duration-300 lg:hidden',
           open ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
         onClick={() => setOpen(false)}
@@ -92,7 +92,7 @@ function MobileMenu({ items }: MobileMenuProps) {
       {/* Panel */}
       <div
         className={cn(
-          'absolute left-5 right-5 top-full z-50 max-h-[calc(100dvh-60px)] overflow-y-auto bg-foreground shadow-2xl transition-all duration-300 md:left-8 md:right-8 lg:hidden xl:left-10 xl:right-10',
+          'absolute top-full right-5 left-5 z-50 max-h-[calc(100dvh-60px)] overflow-y-auto bg-foreground shadow-2xl transition-all duration-300 md:right-8 md:left-8 lg:hidden',
           open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0',
         )}
       >
@@ -104,7 +104,7 @@ function MobileMenu({ items }: MobileMenuProps) {
 
               if (hasChildren) {
                 return (
-                  <div key={index} className="border-b border-white/10">
+                  <div key={index} className="border-b border-foreground/10">
                     <button
                       type="button"
                       onClick={() => setExpandedIndex(isExpanded ? null : index)}
@@ -122,9 +122,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                     <div
                       className={cn(
                         'grid transition-all duration-200',
-                        isExpanded
-                          ? 'grid-rows-[1fr] opacity-100'
-                          : 'grid-rows-[0fr] opacity-0',
+                        isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
                       )}
                     >
                       <div className="overflow-hidden">
@@ -133,7 +131,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                             <li key={ci}>
                               <NextLink
                                 href={child.href ?? '#'}
-                                className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-white/5"
+                                className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-foreground/5"
                                 onClick={() => setOpen(false)}
                               >
                                 {child.icon && (
@@ -172,7 +170,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                 <NextLink
                   key={index}
                   href={item.href ?? '#'}
-                  className="border-b border-white/10 py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                  className="border-b border-foreground/10 py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}

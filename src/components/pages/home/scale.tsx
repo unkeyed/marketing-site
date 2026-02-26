@@ -1,9 +1,8 @@
 import Image from 'next/image';
 
+import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IScaleFeature {
   title: string;
@@ -19,7 +18,7 @@ interface IScaleProps {
   features: IScaleFeature[];
 }
 
-export default function SectionScale({
+export default function Scale({
   heading,
   description,
   buttonLabel,
@@ -29,7 +28,7 @@ export default function SectionScale({
   return (
     <section className="relative py-16 md:py-24 xl:pt-48 xl:pb-51">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]" />
-      <div className={`${CONTAINER} relative`}>
+      <Container className="relative">
         <div className="flex flex-col gap-8 lg:flex-row lg:justify-between">
           <div className="flex max-w-[704px] flex-col gap-8">
             <Label variant="light">Scale</Label>
@@ -68,7 +67,7 @@ export default function SectionScale({
             </li>
           ))}
         </ul>
-      </div>
+      </Container>
     </section>
   );
 }

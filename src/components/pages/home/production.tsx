@@ -1,6 +1,5 @@
+import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IProductionItem {
   title: string;
@@ -12,7 +11,7 @@ interface IProductionProps {
   items: IProductionItem[];
 }
 
-export default function FeatureProduction({ label, items }: IProductionProps) {
+export default function Production({ label, items }: IProductionProps) {
   return (
     <section
       aria-labelledby="production-heading"
@@ -21,7 +20,7 @@ export default function FeatureProduction({ label, items }: IProductionProps) {
       <h2 className="sr-only" id="production-heading">
         {label}
       </h2>
-      <div className={`${CONTAINER} grid gap-8 lg:grid-cols-[1fr_3fr] lg:gap-0`}>
+      <Container className="grid gap-8 lg:grid-cols-[1fr_3fr] lg:gap-0">
         <div className="flex items-start pt-[7px]">
           <Label size="plain">{label}</Label>
         </div>
@@ -39,7 +38,7 @@ export default function FeatureProduction({ label, items }: IProductionProps) {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

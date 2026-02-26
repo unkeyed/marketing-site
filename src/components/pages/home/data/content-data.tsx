@@ -1,6 +1,6 @@
 export const homeContentData = {
   hero: {
-    title: 'The Developer Platform\nfor Modern APIs',
+    title: 'The Developer Platform for Modern APIs',
     description:
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
     primaryCta: { label: 'Start for free', href: '/placeholder' },
@@ -18,45 +18,51 @@ export const homeContentData = {
         src: '/images/home/hero/logos/fireworks.svg',
         width: 160,
         height: 28,
-        wrapperClassName: 'h-[28px] w-[160px]',
+        wrapperClassName: 'h-7 w-40',
       },
       {
         alt: 'Cal.com logo',
         src: '/images/home/hero/logos/cal.svg',
         width: 84,
         height: 28,
-        wrapperClassName: 'h-[28px] w-[84px]',
+        wrapperClassName: 'h-7 w-21',
       },
       {
         alt: 'Mintlify logo',
         src: '/images/home/hero/logos/mintlify.svg',
         width: 106,
         height: 28,
-        wrapperClassName: 'h-[28px] w-[106px]',
+        wrapperClassName: 'h-7 w-[106px]',
       },
       {
         alt: 'Symbolica logo',
         src: '/images/home/hero/logos/symbolica.svg',
         width: 125,
         height: 28,
-        wrapperClassName: 'h-[28px] w-[125px]',
+        wrapperClassName: 'h-7 w-[125px]',
       },
       {
         alt: 'BlindPay logo',
         src: '/images/home/hero/logos/blindpay.svg',
         width: 105,
         height: 28,
-        wrapperClassName: 'h-[28px] w-[105px]',
+        wrapperClassName: 'h-7 w-[105px]',
       },
       {
         alt: 'Magic Patterns logo',
         src: '/images/home/hero/logos/magicpatterns.svg',
         width: 159,
         height: 24,
-        wrapperClassName: 'h-[24px] w-[159px]',
+        wrapperClassName: 'h-6 w-[159px]',
+      },
+      {
+        alt: 'Plain logo',
+        src: '/images/home/hero/logos/plain.svg',
+        width: 74,
+        height: 22,
+        wrapperClassName: 'h-[22px] w-[74px]',
       },
     ],
-    customersLink: { label: 'See customer stories', href: '/customers' },
   },
   controlPlane: {
     heading: (
@@ -127,28 +133,28 @@ export const homeContentData = {
             src: '/images/home/build-deploy/logos/python.svg',
             width: 112,
             height: 28,
-            className: 'h-[28px] w-[112px]',
+            className: 'h-7 w-28',
           },
           {
             alt: 'TypeScript',
             src: '/images/home/build-deploy/logos/typescript.svg',
             width: 110,
             height: 28,
-            className: 'h-[28px] w-[110px]',
+            className: 'h-7 w-[110px]',
           },
           {
             alt: 'Go',
             src: '/images/home/build-deploy/logos/go.svg',
             width: 75,
             height: 28,
-            className: 'h-[28px] w-[75px]',
+            className: 'h-7 w-[75px]',
           },
           {
             alt: 'Java',
             src: '/images/home/build-deploy/logos/java.svg',
             width: 97,
             height: 40,
-            className: 'h-[40px] w-[97px]',
+            className: 'h-10 w-[97px]',
           },
         ],
       },
@@ -195,7 +201,7 @@ export const homeContentData = {
         useTextBackground: true,
         imageWrapperClassName: 'absolute inset-6 md:inset-8 overflow-hidden',
         imageClassName: 'object-cover object-bottom',
-        textWidthClass: 'max-w-[352px]',
+        textWidthClass: 'max-w-88',
         gridClassName:
           'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
       },
@@ -207,7 +213,7 @@ export const homeContentData = {
         fullBleedImage: true,
         imageClassName:
           'max-[425px]:object-contain max-[425px]:object-bottom min-[426px]:object-cover min-[426px]:object-top',
-        textWidthClass: 'max-w-[360px]',
+        textWidthClass: 'max-w-90',
         gridClassName:
           'min-h-[540px] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
       },
@@ -217,7 +223,7 @@ export const homeContentData = {
         graphic: '/images/home/gateway/rate.png',
         graphicAlt: 'Rate limits graphic',
         imageWrapperClassName:
-          'absolute inset-4 xl:left-[28px] xl:right-[28px] xl:top-[28px] xl:bottom-8 overflow-hidden',
+          'absolute inset-4 xl:left-7 xl:right-7 xl:top-7 xl:bottom-8 overflow-hidden',
         imageClassName: 'object-cover object-left-top',
         gridClassName:
           'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
@@ -238,7 +244,7 @@ export const homeContentData = {
         graphic: '/images/home/gateway/analytics.png',
         graphicAlt: 'Analytics graphic',
         fullBleedImage: true,
-        textWidthClass: 'max-w-[384px]',
+        textWidthClass: 'max-w-96',
         imageClassName: 'object-cover',
         gridClassName:
           'h-[clamp(360px,74vw,500px)] sm:h-[446px] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',

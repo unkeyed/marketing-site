@@ -1,10 +1,9 @@
 import Image from 'next/image';
 
 import { cn, splitLeadSentence } from '@/lib/utils';
+import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IPortalCard {
   text: string;
@@ -56,7 +55,7 @@ function PortalCard({
   );
 }
 
-export default function CardsPortal({
+export default function Portal({
   heading,
   subheading,
   buttonLabel,
@@ -65,7 +64,7 @@ export default function CardsPortal({
 }: IPortalProps) {
   return (
     <section className="pt-20 md:pt-[140px] xl:pt-[229px]">
-      <div className={cn(CONTAINER, 'flex flex-col')}>
+      <Container className="flex flex-col">
         <Label>AIO Developer Portal</Label>
 
         <div className="mt-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -89,7 +88,7 @@ export default function CardsPortal({
             </li>
           ))}
         </ul>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -27,7 +27,7 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
   return (
     <header className={cn('relative z-10 flex items-center pt-2.5', className)}>
       <div className="mx-auto flex w-full max-w-content items-center gap-1 px-5 md:px-8 xl:px-10 2xl:px-0">
-        <div className="relative z-[60] flex h-11 flex-1 items-center justify-between bg-foreground px-6">
+        <div className="relative z-60 flex h-11 flex-1 items-center justify-between bg-foreground px-6 xl:max-w-[1084px]">
           <NextLink className="inline-flex shrink-0" href={logoHref}>
             <Image
               className="block h-7 w-auto shrink-0"

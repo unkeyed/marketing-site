@@ -4,9 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
+import Container from '@/components/pages/home/container';
 import { Label } from '@/components/ui/label';
-
-const CONTAINER = 'mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-0';
 
 interface IBuildDeployPanel {
   id: string;
@@ -27,7 +26,7 @@ interface IBuildDeployProps {
   panels: IBuildDeployPanel[];
 }
 
-function ContentPanel({
+function Panel({
   row,
   isLast,
   stickyHeight,
@@ -95,7 +94,7 @@ function ContentPanel({
   );
 }
 
-export default function FeaturesBuildDeploy({ heading, description, panels }: IBuildDeployProps) {
+export default function BuildDeploy({ heading, description, panels }: IBuildDeployProps) {
   const [activeTab, setActiveTab] = useState(panels[0]?.id ?? '');
   const [headerHeight, setHeaderHeight] = useState(200);
   const isClickScrolling = useRef(false);
@@ -165,7 +164,7 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
 
   return (
     <section className="pt-20 md:pt-30 xl:pt-45">
-      <div className={CONTAINER}>
+      <Container>
         <div className="pt-8 md:pt-12 xl:pt-20">
           <Label>Build & Deploy</Label>
         </div>
@@ -212,7 +211,7 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
           {panels.length > 1 && (
             <ul className="-mt-px list-none">
               {panels.slice(0, -1).map((row) => (
-                <ContentPanel
+                <Panel
                   key={row.id}
                   row={row}
                   isLast={false}
@@ -225,14 +224,14 @@ export default function FeaturesBuildDeploy({ heading, description, panels }: IB
 
         {panels.length > 0 && (
           <ul className="-mt-px list-none">
-            <ContentPanel
+            <Panel
               row={panels[panels.length - 1]}
               isLast
               stickyHeight={headerHeight}
             />
           </ul>
         )}
-      </div>
+      </Container>
     </section>
   );
 }
