@@ -1,18 +1,18 @@
 import type { ReactNode } from 'react';
 
-import Image from 'next/image';
-
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
+import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
 
 interface IScaleFeature {
   title: string;
   text: string;
-  icon: string;
+  rive: IRiveConfig;
 }
 
 interface IScaleProps {
   heading: ReactNode;
+  riveDefaults: IRiveConfig;
   description: string;
   buttonLabel: string;
   buttonHref: string;
@@ -21,6 +21,7 @@ interface IScaleProps {
 
 export default function Scale({
   heading,
+  riveDefaults,
   description,
   buttonLabel,
   buttonHref,
@@ -29,7 +30,7 @@ export default function Scale({
   return (
     <section className="relative py-14 sm:py-18 md:py-22 lg:pt-30 lg:pb-34 xl:pt-48 xl:pb-51">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]" />
-      <div className="container relative">
+      <div className="relative container">
         <div className="flex flex-col gap-7 sm:gap-8 md:gap-9 lg:flex-row lg:justify-between">
           <div className="flex max-w-176 flex-col gap-6 sm:gap-7 md:gap-8">
             <Label variant="light">Scale</Label>
@@ -49,13 +50,18 @@ export default function Scale({
 
         <ul className="mt-12 grid grid-cols-1 gap-9 sm:mt-14 sm:grid-cols-2 sm:gap-10 md:mt-18 md:gap-12 lg:mt-22 xl:mt-40 xl:grid-cols-[repeat(4,minmax(0,321px))] xl:justify-between">
           {features.map((item) => (
-            <li className="flex max-w-[321px] flex-col gap-7 sm:gap-8 md:gap-10 xl:gap-11" key={item.title}>
-              <Image
-                alt={item.title}
-                width={148}
-                height={148}
+            <li
+              className="flex max-w-[321px] flex-col gap-7 sm:gap-8 md:gap-10 xl:gap-11"
+              key={item.title}
+            >
+              <RiveCanvas
                 className="h-26 w-26 sm:h-30 sm:w-30 md:h-37 md:w-37"
-                src={item.icon}
+                src={riveDefaults.src}
+                artboard={item.rive.artboard}
+                fit={riveDefaults.fit}
+                alignment={riveDefaults.alignment}
+                lazyOffset={100}
+                lazy
               />
               <div className="flex flex-col gap-5">
                 <h3 className="font-display text-[22px] leading-[1.125] text-background sm:text-2xl md:text-[28px]">

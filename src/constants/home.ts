@@ -1,5 +1,7 @@
 import { createElement, Fragment } from 'react';
 
+import { Alignment, Fit } from '@rive-app/react-canvas';
+
 export const homeContentData = {
   hero: {
     title: 'The Developer Platform for Modern APIs',
@@ -9,9 +11,8 @@ export const homeContentData = {
     secondaryCta: { label: 'View on GitHub', href: '/placeholder' },
     poster: { src: '/images/home/hero/hero-poster.jpg', width: 1920, height: 1080 },
     videos: [
-      { src: '/hero-av1.mp4', type: 'video/mp4; codecs="av01.0.05M.08"' },
-      { src: '/hero-h265.mp4', type: 'video/mp4; codecs=hvc1' },
-      { src: '/hero.webm', type: 'video/webm' },
+      { src: 'videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
+      { src: 'videos/home/hero.webm', type: 'video/webm' },
     ],
     logos: [
       {
@@ -74,30 +75,50 @@ export const homeContentData = {
     ),
     description:
       'Stop assembling your API stack piece by piece. Running APIs at scale usually means juggling hosting, gateways, rate limits, and monitoring across multiple vendors.',
+    riveDefaults: {
+      src: '/rive/home/control-plane/control-plane.riv',
+      fonts: {
+        urls: {
+          regular: '/rive/home/GeistMono-Regular.ttf',
+          medium: '/rive/home/GeistMono-Medium.ttf',
+        },
+      },
+    },
     cards: [
       {
         id: 'branch',
         title: 'Branch Overview',
         body: 'Faster to ship. Go from code to running API in minutes. Test safely, promote when ready, roll back if needed.',
-        graphic: '/images/home/control-plane/branch.png',
+        rive: {
+          artboard: 'branch',
+        },
       },
       {
         id: 'keys',
         title: 'Manage API Keys',
         body: 'Safer by default. Protect every endpoint with keys, rate limits, and instant access revocation out of the box.',
-        graphic: '/images/home/control-plane/keys.png',
+        rive: {
+          artboard: 'api',
+          autoBind: false,
+        },
       },
       {
         id: 'control',
         title: 'Control Plane',
         body: 'Simpler to run. One platform for deployments, gateways, and observability.',
-        graphic: '/images/home/control-plane/control.png',
+        rive: {
+          artboard: 'control',
+          autoBind: false,
+        },
       },
       {
         id: 'usage',
         title: 'Usage 30 Days',
         body: 'Visible from day one. Every request logged. Every decision tracked. Debug issues before users notice.',
-        graphic: '/images/home/control-plane/usage.png',
+        rive: {
+          artboard: 'usage',
+          autoBind: false,
+        },
       },
     ],
   },
@@ -183,26 +204,40 @@ export const homeContentData = {
   gateway: {
     heading:
       'Protect and control traffic at the edge. Offload access control and rate limiting to global gateways.',
+    riveDefaults: {
+      autoBind: true,
+      alignment: Alignment.BottomCenter,
+    },
     cards: [
       {
         title: 'Auth + Keys',
         body: 'Manage API keys end to end and control who can call what.',
-        graphic: '/images/home/gateway/auth.png',
-        fullBleedImage: true,
+        webgl: {
+          imageSrc: '/images/home/gateway/auth-depth.png',
+          appearanceEffect: 'natural' as const,
+          matrixCharSize: 20,
+          backgroundCharSize: 85,
+          backgroundColor: '#040406',
+          backgroundCharColor: '#878787',
+          objectColor1: '#bababa',
+          objectColor2: '#bababa',
+          objectColor3: '#bababa',
+          depthIntensity: 4,
+          symbolBalance: 21,
+          blackPoint: 8,
+        },
         useTextBackground: true,
-        imageWrapperClassName: 'absolute inset-6 md:inset-8 overflow-hidden',
-        imageClassName: 'object-cover object-bottom',
         textWidthClass: 'max-w-88',
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
       },
       {
         title: 'Global platform',
         body: 'Edge gateway enforces access and routes requests to the closest instance for low latency.',
-        graphic: '/images/home/gateway/global.png',
-        fullBleedImage: true,
-        imageClassName:
-          'max-[425px]:object-contain max-[425px]:object-bottom min-[426px]:object-cover min-[426px]:object-top',
+        rive: {
+          src: '/rive/home/gateway/global-platform.riv',
+          fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
+        },
         textWidthClass: 'max-w-90',
         gridClassName:
           'min-h-[480px] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
@@ -210,31 +245,33 @@ export const homeContentData = {
       {
         title: 'Rate limits',
         body: 'Set limits per IP, user, or key and enforce them close to your users.',
-        graphic: '/images/home/gateway/rate.png',
-        imageWrapperClassName:
-          'absolute inset-4 xl:left-7 xl:right-7 xl:top-7 xl:bottom-8 overflow-hidden',
-        imageClassName: 'object-cover object-left-top',
+        rive: {
+          src: '/rive/home/gateway/rate-limits.riv',
+          fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
+        },
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
       },
       {
         title: 'Validation',
         body: 'Enforce request rules early to catch bad traffic before it hits your API.',
-        graphic: '/images/home/gateway/validation.png',
-        imageWrapperClassName: 'absolute inset-6 md:inset-8 xl:right-[31px] overflow-hidden',
-        imageClassName: 'object-cover object-left-top',
+        rive: {
+          src: '/rive/home/gateway/validation.riv',
+          stateMachines: 'State Machine 1',
+        },
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-1 sm:row-start-3 lg:col-start-3 lg:row-start-1 xl:col-start-3 xl:row-start-1',
       },
       {
         title: 'Analytics',
         body: 'Access real-time insights into your API usage without adding custom instrumentation.',
-        graphic: '/images/home/gateway/analytics.png',
-        fullBleedImage: true,
+        rive: {
+          src: '/rive/home/gateway/analytics.riv',
+          autoBind: false,
+        },
         textWidthClass: 'max-w-96',
-        imageClassName: 'object-cover',
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',
+          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-2 sm:row-start-3 lg:col-start-3 lg:row-start-2 xl:col-start-3 xl:row-start-2',
       },
     ],
   },
@@ -263,33 +300,49 @@ export const homeContentData = {
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
     buttonLabel: 'Read the docs',
     buttonHref: '/docs',
+    riveDefaults: {
+      src: '/rive/home/scale/icons.riv',
+      fit: Fit.Cover,
+      alignment: Alignment.Center,
+    },
     features: [
       {
         title: 'Multi-region routing',
         text: 'Route requests to the nearest region for consistently low latency.',
-        icon: '/images/home/scale/multiregion.svg',
+        rive: {
+          artboard: 'main 1',
+        },
       },
       {
         title: 'Automatic scaling',
         text: 'Capacity follows demand, with no knobs to babysit and no manual ops.',
-        icon: '/images/home/scale/scaling.svg',
+        rive: {
+          artboard: 'main 2',
+        },
       },
       {
         title: 'Predictable pricing',
         text: "Start free, then scale up when you're ready and keep billing predictable as you grow.",
-        icon: '/images/home/scale/pricing.svg',
+        rive: {
+          artboard: 'main 3',
+        },
       },
       {
         title: 'Built-in protection',
         text: 'Lock down access with API keys, edge rate limits, and instant revoke controls.',
-        icon: '/images/home/scale/protection.svg',
+        rive: {
+          src: '/rive/home/gateway/analytics.riv',
+          artboard: 'main 4',
+        },
       },
     ],
   },
   observe: {
     heading: 'Stay in sync with your traffic in real time.',
     subheading: 'Every request is logged. Every decision is visible.',
-    dashboardImage: '/images/home/observe/dashboard.png',
+    riveDefaults: {
+      src: '/rive/home/observe/observe.riv',
+    },
     buttonLabel: 'Read the docs',
     buttonHref: '/docs',
     columns: [

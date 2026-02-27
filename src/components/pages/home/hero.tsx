@@ -64,6 +64,13 @@ export default function Hero({
           className="pointer-events-none origin-top scale-[1.02] object-cover object-top sm:hidden"
         />
 
+        {/*  
+          ffmpeg parameters: 
+
+          mp4: ffmpeg -i input.mov -c:v libx265 -crf 35 -pix_fmt yuv420p10le -vf scale=2560:-2 -preset veryslow -x265-params tune=animation -tag:v hvc1 -movflags faststart -an hero.mp4
+          webm: ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1420k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 1 -an -f null /dev/null && ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1420k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 2 -an -y hero.webm
+        */}
+
         <video
           ref={videoRef}
           autoPlay

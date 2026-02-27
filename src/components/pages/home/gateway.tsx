@@ -1,46 +1,42 @@
-import Image from 'next/image';
+'use client';
 
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
+import AsciiCanvas, { type IAsciiConfig } from '@/components/pages/home/ascii-canvas';
 
 interface IGatewayCard {
   title: string;
   body: string;
-  graphic: string;
-  imageClassName?: string;
-  imageWrapperClassName?: string;
+  rive?: IRiveConfig;
+  webgl?: IAsciiConfig;
   textWidthClass?: string;
-  layout?: 'split' | 'overlay';
   textStyle?: 'plain' | 'marked';
-  fullBleedImage?: boolean;
   useTextBackground?: boolean;
   gridClassName: string;
 }
 
 interface IGatewayProps {
   heading: string;
+  riveDefaults?: Pick<IRiveConfig, 'autoBind' | 'alignment'>;
   cards: IGatewayCard[];
 }
 
 function Card({
   title,
   body,
-  graphic,
-  imageClassName = 'object-cover',
-  imageWrapperClassName,
+  rive,
+  webgl,
   textWidthClass = 'max-w-88',
-  layout: layoutProp,
   textStyle: textStyleProp,
-  fullBleedImage = false,
   useTextBackground = false,
   className,
 }: Omit<IGatewayCard, 'gridClassName'> & { className?: string }) {
-  const layout = layoutProp ?? (fullBleedImage ? 'overlay' : 'split');
   const textStyle = textStyleProp ?? (useTextBackground ? 'marked' : 'plain');
 
   const textContent =
     textStyle === 'marked' ? (
-      <mark className="inline bg-background box-decoration-clone pt-0 pr-8 pb-5.5 pl-0 text-inherit">
+      <mark className="inline bg-background box-decoration-clone pt-1 pr-8.75 pb-5.5 pl-0 text-inherit">
         <span className="font-medium text-white">{title}.</span> <span>{body}</span>
       </mark>
     ) : (
@@ -55,43 +51,42 @@ function Card({
     </p>
   );
 
-  const imgEl = (
-    <Image
-      alt=""
-      className={imageClassName}
-      fill
-      sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
-      src={graphic}
+  const graphicEl = rive ? (
+    <RiveCanvas
+      className="absolute inset-0"
+      src={rive.src}
+      artboard={rive.artboard}
+      stateMachines={rive.stateMachines}
+      alignment={rive.alignment}
+      autoBind={rive.autoBind}
+      fonts={rive.fonts}
+      fontPrefetchOffset={400}
+      lazyOffset={200}
+      lazy
     />
-  );
-
-  const imageBlock = (
-    <div
-      className={cn(
-        layout === 'overlay'
-          ? 'absolute inset-0 overflow-hidden'
-          : 'relative z-0 min-h-0 overflow-hidden',
-      )}
-    >
-      {imageWrapperClassName ? <div className={imageWrapperClassName}>{imgEl}</div> : imgEl}
-    </div>
-  );
+  ) : webgl ? (
+    <AsciiCanvas
+      className="absolute inset-5 sm:inset-6 md:inset-8"
+      config={webgl}
+      lazy
+      lazyOffset={200}
+    />
+  ) : null;
 
   return (
     <div
       className={cn(
-        'h-full w-full overflow-hidden border border-gray-20 bg-background',
-        layout === 'overlay' ? 'relative' : 'grid grid-rows-[auto_1fr]',
+        'relative h-full w-full overflow-hidden border border-gray-20 bg-background',
         className,
       )}
     >
       {textBlock}
-      {imageBlock}
+      {graphicEl}
     </div>
   );
 }
 
-export default function Gateway({ heading, cards }: IGatewayProps) {
+export default function Gateway({ heading, riveDefaults, cards }: IGatewayProps) {
   return (
     <section className="pt-20 md:pt-35 xl:pt-65">
       <div className="container flex flex-col items-center">
@@ -100,17 +95,16 @@ export default function Gateway({ heading, cards }: IGatewayProps) {
           {heading}
         </h2>
 
-        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
+        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 lg:grid-cols-3 lg:grid-rows-[360px_360px] xl:mt-20 xl:grid-rows-[446px_446px]">
           {cards.map((card) => (
             <li key={card.title} className={card.gridClassName}>
               <Card
                 title={card.title}
                 body={card.body}
-                graphic={card.graphic}
-                imageClassName={card.imageClassName}
-                imageWrapperClassName={card.imageWrapperClassName}
+                rive={card.rive ? { ...riveDefaults, ...card.rive } : undefined}
+                webgl={card.webgl}
                 textWidthClass={card.textWidthClass}
-                fullBleedImage={card.fullBleedImage}
+                textStyle={card.textStyle}
                 useTextBackground={card.useTextBackground}
               />
             </li>

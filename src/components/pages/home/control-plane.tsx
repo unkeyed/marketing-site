@@ -1,31 +1,31 @@
+'use client';
+
 import type { ReactNode } from 'react';
 
-import Image from 'next/image';
-
 import { cn, splitLeadSentence } from '@/lib/utils';
+import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
 
 interface IControlPlaneCard {
   id: string;
   title: string;
   body: string;
-  graphic: string;
+  rive: Pick<IRiveConfig, 'artboard' | 'autoBind'>;
 }
 
 interface IControlPlaneProps {
   heading: ReactNode;
   description: string;
+  riveDefaults: Pick<IRiveConfig, 'src' | 'fonts'>;
   cards: IControlPlaneCard[];
 }
 
 function Card({
-  title,
   body,
-  graphic,
+  rive,
   className,
 }: {
-  title: string;
   body: string;
-  graphic: string;
+  rive: IRiveConfig;
   className?: string;
 }) {
   const { lead, rest } = splitLeadSentence(body);
@@ -33,21 +33,20 @@ function Card({
   return (
     <li
       className={cn(
-        'flex min-h-95 flex-col overflow-hidden border border-gray-20 bg-background px-5 pt-5.5 pb-5 sm:px-6 sm:pt-6.5 sm:pb-6 xl:h-107.25 xl:px-8',
+        'relative flex min-h-95 flex-col justify-end overflow-hidden border border-gray-20 bg-background px-5 pt-5.5 pb-5 sm:px-6 sm:pt-6.5 sm:pb-6 lg:min-h-100 xl:h-98 xl:px-8 2xl:h-107.25',
         className,
       )}
     >
-      <h3 className="font-mono text-[15px] leading-tight text-gray-40">{title}</h3>
-      <div className="relative min-h-42.5 flex-1 sm:min-h-52.5">
-        <Image
-          alt=""
-          width={320}
-          height={293}
-          sizes="(min-width: 1280px) 25vw, (min-width: 640px) 300px, 384px"
-          className="h-auto max-h-full w-full object-contain object-left-top"
-          src={graphic}
-        />
-      </div>
+      <RiveCanvas
+        className="absolute top-0 left-0 h-full w-full"
+        src={rive.src}
+        artboard={rive.artboard}
+        autoBind={rive.autoBind}
+        fonts={rive.fonts}
+        lazyOffset={200}
+        fontPrefetchOffset={400}
+        lazy
+      />
       <p className="text-[15px] leading-snug text-gray-80 sm:text-base">
         <strong className="font-medium text-foreground">{lead}</strong>
         {rest ? <span> {rest}</span> : null}
@@ -56,10 +55,10 @@ function Card({
   );
 }
 
-export default function ControlPlane({ heading, description, cards }: IControlPlaneProps) {
+export default function ControlPlane({ heading, description, riveDefaults, cards }: IControlPlaneProps) {
   return (
     <section className="pt-20 md:pt-30 xl:pt-57.25">
-      <div className="container relative flex flex-col">
+      <div className="relative container flex flex-col">
         <div className="relative sm:pl-8">
           <div
             aria-hidden
@@ -78,11 +77,10 @@ export default function ControlPlane({ heading, description, cards }: IControlPl
             {cards.map((card, index) => (
               <Card
                 key={card.id}
-                title={card.title}
                 body={card.body}
-                graphic={card.graphic}
+                rive={{ ...riveDefaults, ...card.rive }}
                 className={cn(
-                  'w-full sm:w-75 sm:shrink-0 sm:snap-start md:w-85 xl:w-auto xl:flex-1',
+                  'w-full sm:w-75 sm:shrink-0 sm:snap-start md:w-85 lg:w-90 xl:w-auto xl:flex-1',
                   index > 0 && 'sm:-ml-px',
                 )}
               />

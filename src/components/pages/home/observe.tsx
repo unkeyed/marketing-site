@@ -1,7 +1,8 @@
-import Image from 'next/image';
+'use client';
 
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
+import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
 
 interface IObserveColumn {
   lead: string;
@@ -11,7 +12,7 @@ interface IObserveColumn {
 interface IObserveProps {
   heading: string;
   subheading: string;
-  dashboardImage: string;
+  riveDefaults: IRiveConfig;
   buttonLabel: string;
   buttonHref: string;
   columns: IObserveColumn[];
@@ -20,7 +21,7 @@ interface IObserveProps {
 export default function Observe({
   heading,
   subheading,
-  dashboardImage,
+  riveDefaults,
   buttonLabel,
   buttonHref,
   columns,
@@ -28,7 +29,7 @@ export default function Observe({
   return (
     <section className="pt-20 md:pt-35 xl:pt-50">
       <div className="container">
-        <div className="relative h-115 sm:h-125 md:h-130 xl:h-158">
+        <div className="relative h-115 sm:h-125 md:h-130 lg:h-140 xl:h-158">
           <div className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240" />
           <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:gap-6 sm:pb-5 md:h-50 xl:h-46.75 xl:max-w-240 xl:gap-8">
             <Label>Observe</Label>
@@ -37,13 +38,11 @@ export default function Observe({
               <span className="block text-gray-60">{subheading}</span>
             </h2>
           </div>
-          <Image
-            alt=""
-            width={3072}
-            height={1202}
-            sizes="100vw"
-            className="absolute top-27 left-0 z-0 h-88 w-full object-cover object-[74%_50%] sm:top-30.5 sm:h-94.5 md:top-15 md:h-115 lg:top-13 lg:h-117.5 lg:object-center xl:top-[1px] xl:h-158"
-            src={dashboardImage}
+          <RiveCanvas
+            className="absolute top-27 left-0 z-0 h-88 w-full sm:top-30.5 sm:h-94.5 md:top-15 md:h-115 lg:top-8 lg:h-132 xl:top-[1px] xl:h-158"
+            src={riveDefaults.src}
+            lazyOffset={100}
+            lazy
           />
         </div>
 
