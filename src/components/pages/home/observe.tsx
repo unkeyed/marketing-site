@@ -30,9 +30,9 @@ export default function Observe({
       <div className="container">
         <div className="relative h-115 sm:h-125 md:h-130 xl:h-158">
           <div className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240" />
-          <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:gap-6 sm:pb-5 md:h-50 xl:h-46.75 xl:max-w-240 xl:gap-8">
+          <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:pb-5 md:h-50 md:gap-6 lg:gap-[1.75rem] xl:h-46.75 xl:max-w-240 xl:gap-8">
             <Label>Observe</Label>
-            <h2 className="max-w-240 font-display text-[30px] leading-[1.125] text-white sm:text-[36px] xl:text-[44px]">
+            <h2 className="max-w-240 font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.25rem] xl:text-[2.75rem]">
               {heading}
               <span className="block text-gray-60">{subheading}</span>
             </h2>
@@ -47,7 +47,7 @@ export default function Observe({
           />
         </div>
 
-        <div className="mt-10 grid gap-8 sm:mt-11 md:mt-12 xl:mt-14 xl:grid-cols-[35fr_65fr] xl:gap-4">
+        <div className="mt-10 grid gap-8 sm:mt-11 md:mt-12 md:gap-12 lg:gap-[2.75rem] xl:mt-14 xl:grid-cols-[35fr_65fr] xl:gap-4">
           <ul className="order-1 grid max-w-248 grid-cols-1 gap-8 text-base leading-snug sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 md:gap-y-14 md:text-lg xl:order-2 xl:grid-cols-[384px_384px] xl:gap-x-56 xl:gap-y-20">
             {columns.map((column) => (
               <li className="max-w-96" key={column.lead}>

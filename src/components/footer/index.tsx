@@ -41,7 +41,7 @@ function Footer() {
       <div className="flex flex-col py-5 md:flex-row md:items-center">
         <NextLink className="mr-9 inline-flex rounded" href={logoHref}>
           <img
-            className="block h-[22px] w-auto shrink-0"
+            className="block h-[1.375rem] w-auto shrink-0"
             src={logoSrc}
             alt={logoAlt}
             height={LOGO_BOX_HEIGHT}

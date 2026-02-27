@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const labelVariants = cva(
-  'text-sm inline-flex items-center w-fit tracking-[0.03em] leading-snug rounded-[6px] border',
+  'text-sm inline-flex items-center w-fit tracking-[0.03em] leading-snug rounded-[0.375rem] border',
   {
     variants: {
       variant: {
@@ -25,7 +25,7 @@ const labelVariants = cva(
   },
 );
 
-const labelTextVariants = cva('font-mono uppercase', {
+const labelTextVariants = cva('font-label uppercase', {
   variants: {
     variant: {
       dark: 'text-white',
@@ -33,7 +33,7 @@ const labelTextVariants = cva('font-mono uppercase', {
     },
     size: {
       sm: 'text-xs',
-      md: 'text-sm',
+      md: 'text-[0.8125rem] md:text-sm',
       lg: 'text-base',
       plain: 'text-sm',
     },
@@ -46,9 +46,9 @@ const labelTextVariants = cva('font-mono uppercase', {
 
 const dotSizeMap: Record<string, string> = {
   sm: 'h-2 w-2',
-  md: 'h-[10px] w-[10px]',
+  md: 'h-[0.625rem] w-[0.625rem]',
   lg: 'h-3 w-3',
-  plain: 'h-[10px] w-[10px]',
+  plain: 'h-[0.625rem] w-[0.625rem]',
 };
 
 export interface LabelProps
@@ -71,12 +71,12 @@ function Label({
     <div className={cn(labelVariants({ variant, size }), className)} {...props}>
       {variant === 'dark' ? (
         <span className={cn('relative', dotSize)}>
-          <span className="absolute inset-0 rounded-[2px] bg-blue-glow blur-[5px]" />
-          <span className="absolute inset-0 rounded-[2px] bg-cyan blur-[2px]" />
-          <span className="absolute inset-0 rounded-[2px] bg-cyan" />
+          <span className="absolute inset-0 rounded-[0.125rem] bg-blue-glow blur-[0.3125rem]" />
+          <span className="absolute inset-0 rounded-[0.125rem] bg-cyan blur-[0.125rem]" />
+          <span className="absolute inset-0 rounded-[0.125rem] bg-cyan" />
         </span>
       ) : (
-        <span className={cn('rounded-[2px] bg-legacy-blue', dotSize)} />
+        <span className={cn('rounded-[0.125rem] bg-legacy-blue', dotSize)} />
       )}
       <span className={cn(labelTextVariants({ variant, size }), labelClassName)}>{children}</span>
     </div>

@@ -38,7 +38,7 @@ function Panel({
       <div
         id={row.id}
         style={{ scrollMarginTop: stickyHeight }}
-        className="grid min-h-140 grid-cols-1 sm:min-h-157 lg:min-h-[clamp(540px,41vw,628px)] lg:grid-cols-2"
+        className="grid min-h-140 grid-cols-1 sm:min-h-157 lg:min-h-[clamp(33.75rem,41vw,39.25rem)] lg:grid-cols-2"
       >
         <div
           className={cn(
@@ -47,11 +47,11 @@ function Panel({
           )}
         >
           <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
-            <div className="text-[24px] leading-[1.125] tracking-[-0.02em] sm:text-[26px] md:text-[28px]">
+            <div className="text-[1.375rem] leading-[1.125] tracking-[-0.02em] sm:text-[1.625rem] md:text-[1.75rem]">
               <h3 className="text-white">{row.title}</h3>
               <p className="text-gray-60">{row.subtitle}</p>
             </div>
-            <p className="max-w-md text-[15px] leading-snug text-gray-90 sm:text-base">
+            <p className="max-w-md text-[0.9375rem] leading-snug text-gray-90 sm:text-base">
               {row.body}
             </p>
           </div>
@@ -70,7 +70,7 @@ function Panel({
             </div>
           )}
         </div>
-        <div className="border-x border-b border-gray-20 lg:border">
+        <div className="border-gray-20 lg:border">
           <Image
             alt=""
             width={1536}
@@ -96,20 +96,34 @@ function Panel({
 
 export default function BuildDeploy({ heading, description, panels }: IBuildDeployProps) {
   const [activeTab, setActiveTab] = useState(panels[0]?.id ?? '');
-  const [headerHeight, setHeaderHeight] = useState(200);
+  const [stickyPanelHeight, setStickyPanelHeight] = useState(200);
+  const [globalHeaderPx, setGlobalHeaderPx] = useState(54);
   const isClickScrolling = useRef(false);
-  const headerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const header = headerRef.current;
-    if (!header) return;
+    const el = stickyRef.current;
+    if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
       const h = Math.round(entry.borderBoxSize[0].blockSize);
-      setHeaderHeight((prev) => (prev === h ? prev : h));
+      setStickyPanelHeight((prev) => (prev === h ? prev : h));
     });
-    ro.observe(header);
+    ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  useEffect(() => {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue('--sticky-header-height')
+      .trim();
+    if (!raw) return;
+    const rem = parseFloat(raw);
+    if (Number.isNaN(rem)) return;
+    const base = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    setGlobalHeaderPx(Math.round(rem * base));
+  }, []);
+
+  const stickyOffset = globalHeaderPx + stickyPanelHeight;
 
   useEffect(() => {
     const elements = panels
@@ -139,7 +153,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
           }
         }
       },
-      { rootMargin: `-${headerHeight}px 0px -40% 0px`, threshold: 0 },
+      { rootMargin: `-${stickyOffset}px 0px -40% 0px`, threshold: 0 },
     );
 
     for (const el of elements) {
@@ -147,7 +161,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
     }
 
     return () => observer.disconnect();
-  }, [panels, headerHeight]);
+  }, [panels, stickyOffset]);
 
   const handleTabClick = useCallback((id: string) => {
     setActiveTab(id);
@@ -175,19 +189,19 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
         <div>
           <div
-            ref={headerRef}
-            className="sticky top-0 z-10 -mx-5 bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
+            ref={stickyRef}
+            className="sticky top-[var(--sticky-header-height)] z-40 -mx-5 self-start bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
           >
-            <div className="grid gap-4 pt-6 sm:gap-5 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-8">
-              <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[40px] xl:text-[52px]">
+            <div className="grid gap-4 pt-[1.25rem] sm:gap-5 md:pt-6 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-[1.75rem]">
+              <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[2.5rem] md:max-w-[42rem] md:text-[2.25rem] lg:max-w-none lg:text-[2.5rem] xl:text-[3.25rem]">
                 {heading}
               </h2>
-              <p className="max-w-104 text-lg leading-snug tracking-[-0.01em] text-gray-70 sm:text-[20px] md:text-xl lg:mt-7.75 lg:ml-auto">
+              <p className="max-w-104 text-[1rem] leading-snug tracking-[-0.01em] text-gray-70 sm:text-[1.25rem] md:text-[1.125rem] lg:mt-7.75 lg:ml-auto lg:text-xl">
                 {description}
               </p>
             </div>
 
-            <div className="-mx-5 mt-8 h-16 overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
+            <div className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 md:h-16 [scrollbar-width:none] md:-mx-8 md:mt-12 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
               <ul
                 role="tablist"
                 aria-label="Build and deploy steps"
@@ -202,7 +216,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
                       aria-controls={row.id}
                       onClick={() => handleTabClick(row.id)}
                       className={cn(
-                        'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-3 text-base leading-[1.125] font-normal transition-colors sm:px-4 sm:text-lg md:text-xl',
+                        'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-3 text-base leading-[1.125] font-normal transition-colors sm:px-4 sm:text-lg md:text-[1.125rem] lg:text-xl',
                         index === panels.length - 1 && 'border-r',
                         activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
                       )}
@@ -218,7 +232,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
           {panels.length > 1 && (
             <ul className="-mx-5 -mt-px list-none md:-mx-8 xl:mx-0">
               {panels.slice(0, -1).map((row) => (
-                <Panel key={row.id} row={row} isLast={false} stickyHeight={headerHeight} />
+                <Panel key={row.id} row={row} isLast={false} stickyHeight={stickyOffset} />
               ))}
             </ul>
           )}
@@ -226,7 +240,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
         {panels.length > 0 && (
           <ul className="-mx-5 -mt-px list-none md:-mx-8 xl:mx-0">
-            <Panel row={panels[panels.length - 1]} isLast stickyHeight={headerHeight} />
+            <Panel row={panels[panels.length - 1]} isLast stickyHeight={stickyOffset} />
           </ul>
         )}
       </div>

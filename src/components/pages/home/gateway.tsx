@@ -50,7 +50,7 @@ function Card({
     );
 
   const textBlock = (
-    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:px-8 md:pt-7 md:pb-4 xl:pt-8">
+    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:p-6 xl:pt-8">
       <span className={cn('block', textWidthClass)}>{textContent}</span>
     </p>
   );
@@ -96,7 +96,7 @@ export default function Gateway({ heading, cards }: IGatewayProps) {
     <section className="pt-20 md:pt-35 xl:pt-65">
       <div className="container flex flex-col items-center">
         <Label>Gateway</Label>
-        <h2 className="mt-4 max-w-[1177px] text-center font-display text-[30px] leading-[1.125] text-white sm:text-[40px] md:text-[44px] lg:text-[48px] xl:mt-8 xl:text-[52px]">
+        <h2 className="mt-[1.25rem] max-w-[73.5625rem] text-center font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.5rem] md:mt-[1.5rem] md:text-[2.25rem] lg:mt-[1.75rem] lg:max-w-[60rem] lg:text-[2.5rem] xl:mt-8 xl:max-w-[73.5625rem] xl:text-[3.25rem]">
           {heading}
         </h2>
 
