@@ -114,23 +114,43 @@ export default function Hero({
       </div>
 
       <div className="container">
-        <ul className="-mx-4 flex items-center gap-6 overflow-x-auto px-4 pt-8 pb-6 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:justify-between lg:gap-0 lg:overflow-visible lg:pt-12 lg:pb-10.5 [&::-webkit-scrollbar]:hidden">
-          {logos.map((logo) => (
-            <li
-              key={logo.alt}
-              className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
-            >
-              <Image
-                className="h-full w-full"
-                alt={logo.alt}
-                width={logo.width}
-                height={logo.height}
-                src={logo.src}
-                priority
-              />
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-hidden pt-8 pb-6 lg:overflow-visible lg:pt-12 lg:pb-10.5">
+          <div className="flex w-max gap-6 animate-[logos_30s_linear_infinite] will-change-transform motion-reduce:animate-none lg:w-full lg:animate-none lg:will-change-auto lg:gap-0">
+            <ul className="flex shrink-0 items-center gap-6 lg:w-full lg:gap-0 lg:justify-between">
+              {logos.map((logo) => (
+                <li
+                  key={logo.alt}
+                  className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
+                >
+                  <Image
+                    className="h-full w-full"
+                    alt={logo.alt}
+                    width={logo.width}
+                    height={logo.height}
+                    src={logo.src}
+                    priority
+                  />
+                </li>
+              ))}
+            </ul>
+            <ul className="flex shrink-0 items-center gap-6 lg:hidden" aria-hidden="true">
+              {logos.map((logo) => (
+                <li
+                  key={`${logo.alt}-dup`}
+                  className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
+                >
+                  <Image
+                    className="h-full w-full"
+                    alt={logo.alt}
+                    width={logo.width}
+                    height={logo.height}
+                    src={logo.src}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   );

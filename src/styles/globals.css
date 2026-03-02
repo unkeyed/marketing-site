@@ -16,7 +16,7 @@
   --number-flow-mask-width: 0.25rem;
 
   /* Custom project variables */
-  --sticky-header-height: 3.25rem;
+  --sticky-header-height: 3.375rem;
   --footer-safe-area-spacing: 0rem;
 }
 
@@ -139,6 +139,11 @@
 @utility font-display {
   font-family: articulat-cf, sans-serif;
   font-feature-settings: 'ss01' 1;
+}
+
+@utility font-label {
+  font-family: var(--font-jetbrains-mono), ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo,
+    Consolas, 'DejaVu Sans Mono', monospace;
 }
 
 @utility container {

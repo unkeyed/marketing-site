@@ -108,7 +108,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                     <button
                       type="button"
                       onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                      className="flex w-full items-center justify-between py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                      className="flex w-full items-center justify-between py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                     >
                       {item.label}
                       <ChevronDown
@@ -131,7 +131,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                             <li key={ci}>
                               <NextLink
                                 href={child.href ?? '#'}
-                                className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-foreground/5"
+                                className="flex items-start gap-3 py-2.5 transition-colors hover:bg-foreground/5"
                                 onClick={() => setOpen(false)}
                               >
                                 {child.icon && (
@@ -170,7 +170,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                 <NextLink
                   key={index}
                   href={item.href ?? '#'}
-                  className="border-b border-foreground/10 py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                  className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}

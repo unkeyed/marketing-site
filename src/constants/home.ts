@@ -1,5 +1,4 @@
 import { createElement, Fragment } from 'react';
-
 import { Alignment, Fit } from '@rive-app/react-canvas';
 
 export const homeContentData = {
@@ -34,35 +33,35 @@ export const homeContentData = {
         src: '/images/home/hero/logos/mintlify.svg',
         width: 106,
         height: 28,
-        wrapperClassName: 'h-7 w-[106px]',
+        wrapperClassName: 'h-7 w-[6.625rem]',
       },
       {
         alt: 'Symbolica logo',
         src: '/images/home/hero/logos/symbolica.svg',
         width: 125,
         height: 28,
-        wrapperClassName: 'h-7 w-[125px]',
+        wrapperClassName: 'h-7 w-[7.8125rem]',
       },
       {
         alt: 'BlindPay logo',
         src: '/images/home/hero/logos/blindpay.svg',
         width: 105,
         height: 28,
-        wrapperClassName: 'h-7 w-[105px]',
+        wrapperClassName: 'h-7 w-[6.5625rem]',
       },
       {
         alt: 'Magic Patterns logo',
         src: '/images/home/hero/logos/magicpatterns.svg',
         width: 159,
         height: 24,
-        wrapperClassName: 'h-6 w-[159px]',
+        wrapperClassName: 'h-6 w-[9.9375rem]',
       },
       {
         alt: 'Plain logo',
         src: '/images/home/hero/logos/plain.svg',
         width: 74,
         height: 22,
-        wrapperClassName: 'h-[22px] w-[74px]',
+        wrapperClassName: 'h-[1.375rem] w-[4.625rem]',
       },
     ],
   },
@@ -156,21 +155,21 @@ export const homeContentData = {
             src: '/images/home/build-deploy/logos/typescript.svg',
             width: 110,
             height: 28,
-            className: 'h-7 w-[110px]',
+            className: 'h-7 w-[6.875rem]',
           },
           {
             alt: 'Go',
             src: '/images/home/build-deploy/logos/go.svg',
             width: 75,
             height: 28,
-            className: 'h-7 w-[75px]',
+            className: 'h-7 w-[4.6875rem]',
           },
           {
             alt: 'Java',
             src: '/images/home/build-deploy/logos/java.svg',
             width: 97,
             height: 40,
-            className: 'h-10 w-[97px]',
+            className: 'h-10 w-[6.0625rem]',
           },
         ],
       },
@@ -197,7 +196,7 @@ export const homeContentData = {
         subtitle: 'Branch protection & OpenAPI checks',
         body: 'Make it really hard to ship broken APIs. OpenAPI diffs automatically flag breaking changes before they hit production.',
         image: '/images/home/build-deploy/validate.png',
-        textTopClass: 'lg:pt-[126px]',
+        textTopClass: 'lg:pt-[7.875rem]',
       },
     ],
   },
@@ -229,7 +228,7 @@ export const homeContentData = {
         useTextBackground: true,
         textWidthClass: 'max-w-88',
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
       },
       {
         title: 'Global platform',
@@ -240,7 +239,7 @@ export const homeContentData = {
         },
         textWidthClass: 'max-w-90',
         gridClassName:
-          'min-h-[480px] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
+          'min-h-[30rem] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
       },
       {
         title: 'Rate limits',
@@ -250,7 +249,7 @@ export const homeContentData = {
           fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
         },
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
       },
       {
         title: 'Validation',
@@ -260,7 +259,7 @@ export const homeContentData = {
           stateMachines: 'State Machine 1',
         },
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-1 sm:row-start-3 lg:col-start-3 lg:row-start-1 xl:col-start-3 xl:row-start-1',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
       },
       {
         title: 'Analytics',
@@ -271,7 +270,7 @@ export const homeContentData = {
         },
         textWidthClass: 'max-w-96',
         gridClassName:
-          'h-[clamp(320px,76vw,420px)] sm:h-[400px] md:h-[446px] lg:h-auto sm:col-start-2 sm:row-start-3 lg:col-start-3 lg:row-start-2 xl:col-start-3 xl:row-start-2',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',
       },
     ],
   },
@@ -373,17 +372,17 @@ export const homeContentData = {
       {
         text: 'Zero code required. A fully hosted developer portal with nothing to build or maintain.',
         graphic: '/images/home/portal/zero.png',
-        textWidthClass: 'max-w-[374px]',
+        textWidthClass: 'max-w-[23.375rem]',
       },
       {
         text: 'Beautiful API docs. OpenAPI-generated documentation, hosted by Unkey and always in sync.',
         graphic: '/images/home/portal/docs.png',
-        textWidthClass: 'max-w-[411px]',
+        textWidthClass: 'max-w-[25.6875rem]',
       },
       {
         text: 'Keys and usage, self-serve. Users manage their API keys and view usage without support requests.',
         graphic: '/images/home/portal/keys.png',
-        textWidthClass: 'max-w-[409px]',
+        textWidthClass: 'max-w-[25.5625rem]',
       },
     ],
   },

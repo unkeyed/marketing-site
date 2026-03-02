@@ -98,7 +98,7 @@
   }
 
   ul {
-    @apply prose-li:marker:text-[0px];
+    @apply prose-li:marker:text-[0];
 
     li {
       @apply relative;
@@ -226,7 +226,7 @@
       @apply mx-1 inline-flex max-w-full overflow-x-auto rounded border border-border bg-muted/40 px-1 pt-[1px] pb-[1px] text-sm font-normal tracking-tight text-foreground before:hidden after:hidden;
 
       &:not(:first-child) {
-        @apply ml-[3px];
+        @apply ml-[0.1875rem];
       }
     }
 
