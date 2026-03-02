@@ -1,12 +1,18 @@
 import type { ReactNode } from 'react';
 
 import '@/styles/globals.css';
-import { Inter } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 
 const inter = Inter({
   weight: ['400', '500', '600'],
   subsets: ['latin'],
   variable: '--font-inter',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  weight: ['400', '500'],
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
 });
 
 export default function RootLayout({
@@ -20,7 +26,9 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/ido5ixw.css" />
       </head>
-      <body className={`bg-background ${inter.variable} font-sans antialiased`}>{children}</body>
+      <body className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }
