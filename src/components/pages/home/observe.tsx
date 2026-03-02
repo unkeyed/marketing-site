@@ -29,8 +29,11 @@ export default function Observe({
   return (
     <section className="pt-20 md:pt-35 xl:pt-50">
       <div className="container">
-        <div className="relative h-115 sm:h-125 md:h-130 lg:h-140 xl:h-158">
-          <div className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240" />
+        <div className="relative h-90 sm:h-125 md:h-130 lg:h-140 xl:h-158">
+          <div
+            aria-hidden
+            className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240"
+          />
           <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:pb-5 md:h-50 md:gap-6 lg:gap-[1.75rem] xl:h-46.75 xl:max-w-240 xl:gap-8">
             <Label>Observe</Label>
             <h2 className="max-w-240 font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.25rem] xl:text-[2.75rem]">
@@ -39,8 +42,9 @@ export default function Observe({
             </h2>
           </div>
           <RiveCanvas
-            className="absolute top-27 left-0 z-0 h-88 w-full sm:top-30.5 sm:h-94.5 md:top-15 md:h-115 lg:top-8 lg:h-132 xl:top-[1px] xl:h-158"
+            className="absolute top-0 left-0 z-0 h-full w-full"
             src={riveDefaults.src}
+            alignment={riveDefaults.alignment}
             lazyOffset={100}
             lazy
           />

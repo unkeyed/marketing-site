@@ -228,7 +228,7 @@ export const homeContentData = {
         useTextBackground: true,
         textWidthClass: 'max-w-88',
         gridClassName:
-          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[21rem] md:h-[24rem] xl:h-auto sm:col-start-1 sm:row-start-1 xl:col-start-1 xl:row-start-1',
       },
       {
         title: 'Global platform',
@@ -236,6 +236,8 @@ export const homeContentData = {
         rive: {
           src: '/rive/home/gateway/global-platform.riv',
           fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
+          fit: Fit.Cover,
+          alignment: Alignment.TopCenter,
         },
         textWidthClass: 'max-w-90',
         gridClassName:
@@ -249,7 +251,7 @@ export const homeContentData = {
           fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
         },
         gridClassName:
-          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[21rem] md:h-[24rem] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',
       },
       {
         title: 'Validation',
@@ -259,7 +261,7 @@ export const homeContentData = {
           stateMachines: 'State Machine 1',
         },
         gridClassName:
-          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[21rem] md:h-[24rem] xl:h-auto sm:col-start-1 sm:row-start-3 xl:col-start-3 xl:row-start-1',
       },
       {
         title: 'Analytics',
@@ -270,7 +272,7 @@ export const homeContentData = {
         },
         textWidthClass: 'max-w-96',
         gridClassName:
-          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[25rem] md:h-[27.875rem] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',
+          'h-[clamp(20rem,76vw,26.25rem)] sm:h-[21rem] md:h-[24rem] xl:h-auto sm:col-start-2 sm:row-start-3 xl:col-start-3 xl:row-start-2',
       },
     ],
   },
@@ -341,6 +343,7 @@ export const homeContentData = {
     subheading: 'Every request is logged. Every decision is visible.',
     riveDefaults: {
       src: '/rive/home/observe/observe.riv',
+      alignment: Alignment.BottomCenter,
     },
     buttonLabel: 'Read the docs',
     buttonHref: '/docs',

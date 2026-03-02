@@ -4,9 +4,8 @@ import config from '@/configs/website-config';
 
 import { IMenuItem } from '@/types/common';
 import { cn } from '@/lib/utils';
-import { Link } from '@/components/ui/link';
-import { Icons } from '@/components/icons';
 
+import HeaderActions from './header-actions';
 import MobileMenu from './mobile-menu';
 import Nav from './nav';
 
@@ -25,7 +24,8 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
       : config.projectName;
 
   return (
-    <header className={cn('sticky top-0 z-50 flex items-center pt-2.5 bg-background', className)}>
+    <header className={cn('sticky top-0 z-50 flex items-center pt-2.5', className)}>
+      <div className="pointer-events-none absolute inset-0 -z-10 h-full backdrop-blur-md" />
       <div className="mx-auto flex w-full max-w-content items-center gap-1 px-5 md:px-8 xl:px-10 2xl:px-0">
         <div className="relative z-60 flex h-11 flex-1 items-center justify-between bg-foreground px-6 xl:max-w-[67.75rem]">
           <NextLink className="inline-flex shrink-0" href={logoHref}>
@@ -41,27 +41,7 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
           <Nav className="hidden lg:flex" items={menuItems} />
         </div>
 
-        <nav aria-label="Actions" className="hidden items-center gap-16 lg:flex">
-          <div className="flex items-center gap-1">
-            <Link href="https://unkey.dev/discord" size="small">
-              Discord
-            </Link>
-            <Link href="https://github.com/unkeyed/unkey" size="small" className="gap-1">
-              <Icons.github className="text-background" size={18} />
-              <span>5.1k</span>
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Link href="/app/login" variant="secondary" size="small">
-              Login
-            </Link>
-            <Link href="/app/sign-up" size="small">
-              Sign Up
-            </Link>
-          </div>
-        </nav>
-
+        <HeaderActions />
         <MobileMenu items={menuItems} />
       </div>
     </header>

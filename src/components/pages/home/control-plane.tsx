@@ -25,7 +25,7 @@ function Card({ body, rive, className }: { body: string; rive: IRiveConfig; clas
   return (
     <li
       className={cn(
-        'relative flex min-h-95 flex-col justify-end overflow-hidden border border-gray-20 bg-background px-5 pt-5.5 pb-5 sm:px-6 sm:pt-6.5 sm:pb-6 lg:min-h-100 xl:h-98 xl:px-8 2xl:h-107.25',
+        'relative flex min-h-95 flex-col justify-end overflow-hidden border border-gray-20 bg-background px-5 pt-5.5 pb-5 sm:px-6 sm:pt-6.5 sm:pb-6 md:h-100 xl:h-98 xl:px-8 2xl:h-107.25',
         className,
       )}
     >

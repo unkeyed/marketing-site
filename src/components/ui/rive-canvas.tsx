@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alignment, Fit, Layout, useRive } from '@rive-app/react-canvas';
 
 import { cn } from '@/lib/utils';
 
 interface IRiveFontConfig {
   urls: Record<string, string>;
-  mediumPattern?: RegExp;
+  /** Custom patterns per weight key. Falls back to case-insensitive match on the key name. */
+  patterns?: Record<string, RegExp>;
 }
 
 const fontCaches = new Map<string, Promise<Uint8Array>>();
@@ -32,10 +33,21 @@ function prefetchFonts(urls: Record<string, string>) {
   }
 }
 
-function createFontAssetLoader(fonts: IRiveFontConfig) {
-  const mediumPattern = fonts.mediumPattern ?? /medium|500/i;
+function matchFontUrl(fonts: IRiveFontConfig, assetName: string): string | undefined {
   const entries = Object.entries(fonts.urls);
+  const patterns = fonts.patterns;
 
+  // Try to match a specific weight by key pattern against the asset name
+  for (const [key, url] of entries) {
+    const pattern = patterns?.[key] ?? new RegExp(key, 'i');
+    if (pattern.test(assetName)) return url;
+  }
+
+  // Fallback to regular, then first available
+  return fonts.urls.regular ?? entries[0]?.[1];
+}
+
+function createFontAssetLoader(fonts: IRiveFontConfig) {
   return (
     asset: { isFont: boolean; cdnUuid: string; name?: string; decode: (b: Uint8Array) => void },
     bytes: Uint8Array,
@@ -44,10 +56,7 @@ function createFontAssetLoader(fonts: IRiveFontConfig) {
       return false;
     }
 
-    const match = entries.find(([key]) =>
-      key === 'medium' ? mediumPattern.test(asset.name ?? '') : false,
-    );
-    const url = match ? match[1] : entries[0]?.[1];
+    const url = matchFontUrl(fonts, asset.name ?? '');
     if (!url) return false;
 
     void loadFontBytes(url)
@@ -76,6 +85,8 @@ interface IRiveCanvasProps {
   fontPrefetchOffset?: number;
 }
 
+type TRiveRendererProps = Omit<IRiveCanvasProps, 'lazy' | 'lazyOffset' | 'fontPrefetchOffset'>;
+
 function RiveRenderer({
   src,
   artboard,
@@ -86,30 +97,28 @@ function RiveRenderer({
   autoBind = true,
   fonts,
   className,
-}: {
-  src: string;
-  artboard?: string;
-  stateMachines?: string;
-  fit?: Fit;
-  alignment?: Alignment;
-  autoplay?: boolean;
-  autoBind?: boolean;
-  fonts?: IRiveFontConfig;
-  className?: string;
-}) {
+}: TRiveRendererProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+
+  const layout = useMemo(() => new Layout({ fit, alignment }), [fit, alignment]);
+  const onLoad = useCallback(() => setIsLoaded(true), []);
+  const onLoadError = useCallback(() => setHasError(true), []);
+  const assetLoader = useMemo(
+    () => (fonts ? createFontAssetLoader(fonts) : undefined),
+    [fonts],
+  );
 
   const { RiveComponent } = useRive({
     src,
     stateMachines,
     artboard,
-    layout: new Layout({ fit, alignment }),
+    layout,
     autoplay,
     autoBind,
-    onLoad: () => setIsLoaded(true),
-    onLoadError: () => setHasError(true),
-    assetLoader: fonts ? createFontAssetLoader(fonts) : undefined,
+    onLoad,
+    onLoadError,
+    assetLoader,
   });
 
   if (hasError) return null;

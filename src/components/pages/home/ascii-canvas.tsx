@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { shaderMaterial, Text, useFBO } from '@react-three/drei';
-import { Canvas, createPortal, extend, useFrame, useThree } from '@react-three/fiber';
+import { shaderMaterial } from '@react-three/drei';
+import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import { cn } from '@/lib/utils';
@@ -38,6 +38,7 @@ uniform float u_revealProgress;
 uniform float u_time;
 uniform float u_effectMode;
 uniform float u_transparent;
+uniform float u_imageAspect;
 
 uniform vec3 u_backgroundColor;
 uniform vec3 u_backgroundCharColor;
@@ -163,6 +164,13 @@ void main() {
 
   vec2 cellCenterUV = (gridIndex + 0.5) * cellSize / u_resolution.y;
   cellCenterUV.x /= aspect;
+
+  // cover: crop image to fill canvas while preserving image aspect ratio
+  float coverRatioX = min(aspect / u_imageAspect, 1.0);
+  float coverRatioY = min(u_imageAspect / aspect, 1.0);
+  cellCenterUV.x = (cellCenterUV.x - 0.5) * coverRatioX + 0.5;
+  cellCenterUV.y = (cellCenterUV.y - 0.5) * coverRatioY + 0.5;
+
   cellCenterUV = clamp(cellCenterUV, 0.0, 1.0);
 
   vec2 cellDepthAlpha = getDepthAndAlpha(cellCenterUV);
@@ -323,6 +331,7 @@ const AsciiEffectMaterial = shaderMaterial(
     u_time: 0.0,
     u_effectMode: 0.0,
     u_transparent: 0.0,
+    u_imageAspect: 1.0,
     u_backgroundColor: new THREE.Vector3(0, 0, 0),
     u_backgroundCharColor: new THREE.Vector3(0.2, 0.2, 0.2),
     u_backgroundEnabled: 1.0,
@@ -377,61 +386,57 @@ const DEFAULT_CONFIG: Required<Omit<IAsciiConfig, 'imageSrc' | 'fontUrl'>> = {
 const DEFAULT_FONT_URL = '/rive/home/GeistMono-Regular.ttf';
 const REVEAL_DURATION_MS = 1800;
 
-function FontAtlas({
-  textureRef,
-  fontUrl,
-}: {
-  textureRef: React.RefObject<THREE.Texture | null>;
-  fontUrl: string;
-}) {
-  const fbo = useFBO(2048, 1024, {
-    minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter,
-    format: THREE.RGBAFormat,
-  });
+// Generates a 2048×1024 font atlas with characters '0' (left half) and '1' (right half)
+// using the Canvas 2D API to avoid troika-three-text setState calls inside the R3F frame loop.
+function useFontAtlas(fontUrl: string) {
+  const textureRef = useRef<THREE.Texture | null>(null);
 
-  const scene = useMemo(() => new THREE.Scene(), []);
-  const camera = useMemo(() => new THREE.OrthographicCamera(-1, 1, 0.5, -0.5, 0, 10), []);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let cancelled = false;
 
-  useFrame(({ gl }) => {
-    gl.setRenderTarget(fbo);
-    gl.clear();
-    gl.render(scene, camera);
-    gl.setRenderTarget(null);
-    if (textureRef.current !== fbo.texture) {
-      textureRef.current = fbo.texture;
-    }
-  });
+    const familyName = `AsciiAtlas_${fontUrl.replace(/[^a-z0-9]/gi, '_')}`;
 
-  return createPortal(
-    <>
-      <mesh position={[0, 0, -1]}>
-        <planeGeometry args={[2, 1]} />
-        <meshBasicMaterial color="black" />
-      </mesh>
-      <Text
-        font={fontUrl}
-        fontSize={0.8}
-        position={[-0.5, 0, 0]}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        0
-      </Text>
-      <Text
-        font={fontUrl}
-        fontSize={0.8}
-        position={[0.5, 0, 0]}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        1
-      </Text>
-    </>,
-    scene,
-  );
+    const draw = () => {
+      if (cancelled) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = 2048;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, 2048, 1024);
+      ctx.fillStyle = '#fff';
+      // fontSize=0.8 in world units, camera height=1.0 → 80% of 1024px = ~819px
+      ctx.font = `819px "${familyName}"`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('0', 512, 512);
+      ctx.fillText('1', 1536, 512);
+
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.needsUpdate = true;
+      textureRef.current = tex;
+    };
+
+    const face = new FontFace(familyName, `url("${fontUrl}")`);
+    face
+      .load()
+      .then((loaded) => {
+        document.fonts.add(loaded);
+        draw();
+      })
+      .catch((err) => console.warn('[AsciiCanvas] Font load failed:', err));
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fontUrl]);
+
+  return textureRef;
 }
 
 interface IMainSceneProps {
@@ -443,8 +448,9 @@ interface IMainSceneProps {
 function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
   const { size } = useThree();
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const fontTextureRef = useRef<THREE.Texture | null>(null);
+  const fontTextureRef = useFontAtlas(fontUrl);
   const [imgTexture, setImgTexture] = useState<THREE.Texture | null>(null);
+  const imageAspectRef = useRef(1.0);
   const revealStartRef = useRef(0);
   const revealRef = useRef(0);
 
@@ -458,6 +464,10 @@ function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
     loader.load(imageSrc, (tex) => {
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
+      const img = tex.image as HTMLImageElement;
+      const w = img.naturalWidth || img.width || 1;
+      const h = img.naturalHeight || img.height || 1;
+      imageAspectRef.current = w / h;
       setImgTexture(tex);
     });
     revealStartRef.current = performance.now();
@@ -501,6 +511,7 @@ function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
           ? 2
           : 0;
     mat.uniforms.u_transparent.value = 0;
+    mat.uniforms.u_imageAspect.value = imageAspectRef.current;
     mat.uniforms.u_backgroundColor.value = hexToRgb(config.backgroundColor);
     mat.uniforms.u_backgroundCharColor.value = hexToRgb(config.backgroundCharColor);
     mat.uniforms.u_backgroundEnabled.value = config.backgroundEnabled ? 1 : 0;
@@ -511,7 +522,6 @@ function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
 
   return (
     <>
-      <FontAtlas textureRef={fontTextureRef} fontUrl={fontUrl} />
       <mesh>
         <planeGeometry args={[2, 2]} />
         {/* @ts-expect-error -- custom shader material registered via extend */}

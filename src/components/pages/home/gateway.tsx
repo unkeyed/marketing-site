@@ -36,7 +36,7 @@ function Card({
 
   const textContent =
     textStyle === 'marked' ? (
-      <mark className="inline bg-background box-decoration-clone pt-1 pr-8.75 pb-5.5 pl-0 text-inherit">
+      <mark className="inline bg-background box-decoration-clone pt-1 pr-8.75 pb-4 pl-0 text-inherit md:pb-5.5">
         <span className="font-medium text-white">{title}.</span> <span>{body}</span>
       </mark>
     ) : (
@@ -60,6 +60,7 @@ function Card({
       alignment={rive.alignment}
       autoBind={rive.autoBind}
       fonts={rive.fonts}
+      fit={rive.fit}
       fontPrefetchOffset={400}
       lazyOffset={200}
       lazy
@@ -95,7 +96,7 @@ export default function Gateway({ heading, riveDefaults, cards }: IGatewayProps)
           {heading}
         </h2>
 
-        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 lg:grid-cols-3 lg:grid-rows-[360px_360px] xl:mt-20 xl:grid-rows-[446px_446px]">
+        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
           {cards.map((card) => (
             <li key={card.title} className={card.gridClassName}>
               <Card

@@ -55,6 +55,7 @@ function Panel({
               {row.body}
             </p>
           </div>
+
           {row.hasLogos && row.logos && (
             <div className="mt-8 flex flex-wrap items-end gap-4 sm:mt-10 sm:gap-6 md:mt-12 lg:mt-24 xl:mt-45.75">
               {row.logos.map((logo) => (
@@ -70,6 +71,7 @@ function Panel({
             </div>
           )}
         </div>
+
         <div className="border-gray-20 lg:border">
           <Image
             alt=""
@@ -81,6 +83,7 @@ function Panel({
           />
         </div>
       </div>
+
       {!isLast && (
         <div
           className="h-16 border-r border-l border-gray-20"
@@ -98,16 +101,20 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
   const [activeTab, setActiveTab] = useState(panels[0]?.id ?? '');
   const [stickyPanelHeight, setStickyPanelHeight] = useState(200);
   const [globalHeaderPx, setGlobalHeaderPx] = useState(54);
+  const [isStuck, setIsStuck] = useState(false);
+
   const isClickScrolling = useRef(false);
   const stickyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = stickyRef.current;
     if (!el) return;
+
     const ro = new ResizeObserver(([entry]) => {
       const h = Math.round(entry.borderBoxSize[0].blockSize);
       setStickyPanelHeight((prev) => (prev === h ? prev : h));
     });
+
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -117,11 +124,44 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
       .getPropertyValue('--sticky-header-height')
       .trim();
     if (!raw) return;
+
     const rem = parseFloat(raw);
     if (Number.isNaN(rem)) return;
+
     const base = parseFloat(getComputedStyle(document.documentElement).fontSize);
     setGlobalHeaderPx(Math.round(rem * base));
   }, []);
+
+  useEffect(() => {
+    const el = stickyRef.current;
+    if (!el) return;
+
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const rect = el.getBoundingClientRect();
+
+      const pinned = Math.abs(rect.top - globalHeaderPx) <= 1;
+
+      setIsStuck((prev) => (prev === pinned ? prev : pinned));
+    };
+
+    const onScrollOrResize = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize);
+
+    return () => {
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, [globalHeaderPx, stickyPanelHeight]);
 
   const stickyOffset = globalHeaderPx + stickyPanelHeight;
 
@@ -137,11 +177,8 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            intersectingIds.add(entry.target.id);
-          } else {
-            intersectingIds.delete(entry.target.id);
-          }
+          if (entry.isIntersecting) intersectingIds.add(entry.target.id);
+          else intersectingIds.delete(entry.target.id);
         }
 
         if (isClickScrolling.current) return;
@@ -156,10 +193,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
       { rootMargin: `-${stickyOffset}px 0px -40% 0px`, threshold: 0 },
     );
 
-    for (const el of elements) {
-      observer.observe(el);
-    }
-
+    for (const el of elements) observer.observe(el);
     return () => observer.disconnect();
   }, [panels, stickyOffset]);
 
@@ -175,13 +209,22 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
     const unlock = () => {
       isClickScrolling.current = false;
     };
+
     window.addEventListener('scrollend', unlock, { once: true });
-    const fallback = setTimeout(unlock, 1500);
+    const fallback = window.setTimeout(unlock, 1500);
     window.addEventListener('scrollend', () => clearTimeout(fallback), { once: true });
   }, []);
 
   return (
     <section className="pt-20 md:pt-30 xl:pt-45">
+      <div
+        aria-hidden
+        className={cn(
+          'pointer-events-none fixed inset-x-0 top-0 z-30 h-[var(--sticky-header-height)] bg-black transition-opacity duration-200',
+          isStuck ? 'opacity-100' : 'opacity-0',
+        )}
+      />
+
       <div className="container">
         <div className="pt-8 md:pt-12 xl:pt-20">
           <Label>Build & Deploy</Label>
@@ -201,7 +244,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
               </p>
             </div>
 
-            <div className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 md:h-16 [scrollbar-width:none] md:-mx-8 md:mt-12 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
+            <div className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
               <ul
                 role="tablist"
                 aria-label="Build and deploy steps"
