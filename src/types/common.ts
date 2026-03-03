@@ -1,5 +1,4 @@
 import type { ReactElement, ReactNode } from 'react';
-import { type Route } from 'next';
 import { type LucideProps } from 'lucide-react';
 import { type BundledLanguage } from 'shiki/langs';
 
@@ -7,7 +6,7 @@ import { type TSocialIcons } from '@/components/icons';
 
 export interface IMenuItem {
   label: string;
-  href: Route<string> | URL;
+  href: string;
   description?: string;
   icon?: string;
   children?: IMenuItem[];
@@ -15,6 +14,11 @@ export interface IMenuItem {
 
 export interface IMenuSocialItem extends IMenuItem {
   icon: TSocialIcons;
+}
+
+export interface IFooterMenuSection {
+  title: string;
+  items: IMenuItem[];
 }
 
 export interface ISlug {

@@ -1,8 +1,8 @@
 const config = {
   projectName: 'unkey',
   logo: {
-    light: '/logo.svg',
-    dark: '/logo.svg',
+    light: '/logo-light.svg',
+    dark: '/logo-dark.svg',
   },
   logoAlt: 'unkey',
   logoLink: '/',

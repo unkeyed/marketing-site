@@ -1,4 +1,4 @@
-import type { IMenuSocialItem } from '@/types/common';
+import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
 
 export const MENUS = {
   header: [
@@ -42,23 +42,63 @@ export const MENUS = {
     { label: 'Docs', href: '/docs' },
   ],
   footer: {
-    main: [],
+    description: 'Build better APIs faster',
+    copyright: '© 2026 Unkey Inc. All rights reserved.',
+    main: [
+      {
+        title: 'Company',
+        items: [
+          { label: 'About', href: '/about' },
+          { label: 'Roadmap', href: '/roadmap' },
+          { label: 'Careers', href: '/careers' },
+          { label: 'Source Code', href: 'https://github.com/unkeyed/unkey' },
+          { label: 'Status Page', href: 'https://status.unkey.com' },
+        ],
+      },
+      {
+        title: 'Resources',
+        items: [
+          { label: 'Blog', href: '/blog' },
+          { label: 'Changelog', href: '/changelog' },
+          { label: 'Templates', href: '/templates' },
+          { label: 'Docs', href: '/docs' },
+          { label: 'Glossary', href: '/glossary' },
+          { label: 'Case Studies', href: '/case-studies' },
+        ],
+      },
+      {
+        title: 'Connect',
+        items: [
+          { label: 'X (Twitter)', href: 'https://x.com/unkeydev' },
+          { label: 'Discord', href: 'https://unkey.dev/discord' },
+          { label: 'OSS Friends', href: '/oss-friends' },
+          { label: 'Book a Call', href: '/book-a-call' },
+        ],
+      },
+      {
+        title: 'Legal',
+        items: [
+          { label: 'Terms of Service', href: '/terms-of-service' },
+          { label: 'Privacy Policy', href: '/privacy-policy' },
+        ],
+      },
+    ] satisfies IFooterMenuSection[],
     social: [
       {
-        href: 'https://twitter.com/yourusername',
-        label: 'Follow us on Twitter',
+        href: 'https://x.com/unkeydev',
+        label: 'Follow us on X',
         icon: 'twitter',
       },
       {
-        href: 'https://github.com/yourusername',
+        href: 'https://github.com/unkeyed/unkey',
         label: 'Follow us on GitHub',
         icon: 'github',
       },
       {
-        href: 'https://linkedin.com/in/yourusername',
-        label: 'Follow us on LinkedIn',
-        icon: 'linkedin',
+        href: 'https://unkey.dev/discord',
+        label: 'Join our Discord',
+        icon: 'discord',
       },
-    ] as IMenuSocialItem[],
+    ] satisfies IMenuSocialItem[],
   },
 };
