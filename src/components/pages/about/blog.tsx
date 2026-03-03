@@ -42,10 +42,8 @@ function BlogCard({ card }: { card: IBlogCard }) {
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
-          <span className="font-sans text-[14px] font-medium tracking-[-0.35px]">
-            {card.category}
-          </span>
-          <span className="flex items-center gap-2 font-sans text-[13px] font-medium tracking-[-0.325px] uppercase">
+          <span className="font-sans text-sm font-medium tracking-tight">{card.category}</span>
+          <span className="flex items-center gap-2 font-sans text-[0.8125rem] font-medium tracking-tight uppercase">
             <span className="size-1 rounded-full bg-muted-foreground" />
             {card.date}
           </span>
@@ -61,24 +59,21 @@ function BlogCard({ card }: { card: IBlogCard }) {
 export default function Blog({ label, heading, ctaLabel, ctaHref, cards }: IBlogProps) {
   return (
     <section className="border-t border-gray-20">
-      <div className="container py-12 md:py-20 xl:pt-50 xl:pb-0 xl:pb-50">
-        <div className="flex flex-col gap-8 md:gap-10 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
+      <div className="section-container py-12 md:py-[92px] xl:pt-50 xl:pb-0 xl:pb-50">
+        <div className="flex flex-col gap-8 md:gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
           <div className="flex flex-col gap-6 md:gap-8">
             <Label>{label}</Label>
-            <h2 className="max-w-[767px] font-display text-3xl leading-[1.125] text-foreground sm:text-4xl xl:text-[44px]">
+            <h2 className="max-w-[767px] font-display text-3xl leading-[1.125] text-foreground sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
               {heading}
             </h2>
           </div>
-          <Button
-            asChild
-            className="w-full shrink-0 rounded-none px-5 py-2.5 text-base sm:w-fit xl:w-auto"
-          >
+          <Button asChild className="w-fit shrink-0 rounded-none px-5 py-2.5 text-base lg:w-auto">
             <NextLink href={ctaHref}>{ctaLabel}</NextLink>
           </Button>
         </div>
 
         <ul
-          className="mt-10 grid gap-6 sm:gap-8 md:grid-cols-2 xl:mt-16 xl:grid-cols-3 xl:gap-8"
+          className="mt-10 grid gap-6 sm:gap-8 md:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8"
           role="list"
         >
           {cards.map((card) => (

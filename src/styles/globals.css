@@ -52,6 +52,9 @@
     var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
   --font-display: articulat-cf, sans-serif;
+  --font-mono:
+    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
 
   /* ui/dialog, ui/drawer, ui/search-dialog, ui/select, content/video, content/code-block-wrapper */
   --color-popover: hsl(240 10% 3.9%);
@@ -177,8 +180,8 @@
     font-feature-settings: 'ss01' 1;
   }
 
-  .container {
-    @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 sm:px-16 2xl:px-24;
+  .section-container {
+    @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 lg:px-8 2xl:px-24;
   }
 
   .marked-title {

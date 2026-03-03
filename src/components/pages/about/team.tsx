@@ -24,12 +24,12 @@ export default function TeamSection({
   founders,
 }: ITeamSectionProps) {
   return (
-    <section className="pt-12 md:pt-32">
-      <div className="container flex flex-col">
+    <section className="pt-12 md:pt-[88px] lg:pt-24 2xl:pt-32">
+      <div className="section-container flex flex-col">
         <Label>{badgeLabel}</Label>
 
         <div className="mt-5 md:mt-8">
-          <h2 className="font-display text-[30px] leading-[1.125] whitespace-pre-wrap text-foreground sm:text-[40px] xl:text-[44px]">
+          <h2 className="font-display text-3xl leading-[1.125] whitespace-pre-wrap text-foreground sm:text-[2.5rem] md:text-[2.25rem] xl:text-[2.75rem]">
             {title}
             <br />
             <span className="text-gray-60">{subtitle}</span>
