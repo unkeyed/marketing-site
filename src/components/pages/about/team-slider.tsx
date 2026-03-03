@@ -111,7 +111,7 @@ export default function TeamSlider() {
                   sizes="(max-width: 768px) calc(100vw - 2.5rem), 460px"
                 />
               </div>
-              <figcaption className="font-jetbrains text-[15px] leading-[1.375] font-medium text-muted-foreground">
+              <figcaption className="font-mono text-[0.9375rem] leading-[1.375] font-medium text-muted-foreground">
                 {item.caption}
               </figcaption>
             </figure>

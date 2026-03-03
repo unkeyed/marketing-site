@@ -33,7 +33,7 @@ const labelTextVariants = cva('font-mono uppercase', {
     },
     size: {
       sm: 'text-xs',
-      md: 'text-[13px]',
+      md: 'text-[0.8125rem]',
       lg: 'text-base',
       plain: 'text-sm',
     },

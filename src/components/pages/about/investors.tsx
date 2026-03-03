@@ -21,11 +21,11 @@ export interface IInvestorsProps {
 export default function Investors({ label, heading, description, list }: IInvestorsProps) {
   return (
     <section className="bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]">
-      <div className="container py-12 md:py-[92px] xl:pt-46 xl:pb-49">
+      <div className="section-container py-12 md:py-[92px] xl:pt-46 xl:pb-49">
         <div className="flex flex-col gap-[18px] md:gap-[18px] lg:gap-5 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
           <div className="flex flex-col gap-5 md:gap-7">
-            <Label variant="light" labelClassName="font-jetbrains">{label}</Label>
-            <h2 className="marked-title font-display text-3xl leading-[1.125] text-background sm:text-4xl md:max-w-md lg:max-w-[480px] lg:text-[40px] xl:max-w-[640px] xl:text-[44px]">
+            <Label variant="light">{label}</Label>
+            <h2 className="marked-title font-display text-3xl leading-[1.125] text-background sm:text-4xl md:max-w-md lg:max-w-[480px] lg:text-[2.5rem] xl:max-w-[640px] xl:text-[2.75rem]">
               {heading}
             </h2>
           </div>
