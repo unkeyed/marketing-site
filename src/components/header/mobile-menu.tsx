@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
+import { homeHeaderLinks } from '@/constants/home';
 import { cn } from '@/lib/utils';
 import { Link } from '@/components/ui/link';
 import { Icons } from '@/components/icons';
@@ -18,6 +19,8 @@ interface MobileMenuProps {
 function MobileMenu({ items }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [discordLink, githubLink] = homeHeaderLinks.social;
+  const [loginLink, signUpLink] = homeHeaderLinks.auth;
   const pathname = usePathname();
 
   useEffect(() => {
@@ -181,27 +184,27 @@ function MobileMenu({ items }: MobileMenuProps) {
 
           <div className="mt-5 flex flex-col gap-2">
             <div className="flex gap-1">
-              <Link href="https://unkey.dev/discord" className="flex-1">
-                Discord
+              <Link href={discordLink.href} className="flex-1">
+                {discordLink.label}
               </Link>
-              <Link href="https://github.com/unkeyed/unkey" className="flex-1 gap-1">
+              <Link href={githubLink.href} className="flex-1 gap-1">
                 <Icons.github className="text-background" size={18} />
-                <span>5.1k</span>
+                <span>{githubLink.metric}</span>
               </Link>
             </div>
             <div className="flex gap-1">
               <Link
-                href="/app/login"
+                href={loginLink.href}
                 variant="secondary"
                 className="flex-1 border-gray-70 text-background"
               >
-                Login
+                {loginLink.label}
               </Link>
               <Link
-                href="/app/sign-up"
+                href={signUpLink.href}
                 className="flex-1 bg-background text-foreground hover:bg-gray-12"
               >
-                Sign Up
+                {signUpLink.label}
               </Link>
             </div>
           </div>

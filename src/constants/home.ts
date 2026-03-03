@@ -1,6 +1,17 @@
 import { createElement, Fragment } from 'react';
 import { Alignment, Fit } from '@rive-app/react-canvas';
 
+export const homeHeaderLinks = {
+  social: [
+    { id: 'discord', label: 'Discord', href: 'https://unkey.dev/discord' },
+    { id: 'github', label: 'GitHub', href: 'https://github.com/unkeyed/unkey', metric: '5.1k' },
+  ],
+  auth: [
+    { id: 'login', label: 'Login', href: '/app/login' },
+    { id: 'signUp', label: 'Sign Up', href: '/app/sign-up' },
+  ],
+} as const;
+
 export const homeContentData = {
   hero: {
     title: 'The Developer Platform for Modern APIs',
@@ -82,6 +93,8 @@ export const homeContentData = {
           medium: '/rive/home/GeistMono-Medium.ttf',
         },
       },
+      alignment: Alignment.Center,
+      fit: Fit.Cover,
     },
     cards: [
       {
@@ -368,7 +381,7 @@ export const homeContentData = {
   },
   portal: {
     heading: 'First-class developer experience for your users.',
-    subheading: 'API keys, usage, and docs-ready out of the box.',
+    subheading: 'API keys, usage, and docs—ready out of the box.',
     buttonLabel: 'Try the Portal',
     buttonHref: '/portal',
     cards: [
@@ -394,7 +407,11 @@ export const homeContentData = {
     subheading: 'Start for free, integrate in minutes, and scale when you need to.',
     buttonLabel: 'Start for free',
     buttonHref: '/placeholder',
-    backgroundImage: '/images/home/cta/visual.png',
+    poster: '/images/home/cta/visual.png',
+    videos: [
+      { src: 'videos/home/cta.mp4', type: 'video/mp4; codecs=hvc1' },
+      { src: 'videos/home/cta.webm', type: 'video/webm' },
+    ],
   },
 };
 

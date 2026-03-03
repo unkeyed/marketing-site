@@ -44,6 +44,7 @@ export default function Observe({
           <RiveCanvas
             className="absolute top-0 left-0 z-0 h-full w-full"
             src={riveDefaults.src}
+            fit={riveDefaults.fit}
             alignment={riveDefaults.alignment}
             lazyOffset={100}
             lazy

@@ -105,6 +105,8 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
   const isClickScrolling = useRef(false);
   const stickyRef = useRef<HTMLDivElement>(null);
+  const tabsScrollerRef = useRef<HTMLDivElement>(null);
+  const tabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
     const el = stickyRef.current;
@@ -197,6 +199,32 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
     return () => observer.disconnect();
   }, [panels, stickyOffset]);
 
+  useEffect(() => {
+    const scroller = tabsScrollerRef.current;
+    const activeButton = tabButtonRefs.current[activeTab];
+    if (!scroller || !activeButton) return;
+
+    if (scroller.scrollWidth <= scroller.clientWidth + 1) return;
+
+    const containerRect = scroller.getBoundingClientRect();
+    const tabRect = activeButton.getBoundingClientRect();
+
+    const hiddenOnLeft = tabRect.left < containerRect.left;
+    const hiddenOnRight = tabRect.right > containerRect.right;
+    if (!hiddenOnLeft && !hiddenOnRight) return;
+
+    const targetLeft =
+      scroller.scrollLeft +
+      (tabRect.left - containerRect.left) -
+      (containerRect.width - tabRect.width) / 2;
+
+    const clampedTarget = Math.max(
+      0,
+      Math.min(targetLeft, scroller.scrollWidth - scroller.clientWidth),
+    );
+    scroller.scrollTo({ left: clampedTarget, behavior: 'smooth' });
+  }, [activeTab]);
+
   const handleTabClick = useCallback((id: string) => {
     setActiveTab(id);
 
@@ -244,7 +272,10 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
               </p>
             </div>
 
-            <div className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden">
+            <div
+              ref={tabsScrollerRef}
+              className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden"
+            >
               <ul
                 role="tablist"
                 aria-label="Build and deploy steps"
@@ -253,6 +284,9 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
                 {panels.map((row, index) => (
                   <li key={row.id} role="presentation">
                     <button
+                      ref={(el) => {
+                        tabButtonRefs.current[row.id] = el;
+                      }}
                       type="button"
                       role="tab"
                       aria-selected={activeTab === row.id}

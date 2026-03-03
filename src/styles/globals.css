@@ -142,8 +142,8 @@
 }
 
 @utility font-label {
-  font-family: var(--font-jetbrains-mono), ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo,
-    Consolas, 'DejaVu Sans Mono', monospace;
+  font-family:
+    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @utility container {

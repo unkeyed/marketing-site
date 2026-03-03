@@ -19,19 +19,31 @@ interface IControlPlaneProps {
   cards: IControlPlaneCard[];
 }
 
-function Card({ body, rive, className }: { body: string; rive: IRiveConfig; className?: string }) {
+function Card({
+  title,
+  body,
+  rive,
+  className,
+}: {
+  title: string;
+  body: string;
+  rive: IRiveConfig;
+  className?: string;
+}) {
   const { lead, rest } = splitLeadSentence(body);
 
   return (
     <li
       className={cn(
-        'relative flex min-h-95 flex-col justify-end overflow-hidden border border-gray-20 bg-background px-5 pt-5.5 pb-5 sm:px-6 sm:pt-6.5 sm:pb-6 md:h-100 xl:h-98 xl:px-8 2xl:h-107.25',
+        'relative flex h-auto min-h-95 flex-col justify-start overflow-hidden border border-gray-20 bg-background px-5 pt-5.5 pb-5 sm:px-6 sm:pt-6.5 sm:pb-6 xl:px-8 2xl:min-h-107.25',
         className,
       )}
     >
+      <h3 className="font-mono text-[0.9375rem] leading-tight text-gray-40">{title}</h3>
       <RiveCanvas
-        className="absolute top-0 left-0 h-full w-full"
+        className="pointer-events-none relative aspect-[324/255] h-auto w-full"
         src={rive.src}
+        fit={rive.fit}
         artboard={rive.artboard}
         autoBind={rive.autoBind}
         fonts={rive.fonts}
@@ -39,7 +51,7 @@ function Card({ body, rive, className }: { body: string; rive: IRiveConfig; clas
         fontPrefetchOffset={400}
         lazy
       />
-      <p className="text-[15px] leading-snug text-gray-80 sm:text-base">
+      <p className="mt-8 text-[15px] leading-snug text-gray-80 sm:text-base xl:mt-auto">
         <strong className="font-medium text-foreground">{lead}</strong>
         {rest ? <span> {rest}</span> : null}
       </p>
@@ -69,16 +81,17 @@ export default function ControlPlane({
           </p>
         </div>
 
-        <div className="relative z-10 mt-10 snap-x snap-mandatory scroll-pl-5 overflow-x-auto [scrollbar-width:none] sm:-mx-5 md:-mx-8 md:mt-16 md:scroll-pl-8 xl:mx-0 xl:mt-40 xl:snap-none xl:scroll-pl-0 xl:overflow-visible [&::-webkit-scrollbar]:hidden">
-          <ul className="flex flex-col items-stretch gap-0 sm:w-max sm:flex-row sm:px-5 md:px-8 xl:w-auto xl:px-0">
+        <div className="relative z-10 mt-10 snap-x snap-mandatory scroll-pl-5 overflow-x-auto [scrollbar-width:none] sm:-mx-5 sm:snap-none sm:overflow-visible md:-mx-8 md:mt-16 md:snap-x md:snap-mandatory md:scroll-pl-8 md:overflow-x-auto xl:mx-0 xl:mt-40 xl:snap-none xl:scroll-pl-0 xl:overflow-visible [&::-webkit-scrollbar]:hidden">
+          <ul className="flex flex-col items-stretch gap-0 sm:grid sm:w-full sm:grid-cols-2 sm:grid-rows-2 sm:px-5 md:flex md:flex-row md:w-max md:px-8 xl:w-auto xl:px-0">
             {cards.map((card, index) => (
               <Card
                 key={card.id}
+                title={card.title}
                 body={card.body}
                 rive={{ ...riveDefaults, ...card.rive }}
                 className={cn(
-                  'w-full sm:w-75 sm:shrink-0 sm:snap-start md:w-85 lg:w-90 xl:w-auto xl:flex-1',
-                  index > 0 && '-mt-px sm:mt-0 sm:-ml-px',
+                  'w-full md:shrink-0 md:w-85 md:snap-start lg:w-90 xl:w-auto xl:flex-1',
+                  index > 0 && '-mt-px sm:mt-0 md:-ml-px',
                 )}
               />
             ))}

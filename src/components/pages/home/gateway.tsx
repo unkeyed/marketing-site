@@ -46,7 +46,7 @@ function Card({
     );
 
   const textBlock = (
-    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:p-6 xl:pt-8">
+    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:p-8 xl:p-8">
       <span className={cn('block', textWidthClass)}>{textContent}</span>
     </p>
   );
