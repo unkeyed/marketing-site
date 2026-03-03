@@ -29,7 +29,7 @@ function PortalCard({
   return (
     <div
       className={cn(
-        'relative flex h-[clamp(23.75rem,92vw,28.75rem)] w-full flex-col overflow-hidden border border-gray-20 bg-background sm:h-115 md:h-[23.75rem] lg:h-[26.25rem] xl:h-132',
+        'relative flex h-[clamp(23.75rem,92vw,28.75rem)] w-full flex-col overflow-hidden border border-gray-20 bg-background sm:h-100 md:h-[23.75rem] lg:h-[26.25rem] xl:h-132',
         className,
       )}
     >
@@ -69,7 +69,9 @@ export default function Portal({
             {heading}
             <span className="block text-gray-60">{subheading}</span>
           </h2>
-          <Link href={buttonHref} className="w-fit">{buttonLabel}</Link>
+          <Link href={buttonHref} className="w-fit">
+            {buttonLabel}
+          </Link>
         </div>
 
         <ul className="mt-[3rem] grid grid-cols-1 gap-0 sm:grid-cols-2 md:mt-8 lg:mt-[4.5rem] lg:grid-cols-3 xl:grid-cols-3">
@@ -83,7 +85,7 @@ export default function Portal({
                   index === 1
                     ? 'border-t-0 sm:border-t sm:border-l-0'
                     : index === 2
-                      ? 'border-t-0 lg:border-l-0 lg:border-t'
+                      ? 'border-t-0 lg:border-t lg:border-l-0'
                       : undefined
                 }
               />

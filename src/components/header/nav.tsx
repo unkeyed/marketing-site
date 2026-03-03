@@ -82,16 +82,12 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                   isOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
-                <ul
-                  role="menu"
-                  className="flex w-full flex-col gap-1.5 bg-foreground p-4 shadow-lg"
-                >
+                <ul className="flex w-full flex-col gap-1.5 bg-foreground p-4 shadow-lg">
                   {children.map((child, childIndex) => {
                     return (
-                      <li key={childIndex} role="none">
+                      <li key={childIndex}>
                         <NextLink
                           href={child.href ?? '#'}
-                          role="menuitem"
                           className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-gray-94"
                         >
                           {child.icon && (

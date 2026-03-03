@@ -407,7 +407,7 @@ export const homeContentData = {
     subheading: 'Start for free, integrate in minutes, and scale when you need to.',
     buttonLabel: 'Start for free',
     buttonHref: '/placeholder',
-    poster: '/images/home/cta/visual.png',
+    poster: '/images/home/cta/poster.jpg',
     videos: [
       { src: 'videos/home/cta.mp4', type: 'video/mp4; codecs=hvc1' },
       { src: 'videos/home/cta.webm', type: 'video/webm' },

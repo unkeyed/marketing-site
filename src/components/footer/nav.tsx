@@ -18,31 +18,41 @@ function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNa
         className,
       )}
     >
-      {sections.map((section) => (
-        <div key={section.title} className="flex flex-col gap-y-5">
-          <h2 className="text-[0.9375rem] leading-snug font-medium tracking-tight text-white">
-            {section.title}
-          </h2>
-          <ul className="flex flex-col gap-y-3 text-[0.9375rem] leading-snug font-medium tracking-tight text-gray-60">
-            {section.items.map((item) => {
-              const isExternal = /^https?:\/\//.test(item.href);
+      {sections.map((section, index) => {
+        const sectionId = `footer-section-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${index}`;
 
-              return (
-                <li key={item.label}>
-                  <NextLink
-                    className="transition-colors duration-200 hover:text-white"
-                    href={item.href}
-                    target={isExternal ? '_blank' : undefined}
-                    rel={isExternal ? 'noopener noreferrer' : undefined}
-                  >
-                    {item.label}
-                  </NextLink>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
+        return (
+          <div key={section.title} className="flex flex-col gap-y-5">
+            <h3
+              id={sectionId}
+              className="text-[0.9375rem] leading-snug font-medium tracking-tight text-white"
+            >
+              {section.title}
+            </h3>
+            <ul
+              aria-labelledby={sectionId}
+              className="flex flex-col gap-y-3 text-[0.9375rem] leading-snug font-medium tracking-tight text-gray-60"
+            >
+              {section.items.map((item) => {
+                const isExternal = /^https?:\/\//.test(item.href);
+
+                return (
+                  <li key={item.label}>
+                    <NextLink
+                      className="transition-colors duration-200 hover:text-white"
+                      href={item.href}
+                      target={isExternal ? '_blank' : undefined}
+                      rel={isExternal ? 'noopener noreferrer' : undefined}
+                    >
+                      {item.label}
+                    </NextLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      })}
     </nav>
   );
 }

@@ -35,7 +35,7 @@ function Panel({
 }) {
   return (
     <li>
-      <div
+      <section
         id={row.id}
         style={{ scrollMarginTop: stickyHeight }}
         className="grid min-h-140 grid-cols-1 sm:min-h-157 lg:min-h-[clamp(33.75rem,41vw,39.25rem)] lg:grid-cols-2"
@@ -82,7 +82,7 @@ function Panel({
             src={row.image}
           />
         </div>
-      </div>
+      </section>
 
       {!isLast && (
         <div
@@ -277,33 +277,29 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
               ref={tabsScrollerRef}
               className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden"
             >
-              <ul
-                role="tablist"
-                aria-label="Build and deploy steps"
-                className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0"
-              >
-                {panels.map((row, index) => (
-                  <li key={row.id} role="presentation">
-                    <button
-                      ref={(el) => {
-                        tabButtonRefs.current[row.id] = el;
-                      }}
-                      type="button"
-                      role="tab"
-                      aria-selected={activeTab === row.id}
-                      aria-controls={row.id}
-                      onClick={() => handleTabClick(row.id)}
-                      className={cn(
-                        'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-3 text-base leading-[1.125] font-normal transition-colors sm:px-4 sm:text-lg md:text-[1.125rem] lg:text-xl',
-                        index === panels.length - 1 && 'border-r',
-                        activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
-                      )}
-                    >
-                      {row.tabLabel}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <nav aria-label="Build and deploy steps" className="h-full">
+                <ul className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0">
+                  {panels.map((row, index) => (
+                    <li key={row.id}>
+                      <button
+                        ref={(el) => {
+                          tabButtonRefs.current[row.id] = el;
+                        }}
+                        type="button"
+                        aria-current={activeTab === row.id ? 'step' : undefined}
+                        onClick={() => handleTabClick(row.id)}
+                        className={cn(
+                          'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-3 text-base leading-[1.125] font-normal transition-colors sm:px-4 sm:text-lg md:text-[1.125rem] lg:text-xl',
+                          index === panels.length - 1 && 'border-r',
+                          activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
+                        )}
+                      >
+                        {row.tabLabel}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           </div>
 

@@ -187,8 +187,13 @@ function MobileMenu({ items }: MobileMenuProps) {
               <Link href={discordLink.href} className="flex-1">
                 {discordLink.label}
               </Link>
-              <Link href={githubLink.href} className="flex-1 gap-1">
-                <Icons.github className="text-background" size={18} />
+              <Link
+                href={githubLink.href}
+                className="flex-1 gap-1"
+                aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
+              >
+                <Icons.github className="text-background" size={18} aria-hidden="true" />
+                <span className="sr-only">{githubLink.label}</span>
                 <span>{githubLink.metric}</span>
               </Link>
             </div>

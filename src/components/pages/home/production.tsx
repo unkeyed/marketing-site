@@ -26,7 +26,7 @@ export default function Production({ label, items }: IProductionProps) {
                 <div className="w-px flex-1 bg-gray-20" />
               </div>
               <div className="flex flex-col gap-2 text-[1rem] md:text-[1.125rem] xl:text-xl">
-                <p className="leading-normal font-medium text-white">{item.title}</p>
+                <h3 className="leading-normal font-medium text-white">{item.title}</h3>
                 <p className="leading-snug text-gray-70">{item.text}</p>
               </div>
             </li>
