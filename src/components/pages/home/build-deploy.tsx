@@ -267,7 +267,8 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
               <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[2.5rem] md:max-w-[42rem] md:text-[2.25rem] lg:max-w-none lg:text-[2.5rem] xl:text-[3.25rem]">
                 {heading}
               </h2>
-              <p className="max-w-104 text-[1rem] leading-snug tracking-[-0.01em] text-gray-70 sm:text-[1.25rem] md:text-[1.125rem] lg:mt-7.75 lg:ml-auto lg:text-xl">
+              {/* 2xl:-bottom-0.5 to fix the line-height difference between Figma and the implemented layout */}
+              <p className="relative max-w-104 text-[1rem] leading-snug tracking-[-0.01em] text-gray-70 sm:text-[1.25rem] md:text-[1.125rem] lg:mt-7.75 lg:ml-auto lg:text-xl 2xl:-bottom-0.5">
                 {description}
               </p>
             </div>
