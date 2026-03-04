@@ -181,6 +181,14 @@
     font-family: var(--font-sans);
     font-feature-settings: 'ss01' 1;
   }
+
+  /* Allow page scrolling over decorative Rive canvases on touch devices. */
+  @media (hover: none) and (pointer: coarse) {
+    .rive-touch-scroll-fix {
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+  }
 }
 
 /*

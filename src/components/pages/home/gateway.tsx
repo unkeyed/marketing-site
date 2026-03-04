@@ -61,16 +61,18 @@ function Card({
       autoBind={rive.autoBind}
       fonts={rive.fonts}
       fit={rive.fit}
-      fontPrefetchOffset={400}
-      lazyOffset={200}
+      fontPrefetchOffset={800}
+      playOffset={-200}
+      lazyOffset={400}
       lazy
     />
   ) : webgl ? (
     <AsciiCanvas
       className="absolute inset-5 sm:inset-6 md:inset-8"
       config={webgl}
+      lazyOffset={1600}
+      playOffset={-200}
       lazy
-      lazyOffset={200}
     />
   ) : null;
 

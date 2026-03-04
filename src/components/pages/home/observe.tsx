@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
 import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
@@ -13,6 +15,7 @@ interface IObserveProps {
   heading: string;
   subheading: string;
   riveDefaults: IRiveConfig;
+  mobileImage: string;
   buttonLabel: string;
   buttonHref: string;
   columns: IObserveColumn[];
@@ -22,6 +25,7 @@ export default function Observe({
   heading,
   subheading,
   riveDefaults,
+  mobileImage,
   buttonLabel,
   buttonHref,
   columns,
@@ -29,7 +33,7 @@ export default function Observe({
   return (
     <section className="pt-20 md:pt-35 xl:pt-50">
       <div className="container">
-        <div className="relative h-90 sm:h-125 md:h-130 lg:h-140 xl:h-158">
+        <div className="relative h-140 sm:h-160 md:h-130 lg:h-140 xl:h-158">
           <div
             aria-hidden
             className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240"
@@ -42,12 +46,26 @@ export default function Observe({
             </h2>
           </div>
           <RiveCanvas
-            className="absolute top-0 left-0 z-0 h-full w-full"
+            className="absolute top-0 left-0 z-0 hidden h-full w-full lg:block"
             src={riveDefaults.src}
             fit={riveDefaults.fit}
             alignment={riveDefaults.alignment}
-            lazyOffset={100}
+            lazyOffset={400}
+            playOffset={-200}
             lazy
+          />
+          <Image
+            className="block object-cover object-[75%_100%] sm:object-[90%_100%] md:object-bottom-right lg:hidden"
+            src={mobileImage}
+            sizes="
+            (max-width: 640px) 1360px,
+            (max-width: 768px) 1555px,
+            (max-width: 1024px) 1263px,
+            0px
+            "
+            aria-hidden="true"
+            alt=""
+            fill
           />
         </div>
 

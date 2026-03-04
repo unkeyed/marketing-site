@@ -358,6 +358,7 @@ export const homeContentData = {
       src: '/rive/home/observe/observe.riv',
       alignment: Alignment.BottomCenter,
     },
+    mobileImage: '/images/home/observe/dash.png',
     buttonLabel: 'Read the docs',
     buttonHref: '/docs',
     columns: [

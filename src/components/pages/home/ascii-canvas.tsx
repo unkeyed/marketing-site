@@ -389,7 +389,7 @@ const REVEAL_DURATION_MS = 1800;
 // Generates a 2048×1024 font atlas with characters '0' (left half) and '1' (right half)
 // using the Canvas 2D API to avoid troika-three-text setState calls inside the R3F frame loop.
 function useFontAtlas(fontUrl: string) {
-  const textureRef = useRef<THREE.Texture | null>(null);
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -419,7 +419,7 @@ function useFontAtlas(fontUrl: string) {
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
       tex.needsUpdate = true;
-      textureRef.current = tex;
+      setTexture(tex);
     };
 
     const face = new FontFace(familyName, `url("${fontUrl}")`);
@@ -436,23 +436,44 @@ function useFontAtlas(fontUrl: string) {
     };
   }, [fontUrl]);
 
-  return textureRef;
+  useEffect(() => {
+    return () => texture?.dispose();
+  }, [texture]);
+
+  return texture;
 }
 
 interface IMainSceneProps {
   imageSrc: string;
   config: Required<Omit<IAsciiConfig, 'imageSrc' | 'fontUrl'>>;
   fontUrl: string;
+  shouldAnimate: boolean;
+  onReadyChange?: (ready: boolean) => void;
 }
 
-function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
+function MainScene({ imageSrc, config, fontUrl, shouldAnimate, onReadyChange }: IMainSceneProps) {
   const { size } = useThree();
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const fontTextureRef = useFontAtlas(fontUrl);
+  const fontTexture = useFontAtlas(fontUrl);
   const [imgTexture, setImgTexture] = useState<THREE.Texture | null>(null);
   const imageAspectRef = useRef(1.0);
+  const animationStartRef = useRef(0);
+  const hasAnimationStartedRef = useRef(false);
   const revealStartRef = useRef(0);
   const revealRef = useRef(0);
+  const isReady = Boolean(fontTexture) && (!imageSrc || Boolean(imgTexture));
+
+  useEffect(() => {
+    onReadyChange?.(isReady);
+  }, [isReady, onReadyChange]);
+
+  useEffect(() => {
+    if (!shouldAnimate || hasAnimationStartedRef.current) return;
+    const now = performance.now();
+    animationStartRef.current = now;
+    revealStartRef.current = now;
+    hasAnimationStartedRef.current = true;
+  }, [shouldAnimate]);
 
   useEffect(() => {
     if (!imageSrc) {
@@ -470,9 +491,11 @@ function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
       imageAspectRef.current = w / h;
       setImgTexture(tex);
     });
-    revealStartRef.current = performance.now();
+    if (shouldAnimate && hasAnimationStartedRef.current) {
+      revealStartRef.current = performance.now();
+    }
     revealRef.current = 0;
-  }, [imageSrc]);
+  }, [imageSrc, shouldAnimate]);
 
   const resolution = useMemo(() => {
     const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
@@ -483,16 +506,23 @@ function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
     const mat = materialRef.current;
     if (!mat) return;
 
-    const now = performance.now();
-    const elapsed = now - revealStartRef.current;
-    const linear = Math.min(Math.max(elapsed / REVEAL_DURATION_MS, 0), 1);
-    const eased =
-      linear < 0.5 ? 4 * linear * linear * linear : 1 - Math.pow(-2 * linear + 2, 3) / 2;
-    revealRef.current = imgTexture ? eased : 1;
+    let timelineSeconds = 0;
+    if (shouldAnimate && hasAnimationStartedRef.current) {
+      const now = performance.now();
+      const elapsed = now - revealStartRef.current;
+      const linear = Math.min(Math.max(elapsed / REVEAL_DURATION_MS, 0), 1);
+      const eased =
+        linear < 0.5 ? 4 * linear * linear * linear : 1 - Math.pow(-2 * linear + 2, 3) / 2;
+      revealRef.current = imgTexture ? eased : 1;
+      timelineSeconds = (now - animationStartRef.current) * 0.001;
+    } else {
+      // Keep a stable initial frame until playback starts.
+      revealRef.current = 0;
+    }
 
     mat.uniforms.u_resolution.value.copy(resolution);
     if (imgTexture) mat.uniforms.u_image.value = imgTexture;
-    if (fontTextureRef.current) mat.uniforms.u_fontAtlas.value = fontTextureRef.current;
+    if (fontTexture) mat.uniforms.u_fontAtlas.value = fontTexture;
 
     mat.uniforms.u_matrixCharSize.value = config.matrixCharSize;
     mat.uniforms.u_backgroundCharSize.value = config.backgroundCharSize / 100;
@@ -503,7 +533,7 @@ function MainScene({ imageSrc, config, fontUrl }: IMainSceneProps) {
     mat.uniforms.u_brightness.value = config.brightness;
     mat.uniforms.u_contrast.value = config.contrast;
     mat.uniforms.u_revealProgress.value = revealRef.current;
-    mat.uniforms.u_time.value = now * 0.001;
+    mat.uniforms.u_time.value = timelineSeconds;
     mat.uniforms.u_effectMode.value =
       config.appearanceEffect === 'decryption'
         ? 1
@@ -535,27 +565,53 @@ interface IAsciiCanvasProps {
   className?: string;
   lazy?: boolean;
   lazyOffset?: number;
+  playOnVisible?: boolean;
+  playOffset?: number;
   config: IAsciiConfig;
 }
 
-function AsciiRenderer({ config, className }: { config: IAsciiConfig; className?: string }) {
+function AsciiRenderer({
+  config,
+  className,
+  shouldAnimate,
+}: {
+  config: IAsciiConfig;
+  className?: string;
+  shouldAnimate: boolean;
+}) {
   const [mounted, setMounted] = useState(false);
+  const [isSceneReady, setIsSceneReady] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const mergedConfig = useMemo(() => ({ ...DEFAULT_CONFIG, ...config }), [config]);
   const fontUrl = config.fontUrl ?? DEFAULT_FONT_URL;
+
+  useEffect(() => {
+    setIsSceneReady(false);
+  }, [mergedConfig.imageSrc, fontUrl]);
 
   if (!mounted) return null;
 
   return (
     <div className={cn('h-full w-full', className)}>
       <Canvas
+        className={cn(
+          'transition-opacity duration-200',
+          isSceneReady ? 'opacity-100' : 'opacity-0',
+        )}
         gl={{ antialias: true, alpha: false }}
         orthographic
+        frameloop={shouldAnimate ? 'always' : 'demand'}
         camera={{ zoom: 1, position: [0, 0, 1] }}
         style={{ display: 'block', width: '100%', height: '100%' }}
       >
-        <MainScene imageSrc={mergedConfig.imageSrc} config={mergedConfig} fontUrl={fontUrl} />
+        <MainScene
+          imageSrc={mergedConfig.imageSrc}
+          config={mergedConfig}
+          fontUrl={fontUrl}
+          shouldAnimate={shouldAnimate}
+          onReadyChange={setIsSceneReady}
+        />
       </Canvas>
     </div>
   );
@@ -565,10 +621,14 @@ export default function AsciiCanvas({
   className,
   lazy = false,
   lazyOffset = 200,
+  playOnVisible = lazy,
+  playOffset = 0,
   config,
 }: IAsciiCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [shouldRender, setShouldRender] = useState(!lazy);
+  const shouldControlPlayback = playOnVisible;
+  const [shouldPlay, setShouldPlay] = useState(!shouldControlPlayback);
 
   useEffect(() => {
     if (!lazy || shouldRender) return;
@@ -589,13 +649,34 @@ export default function AsciiCanvas({
     return () => observer.disconnect();
   }, [lazy, shouldRender, lazyOffset]);
 
-  if (!lazy) {
-    return <AsciiRenderer config={config} className={className} />;
+  useEffect(() => {
+    if (!shouldControlPlayback || !shouldRender || shouldPlay) return;
+
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setShouldPlay(true);
+        observer.disconnect();
+      },
+      { rootMargin: `0px 0px ${playOffset}px`, threshold: 0 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [shouldControlPlayback, shouldRender, shouldPlay, playOffset]);
+
+  if (!lazy && !shouldControlPlayback) {
+    return <AsciiRenderer config={config} className={className} shouldAnimate={true} />;
   }
 
   return (
     <div ref={containerRef} className={className}>
-      {shouldRender ? <AsciiRenderer config={config} className="h-full w-full" /> : null}
+      {shouldRender ? (
+        <AsciiRenderer config={config} className="h-full w-full" shouldAnimate={shouldPlay} />
+      ) : null}
     </div>
   );
 }

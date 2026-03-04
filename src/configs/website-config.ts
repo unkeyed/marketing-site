@@ -7,8 +7,8 @@ const config = {
   logoAlt: 'unkey',
   logoLink: '/',
   metaThemeColors: {
-    light: '#ffffff',
-    dark: '#09090b',
+    light: '#040406',
+    dark: '#040406',
   },
   defaultSocialImage: '/social-previews/index.jpg',
   githubOrg: 'pixel-point',

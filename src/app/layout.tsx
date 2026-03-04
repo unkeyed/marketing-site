@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import '@/styles/globals.css';
+
 import { Inter, JetBrains_Mono } from 'next/font/google';
 
 const inter = Inter({
@@ -14,6 +15,26 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
+export const metadata = {
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      {
+        url: '/favicon-light.svg',
+        media: '(prefers-color-scheme: light)',
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/favicon-dark.svg',
+        media: '(prefers-color-scheme: dark)',
+        type: 'image/svg+xml',
+      },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +46,9 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/ido5ixw.css" />
       </head>
-      <body className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body
+        className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+      >
         {children}
       </body>
     </html>

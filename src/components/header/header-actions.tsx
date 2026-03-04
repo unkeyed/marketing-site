@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { homeHeaderLinks } from '@/constants/home';
+
 import { Link } from '@/components/ui/link';
 import { Icons } from '@/components/icons';
 
@@ -55,7 +55,7 @@ export default function HeaderActions() {
           href={loginLink.href}
           variant={onLightSection ? 'primaryBlack' : 'secondary'}
           size="small"
-          className="transition-colors duration-300"
+          className="bg-background transition-colors duration-300"
         >
           {loginLink.label}
         </Link>

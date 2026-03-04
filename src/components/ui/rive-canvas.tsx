@@ -81,11 +81,22 @@ interface IRiveCanvasProps {
   lazy?: boolean;
   /** Bottom offset in px for lazy mounting (default 100) */
   lazyOffset?: number;
+  /** Start playback when the element intersects the viewport (defaults to `lazy`) */
+  playOnVisible?: boolean;
+  /** Bottom offset in px for playback start observer (default 0) */
+  playOffset?: number;
   /** Bottom offset in px for font prefetching — should be larger than lazyOffset */
   fontPrefetchOffset?: number;
 }
 
-type TRiveRendererProps = Omit<IRiveCanvasProps, 'lazy' | 'lazyOffset' | 'fontPrefetchOffset'>;
+type TRiveRendererProps = Omit<
+  IRiveCanvasProps,
+  'lazy' | 'lazyOffset' | 'playOnVisible' | 'playOffset' | 'fontPrefetchOffset'
+>;
+type TVisibilityControlledPlaybackProps = {
+  playOnVisible: boolean;
+  shouldPlay: boolean;
+};
 
 function RiveRenderer({
   src,
@@ -97,7 +108,9 @@ function RiveRenderer({
   autoBind = true,
   fonts,
   className,
-}: TRiveRendererProps) {
+  playOnVisible = false,
+  shouldPlay = false,
+}: TRiveRendererProps & TVisibilityControlledPlaybackProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -109,7 +122,8 @@ function RiveRenderer({
     [fonts],
   );
 
-  const { RiveComponent } = useRive({
+  const hasStartedRef = useRef(false);
+  const { RiveComponent, rive } = useRive({
     src,
     stateMachines,
     artboard,
@@ -121,12 +135,18 @@ function RiveRenderer({
     assetLoader,
   });
 
+  useEffect(() => {
+    if (!playOnVisible || !shouldPlay || !rive || hasStartedRef.current) return;
+    rive.play();
+    hasStartedRef.current = true;
+  }, [playOnVisible, shouldPlay, rive]);
+
   if (hasError) return null;
 
   return (
     <RiveComponent
       className={cn(
-        'transition-opacity duration-200',
+        'rive-touch-scroll-fix transition-opacity duration-200',
         isLoaded ? 'opacity-100' : 'opacity-0',
         className,
       )}
@@ -141,13 +161,18 @@ function toRootMargin(bottomOffset: number) {
 export default function RiveCanvas({
   lazy = false,
   lazyOffset = 100,
+  playOnVisible = lazy,
+  playOffset = 0,
   fontPrefetchOffset,
   fonts,
   className,
+  autoplay = true,
   ...riveProps
 }: IRiveCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [shouldRender, setShouldRender] = useState(!lazy);
+  const shouldControlPlayback = autoplay && playOnVisible;
+  const [shouldPlay, setShouldPlay] = useState(!shouldControlPlayback);
 
   useEffect(() => {
     if (!lazy || shouldRender) return;
@@ -169,6 +194,25 @@ export default function RiveCanvas({
   }, [lazy, shouldRender, lazyOffset]);
 
   useEffect(() => {
+    if (!shouldControlPlayback || !shouldRender || shouldPlay) return;
+
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setShouldPlay(true);
+        observer.disconnect();
+      },
+      { rootMargin: toRootMargin(playOffset), threshold: 0 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [shouldControlPlayback, shouldRender, shouldPlay, playOffset]);
+
+  useEffect(() => {
     if (!fonts || fontPrefetchOffset == null) return;
 
     const el = containerRef.current;
@@ -187,14 +231,30 @@ export default function RiveCanvas({
     return () => observer.disconnect();
   }, [fonts, fontPrefetchOffset]);
 
-  if (!lazy) {
-    return <RiveRenderer {...riveProps} fonts={fonts} className={className} />;
+  if (!lazy && !shouldControlPlayback) {
+    return (
+      <RiveRenderer
+        {...riveProps}
+        autoplay={autoplay}
+        fonts={fonts}
+        className={className}
+        playOnVisible={false}
+        shouldPlay={true}
+      />
+    );
   }
 
   return (
     <div ref={containerRef} className={className}>
       {shouldRender ? (
-        <RiveRenderer {...riveProps} fonts={fonts} className="h-full w-full" />
+        <RiveRenderer
+          {...riveProps}
+          autoplay={shouldControlPlayback ? false : autoplay}
+          fonts={fonts}
+          className="h-full w-full"
+          playOnVisible={shouldControlPlayback}
+          shouldPlay={shouldPlay}
+        />
       ) : null}
     </div>
   );

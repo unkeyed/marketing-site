@@ -28,7 +28,10 @@ export default function Scale({
   features,
 }: IScaleProps) {
   return (
-    <section data-header-theme="light" className="relative py-14 sm:py-18 md:py-22 lg:pt-30 lg:pb-34 xl:pt-48 xl:pb-51">
+    <section
+      data-header-theme="light"
+      className="relative py-14 sm:py-18 md:py-22 lg:pt-30 lg:pb-34 xl:pt-48 xl:pb-51"
+    >
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]" />
       <div className="relative container">
         <div className="flex flex-col gap-[1rem] md:gap-[1.25rem] lg:flex-row lg:justify-between lg:gap-9">
@@ -60,7 +63,8 @@ export default function Scale({
                 artboard={item.rive.artboard}
                 fit={riveDefaults.fit}
                 alignment={riveDefaults.alignment}
-                lazyOffset={100}
+                lazyOffset={400}
+                playOffset={-100}
                 lazy
               />
               <div className="flex flex-col gap-5">
