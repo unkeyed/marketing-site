@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -17,8 +17,17 @@ interface IHeaderNavProps {
 
 function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavProps) {
   const pathname = usePathname();
+  const navRef = useRef<HTMLElement | null>(null);
+  const lastPointerTypeRef = useRef<string>('');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [openedByTouch, setOpenedByTouch] = useState(false);
+
+  const closeDropdown = useCallback(() => {
+    setHoveredIndex(null);
+    setOpenDropdown(null);
+    setOpenedByTouch(false);
+  }, []);
 
   const activeIndex = useMemo(
     () =>
@@ -28,13 +37,56 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
     [pathname, items],
   );
 
+  useEffect(() => {
+    closeDropdown();
+  }, [pathname, closeDropdown]);
+
+  useEffect(() => {
+    if (openDropdown === null) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!navRef.current?.contains(event.target as Node)) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [openDropdown, closeDropdown]);
+
+  useEffect(() => {
+    if (!openedByTouch || openDropdown === null) {
+      return;
+    }
+
+    const handleTouchScroll = () => {
+      closeDropdown();
+    };
+
+    window.addEventListener('touchmove', handleTouchScroll, { passive: true });
+    window.addEventListener('scroll', handleTouchScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('touchmove', handleTouchScroll);
+      window.removeEventListener('scroll', handleTouchScroll);
+    };
+  }, [openedByTouch, openDropdown, closeDropdown]);
+
   return (
     <nav
+      ref={navRef}
       aria-label={ariaLabel}
       className={cn('flex items-center gap-10', className)}
-      onMouseLeave={() => {
-        setHoveredIndex(null);
-        setOpenDropdown(null);
+      onPointerLeave={(event) => {
+        if (event.pointerType !== 'mouse') {
+          return;
+        }
+        closeDropdown();
       }}
     >
       {items.map(({ href, label, children }, index) => {
@@ -47,19 +99,39 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
             <div
               key={index}
               className="relative flex items-center justify-center"
-              onMouseEnter={() => {
+              onPointerEnter={(event) => {
+                if (event.pointerType !== 'mouse') {
+                  return;
+                }
                 setHoveredIndex(index);
                 setOpenDropdown(index);
+                setOpenedByTouch(false);
               }}
-              onMouseLeave={() => {
-                setHoveredIndex(null);
-                setOpenDropdown(null);
+              onPointerLeave={(event) => {
+                if (event.pointerType !== 'mouse') {
+                  return;
+                }
+                closeDropdown();
               }}
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
                 aria-haspopup="true"
+                onPointerDown={(event) => {
+                  lastPointerTypeRef.current = event.pointerType;
+                }}
+                onClick={(event) => {
+                  const isOpening = openDropdown !== index;
+                  const isKeyboardActivation = event.detail === 0;
+                  const openedWithTouch =
+                    !isKeyboardActivation && lastPointerTypeRef.current === 'touch';
+
+                  setHoveredIndex(isOpening ? index : null);
+                  setOpenDropdown(isOpening ? index : null);
+                  setOpenedByTouch(isOpening && openedWithTouch);
+                  lastPointerTypeRef.current = '';
+                }}
                 className={cn(
                   'relative inline-flex items-center gap-0.5 p-0 text-sm leading-none font-medium tracking-tight transition-colors',
                   isOpen && 'after:absolute after:top-full after:left-0 after:h-4.5 after:w-full',
@@ -82,17 +154,14 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                   isOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
-                <ul
-                  role="menu"
-                  className="flex w-full flex-col gap-1.5 bg-foreground p-4 shadow-lg"
-                >
+                <ul className="flex w-full flex-col gap-1.5 bg-foreground p-4 shadow-lg">
                   {children.map((child, childIndex) => {
                     return (
-                      <li key={childIndex} role="none">
+                      <li key={childIndex}>
                         <NextLink
                           href={child.href ?? '#'}
-                          role="menuitem"
                           className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-gray-94"
+                          onClick={closeDropdown}
                         >
                           {child.icon && (
                             <div className="flex size-9 items-center justify-center border border-gray-70 bg-foreground">
@@ -131,7 +200,13 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
             key={index}
             href={href ?? '#'}
             aria-current={index === activeIndex ? 'page' : undefined}
-            onMouseEnter={() => setHoveredIndex(index)}
+            onPointerEnter={(event) => {
+              if (event.pointerType !== 'mouse') {
+                return;
+              }
+              setHoveredIndex(index);
+            }}
+            onClick={closeDropdown}
             className={cn(
               'inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-tight transition-colors',
               isHovered ? 'text-gray-30' : 'text-background',

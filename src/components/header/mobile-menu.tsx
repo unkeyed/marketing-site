@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
+import { homeHeaderLinks } from '@/constants/home';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
@@ -18,6 +19,8 @@ interface MobileMenuProps {
 function MobileMenu({ items }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [discordLink, githubLink] = homeHeaderLinks.social;
+  const [loginLink, signUpLink] = homeHeaderLinks.auth;
   const pathname = usePathname();
 
   useEffect(() => {
@@ -54,25 +57,26 @@ function MobileMenu({ items }: MobileMenuProps) {
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="relative z-60 flex size-11 items-center justify-center bg-foreground lg:hidden"
+        style={open ? { boxShadow: '-0.375rem 0 0 0 var(--color-foreground)' } : undefined}
         aria-expanded={open}
         aria-label={open ? 'Close menu' : 'Open menu'}
       >
         <div className="relative size-5">
           <span
             className={cn(
-              'absolute left-0 block h-[1.5px] w-full bg-background transition-all duration-300',
+              'absolute left-0 block h-0.5 w-full bg-background transition-all duration-300',
               open ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-1',
             )}
           />
           <span
             className={cn(
-              'absolute top-1/2 left-0 block h-[1.5px] w-full -translate-y-1/2 bg-background transition-opacity duration-300',
+              'absolute top-1/2 left-0 block h-0.5 w-full -translate-y-1/2 bg-background transition-opacity duration-300',
               open ? 'opacity-0' : 'opacity-100',
             )}
           />
           <span
             className={cn(
-              'absolute left-0 block h-[1.5px] w-full bg-background transition-all duration-300',
+              'absolute left-0 block h-0.5 w-full bg-background transition-all duration-300',
               open ? 'bottom-1/2 translate-y-1/2 -rotate-45' : 'bottom-1',
             )}
           />
@@ -108,7 +112,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                     <button
                       type="button"
                       onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                      className="flex w-full items-center justify-between py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                      className="flex w-full items-center justify-between py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                     >
                       {item.label}
                       <ChevronDown
@@ -131,7 +135,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                             <li key={ci}>
                               <NextLink
                                 href={child.href ?? '#'}
-                                className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-foreground/5"
+                                className="flex items-start gap-3 py-2.5 transition-colors hover:bg-foreground/5"
                                 onClick={() => setOpen(false)}
                               >
                                 {child.icon && (
@@ -170,38 +174,46 @@ function MobileMenu({ items }: MobileMenuProps) {
                 <NextLink
                   key={index}
                   href={item.href ?? '#'}
-                  className="border-b border-foreground/10 py-3.5 text-sm font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+                  className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
                 </NextLink>
               );
             })}
+            <NextLink
+              href={discordLink.href}
+              className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+              onClick={() => setOpen(false)}
+            >
+              {discordLink.label}
+            </NextLink>
+            <NextLink
+              href={githubLink.href}
+              className="flex items-center gap-1 border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+              onClick={() => setOpen(false)}
+              aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
+            >
+              <Icons.github className="text-background" size={18} aria-hidden="true" />
+              <span className="sr-only">{githubLink.label}</span>
+              <span>{githubLink.metric}</span>
+            </NextLink>
           </nav>
 
           <div className="mt-5 flex flex-col gap-2">
             <div className="flex gap-1">
-              <Link href="https://unkey.dev/discord" className="flex-1">
-                Discord
-              </Link>
-              <Link href="https://github.com/unkeyed/unkey" className="flex-1 gap-1">
-                <Icons.github className="text-background" size={18} />
-                <span>5.1k</span>
-              </Link>
-            </div>
-            <div className="flex gap-1">
               <Link
-                href="/app/login"
+                href={loginLink.href}
                 variant="secondary"
                 className="flex-1 border-gray-70 text-background"
               >
-                Login
+                {loginLink.label}
               </Link>
               <Link
-                href="/app/sign-up"
+                href={signUpLink.href}
                 className="flex-1 bg-background text-foreground hover:bg-gray-12"
               >
-                Sign Up
+                {signUpLink.label}
               </Link>
             </div>
           </div>

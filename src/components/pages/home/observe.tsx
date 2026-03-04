@@ -1,7 +1,10 @@
+'use client';
+
 import Image from 'next/image';
 
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
+import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
 
 interface IObserveColumn {
   lead: string;
@@ -11,7 +14,8 @@ interface IObserveColumn {
 interface IObserveProps {
   heading: string;
   subheading: string;
-  dashboardImage: string;
+  riveDefaults: IRiveConfig;
+  mobileImage: string;
   buttonLabel: string;
   buttonHref: string;
   columns: IObserveColumn[];
@@ -20,7 +24,8 @@ interface IObserveProps {
 export default function Observe({
   heading,
   subheading,
-  dashboardImage,
+  riveDefaults,
+  mobileImage,
   buttonLabel,
   buttonHref,
   columns,
@@ -28,26 +33,43 @@ export default function Observe({
   return (
     <section className="pt-20 md:pt-35 xl:pt-50">
       <div className="container">
-        <div className="relative h-115 sm:h-125 md:h-130 xl:h-158">
-          <div className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240" />
-          <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:gap-6 sm:pb-5 md:h-50 xl:h-46.75 xl:max-w-240 xl:gap-8">
+        <div className="relative h-140 sm:h-160 md:h-130 lg:h-140 xl:h-158">
+          <div
+            aria-hidden
+            className="absolute top-0 left-0 z-[1] h-42.5 w-full bg-background sm:h-47 md:h-50 xl:h-46.75 xl:max-w-240"
+          />
+          <div className="relative z-10 flex h-42.5 w-full flex-col gap-5 pb-4 sm:h-47 sm:pb-5 md:h-50 md:gap-6 lg:gap-[1.75rem] xl:h-46.75 xl:max-w-240 xl:gap-8">
             <Label>Observe</Label>
-            <h2 className="max-w-240 font-display text-[30px] leading-[1.125] text-white sm:text-[36px] xl:text-[44px]">
+            <h2 className="max-w-240 font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.25rem] xl:text-[2.75rem]">
               {heading}
               <span className="block text-gray-60">{subheading}</span>
             </h2>
           </div>
+          <RiveCanvas
+            className="absolute top-0 left-0 z-0 hidden h-full w-full lg:block"
+            src={riveDefaults.src}
+            fit={riveDefaults.fit}
+            alignment={riveDefaults.alignment}
+            lazyOffset={400}
+            playOffset={-200}
+            lazy
+          />
           <Image
+            className="block object-cover object-[75%_100%] sm:object-[90%_100%] md:object-bottom-right lg:hidden"
+            src={mobileImage}
+            sizes="
+            (max-width: 640px) 1360px,
+            (max-width: 768px) 1555px,
+            (max-width: 1024px) 1263px,
+            0px
+            "
+            aria-hidden="true"
             alt=""
-            width={3072}
-            height={1202}
-            sizes="100vw"
-            className="absolute top-27 left-0 z-0 h-88 w-full object-cover object-[74%_50%] sm:top-30.5 sm:h-94.5 md:top-15 md:h-115 lg:top-13 lg:h-117.5 lg:object-center xl:top-[1px] xl:h-158"
-            src={dashboardImage}
+            fill
           />
         </div>
 
-        <div className="mt-10 grid gap-8 sm:mt-11 md:mt-12 xl:mt-14 xl:grid-cols-[35fr_65fr] xl:gap-4">
+        <div className="mt-10 grid gap-8 sm:mt-11 md:mt-12 md:gap-12 lg:gap-[2.75rem] xl:mt-14 xl:grid-cols-[35fr_65fr] xl:gap-4">
           <ul className="order-1 grid max-w-248 grid-cols-1 gap-8 text-base leading-snug sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 md:gap-y-14 md:text-lg xl:order-2 xl:grid-cols-[384px_384px] xl:gap-x-56 xl:gap-y-20">
             {columns.map((column) => (
               <li className="max-w-96" key={column.lead}>

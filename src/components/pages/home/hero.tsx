@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 
-import { cn } from '@/lib/utils';
+import Logos from '@/components/pages/logos';
+import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
 
 interface IHeroProps {
@@ -31,27 +31,6 @@ export default function Hero({
   videos,
   logos,
 }: IHeroProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      },
-      { rootMargin: '400px' },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
       <div className="relative h-136 w-full overflow-hidden sm:h-150 md:h-[min(47rem,100svh)] lg:h-[min(51rem,100svh)] xl:h-[min(71rem,100svh)]">
@@ -60,25 +39,26 @@ export default function Hero({
           alt=""
           fill
           priority
-          sizes="100vw"
+          sizes="(max-width: 640px) 960px"
           className="pointer-events-none origin-top scale-[1.02] object-cover object-top sm:hidden"
         />
 
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster={poster.src}
-          aria-hidden="true"
+        {/*  
+          ffmpeg parameters: 
+          mp4: ffmpeg -i input.mov \
+          -c:v libx265 -preset veryslow -crf 34 -tune animation \
+          -vf "scale=2560:-2:flags=lanczos,format=yuv420p10le" \
+          -x265-params "aq-mode=3:aq-strength=0.8:psy-rd=2.0:psy-rdoq=1.0:deblock=-1,-1:no-sao=1" \
+          -tag:v hvc1 -movflags +faststart -an hero.mp4
+
+          webm: ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 1 -an -f null /dev/null && ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 2 -an -y hero.webm
+        */}
+
+        <BackgroundVideo
+          videos={videos}
+          sourceMedia="(min-width: 640px)"
           className="pointer-events-none absolute inset-0 hidden h-full w-full origin-top scale-[1.02] object-cover object-top sm:block"
-        >
-          {videos.map((v) => (
-            <source key={v.src} src={v.src} type={v.type} />
-          ))}
-        </video>
+        />
 
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-91.5 bg-[linear-gradient(180deg,rgba(4,4,6,0)_19%,rgba(4,4,6,0.17)_45%,rgba(4,4,6,1)_89%)]"
@@ -107,23 +87,7 @@ export default function Hero({
       </div>
 
       <div className="container">
-        <ul className="-mx-4 flex items-center gap-6 overflow-x-auto px-4 pt-8 pb-6 [scrollbar-width:none] sm:mx-0 sm:px-0 lg:justify-between lg:gap-0 lg:overflow-visible lg:pt-12 lg:pb-10.5 [&::-webkit-scrollbar]:hidden">
-          {logos.map((logo) => (
-            <li
-              key={logo.alt}
-              className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
-            >
-              <Image
-                className="h-full w-full"
-                alt={logo.alt}
-                width={logo.width}
-                height={logo.height}
-                src={logo.src}
-                priority
-              />
-            </li>
-          ))}
-        </ul>
+        <Logos logos={logos} />
       </div>
     </section>
   );

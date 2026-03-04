@@ -16,7 +16,7 @@
   --number-flow-mask-width: 0.25rem;
 
   /* Custom project variables */
-  --sticky-header-height: 3.25rem;
+  --sticky-header-height: 3.375rem;
   --footer-safe-area-spacing: 0rem;
 }
 
@@ -144,6 +144,11 @@
   font-feature-settings: 'ss01' 1;
 }
 
+@utility font-label {
+  font-family:
+    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 @utility container {
   @apply mx-auto w-full max-w-[calc(var(--spacing-content)+5rem)] px-5 md:px-8 xl:px-10;
 }
@@ -180,6 +185,12 @@
     font-feature-settings: 'ss01' 1;
   }
 
+  /* Allow page scrolling over decorative Rive canvases on touch devices. */
+  @media (hover: none) and (pointer: coarse) {
+    .rive-touch-scroll-fix {
+      pointer-events: none;
+      touch-action: pan-y;
+    }
   .section-container {
     @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 lg:px-8 2xl:px-24;
   }

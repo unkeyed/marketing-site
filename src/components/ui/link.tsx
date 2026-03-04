@@ -12,7 +12,8 @@ const linkVariants = cva(
     variants: {
       variant: {
         primary: 'bg-foreground text-background hover:bg-gray-90',
-        primaryBlack: 'bg-background text-foreground hover:bg-gray-12',
+        /*  border-transparent - To avoid layout shifting when changing the button style in the navbar. */
+        primaryBlack: 'bg-background border border-transparent text-foreground hover:bg-gray-12',
         secondary: 'border bg-transparent border-foreground text-foreground hover:bg-gray-12',
       },
       size: {

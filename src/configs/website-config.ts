@@ -1,16 +1,16 @@
 const config = {
   projectName: 'unkey',
   logo: {
-    light: '/logo.svg',
-    dark: '/logo.svg',
+    light: '/logo-light.svg',
+    dark: '/logo-dark.svg',
   },
   logoAlt: 'unkey',
   logoLink: '/',
   metaThemeColors: {
-    light: '#ffffff',
-    dark: '#09090b',
+    light: '#040406',
+    dark: '#040406',
   },
-  defaultSocialImage: '/social-previews/index.jpg',
+  defaultSocialImage: '/og-images/og-image.jpg',
   githubOrg: 'pixel-point',
   githubRepo: 'prime',
 };
