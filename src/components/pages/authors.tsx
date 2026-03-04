@@ -6,7 +6,7 @@ import { cn, getFormattedAuthorsName } from '@/lib/utils';
 
 import StackedAvatars from './stacked-avatars';
 
-const defaultAuthorImage = '/images/placeholder-author.svg';
+const defaultAuthorImage = '/images/placeholders/placeholder-author.svg';
 
 const authorsVariants = cva('flex', {
   variants: {
