@@ -65,7 +65,7 @@ export default function Portal({
         <Label>AIO Developer Portal</Label>
 
         <div className="mt-[1.25rem] flex flex-col gap-5 md:mt-[1.5rem] md:gap-6 lg:mt-[1.75rem] lg:flex-row lg:items-end lg:justify-between xl:mt-8 xl:gap-5">
-          <h2 className="max-w-240 font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.25rem] md:text-[2.25rem] lg:text-[2.25rem] xl:text-[2.75rem]">
+          <h2 className="max-w-240 font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.25rem] xl:text-[2.75rem]">
             {heading}
             <span className="block text-gray-60">{subheading}</span>
           </h2>
@@ -74,7 +74,7 @@ export default function Portal({
           </Link>
         </div>
 
-        <ul className="mt-[3rem] grid grid-cols-1 gap-0 sm:grid-cols-2 md:mt-8 lg:mt-[4.5rem] lg:grid-cols-3 xl:grid-cols-3">
+        <ul className="mt-[3rem] grid grid-cols-1 gap-0 sm:grid-cols-2 md:mt-8 lg:mt-[4.5rem] lg:grid-cols-3">
           {cards.map((item, index) => (
             <li key={item.graphic}>
               <PortalCard

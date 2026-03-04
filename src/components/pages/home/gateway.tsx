@@ -98,7 +98,7 @@ export default function Gateway({ heading, riveDefaults, cards }: IGatewayProps)
           {heading}
         </h2>
 
-        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px] xl:gap-2.5">
+        <ul className="mt-6 grid w-full grid-cols-1 gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-2.5 md:mt-10 lg:mt-14 xl:mt-20 xl:grid-cols-3 xl:grid-rows-[446px_446px]">
           {cards.map((card) => (
             <li key={card.title} className={card.gridClassName}>
               <Card

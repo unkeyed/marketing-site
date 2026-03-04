@@ -37,7 +37,7 @@ export default function Scale({
         <div className="flex flex-col gap-[1rem] md:gap-[1.25rem] lg:flex-row lg:justify-between lg:gap-9">
           <div className="flex max-w-176 flex-col gap-[1.25rem] md:gap-[1.5rem] lg:gap-[1.75rem] xl:gap-8">
             <Label variant="light">Scale</Label>
-            <h2 className="font-display text-[1.875rem] leading-[1.2] text-balance text-background sm:text-[2.25rem] md:text-[2.25rem] lg:text-[2.5rem] lg:leading-[1.25] xl:text-[2.75rem] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-6.75 [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:pr-1 [&_mark]:pb-2 [&_mark]:pl-1 [&_mark]:text-black md:[&_mark]:h-9.5 lg:[&_mark]:h-10.5">
+            <h2 className="font-display text-[1.875rem] leading-[1.2] text-balance text-background sm:text-[2.25rem] lg:text-[2.5rem] lg:leading-[1.25] xl:text-[2.75rem] [&_mark]:-ml-1 [&_mark]:inline-flex [&_mark]:h-6.75 [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:pr-1 [&_mark]:pb-2 [&_mark]:pl-1 [&_mark]:text-black md:[&_mark]:h-9.5 lg:[&_mark]:h-10.5">
               {heading}
             </h2>
           </div>
