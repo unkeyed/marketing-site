@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
+import { homeHeaderLinks } from '@/constants/home';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
-import { homeHeaderLinks } from '@/constants/home';
 import { cn } from '@/lib/utils';
 import { Link } from '@/components/ui/link';
 import { Icons } from '@/components/icons';
@@ -64,19 +64,19 @@ function MobileMenu({ items }: MobileMenuProps) {
         <div className="relative size-5">
           <span
             className={cn(
-              'absolute left-0 block h-[1.5px] w-full bg-background transition-all duration-300',
+              'absolute left-0 block h-0.5 w-full bg-background transition-all duration-300',
               open ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-1',
             )}
           />
           <span
             className={cn(
-              'absolute top-1/2 left-0 block h-[1.5px] w-full -translate-y-1/2 bg-background transition-opacity duration-300',
+              'absolute top-1/2 left-0 block h-0.5 w-full -translate-y-1/2 bg-background transition-opacity duration-300',
               open ? 'opacity-0' : 'opacity-100',
             )}
           />
           <span
             className={cn(
-              'absolute left-0 block h-[1.5px] w-full bg-background transition-all duration-300',
+              'absolute left-0 block h-0.5 w-full bg-background transition-all duration-300',
               open ? 'bottom-1/2 translate-y-1/2 -rotate-45' : 'bottom-1',
             )}
           />
