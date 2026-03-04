@@ -57,6 +57,7 @@ function MobileMenu({ items }: MobileMenuProps) {
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="relative z-60 flex size-11 items-center justify-center bg-foreground lg:hidden"
+        style={open ? { boxShadow: '-0.375rem 0 0 0 var(--color-foreground)' } : undefined}
         aria-expanded={open}
         aria-label={open ? 'Close menu' : 'Open menu'}
       >
