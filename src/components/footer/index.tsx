@@ -28,10 +28,10 @@ function Footer() {
             />
           </NextLink>
           <div className="flex flex-col gap-y-4">
-            <p className="text-sm leading-none font-medium -tracking-wide text-gray-80">
+            <p className="text-sm leading-tight font-medium -tracking-wide text-gray-80">
               {MENUS.footer.description}
             </p>
-            <p className="text-sm leading-none font-medium -tracking-wide text-gray-40">
+            <p className="text-sm leading-tight font-medium -tracking-wide text-gray-40">
               {MENUS.footer.copyright}
             </p>
           </div>
