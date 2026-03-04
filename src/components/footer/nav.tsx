@@ -14,7 +14,7 @@ function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNa
     <nav
       aria-label={ariaLabel}
       className={cn(
-        'grid w-full grid-cols-[repeat(2,minmax(8.5rem,8.5rem))] gap-x-8 gap-y-10 sm:grid-cols-[repeat(2,minmax(10rem,10rem))] md:gap-y-12 lg:grid-cols-[repeat(4,minmax(10rem,10rem))] lg:gap-8 2xl:gap-16',
+        'grid w-full grid-cols-[repeat(2,minmax(8.5rem,8.5rem))] gap-x-8 gap-y-10 sm:grid-cols-[repeat(2,minmax(10rem,10rem))] md:gap-y-12 lg:grid-cols-4 lg:gap-8 2xl:gap-16',
         className,
       )}
     >
