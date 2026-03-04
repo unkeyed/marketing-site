@@ -7,7 +7,7 @@ import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
 interface IScaleFeature {
   title: string;
   text: string;
-  rive: Pick<IRiveConfig, 'artboard'> & Partial<Pick<IRiveConfig, 'src'>>;
+  rive: Pick<IRiveConfig, 'artboard'>;
 }
 
 interface IScaleProps {
@@ -59,7 +59,7 @@ export default function Scale({
             >
               <RiveCanvas
                 className="h-26 w-26 sm:h-30 sm:w-30 md:h-37 md:w-37"
-                src={item.rive.src ?? riveDefaults.src}
+                src={riveDefaults.src}
                 artboard={item.rive.artboard}
                 fit={riveDefaults.fit}
                 alignment={riveDefaults.alignment}

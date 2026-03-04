@@ -345,7 +345,6 @@ export const homeContentData = {
         title: 'Built-in protection',
         text: 'Lock down access with API keys, edge rate limits, and instant revoke controls.',
         rive: {
-          src: '/rive/home/gateway/analytics.riv',
           artboard: 'main 4',
         },
       },

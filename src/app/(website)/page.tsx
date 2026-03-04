@@ -1,15 +1,15 @@
 import { Metadata } from 'next';
+import { homeContentData, homePageData } from '@/constants/home';
 
 import { getMetadata } from '@/lib/get-metadata';
-import Gateway from '@/components/pages/home/gateway';
-import Portal from '@/components/pages/home/portal';
-import Cta from '@/components/pages/home/cta';
-import { homeContentData, homePageData } from '@/constants/home';
-import Production from '@/components/pages/home/production';
 import BuildDeploy from '@/components/pages/home/build-deploy';
 import ControlPlane from '@/components/pages/home/control-plane';
+import Cta from '@/components/pages/home/cta';
+import Gateway from '@/components/pages/home/gateway';
 import Hero from '@/components/pages/home/hero';
 import Observe from '@/components/pages/home/observe';
+import Portal from '@/components/pages/home/portal';
+import Production from '@/components/pages/home/production';
 import Scale from '@/components/pages/home/scale';
 
 export const metadata: Metadata = getMetadata({
