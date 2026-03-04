@@ -19,7 +19,7 @@ export const homeContentData = {
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
     primaryCta: { label: 'Start for free', href: '/placeholder' },
     secondaryCta: { label: 'View on GitHub', href: '/placeholder' },
-    poster: { src: '/images/home/hero/hero-poster.jpg', width: 1920, height: 1080 },
+    poster: { src: '/images/home/hero/hero-poster.png', width: 1533, height: 908 },
     videos: [
       { src: 'videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
       { src: 'videos/home/hero.webm', type: 'video/webm' },
@@ -89,8 +89,8 @@ export const homeContentData = {
       src: '/rive/home/control-plane/control-plane.riv',
       fonts: {
         urls: {
-          regular: '/rive/home/GeistMono-Regular.ttf',
-          medium: '/rive/home/GeistMono-Medium.ttf',
+          regular: '/rive/home/JetBrainsMono-Regular.ttf',
+          medium: '/rive/home/JetBrainsMono-Medium.ttf',
         },
       },
       alignment: Alignment.Center,
@@ -248,7 +248,7 @@ export const homeContentData = {
         body: 'Edge gateway enforces access and routes requests to the closest instance for low latency.',
         rive: {
           src: '/rive/home/gateway/global-platform.riv',
-          fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
+          fonts: { urls: { regular: '/rive/home/JetBrainsMono-Regular.ttf' } },
           fit: Fit.Cover,
           alignment: Alignment.TopCenter,
         },
@@ -261,7 +261,7 @@ export const homeContentData = {
         body: 'Set limits per IP, user, or key and enforce them close to your users.',
         rive: {
           src: '/rive/home/gateway/rate-limits.riv',
-          fonts: { urls: { regular: '/rive/home/GeistMono-Regular.ttf' } },
+          fonts: { urls: { regular: '/rive/home/JetBrainsMono-Regular.ttf' } },
         },
         gridClassName:
           'h-[clamp(20rem,76vw,26.25rem)] sm:h-[21rem] md:h-[24rem] xl:h-auto sm:col-start-1 sm:row-start-2 xl:col-start-1 xl:row-start-2',

@@ -35,7 +35,7 @@ export function BackgroundVideo({
       muted
       playsInline
       preload="metadata"
-      poster={poster}
+      {...(poster ? { poster } : {})}
       aria-hidden="true"
       className={className}
     >

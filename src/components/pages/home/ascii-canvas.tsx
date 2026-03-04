@@ -383,7 +383,7 @@ const DEFAULT_CONFIG: Required<Omit<IAsciiConfig, 'imageSrc' | 'fontUrl'>> = {
   appearanceEffect: 'natural',
 };
 
-const DEFAULT_FONT_URL = '/rive/home/GeistMono-Regular.ttf';
+const DEFAULT_FONT_URL = '/rive/home/JetBrainsMono-Regular.ttf';
 const REVEAL_DURATION_MS = 1800;
 
 // Generates a 2048×1024 font atlas with characters '0' (left half) and '1' (right half)

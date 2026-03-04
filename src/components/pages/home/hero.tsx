@@ -39,7 +39,7 @@ export default function Hero({
           alt=""
           fill
           priority
-          sizes="100vw"
+          sizes="(max-width: 640px) 960px"
           className="pointer-events-none origin-top scale-[1.02] object-cover object-top sm:hidden"
         />
 
@@ -55,7 +55,6 @@ export default function Hero({
         */}
 
         <BackgroundVideo
-          poster={poster.src}
           videos={videos}
           sourceMedia="(min-width: 640px)"
           className="pointer-events-none absolute inset-0 hidden h-full w-full origin-top scale-[1.02] object-cover object-top sm:block"
