@@ -82,7 +82,7 @@ export default function ControlPlane({
         </div>
 
         <div className="relative z-10 mt-10 snap-x snap-mandatory scroll-pl-5 overflow-x-auto [scrollbar-width:none] sm:-mx-5 sm:snap-none sm:overflow-visible md:-mx-8 md:mt-16 md:snap-x md:snap-mandatory md:scroll-pl-8 md:overflow-x-auto xl:mx-0 xl:mt-40 xl:snap-none xl:scroll-pl-0 xl:overflow-visible [&::-webkit-scrollbar]:hidden">
-          <ul className="flex flex-col items-stretch gap-0 [&>li+li]:-mt-px sm:grid sm:w-full sm:grid-cols-2 sm:grid-rows-2 sm:px-5 sm:[&>li+li]:mt-0 sm:[&>li:nth-child(2n)]:-ml-px sm:[&>li:nth-child(n+3)]:-mt-px md:flex md:w-max md:flex-row md:px-8 md:[&>li]:mt-0 md:[&>li]:ml-0 md:[&>li+li]:-ml-px xl:w-auto xl:px-0">
+          <ul className="flex flex-col items-stretch gap-0 sm:grid sm:w-full sm:grid-cols-2 sm:grid-rows-2 sm:px-5 md:flex md:w-max md:flex-row md:px-8 lg:w-auto xl:px-0 md:[&>li]:ml-0 [&>li+li]:-mt-px sm:[&>li+li]:mt-0 md:[&>li+li]:-ml-px sm:[&>li:nth-child(2n)]:-ml-px sm:[&>li:nth-child(n+3)]:-mt-px md:[&>li:nth-child(n+3)]:mt-0">
             {cards.map((card) => (
               <Card
                 key={card.id}
