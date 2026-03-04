@@ -13,6 +13,7 @@ const inter = Inter({
 });
 
 const jetbrainsMono = JetBrains_Mono({
+  weight: ['400', '500'],
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
 });
