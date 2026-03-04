@@ -1,6 +1,8 @@
 'use client';
 
+import { useMemo } from 'react';
 import Image from 'next/image';
+import AutoScroll from 'embla-carousel-auto-scroll';
 
 import { cn } from '@/lib/utils';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -80,11 +82,24 @@ const TEAM_SLIDER_ITEMS = [
 ] as const;
 
 export default function TeamSlider() {
+  const plugins = useMemo(
+    () => [
+      AutoScroll({
+        playOnInit: true,
+        stopOnMouseEnter: true,
+        stopOnInteraction: false,
+        speed: 1.2,
+      }),
+    ],
+    [],
+  );
+
   return (
     <Carousel
       className="relative mt-10 w-full md:mt-16"
       tabIndex={0}
       opts={{ loop: true, align: 'center' }}
+      plugins={plugins}
       aria-label="Team photos"
     >
       <CarouselContent className="-ml-0 gap-4 pr-5 pl-5 md:gap-5">

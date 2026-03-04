@@ -16,8 +16,8 @@ interface IHeroProps {
 export default function Hero({ title, description, values }: IHeroProps) {
   return (
     <section className="border-b border-gray-20">
-      <div className="section-container py-12 md:pt-[92px] md:pb-[88px] lg:pb-24 xl:pt-29 xl:pb-32">
-        <div className="grid gap-8 md:gap-10 xl:grid-cols-[1fr_1fr] 2xl:gap-48">
+      <div className="section-container py-12 md:pt-[5.75rem] md:pb-[5.5rem] lg:pb-24 xl:pt-29 xl:pb-32">
+        <div className="grid gap-8 md:gap-10 lg:grid-cols-[1fr_1fr] 2xl:gap-48">
           <div className="flex flex-col">
             <h1 className="marked-title font-display text-4xl leading-[1.125] font-normal whitespace-pre-line text-foreground md:text-5xl lg:text-[3.25rem] xl:text-[4rem]">
               {title}
@@ -27,7 +27,7 @@ export default function Hero({ title, description, values }: IHeroProps) {
             </p>
           </div>
 
-          <ul className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-16 sm:gap-x-15 sm:gap-y-11 md:mt-6 lg:grid-cols-3 xl:grid-cols-2 2xl:mt-11">
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-16 sm:gap-x-15 sm:gap-y-11 md:mt-6 lg:grid-cols-2 2xl:mt-11">
             {values.map((value) => (
               <li key={value.title} className="flex flex-col gap-1.5">
                 <h2 className="font-sans text-base leading-[1.375] font-medium text-foreground">

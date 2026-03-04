@@ -21,15 +21,17 @@ export interface IInvestorsProps {
 export default function Investors({ label, heading, description, list }: IInvestorsProps) {
   return (
     <section className="bg-[linear-gradient(180deg,#b6cdfb_0%,#ecf2fe_80.629%)]">
-      <div className="section-container py-12 md:py-[92px] xl:pt-46 xl:pb-49">
-        <div className="flex flex-col gap-[18px] md:gap-[18px] lg:gap-5 xl:flex-row xl:items-end xl:justify-between xl:gap-16">
+      <div className="section-container py-12 md:py-[5.75rem] xl:pt-46 xl:pb-49">
+        <div className="flex flex-col gap-[1.125rem] md:gap-[1.125rem] lg:flex-row lg:items-end lg:justify-between lg:gap-5 lg:gap-16">
           <div className="flex flex-col gap-5 md:gap-7">
-            <Label variant="light">{label}</Label>
-            <h2 className="marked-title font-display text-3xl leading-[1.125] text-background sm:text-4xl md:max-w-md lg:max-w-[480px] lg:text-[2.5rem] xl:max-w-[640px] xl:text-[2.75rem]">
+            <Label variant="light" labelClassName="md:text-sm">
+              {label}
+            </Label>
+            <h2 className="marked-title font-display text-3xl leading-[1.125] text-background sm:text-4xl md:max-w-md lg:max-w-[40rem] lg:text-[2.5rem] xl:text-[2.75rem]">
               {heading}
             </h2>
           </div>
-          <p className="font-sans text-base leading-[1.375] text-gray-20 md:max-w-xl md:text-lg lg:max-w-2xl xl:max-w-[416px] xl:text-xl xl:tracking-[-0.01em]">
+          <p className="font-sans text-base leading-[1.375] text-gray-20 md:max-w-xl md:text-lg lg:max-w-[26rem] lg:text-xl lg:tracking-[-0.01em]">
             {description}
           </p>
         </div>
