@@ -57,6 +57,24 @@ export function getMetadata({
     alternates: {
       canonical: canonicalUrl,
     },
+    manifest: '/favicon/manifest.webmanifest',
+    icons: {
+      icon: [
+        { url: '/favicon/favicon.ico' },
+        {
+          url: '/favicon/favicon-light.svg',
+          media: '(prefers-color-scheme: light)',
+          type: 'image/svg+xml',
+        },
+        {
+          url: '/favicon/favicon-dark.svg',
+          media: '(prefers-color-scheme: dark)',
+          type: 'image/svg+xml',
+        },
+      ],
+      shortcut: '/favicon/favicon.ico',
+      apple: '/favicon/apple-touch-icon.png',
+    },
     openGraph: {
       title,
       description,

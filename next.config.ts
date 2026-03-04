@@ -1,6 +1,16 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      'date-fns',
+      'three',
+      '@react-three/drei',
+      'motion',
+      'shiki',
+    ],
+  },
   images: {
     formats: ['image/webp'],
     qualities: [75, 100],
