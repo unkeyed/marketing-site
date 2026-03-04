@@ -227,7 +227,7 @@ export const homeContentData = {
         webgl: {
           imageSrc: '/images/home/gateway/auth-depth.png',
           appearanceEffect: 'natural' as const,
-          matrixCharSize: 20,
+          matrixCharSize: 12,
           backgroundCharSize: 85,
           backgroundColor: '#040406',
           backgroundCharColor: '#878787',

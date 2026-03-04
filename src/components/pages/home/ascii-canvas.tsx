@@ -452,7 +452,7 @@ interface IMainSceneProps {
 }
 
 function MainScene({ imageSrc, config, fontUrl, shouldAnimate, onReadyChange }: IMainSceneProps) {
-  const { size } = useThree();
+  const { size, viewport } = useThree();
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const fontTexture = useFontAtlas(fontUrl);
   const [imgTexture, setImgTexture] = useState<THREE.Texture | null>(null);
@@ -497,10 +497,15 @@ function MainScene({ imageSrc, config, fontUrl, shouldAnimate, onReadyChange }: 
     revealRef.current = 0;
   }, [imageSrc, shouldAnimate]);
 
-  const resolution = useMemo(() => {
-    const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
-    return new THREE.Vector2(size.width * dpr, size.height * dpr);
-  }, [size.width, size.height]);
+  const rendererDpr = useMemo(
+    () => (Number.isFinite(viewport.dpr) && viewport.dpr > 0 ? viewport.dpr : 1),
+    [viewport.dpr],
+  );
+
+  const resolution = useMemo(
+    () => new THREE.Vector2(size.width * rendererDpr, size.height * rendererDpr),
+    [size.width, size.height, rendererDpr],
+  );
 
   useFrame(() => {
     const mat = materialRef.current;
@@ -524,7 +529,8 @@ function MainScene({ imageSrc, config, fontUrl, shouldAnimate, onReadyChange }: 
     if (imgTexture) mat.uniforms.u_image.value = imgTexture;
     if (fontTexture) mat.uniforms.u_fontAtlas.value = fontTexture;
 
-    mat.uniforms.u_matrixCharSize.value = config.matrixCharSize;
+    // Keep matrix density stable in CSS pixels across displays with different DPR.
+    mat.uniforms.u_matrixCharSize.value = config.matrixCharSize * rendererDpr;
     mat.uniforms.u_backgroundCharSize.value = config.backgroundCharSize / 100;
     mat.uniforms.u_depthIntensity.value = config.depthIntensity * 0.5;
     mat.uniforms.u_threshold.value = config.threshold / 100;
