@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { cn } from '@/lib/utils';
+import Logos from '@/components/pages/logos';
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
 
@@ -87,43 +87,7 @@ export default function Hero({
       </div>
 
       <div className="container">
-        <div className="-mx-5 overflow-hidden pt-8 pb-6 md:-mx-8 lg:mx-0 lg:overflow-visible lg:pt-12 lg:pb-10.5">
-          <div className="flex w-max animate-[logos_30s_linear_infinite] will-change-transform motion-reduce:animate-none lg:w-full lg:animate-none lg:will-change-auto">
-            <ul className="flex shrink-0 items-center gap-6 pr-6 lg:w-full lg:justify-between lg:gap-0 lg:pr-0">
-              {logos.map((logo) => (
-                <li
-                  key={logo.alt}
-                  className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
-                >
-                  <Image
-                    className="h-full w-full"
-                    alt={logo.alt}
-                    width={logo.width}
-                    height={logo.height}
-                    src={logo.src}
-                    priority
-                  />
-                </li>
-              ))}
-            </ul>
-            <ul className="flex shrink-0 items-center gap-6 pr-6 lg:hidden" aria-hidden="true">
-              {logos.map((logo) => (
-                <li
-                  key={`${logo.alt}-dup`}
-                  className={cn('relative shrink-0 overflow-hidden', logo.wrapperClassName)}
-                >
-                  <Image
-                    className="h-full w-full"
-                    alt={logo.alt}
-                    width={logo.width}
-                    height={logo.height}
-                    src={logo.src}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <Logos logos={logos} />
       </div>
     </section>
   );

@@ -10,7 +10,7 @@ interface IVideoSource {
 }
 
 interface IBackgroundVideoProps {
-  poster: string;
+  poster?: string;
   videos: IVideoSource[];
   className?: string;
   rootMargin?: string;
