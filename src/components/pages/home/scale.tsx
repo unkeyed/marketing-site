@@ -41,7 +41,7 @@ export default function Scale({
               {heading}
             </h2>
           </div>
-          <div className="flex max-w-[30rem] flex-col gap-[1.25rem] sm:max-w-[34rem] md:max-w-[37rem] md:gap-[1.5rem] lg:max-w-104 lg:gap-4.5 lg:pt-18.75">
+          <div className="flex max-w-[30rem] flex-col gap-[1.25rem] sm:max-w-[34rem] md:max-w-[37rem] md:gap-[1.5rem] lg:mt-auto lg:max-w-104 lg:gap-4.5">
             <p className="text-base leading-snug tracking-[-0.01em] text-gray-20 sm:text-lg md:text-[1.125rem] lg:text-xl">
               {description}
             </p>

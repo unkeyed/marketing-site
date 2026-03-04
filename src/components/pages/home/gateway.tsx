@@ -46,7 +46,7 @@ function Card({
     );
 
   const textBlock = (
-    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:px-6 sm:pt-6 md:p-8 xl:p-8">
+    <p className="relative z-10 px-5 pt-5 pb-3 text-base leading-snug text-gray-80 sm:p-6 xl:p-8">
       <span className={cn('block', textWidthClass)}>{textContent}</span>
     </p>
   );
@@ -68,7 +68,7 @@ function Card({
     />
   ) : webgl ? (
     <AsciiCanvas
-      className="absolute inset-5 sm:inset-6 md:inset-8"
+      className="absolute inset-5 sm:inset-6 xl:inset-8"
       config={webgl}
       lazyOffset={1600}
       playOffset={-200}
