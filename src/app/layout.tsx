@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 
 import '@/styles/globals.css';
 
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { getMetadata } from '@/lib/get-metadata';
 
 const inter = Inter({
   weight: ['400', '500', '600'],
@@ -15,23 +17,31 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
-export const metadata = {
+const baseMetadata = getMetadata({
+  title: 'Unkey',
+  description: 'Unkey brings API deployment, gateways, and observability into one platform.',
+  pathname: '/',
+});
+
+export const metadata: Metadata = {
+  ...baseMetadata,
+  manifest: '/favicon/manifest.webmanifest',
   icons: {
     icon: [
-      { url: '/favicon.ico' },
+      { url: '/favicon/favicon.ico' },
       {
-        url: '/favicon-light.svg',
+        url: '/favicon/favicon-light.svg',
         media: '(prefers-color-scheme: light)',
         type: 'image/svg+xml',
       },
       {
-        url: '/favicon-dark.svg',
+        url: '/favicon/favicon-dark.svg',
         media: '(prefers-color-scheme: dark)',
         type: 'image/svg+xml',
       },
     ],
-    shortcut: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    shortcut: '/favicon/favicon.ico',
+    apple: '/favicon/apple-touch-icon.png',
   },
 };
 
