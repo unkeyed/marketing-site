@@ -191,12 +191,13 @@
       pointer-events: none;
       touch-action: pan-y;
     }
-  .section-container {
-    @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 lg:px-8 2xl:px-24;
-  }
+    .section-container {
+      @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 lg:px-8 2xl:px-24;
+    }
 
-  .marked-title {
-    @apply [&_mark]:-ml-[0.15em] [&_mark]:inline-flex [&_mark]:h-[.96em] [&_mark]:min-h-[0.6em] [&_mark]:items-center [&_mark]:bg-yellow [&_mark]:box-decoration-clone [&_mark]:px-[0.1em] [&_mark]:pb-[0.11em] [&_mark]:text-black;
+    .marked-title {
+      @apply [&_mark]:bg-yellow [&_mark]:-ml-[0.15em] [&_mark]:inline-flex [&_mark]:h-[.96em] [&_mark]:min-h-[0.6em] [&_mark]:items-center [&_mark]:box-decoration-clone [&_mark]:px-[0.1em] [&_mark]:pb-[0.11em] [&_mark]:text-black;
+    }
   }
 }
 
@@ -231,7 +232,7 @@
   }
 
   :where(:focus-visible) {
-    @apply focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-hidden;
+    @apply focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2;
   }
   /*
     Apply focus ring and rounded styles to all <a> elements without a class.
