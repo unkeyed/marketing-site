@@ -10,7 +10,7 @@ const config = {
     light: '#040406',
     dark: '#040406',
   },
-  defaultSocialImage: '/favicon/og-image.jpg',
+  defaultSocialImage: '/og-images/og-image.jpg',
   githubOrg: 'pixel-point',
   githubRepo: 'prime',
 };
