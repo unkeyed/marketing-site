@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
 

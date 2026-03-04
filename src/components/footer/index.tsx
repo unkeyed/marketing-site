@@ -14,9 +14,9 @@ function Footer() {
       : config.projectName;
 
   return (
-    <footer className="relative w-full pt-11 pb-18">
-      <div className="container flex flex-col gap-y-12 lg:gap-y-14 xl:flex-row xl:items-start xl:justify-start xl:gap-x-40 2xl:gap-x-91">
-        <div className="flex max-w-72 flex-col gap-y-8 md:gap-y-10 xl:shrink-0">
+    <footer className="relative w-full pt-8 pb-10 md:pt-10 lg:pt-11 lg:pb-18">
+      <div className="container flex flex-col gap-y-10 sm:flex-row sm:items-start sm:gap-x-27.5 lg:gap-x-20 xl:justify-start xl:gap-x-40 2xl:gap-x-91">
+        <div className="flex max-w-72 flex-col gap-y-10 lg:max-w-36.5 lg:shrink-0">
           <NextLink className="inline-flex" href={logoHref}>
             <Image
               className="block h-auto w-20.75"
