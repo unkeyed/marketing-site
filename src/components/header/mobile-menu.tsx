@@ -181,23 +181,26 @@ function MobileMenu({ items }: MobileMenuProps) {
                 </NextLink>
               );
             })}
+            <NextLink
+              href={discordLink.href}
+              className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+              onClick={() => setOpen(false)}
+            >
+              {discordLink.label}
+            </NextLink>
+            <NextLink
+              href={githubLink.href}
+              className="flex items-center gap-1 border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
+              onClick={() => setOpen(false)}
+              aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
+            >
+              <Icons.github className="text-background" size={18} aria-hidden="true" />
+              <span className="sr-only">{githubLink.label}</span>
+              <span>{githubLink.metric}</span>
+            </NextLink>
           </nav>
 
           <div className="mt-5 flex flex-col gap-2">
-            <div className="flex gap-1">
-              <Link href={discordLink.href} className="flex-1">
-                {discordLink.label}
-              </Link>
-              <Link
-                href={githubLink.href}
-                className="flex-1 gap-1"
-                aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
-              >
-                <Icons.github className="text-background" size={18} aria-hidden="true" />
-                <span className="sr-only">{githubLink.label}</span>
-                <span>{githubLink.metric}</span>
-              </Link>
-            </div>
             <div className="flex gap-1">
               <Link
                 href={loginLink.href}
