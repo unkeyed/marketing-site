@@ -87,7 +87,7 @@ export default function Hero({
       </div>
 
       <div className="container">
-        <div className="overflow-hidden pt-8 pb-6 lg:overflow-visible lg:pt-12 lg:pb-10.5">
+        <div className="-mx-5 overflow-hidden pt-8 pb-6 md:-mx-8 lg:mx-0 lg:overflow-visible lg:pt-12 lg:pb-10.5">
           <div className="flex w-max animate-[logos_30s_linear_infinite] will-change-transform motion-reduce:animate-none lg:w-full lg:animate-none lg:will-change-auto">
             <ul className="flex shrink-0 items-center gap-6 pr-6 lg:w-full lg:justify-between lg:gap-0 lg:pr-0">
               {logos.map((logo) => (
