@@ -178,7 +178,7 @@ const contentData = {
     cards: [
       {
         href: '#',
-        imageSrc: '/images/about/blog/flow_editor.jpg',
+        imageSrc: '/images/about/blog/flow_editor.png',
         imageAlt: 'Building a flow editor',
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -186,7 +186,7 @@ const contentData = {
       },
       {
         href: '#',
-        imageSrc: '/images/about/blog/serverless.jpg',
+        imageSrc: '/images/about/blog/serverless.png',
         imageAlt: "Why we're leaving serverless",
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -194,7 +194,7 @@ const contentData = {
       },
       {
         href: '#',
-        imageSrc: '/images/about/blog/no_signup.jpg',
+        imageSrc: '/images/about/blog/no_signup.png',
         imageAlt: 'No Signup Required',
         category: 'Product Updates',
         date: 'MAY 9, 2024',

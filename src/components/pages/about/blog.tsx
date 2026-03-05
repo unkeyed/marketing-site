@@ -36,6 +36,7 @@ function BlogCard({ card }: { card: IBlogCard }) {
           src={card.imageSrc}
           alt={card.imageAlt}
           fill
+          unoptimized
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
