@@ -254,7 +254,7 @@ export const homeContentData = {
         },
         textWidthClass: 'max-w-90',
         gridClassName:
-          'min-h-[30rem] aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
+          'aspect-[505/902] sm:aspect-auto sm:h-auto sm:min-h-0 sm:col-start-2 sm:row-start-1 sm:row-span-2 xl:col-start-2 xl:row-span-2',
       },
       {
         title: 'Rate limits',
