@@ -36,8 +36,9 @@ function Card({
 
   const textContent =
     textStyle === 'marked' ? (
-      <mark className="inline bg-background box-decoration-clone pt-1 pr-8.75 pb-4 pl-0 text-inherit md:pb-5.5">
-        <span className="font-medium text-white">{title}.</span> <span>{body}</span>
+      <mark className="inline bg-background box-decoration-clone [-webkit-box-decoration-break:clone] [box-decoration-break:clone] [isolation:isolate] pt-1 pr-8.75 pb-4 pl-0 text-inherit md:pb-5.5">
+        <span className="relative z-[1] font-medium text-white">{title}.</span>{' '}
+        <span className="relative z-[1]">{body}</span>
       </mark>
     ) : (
       <>
