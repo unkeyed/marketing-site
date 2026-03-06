@@ -10,7 +10,8 @@ const buttonVariants = cva(
       variant: {
         primary: 'bg-foreground text-background hover:bg-gray-90',
         secondary: 'border border-foreground text-foreground hover:bg-gray-12',
-        dark: 'border border-foreground bg-black text-foreground backdrop-blur-[0.625rem] hover:bg-foreground/10',
+        dark: 'border border-foreground bg-black text-foreground backdrop-blur-[10px] hover:bg-foreground/10',
+        link: 'text-primary underline-offset-4 hover:underline',
       },
     },
     defaultVariants: {

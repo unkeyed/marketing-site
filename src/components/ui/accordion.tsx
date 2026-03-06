@@ -23,23 +23,47 @@ function AccordionItem({
   );
 }
 
+interface IAccordionTriggerProps extends React.ComponentProps<typeof AccordionPrimitive.Trigger> {
+  iconClosed?: React.ReactNode;
+  iconOpen?: React.ReactNode;
+}
+
 function AccordionTrigger({
   className,
   children,
+  iconClosed,
+  iconOpen,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: IAccordionTriggerProps) {
+  const hasCustomIcons = iconClosed != null || iconOpen != null;
+  const defaultIcon = (
+    <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+  );
+
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'flex flex-1 items-center justify-between rounded py-4 text-left text-sm font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
+          'group flex flex-1 items-center justify-between rounded py-4 text-left text-sm font-medium transition-all hover:underline',
+          !hasCustomIcons && '[&[data-state=open]>svg]:rotate-180',
           className,
         )}
         {...props}
       >
         {children}
-        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+        {hasCustomIcons ? (
+          <span className="relative flex size-6 shrink-0 items-center justify-center text-foreground">
+            <span className="group-data-[state=closed]:block group-data-[state=open]:hidden">
+              {iconClosed}
+            </span>
+            <span className="absolute inset-0 flex items-center justify-center group-data-[state=closed]:hidden group-data-[state=open]:block">
+              {iconOpen}
+            </span>
+          </span>
+        ) : (
+          defaultIcon
+        )}
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );
