@@ -13,6 +13,11 @@ const config = {
   defaultSocialImage: '/og-images/og-image.jpg',
   githubOrg: 'pixel-point',
   githubRepo: 'prime',
+  changelog: {
+    // We would prefer of keeping content outside of src folder but it would disable hot reloading.
+    contentDir: 'src/content/changelog',
+    postsPerPage: 20,
+  },
 };
 
 export default config;

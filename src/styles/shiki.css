@@ -52,8 +52,8 @@ code .line::after {
   @apply !bg-[var(--shiki-highlighted-line-background)];
 }
 .shiki span.line.diff.add {
-  @apply !bg-[var(--shiki-added-line-background)] before:ml-2 before:text-foreground/90 before:content-["+"];
+  @apply !bg-[var(--shiki-added-line-background)] before:mr-2 before:inline-block before:w-4 before:pl-2 before:text-foreground/90 before:content-["+"];
 }
 .shiki span.line.diff.remove {
-  @apply !bg-[var(--shiki-removed-line-background)] before:ml-2 before:text-foreground/90 before:content-["-"];
+  @apply !bg-[var(--shiki-removed-line-background)] before:mr-2 before:inline-block before:w-4 before:pl-2 before:text-foreground/90 before:content-["-"];
 }

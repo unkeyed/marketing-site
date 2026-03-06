@@ -16,6 +16,7 @@ type HeadingWithData = Heading & { data?: { hProperties?: { id?: string } } };
 
 export interface RemarkHeadingOptions {
   slug?: (root: Root, heading: Heading, text: string) => string;
+  idPrefix?: string;
 
   /**
    * Allow custom headings ids
@@ -37,7 +38,7 @@ export interface RemarkHeadingOptions {
  * Add heading ids and extract TOC
  */
 export function remarkHeading(opts: RemarkHeadingOptions = {}): Transformer {
-  const { slug: defaultSlug, customId = true, generateToc = true, tocRef } = opts;
+  const { slug: defaultSlug, idPrefix = '', customId = true, generateToc = true, tocRef } = opts;
   return (root, file) => {
     const local: ITableOfContentsItem[] = [];
     slugger.reset();
@@ -79,11 +80,12 @@ export function remarkHeading(opts: RemarkHeadingOptions = {}): Transformer {
             : slugger.slug(flattened || '');
       }
 
-      heading.data.hProperties.id = id;
+      const normalizedId = idPrefix ? `${idPrefix}${id}` : id;
+      heading.data.hProperties.id = normalizedId;
 
       if (generateToc && !excludeFromToc) {
         const title = flattened ?? flattenNode(heading);
-        local.push({ title, anchor: String(id), depth: heading.depth });
+        local.push({ title, anchor: String(normalizedId), depth: heading.depth });
       }
 
       return 'skip';

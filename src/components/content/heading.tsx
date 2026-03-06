@@ -11,7 +11,7 @@ import * as m from 'motion/react-m';
 import { cn } from '@/lib/utils';
 
 interface HeadingProps {
-  tag: 'h2' | 'h3';
+  tag: 'h1' | 'h2' | 'h3';
   children: ReactNode;
   className?: string;
   id?: string;

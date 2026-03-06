@@ -60,6 +60,13 @@ export const getComponents = (options: IGetComponentsOptions) => {
   const { allowMediaBreakout = false, contentWidth = 704, relatedPosts = [] } = options;
 
   return {
+    h1: ({ id, children }: ComponentProps<'h1'>) => {
+      return (
+        <Heading tag="h1" id={id}>
+          {children}
+        </Heading>
+      );
+    },
     h2: ({ id, children }: ComponentProps<'h2'>) => {
       return (
         <Heading tag="h2" id={id}>

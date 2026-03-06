@@ -100,7 +100,23 @@
   --color-muted-5: #5e616e;
   --color-cyan: #35f1e4;
   --color-blue-glow: #0095e6;
-  --color-legacy-blue: #3580f1;
+  --color-blue-dot: #3580f1;
+  --color-yellow-glow: #c29500;
+  --color-orange-glow: #a15728;
+  --color-purple-glow: #6100c2;
+  --color-purple-dot: #b061ff;
+  --color-green-glow: #45b36e;
+  --color-green-dot: #00ff5e;
+  --color-red-glow: #b63524;
+  --color-red-dot: #ff573d;
+  --color-lightblue-glow: #14289d;
+  --color-lightblue-dot: #559fff;
+  --color-lime-glow: #37b746;
+  --color-lime-dot: #a3fe1b;
+  --color-pink-glow: #9b2ea9;
+  --color-pink-dot: #ff68f7;
+  --color-gray-glow: #a4a4a4;
+  --color-gray-dot: #c9c9c9;
 
   /* pages/home/*, docs */
   --spacing-content: 96rem;

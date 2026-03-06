@@ -58,7 +58,7 @@ async function CodeBlock(props: TCodeBlockProps) {
   return (
     <CodeBlockWrapper className={cn('max-w-full', className)} fileName={resolvedFileName} as={as}>
       <ScrollArea className="w-full">
-        <div className="px-4 py-5 text-left font-mono text-sm">{renderedCode}</div>
+        <div className="code-block-body px-4 py-5 text-left font-mono text-sm">{renderedCode}</div>
         <ScrollBar className="invisible" orientation="horizontal" />
       </ScrollArea>
     </CodeBlockWrapper>

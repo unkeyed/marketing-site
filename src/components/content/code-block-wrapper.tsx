@@ -105,7 +105,7 @@ function CodeBlockWrapper({
         {children}
         <button
           className={cn(
-            'absolute top-4 right-4 flex size-7 items-center justify-center rounded border border-border bg-popover text-muted-foreground',
+            'code-block-copy-button absolute top-4 right-4 flex size-7 items-center justify-center rounded border border-border bg-popover text-muted-foreground',
             'opacity-100 transition-[color,opacity] duration-300 hover:text-foreground/80 md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100',
             isCopied && 'text-foreground/80',
           )}

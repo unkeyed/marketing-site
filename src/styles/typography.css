@@ -3,35 +3,35 @@
 
   @apply prose-headings:text-3xl prose-headings:font-semibold prose-headings:text-foreground;
 
-  @apply prose-p:text-foreground/90;
+  @apply prose-p:text-lg prose-p:font-normal prose-p:text-gray-80;
 
-  @apply prose-h2:mt-11 prose-h2:mb-4 prose-h2:scroll-mt-8 prose-h2:text-2xl prose-h2:leading-tight prose-h2:font-semibold prose-h2:tracking-tight md:prose-h2:mt-14 md:prose-h2:text-3xl md:prose-h2:leading-tight;
+  @apply prose-h2:mt-0 prose-h2:mb-4 prose-h2:scroll-mt-8 prose-h2:font-sans prose-h2:text-xl prose-h2:leading-snug prose-h2:font-semibold prose-h2:tracking-tight md:prose-h2:mt-14;
 
-  @apply prose-h3:mt-8 prose-h3:mb-4 prose-h3:scroll-mt-6 prose-h3:text-xl prose-h3:leading-snug prose-h3:font-semibold prose-h3:tracking-tight;
+  @apply prose-h3:mt-8 prose-h3:mb-3 prose-h3:scroll-mt-6 prose-h3:text-xl prose-h3:leading-snug prose-h3:font-semibold prose-h3:tracking-tight prose-h3:text-foreground;
 
   @apply prose-h4:mt-6 prose-h4:mb-2.5 prose-h4:text-lg prose-h4:font-medium prose-h4:tracking-tight;
 
-  @apply prose-p:my-6 prose-p:overflow-x-auto prose-p:leading-normal prose-p:tracking-tight;
+  @apply prose-p:my-4 prose-p:overflow-x-auto prose-p:leading-normal prose-p:tracking-tight;
 
-  @apply prose-a:rounded-sm prose-a:font-normal prose-a:break-words prose-a:text-primary prose-a:no-underline prose-a:transition-colors prose-a:duration-300 hover:prose-a:text-primary/80;
+  @apply prose-a:rounded-sm prose-a:font-normal prose-a:break-words prose-a:text-foreground prose-a:underline prose-a:decoration-gray-50 prose-a:underline-offset-[0.2em] prose-a:transition-colors prose-a:duration-300 prose-a:hover:text-foreground/85 prose-a:hover:decoration-gray-80;
 
   @apply prose-ol:flex prose-ol:flex-col prose-ul:flex prose-ul:flex-col;
 
-  @apply prose-ul:my-6 prose-ul:gap-y-2.5 prose-ul:pl-8 md:prose-ul:pl-11;
+  @apply prose-ul:my-4 prose-ul:gap-y-2.5 prose-ul:pl-11 md:prose-ul:pl-11;
 
-  @apply prose-ol:my-6 prose-ol:gap-y-2.5 prose-ol:pl-7 md:prose-ol:pl-10;
+  @apply prose-ol:my-4 prose-ol:gap-y-2.5 prose-ol:pl-11 md:prose-ol:pl-11;
 
-  @apply prose-li:m-0 prose-li:leading-normal prose-li:tracking-tight prose-li:text-foreground/90;
+  @apply prose-li:m-0 prose-li:text-lg prose-li:leading-normal prose-li:tracking-tight prose-li:text-gray-80;
 
-  @apply prose-strong:font-medium prose-strong:text-foreground;
+  @apply prose-strong:font-normal prose-strong:text-foreground;
 
-  @apply prose-figure:my-8;
+  @apply prose-figure:my-6;
 
   @apply prose-hr:my-8 prose-hr:border-border;
 
   @apply prose-blockquote:text-foreground;
 
-  @apply prose-img:my-0 prose-img:rounded-lg;
+  @apply prose-img:my-0 prose-img:rounded-xl;
 
   > * {
     &:last-child {
@@ -73,7 +73,7 @@
     @apply hover:decoration-primary;
 
     strong {
-      @apply text-primary-foreground transition-colors duration-300 hover:text-primary-foreground/80;
+      @apply text-foreground transition-colors duration-300 hover:text-foreground/80;
     }
   }
 
@@ -98,7 +98,7 @@
   }
 
   ul {
-    @apply prose-li:marker:text-[0];
+    @apply list-none prose-li:marker:text-[0];
 
     li {
       @apply relative;
@@ -153,11 +153,16 @@
       @apply min-w-[min(46rem,100%)] border-separate border-spacing-0 px-5 md:min-w-full md:px-0;
 
       & th {
-        @apply min-w-36 border-b border-border pb-1.5 text-left align-top text-sm leading-snug font-medium tracking-tight text-foreground;
+        @apply min-w-36 border-b border-border pb-1.5 pr-10 text-left align-top text-sm leading-snug font-medium tracking-tight text-foreground;
       }
 
       & td {
-        @apply min-w-36 border-b border-border pt-3 pr-10 pb-3 text-left align-top text-sm leading-snug tracking-tight text-secondary-foreground;
+        @apply min-w-36 border-b border-border pt-3 pr-10 pb-3 text-left align-top text-sm leading-snug tracking-tight text-gray-80/90;
+      }
+
+      & th:last-child,
+      & tr:last-child td {
+        @apply pr-0;
       }
 
       & tr:last-child td {
@@ -312,6 +317,84 @@
         @apply mb-0;
       }
     }
+  }
+
+  ol {
+    li::marker {
+      content: counters(list-item, '.') '. ';
+    }
+  }
+
+  ol ol,
+  ul ol {
+    @apply pl-9;
+  }
+
+  ul {
+    @apply list-none;
+
+    li {
+      @apply before:bg-gray-80;
+    }
+  }
+
+  ol strong,
+  ul strong {
+    @apply font-normal tracking-tight text-foreground;
+  }
+
+  ol a,
+  ul a {
+    @apply decoration-gray-40 decoration-dashed decoration-[1px] underline-offset-[0.26em] hover:decoration-gray-70;
+  }
+
+  ol li > figure.custom-table,
+  ul li > figure.custom-table {
+    @apply mx-0 pl-11;
+  }
+
+  ol + figure.custom-table,
+  ul + figure.custom-table {
+    @apply mx-0 ml-11;
+  }
+
+  figure.custom-table {
+    table {
+      & th {
+        @apply pb-3;
+      }
+    }
+  }
+
+  .code-block {
+    @apply rounded-md border-gray-20 bg-background;
+
+    .code-block-body {
+      @apply px-4 py-3 text-[14px] leading-[1.5] tracking-[-0.02em] text-foreground;
+    }
+
+    .code-block-copy-button {
+      @apply border-gray-20 bg-background text-gray-70 opacity-100 hover:text-foreground;
+    }
+
+    pre.shiki {
+      @apply bg-transparent;
+
+      code {
+        & span {
+          @apply text-[14px] leading-[1.5] tracking-[-0.02em];
+        }
+      }
+    }
+  }
+
+  h2 {
+    @apply mt-8;
+  }
+
+  h2 + p,
+  h3 + p {
+    @apply mt-0;
   }
 }
 

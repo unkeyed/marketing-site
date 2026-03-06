@@ -121,7 +121,7 @@ const Video = ({
                   <AnimatePresence>
                     {(isTouchDevice || showControls) && (
                       <m.div
-                        className="absolute inset-x-0 bottom-0 px-4 pb-4 md:px-12"
+                        className="absolute inset-x-0 bottom-0 mx-auto max-w-[33rem] px-4 pb-4 md:px-0"
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 16 }}
@@ -153,7 +153,7 @@ const Video = ({
                               <VolumeX className="size-4 md:size-5" />
                             </span>
                           </MediaMuteButton>
-                          <MediaVolumeRange className="hidden max-w-[5.375rem] pr-1.5 outline-hidden sm:block"></MediaVolumeRange>
+                          <MediaVolumeRange className="hidden max-w-[5.375rem] pr-3.5 outline-hidden sm:block"></MediaVolumeRange>
                           <MediaFullscreenButton className="outline-hidden">
                             <span slot="enter">
                               <Maximize className="size-4 md:size-5" />

@@ -20,6 +20,7 @@ import {
 export interface CompileMdxOptions {
   allowMediaBreakout?: boolean;
   contentWidth?: number;
+  headingIdPrefix?: string;
   // related to IPostData
   relatedPosts?: Array<{
     slug: ISlug;
@@ -47,7 +48,7 @@ export async function compileMdx(source: string, opts: CompileMdxOptions = {}) {
       mdxOptions: {
         remarkPlugins: [
           remarkGfm,
-          [remarkHeading, { tocRef: toc }],
+          [remarkHeading, { tocRef: toc, idPrefix: opts.headingIdPrefix }],
           [remarkImage, { useImport: false }],
           remarkAdmonition,
           remarkSteps,
