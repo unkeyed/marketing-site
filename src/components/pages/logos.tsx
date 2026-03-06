@@ -32,14 +32,16 @@ function Logos({ logos, className, animated = true }: ILogosProps) {
       >
         <ul className="flex shrink-0 items-center gap-6 pr-6 lg:w-full lg:justify-between lg:gap-0 lg:pr-0">
           {logos.map(({ src, alt, width, height, wrapperClassName, imageClassName }, index) => (
-            <li key={`logo_${index}`} className={cn('relative shrink-0 overflow-hidden', wrapperClassName)}>
+            <li
+              key={`logo_${index}`}
+              className={cn('relative shrink-0 overflow-hidden', wrapperClassName)}
+            >
               <Image
                 className={cn('h-full w-full', imageClassName)}
                 src={src}
                 alt={alt}
                 width={width}
                 height={height}
-                priority
               />
             </li>
           ))}

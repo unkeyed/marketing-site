@@ -63,7 +63,6 @@ function Hero({ className, plans, logos, cta, bottomContent }: IHeroProps) {
         <Image
           alt=""
           fill
-          priority
           sizes="100vw"
           className="z-0 object-cover"
           src={'/images/pricing/lines.png'}

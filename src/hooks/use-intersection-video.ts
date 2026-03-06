@@ -1,18 +1,21 @@
 'use client';
 
-import { type RefObject, useEffect } from 'react';
+import { useEffect, type RefObject } from 'react';
 
 interface IUseIntersectionVideoOptions {
   rootMargin?: string;
+  disabled?: boolean;
 }
 
 export function useIntersectionVideo(
   videoRef: RefObject<HTMLVideoElement | null>,
   options: IUseIntersectionVideoOptions = {},
 ) {
-  const { rootMargin = '400px' } = options;
+  const { rootMargin = '400px', disabled = false } = options;
 
   useEffect(() => {
+    if (disabled) return;
+
     const video = videoRef.current;
     if (!video) return;
 
@@ -30,5 +33,5 @@ export function useIntersectionVideo(
 
     observer.observe(video);
     return () => observer.disconnect();
-  }, [videoRef, rootMargin]);
+  }, [disabled, videoRef, rootMargin]);
 }

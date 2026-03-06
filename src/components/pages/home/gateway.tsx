@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
@@ -36,7 +34,7 @@ function Card({
 
   const textContent =
     textStyle === 'marked' ? (
-      <mark className="inline bg-background box-decoration-clone [-webkit-box-decoration-break:clone] [box-decoration-break:clone] [isolation:isolate] pt-1 pr-8.75 pb-4 pl-0 text-inherit md:pb-5.5">
+      <mark className="[isolation:isolate] inline bg-background box-decoration-clone [box-decoration-break:clone] pt-1 pr-8.75 pb-4 pl-0 text-inherit [-webkit-box-decoration-break:clone] md:pb-5.5">
         <span className="relative z-[1] font-medium text-white">{title}.</span>{' '}
         <span className="relative z-[1]">{body}</span>
       </mark>

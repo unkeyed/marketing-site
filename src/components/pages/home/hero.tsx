@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 
 import { BackgroundVideo } from '@/components/ui/background-video';
@@ -38,7 +36,8 @@ export default function Hero({
           src={poster.src}
           alt=""
           fill
-          priority
+          loading="eager"
+          fetchPriority="high"
           sizes="(max-width: 640px) 960px"
           className="pointer-events-none origin-top scale-[1.02] object-cover object-top sm:hidden"
         />

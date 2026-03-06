@@ -35,7 +35,6 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
               alt={logoAlt}
               width={83}
               height={28}
-              priority
             />
           </NextLink>
           <Nav className="hidden h-full lg:flex" items={menuItems} />

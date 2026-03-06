@@ -47,7 +47,6 @@ interface IAuthorsProps {
   authors: IAuthorData[];
   className?: string;
   variant?: 'compact' | 'expanded';
-  isPriorityLoad?: boolean;
   size?: keyof typeof sizes;
   showNames?: boolean;
   hideNamesOn?: ('sm' | 'md' | 'lg')[];
@@ -60,7 +59,6 @@ interface IAuthorsVariantsProps extends Omit<IAuthorsProps, 'className' | 'varia
 
 function CompactAuthors({
   authors,
-  isPriorityLoad = false,
   isMultipleAuthors = false,
   size = 'md',
   showNames = true,
@@ -74,7 +72,6 @@ function CompactAuthors({
         avatars={authors.map(({ photo }) => photo || defaultAuthorImage)}
         names={authors.map(({ name }) => name)}
         size={size}
-        priority={isPriorityLoad}
       />
 
       {showNames && (
@@ -111,7 +108,6 @@ function CompactAuthors({
 
 function ExpandedAuthors({
   authors,
-  isPriorityLoad = false,
   isMultipleAuthors = false,
   size = 'sm',
 }: IAuthorsVariantsProps & { size?: keyof typeof sizes }) {
@@ -139,7 +135,6 @@ function ExpandedAuthors({
                 alt={name || ''}
                 width={styles.width}
                 height={styles.height}
-                priority={isPriorityLoad}
                 quality={100}
               />
               <p className="flex flex-col gap-y-0.5">
@@ -163,7 +158,6 @@ function Authors({
   authors,
   variant = 'compact',
   size = 'sm',
-  isPriorityLoad = false,
   showNames = true,
   hideNamesOn = [],
 }: IAuthorsProps) {
@@ -174,7 +168,6 @@ function Authors({
       {variant === 'compact' ? (
         <CompactAuthors
           authors={authors}
-          isPriorityLoad={isPriorityLoad}
           isMultipleAuthors={isMultipleAuthors}
           size={size}
           showNames={showNames}
@@ -183,7 +176,6 @@ function Authors({
       ) : (
         <ExpandedAuthors
           authors={authors}
-          isPriorityLoad={isPriorityLoad}
           isMultipleAuthors={isMultipleAuthors}
           size={size}
         />

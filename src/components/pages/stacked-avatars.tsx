@@ -6,7 +6,6 @@ interface IAuthorsVariantsProps {
   avatars: string[];
   names?: string[];
   className?: string;
-  priority?: boolean;
   size?: keyof typeof sizes;
 }
 
@@ -21,7 +20,6 @@ function StackedAvatars({
   className,
   avatars,
   names,
-  priority = false,
   size = 'md',
 }: IAuthorsVariantsProps) {
   if (avatars.length === 0) {
@@ -38,7 +36,6 @@ function StackedAvatars({
         alt={names?.[0] ?? ''}
         width={width}
         height={height}
-        priority={priority}
         quality={100}
       />
     );
@@ -68,7 +65,6 @@ function StackedAvatars({
           alt={names?.[index] ?? ''}
           width={width}
           height={height}
-          priority={priority}
           quality={100}
         />
       ))}

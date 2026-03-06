@@ -24,7 +24,6 @@ function Footer() {
               alt={logoAlt}
               width={83}
               height={28}
-              priority
             />
           </NextLink>
           <div className="flex flex-col gap-y-4">

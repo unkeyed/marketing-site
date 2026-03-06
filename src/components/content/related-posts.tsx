@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-
 import NextLink from 'next/link';
 
 import { type IAuthorData } from '@/types/common';

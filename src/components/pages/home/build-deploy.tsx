@@ -1,43 +1,19 @@
-'use client';
-
-import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import BuildDeployStickyHeader from '@/components/pages/home/build-deploy-sticky-header';
+import {
+  type IBuildDeployPanel,
+  type IBuildDeployProps,
+} from '@/components/pages/home/build-deploy.types';
 
-interface IBuildDeployPanel {
-  id: string;
-  tabLabel: string;
-  title: string;
-  subtitle: string;
-  body: string;
-  image: string;
-  hasLogos?: boolean;
-  logos?: { alt: string; src: string; width: number; height: number; className: string }[];
-  textTopClass?: string;
-}
-
-interface IBuildDeployProps {
-  heading: string;
-  description: string;
-  panels: IBuildDeployPanel[];
-}
-
-function Panel({
-  row,
-  isLast,
-  stickyHeight,
-}: {
-  row: IBuildDeployPanel;
-  isLast: boolean;
-  stickyHeight: number;
-}) {
+function Panel({ row, isLast }: { row: IBuildDeployPanel; isLast: boolean }) {
   return (
     <li>
       <section
         id={row.id}
-        style={{ scrollMarginTop: stickyHeight }}
+        style={{ scrollMarginTop: 'var(--build-deploy-scroll-margin, 200px)' }}
         className="grid min-h-140 grid-cols-1 sm:min-h-157 lg:min-h-[clamp(33.75rem,41vw,39.25rem)] lg:grid-cols-2"
       >
         <div
@@ -98,215 +74,24 @@ function Panel({
 }
 
 export default function BuildDeploy({ heading, description, panels }: IBuildDeployProps) {
-  const [activeTab, setActiveTab] = useState(panels[0]?.id ?? '');
-  const [stickyPanelHeight, setStickyPanelHeight] = useState(200);
-  const [globalHeaderPx, setGlobalHeaderPx] = useState(54);
-  const [isStuck, setIsStuck] = useState(false);
-
-  const isClickScrolling = useRef(false);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const tabsScrollerRef = useRef<HTMLDivElement>(null);
-  const tabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  useEffect(() => {
-    const el = stickyRef.current;
-    if (!el) return;
-
-    const ro = new ResizeObserver(([entry]) => {
-      const h = Math.round(entry.borderBoxSize[0].blockSize);
-      setStickyPanelHeight((prev) => (prev === h ? prev : h));
-    });
-
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue('--sticky-header-height')
-      .trim();
-    if (!raw) return;
-
-    const rem = parseFloat(raw);
-    if (Number.isNaN(rem)) return;
-
-    const base = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    setGlobalHeaderPx(Math.round(rem * base));
-  }, []);
-
-  useEffect(() => {
-    const el = stickyRef.current;
-    if (!el) return;
-
-    let raf = 0;
-
-    const update = () => {
-      raf = 0;
-      const rect = el.getBoundingClientRect();
-
-      const pinned = Math.abs(rect.top - globalHeaderPx) <= 1;
-
-      setIsStuck((prev) => (prev === pinned ? prev : pinned));
-    };
-
-    const onScrollOrResize = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener('scroll', onScrollOrResize, { passive: true });
-    window.addEventListener('resize', onScrollOrResize);
-
-    return () => {
-      window.removeEventListener('scroll', onScrollOrResize);
-      window.removeEventListener('resize', onScrollOrResize);
-      if (raf) window.cancelAnimationFrame(raf);
-    };
-  }, [globalHeaderPx, stickyPanelHeight]);
-
-  const stickyOffset = globalHeaderPx + stickyPanelHeight;
-
-  useEffect(() => {
-    const elements = panels
-      .map((p) => document.getElementById(p.id))
-      .filter((el): el is HTMLElement => el !== null);
-
-    if (elements.length === 0) return;
-
-    const intersectingIds = new Set<string>();
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) intersectingIds.add(entry.target.id);
-          else intersectingIds.delete(entry.target.id);
-        }
-
-        if (isClickScrolling.current) return;
-
-        for (const panel of panels) {
-          if (intersectingIds.has(panel.id)) {
-            setActiveTab(panel.id);
-            break;
-          }
-        }
-      },
-      { rootMargin: `-${stickyOffset}px 0px -40% 0px`, threshold: 0 },
-    );
-
-    for (const el of elements) observer.observe(el);
-    return () => observer.disconnect();
-  }, [panels, stickyOffset]);
-
-  useEffect(() => {
-    const scroller = tabsScrollerRef.current;
-    const activeButton = tabButtonRefs.current[activeTab];
-    if (!scroller || !activeButton) return;
-
-    if (scroller.scrollWidth <= scroller.clientWidth + 1) return;
-
-    const containerRect = scroller.getBoundingClientRect();
-    const tabRect = activeButton.getBoundingClientRect();
-
-    const hiddenOnLeft = tabRect.left < containerRect.left;
-    const hiddenOnRight = tabRect.right > containerRect.right;
-    if (!hiddenOnLeft && !hiddenOnRight) return;
-
-    const targetLeft =
-      scroller.scrollLeft +
-      (tabRect.left - containerRect.left) -
-      (containerRect.width - tabRect.width) / 2;
-
-    const clampedTarget = Math.max(
-      0,
-      Math.min(targetLeft, scroller.scrollWidth - scroller.clientWidth),
-    );
-    scroller.scrollTo({ left: clampedTarget, behavior: 'smooth' });
-  }, [activeTab]);
-
-  const handleTabClick = useCallback((id: string) => {
-    setActiveTab(id);
-
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    isClickScrolling.current = true;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    const unlock = () => {
-      isClickScrolling.current = false;
-    };
-
-    window.addEventListener('scrollend', unlock, { once: true });
-    const fallback = window.setTimeout(unlock, 1500);
-    window.addEventListener('scrollend', () => clearTimeout(fallback), { once: true });
-  }, []);
-
   return (
     <section className="pt-20 md:pt-30 xl:pt-45">
-      <div
-        aria-hidden
-        className={cn(
-          'pointer-events-none fixed inset-x-0 top-0 z-30 h-[var(--sticky-header-height)] bg-black transition-opacity duration-200',
-          isStuck ? 'opacity-100' : 'opacity-0',
-        )}
-      />
-
       <div className="container">
         <div className="pt-8 md:pt-12 xl:pt-20">
           <Label>Build & Deploy</Label>
         </div>
 
         <div>
-          <div
-            ref={stickyRef}
-            className="sticky top-[var(--sticky-header-height)] z-40 -mx-5 self-start bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
-          >
-            <div className="grid gap-4 pt-[1.25rem] sm:gap-5 md:pt-6 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-[1.75rem]">
-              <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[2.5rem] md:max-w-[42rem] md:text-[2.25rem] lg:max-w-none lg:text-[2.5rem] xl:text-[3.25rem]">
-                {heading}
-              </h2>
-              {/* 2xl:-bottom-0.5 to fix the line-height difference between Figma and the implemented layout */}
-              <p className="relative max-w-104 text-[1rem] leading-snug tracking-[-0.01em] text-gray-70 sm:text-[1.25rem] md:text-[1.125rem] lg:mt-auto lg:ml-auto lg:text-xl 2xl:-bottom-0.5">
-                {description}
-              </p>
-            </div>
-
-            <div
-              ref={tabsScrollerRef}
-              className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden"
-            >
-              <nav aria-label="Build and deploy steps" className="h-full">
-                <ul className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0">
-                  {panels.map((row, index) => (
-                    <li key={row.id}>
-                      <button
-                        ref={(el) => {
-                          tabButtonRefs.current[row.id] = el;
-                        }}
-                        type="button"
-                        aria-current={activeTab === row.id ? 'step' : undefined}
-                        onClick={() => handleTabClick(row.id)}
-                        className={cn(
-                          'flex h-full w-full items-center justify-center border-t border-l border-gray-20 px-3 text-base leading-[1.125] font-normal transition-colors sm:px-4 sm:text-lg md:text-[1.125rem] lg:text-xl',
-                          index === panels.length - 1 && 'border-r',
-                          activeTab === row.id ? 'bg-gray-8 text-white' : 'text-gray-60',
-                        )}
-                      >
-                        {row.tabLabel}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <BuildDeployStickyHeader
+            heading={heading}
+            description={description}
+            panels={panels.map(({ id, tabLabel }) => ({ id, tabLabel }))}
+          />
 
           {panels.length > 1 && (
             <ul className="-mx-5 -mt-px list-none md:-mx-8 xl:mx-0">
               {panels.slice(0, -1).map((row) => (
-                <Panel key={row.id} row={row} isLast={false} stickyHeight={stickyOffset} />
+                <Panel key={row.id} row={row} isLast={false} />
               ))}
             </ul>
           )}
@@ -314,7 +99,7 @@ export default function BuildDeploy({ heading, description, panels }: IBuildDepl
 
         {panels.length > 0 && (
           <ul className="-mx-5 -mt-px list-none md:-mx-8 xl:mx-0">
-            <Panel row={panels[panels.length - 1]} isLast stickyHeight={stickyOffset} />
+            <Panel row={panels[panels.length - 1]} isLast />
           </ul>
         )}
       </div>

@@ -26,7 +26,6 @@ const EnterpriseContent = ({
         alt=""
         fill
         sizes="100vw"
-        priority
         className="z-0 object-cover"
         src="/images/pricing/enterprise-bg.jpg"
       />
