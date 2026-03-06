@@ -10,7 +10,7 @@ const config = {
     light: '#040406',
     dark: '#040406',
   },
-  defaultSocialImage: '/social-previews/index.jpg?v=20260306-1',
+  defaultSocialImage: '/social-previews/main.jpg',
   githubOrg: 'unkeyed',
   githubRepo: 'unkey',
   changelog: {
