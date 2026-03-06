@@ -10,9 +10,9 @@ const config = {
     light: '#040406',
     dark: '#040406',
   },
-  defaultSocialImage: '/og-images/og-image.jpg',
-  githubOrg: 'pixel-point',
-  githubRepo: 'prime',
+  defaultSocialImage: '/social-previews/index.jpg?v=20260306-1',
+  githubOrg: 'unkeyed',
+  githubRepo: 'unkey',
   changelog: {
     // We would prefer of keeping content outside of src folder but it would disable hot reloading.
     contentDir: 'src/content/changelog',

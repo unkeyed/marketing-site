@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
 
+import pricingLinesImage from '@/assets/images/pricing/lines.png';
 import { type ILogo } from '@/types/common';
 import { IPricingPlan } from '@/types/pricing';
 import { cn } from '@/lib/utils';
@@ -65,7 +66,7 @@ function Hero({ className, plans, logos, cta, bottomContent }: IHeroProps) {
           fill
           sizes="100vw"
           className="z-0 object-cover"
-          src={'/images/pricing/lines.png'}
+          src={pricingLinesImage}
         />
       </div>
       {bottomContent}

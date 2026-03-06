@@ -1,4 +1,5 @@
-import { apiManagementPricingPlans, portfolioLogos } from '@/constants/pricing';
+import { portfolioLogos } from '@/constants/logos';
+import { apiManagementPricingPlans } from '@/constants/pricing';
 
 import Logos from '@/components/pages/logos';
 

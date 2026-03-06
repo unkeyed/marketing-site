@@ -1,6 +1,20 @@
 import { createElement, Fragment } from 'react';
 import { Alignment, Fit } from '@rive-app/react-canvas';
 
+import buildDeployConnectImage from '@/assets/images/home/build-deploy/connect.png';
+import buildDeployDeployImage from '@/assets/images/home/build-deploy/deploy.png';
+import buildDeployPreviewImage from '@/assets/images/home/build-deploy/preview.png';
+import buildDeployShipImage from '@/assets/images/home/build-deploy/ship.png';
+import buildDeployValidateImage from '@/assets/images/home/build-deploy/validate.png';
+import ctaPosterImage from '@/assets/images/home/cta/poster.jpg';
+import gatewayAuthDepthImage from '@/assets/images/home/gateway/auth-depth.png';
+import heroPosterImage from '@/assets/images/home/hero/hero-poster.png';
+import observeDashImage from '@/assets/images/home/observe/dash.png';
+import portalDocsImage from '@/assets/images/home/portal/docs.png';
+import portalKeysImage from '@/assets/images/home/portal/keys.png';
+import portalZeroImage from '@/assets/images/home/portal/zero.png';
+import { buildDeployTechnologyLogos, homePortfolioLogos } from '@/constants/logos';
+
 export const homeHeaderLinks = {
   social: [
     { id: 'discord', label: 'Discord', href: 'https://unkey.dev/discord' },
@@ -19,62 +33,12 @@ export const homeContentData = {
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
     primaryCta: { label: 'Start for free', href: '/placeholder' },
     secondaryCta: { label: 'View on GitHub', href: '/placeholder' },
-    poster: { src: '/images/home/hero/hero-poster.png', width: 1533, height: 908 },
+    poster: { src: heroPosterImage.src, width: 1533, height: 908 },
     videos: [
       { src: 'videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
       { src: 'videos/home/hero.webm', type: 'video/webm' },
     ],
-    logos: [
-      {
-        alt: 'Fireworks AI logo',
-        src: '/images/home/hero/logos/fireworks.svg',
-        width: 160,
-        height: 28,
-        wrapperClassName: 'h-7 w-40',
-      },
-      {
-        alt: 'Cal.com logo',
-        src: '/images/home/hero/logos/cal.svg',
-        width: 84,
-        height: 28,
-        wrapperClassName: 'h-7 w-21',
-      },
-      {
-        alt: 'Mintlify logo',
-        src: '/images/home/hero/logos/mintlify.svg',
-        width: 106,
-        height: 28,
-        wrapperClassName: 'h-7 w-[6.625rem]',
-      },
-      {
-        alt: 'Symbolica logo',
-        src: '/images/home/hero/logos/symbolica.svg',
-        width: 125,
-        height: 28,
-        wrapperClassName: 'h-7 w-[7.8125rem]',
-      },
-      {
-        alt: 'BlindPay logo',
-        src: '/images/home/hero/logos/blindpay.svg',
-        width: 105,
-        height: 28,
-        wrapperClassName: 'h-7 w-[6.5625rem]',
-      },
-      {
-        alt: 'Magic Patterns logo',
-        src: '/images/home/hero/logos/magicpatterns.svg',
-        width: 159,
-        height: 24,
-        wrapperClassName: 'h-6 w-[9.9375rem]',
-      },
-      {
-        alt: 'Plain logo',
-        src: '/images/home/hero/logos/plain.svg',
-        width: 74,
-        height: 22,
-        wrapperClassName: 'h-[1.375rem] w-[4.625rem]',
-      },
-    ],
+    logos: homePortfolioLogos,
   },
   controlPlane: {
     heading: createElement(
@@ -145,7 +109,7 @@ export const homeContentData = {
         title: 'Connect a repo and push code',
         subtitle: 'Git-based deploys, zero setup',
         body: 'Link your Git repository once and deploy automatically on every push. No complex pipelines or manual steps needed.',
-        image: '/images/home/build-deploy/connect.png',
+        image: buildDeployConnectImage.src,
       },
       {
         id: 'deploy',
@@ -153,38 +117,9 @@ export const homeContentData = {
         title: 'Deploy Docker containers',
         subtitle: 'Any language, any framework',
         body: 'Run real containers that stay online, keeping the serverless feel while avoiding short-lived runtimes.',
-        image: '/images/home/build-deploy/deploy.png',
+        image: buildDeployDeployImage.src,
         hasLogos: true,
-        logos: [
-          {
-            alt: 'Python',
-            src: '/images/home/build-deploy/logos/python.svg',
-            width: 112,
-            height: 28,
-            className: 'h-7 w-28',
-          },
-          {
-            alt: 'TypeScript',
-            src: '/images/home/build-deploy/logos/typescript.svg',
-            width: 110,
-            height: 28,
-            className: 'h-7 w-[6.875rem]',
-          },
-          {
-            alt: 'Go',
-            src: '/images/home/build-deploy/logos/go.svg',
-            width: 75,
-            height: 28,
-            className: 'h-7 w-[4.6875rem]',
-          },
-          {
-            alt: 'Java',
-            src: '/images/home/build-deploy/logos/java.svg',
-            width: 97,
-            height: 40,
-            className: 'h-10 w-[6.0625rem]',
-          },
-        ],
+        logos: buildDeployTechnologyLogos,
       },
       {
         id: 'preview',
@@ -192,7 +127,7 @@ export const homeContentData = {
         title: 'Previews for every commit',
         subtitle: 'Test every commit before it ships',
         body: 'Test changes in a separate environment, then promote when the results look right.',
-        image: '/images/home/build-deploy/preview.png',
+        image: buildDeployPreviewImage.src,
       },
       {
         id: 'ship',
@@ -200,7 +135,7 @@ export const homeContentData = {
         title: 'Ship immutable versions',
         subtitle: 'Instant rollbacks, no guesswork',
         body: 'Keep releases safe with fast rollback paths, switch back instantly without redeploying. The previous production instance stays running for 30 minutes.',
-        image: '/images/home/build-deploy/ship.png',
+        image: buildDeployShipImage.src,
       },
       {
         id: 'validate',
@@ -208,7 +143,7 @@ export const homeContentData = {
         title: 'Validate releases automatically',
         subtitle: 'Branch protection & OpenAPI checks',
         body: 'Make it really hard to ship broken APIs. OpenAPI diffs automatically flag breaking changes before they hit production.',
-        image: '/images/home/build-deploy/validate.png',
+        image: buildDeployValidateImage.src,
         textTopClass: 'lg:pt-[7.875rem]',
       },
     ],
@@ -225,7 +160,7 @@ export const homeContentData = {
         title: 'Auth + Keys',
         body: 'Manage API keys end to end and control who can call what.',
         webgl: {
-          imageSrc: '/images/home/gateway/auth-depth.png',
+          imageSrc: gatewayAuthDepthImage.src,
           appearanceEffect: 'natural' as const,
           matrixCharSize: 12,
           backgroundCharSize: 85,
@@ -357,7 +292,7 @@ export const homeContentData = {
       src: '/rive/home/observe/observe.riv',
       alignment: Alignment.BottomCenter,
     },
-    mobileImage: '/images/home/observe/dash.png',
+    mobileImage: observeDashImage.src,
     buttonLabel: 'Read the docs',
     buttonHref: '/docs',
     columns: [
@@ -387,17 +322,17 @@ export const homeContentData = {
     cards: [
       {
         text: 'Zero code required. A fully hosted developer portal with nothing to build or maintain.',
-        graphic: '/images/home/portal/zero.png',
+        graphic: portalZeroImage.src,
         textWidthClass: 'max-w-[23.375rem]',
       },
       {
         text: 'Beautiful API docs. OpenAPI-generated documentation, hosted by Unkey and always in sync.',
-        graphic: '/images/home/portal/docs.png',
+        graphic: portalDocsImage.src,
         textWidthClass: 'max-w-[25.6875rem]',
       },
       {
         text: 'Keys and usage, self-serve. Users manage their API keys and view usage without support requests.',
-        graphic: '/images/home/portal/keys.png',
+        graphic: portalKeysImage.src,
         textWidthClass: 'max-w-[25.5625rem]',
       },
     ],
@@ -407,7 +342,7 @@ export const homeContentData = {
     subheading: 'Start for free, integrate in minutes, and scale when you need to.',
     buttonLabel: 'Start for free',
     buttonHref: '/placeholder',
-    poster: '/images/home/cta/poster.jpg',
+    poster: ctaPosterImage.src,
     videos: [
       { src: 'videos/home/cta.mp4', type: 'video/mp4; codecs=hvc1' },
       { src: 'videos/home/cta.webm', type: 'video/webm' },

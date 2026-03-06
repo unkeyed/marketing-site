@@ -1,3 +1,18 @@
+import flowEditorImage from '@/assets/images/about/blog/flow-editor.png';
+import noSignupImage from '@/assets/images/about/blog/no-signup.png';
+import serverlessImage from '@/assets/images/about/blog/serverless.png';
+import andreasThomasImage from '@/assets/images/about/founders/andreas-thomas.jpg';
+import jamesPerkinsImage from '@/assets/images/about/founders/james-perkins.jpg';
+import allisonPickensImage from '@/assets/images/about/investors/allison-pickens.jpg';
+import andrewMiklasImage from '@/assets/images/about/investors/andrew-miklas.jpg';
+import andyMcLoughlinImage from '@/assets/images/about/investors/andy-mc-loughlin.jpg';
+import antWilsonImage from '@/assets/images/about/investors/ant-wilson.jpg';
+import liuJiangImage from '@/assets/images/about/investors/liu-jiang.jpg';
+import paulCopplestoneImage from '@/assets/images/about/investors/paul-copplestone.jpg';
+import roryWildingImage from '@/assets/images/about/investors/rory-wilding.jpg';
+import theoBrowneImage from '@/assets/images/about/investors/theo-browne.jpg';
+import timothyChenImage from '@/assets/images/about/investors/timothy-chen.jpg';
+import tomPrestonWernerImage from '@/assets/images/about/investors/tom-preston-werner.jpg';
 import { homeContentData } from '@/constants/home';
 
 import { getMetadata } from '@/lib/get-metadata';
@@ -91,12 +106,12 @@ const contentData = {
       {
         name: 'James Perkins',
         title: 'Founder and CEO',
-        imageSrc: '/images/about/founders/James_Perkins.png',
+        imageSrc: jamesPerkinsImage.src,
       },
       {
         name: 'Andreas Thomas',
         title: 'Founder and CTO',
-        imageSrc: '/images/about/founders/Andreas_Thomas.png',
+        imageSrc: andreasThomasImage.src,
       },
     ],
   },
@@ -115,52 +130,52 @@ const contentData = {
       {
         name: 'Andy McLoughlin',
         role: 'Managing Partner,\r\nUncork Capital',
-        imageSrc: '/images/about/investors/Andy_McLoughlin.png',
+        imageSrc: andyMcLoughlinImage.src,
       },
       {
         name: 'Timothy Chen',
         role: 'GP, Essence VC',
-        imageSrc: '/images/about/investors/Timothy_Chen.png',
+        imageSrc: timothyChenImage.src,
       },
       {
         name: 'Liu Jiang',
         role: 'GP, Sunflower Capital',
-        imageSrc: '/images/about/investors/Liu_Jiang.png',
+        imageSrc: liuJiangImage.src,
       },
       {
         name: 'Allison Pickens',
         role: 'GP, The New Normal Fund',
-        imageSrc: '/images/about/investors/Allison_Pickens.png',
+        imageSrc: allisonPickensImage.src,
       },
       {
         name: 'Andrew Miklas',
         role: 'Former CTO, PageDuty',
-        imageSrc: '/images/about/investors/Andrew_Miklas.png',
+        imageSrc: andrewMiklasImage.src,
       },
       {
         name: 'Tom Preston-Werner',
         role: 'Former CEO, GitHub',
-        imageSrc: '/images/about/investors/Tom_Preston-Werner.png',
+        imageSrc: tomPrestonWernerImage.src,
       },
       {
         name: 'Theo Browne',
         role: 'CEO, Ping Labs',
-        imageSrc: '/images/about/investors/Theo_Browne.png',
+        imageSrc: theoBrowneImage.src,
       },
       {
         name: 'Paul Copplestone',
         role: 'CEO, Supabase',
-        imageSrc: '/images/about/investors/Paul_Copplestone.png',
+        imageSrc: paulCopplestoneImage.src,
       },
       {
         name: 'Ant Wilson',
         role: 'CTO, Supabase',
-        imageSrc: '/images/about/investors/Ant_Wilson.png',
+        imageSrc: antWilsonImage.src,
       },
       {
         name: 'Rory Wilding',
         role: 'Head of Growth, Supabase',
-        imageSrc: '/images/about/investors/Rory_Wilding.png',
+        imageSrc: roryWildingImage.src,
       },
     ],
   },
@@ -178,7 +193,7 @@ const contentData = {
     cards: [
       {
         href: '#',
-        imageSrc: '/images/about/blog/flow_editor.png',
+        imageSrc: flowEditorImage.src,
         imageAlt: 'Building a flow editor',
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -186,7 +201,7 @@ const contentData = {
       },
       {
         href: '#',
-        imageSrc: '/images/about/blog/serverless.png',
+        imageSrc: serverlessImage.src,
         imageAlt: "Why we're leaving serverless",
         category: 'Product Updates',
         date: 'MAY 9, 2024',
@@ -194,7 +209,7 @@ const contentData = {
       },
       {
         href: '#',
-        imageSrc: '/images/about/blog/no_signup.png',
+        imageSrc: noSignupImage.src,
         imageAlt: 'No Signup Required',
         category: 'Product Updates',
         date: 'MAY 9, 2024',

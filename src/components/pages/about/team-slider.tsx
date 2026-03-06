@@ -4,6 +4,16 @@ import { useMemo } from 'react';
 import Image from 'next/image';
 import AutoScroll from 'embla-carousel-auto-scroll';
 
+import artIntensifiesImage from '@/assets/images/about/team/art-intensifies.jpg';
+import breakfastImage from '@/assets/images/about/team/breakfast.jpg';
+import cookingCrewImage from '@/assets/images/about/team/cooking-crew.jpg';
+import ctoPrayersAnsweredImage from '@/assets/images/about/team/cto-prayers-answered.jpg';
+import domThinkingImage from '@/assets/images/about/team/dom-thinking.jpg';
+import doomsdayImage from '@/assets/images/about/team/doomsday.jpg';
+import jamesFenceImage from '@/assets/images/about/team/james-fence.jpg';
+import jamesThinkingImage from '@/assets/images/about/team/james-thinking.jpg';
+import mikeMorningNeckExerciseImage from '@/assets/images/about/team/mike-morning-neck-exercise.jpg';
+import yardworkImage from '@/assets/images/about/team/yardwork.jpg';
 import { cn } from '@/lib/utils';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 
@@ -12,28 +22,28 @@ const TEAM_SLIDER_ITEMS = [
     id: '7',
     width: 340,
     caption: 'James recruiting',
-    imageSrc: '/images/about/team/james_fence.jpg',
+    imageSrc: jamesFenceImage.src,
     imageClassName: 'object-top sm:object-center',
   },
   {
     id: '4',
     width: 518,
     caption: 'Lunch refuel',
-    imageSrc: '/images/about/team/cooking_crew.jpg',
+    imageSrc: cookingCrewImage.src,
     imageClassName: '',
   },
   {
     id: '9',
     width: 300,
     caption: 'CEO + CTO',
-    imageSrc: '/images/about/team/mike_morning_neck_exercise.jpg',
+    imageSrc: mikeMorningNeckExerciseImage.src,
     imageClassName: 'object-left',
   },
   {
     id: '3',
     width: 340,
     caption: 'Hard at work',
-    imageSrc: '/images/about/team/dom_thinking.jpg',
+    imageSrc: domThinkingImage.src,
     imageClassName: '',
   },
 
@@ -41,42 +51,42 @@ const TEAM_SLIDER_ITEMS = [
     id: '5',
     width: 460,
     caption: 'Golden hour',
-    imageSrc: '/images/about/team/cto_prayers_answered.jpg',
+    imageSrc: ctoPrayersAnsweredImage.src,
     imageClassName: '',
   },
   {
     id: '6',
     width: 460,
     caption: 'Escape room W',
-    imageSrc: '/images/about/team/doomsday.jpg',
+    imageSrc: doomsdayImage.src,
     imageClassName: '',
   },
   {
     id: '8',
     width: 384,
     caption: 'Deep in thought',
-    imageSrc: '/images/about/team/james_thinking.jpg',
+    imageSrc: jamesThinkingImage.src,
     imageClassName: '',
   },
   {
     id: '10',
     width: 340,
     caption: 'Caffeinated',
-    imageSrc: '/images/about/team/yardwork.jpg',
+    imageSrc: yardworkImage.src,
     imageClassName: '',
   },
   {
     id: '2',
     width: 460,
     caption: 'Art intensifies',
-    imageSrc: '/images/about/team/art_intensifies.jpg',
+    imageSrc: artIntensifiesImage.src,
     imageClassName: '',
   },
   {
     id: '1',
     width: 384,
     caption: 'Cooking breakfast',
-    imageSrc: '/images/about/team/breakfast.jpg',
+    imageSrc: breakfastImage.src,
     imageClassName: '',
   },
 ] as const;

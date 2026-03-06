@@ -3,6 +3,7 @@ import NextLink from 'next/link';
 import { deployPricingPlans, enterpriseData, tableFeatures } from '@/constants/pricing';
 import { Check } from 'lucide-react';
 
+import enterpriseBackgroundImage from '@/assets/images/pricing/enterprise-bg.jpg';
 import { Button } from '@/components/ui/button';
 
 import ComparisonTable from './comparison-table';
@@ -27,7 +28,7 @@ const EnterpriseContent = ({
         fill
         sizes="100vw"
         className="z-0 object-cover"
-        src="/images/pricing/enterprise-bg.jpg"
+        src={enterpriseBackgroundImage}
       />
       <div className="relative z-10 mx-auto flex w-full max-w-[var(--spacing-content)] flex-col items-start justify-between gap-y-10 sm:flex-row sm:items-end lg:gap-x-20">
         <div className="flex min-w-0 flex-1 flex-col gap-6 pr-0 sm:pr-10">
