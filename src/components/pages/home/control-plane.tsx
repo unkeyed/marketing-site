@@ -45,9 +45,8 @@ function Card({
         artboard={rive.artboard}
         autoBind={rive.autoBind}
         fonts={rive.fonts}
-        fontPrefetchOffset={400}
-        lazyOffset={200}
-        lazy
+        playOnVisible
+        playOffset={-200}
       />
       <p className="mt-8 text-[15px] leading-snug text-gray-80 sm:text-base xl:mt-auto">
         <strong className="font-medium text-foreground">{lead}</strong>
