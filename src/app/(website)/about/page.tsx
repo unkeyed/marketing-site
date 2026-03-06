@@ -113,6 +113,11 @@ const contentData = {
       "Unkey is supported by leading investors and founders who've built and scaled some of today's most trusted developer platforms.",
     list: [
       {
+        name: 'Andy McLoughlin',
+        role: 'Managing Partner,\r\nUncork Capital',
+        imageSrc: '/images/about/investors/Andy_McLoughlin.png',
+      },
+      {
         name: 'Timothy Chen',
         role: 'GP, Essence VC',
         imageSrc: '/images/about/investors/Timothy_Chen.png',
@@ -156,11 +161,6 @@ const contentData = {
         name: 'Rory Wilding',
         role: 'Head of Growth, Supabase',
         imageSrc: '/images/about/investors/Rory_Wilding.png',
-      },
-      {
-        name: 'Zain Allarakhia',
-        role: 'Former CTO, Pipe',
-        imageSrc: '/images/about/investors/Zain_Allarakhia.png',
       },
     ],
   },

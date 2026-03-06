@@ -89,6 +89,7 @@ export default function TeamSlider() {
         stopOnMouseEnter: true,
         stopOnInteraction: false,
         speed: 1.2,
+        startDelay: 0,
       }),
     ],
     [],

@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 
-import Logos from '@/components/pages/logos';
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
+import Logos from '@/components/pages/logos';
 
 interface IHeroProps {
   title: string;
@@ -62,6 +62,14 @@ export default function Hero({
 
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-91.5 bg-[linear-gradient(180deg,rgba(4,4,6,0)_19%,rgba(4,4,6,0.17)_45%,rgba(4,4,6,1)_89%)]"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute bottom-0 -left-[16vw] hidden h-[26rem] w-[170vw] opacity-95 blur-2xl sm:-left-[10vw] sm:block sm:h-[27rem] sm:w-[140vw] md:-left-[8vw] md:h-[29rem] md:w-[124vw] lg:-left-[10vw] lg:h-[32rem] lg:w-[130vw]"
+          style={{
+            backgroundImage:
+              'radial-gradient(ellipse 132% 112% at 24% 100%, rgba(4, 4, 6, 0.9) 0%, rgba(4, 4, 6, 0.72) 46%, rgba(4, 4, 6, 0.32) 78%, rgba(4, 4, 6, 0.1) 90%, transparent 100%)',
+          }}
           aria-hidden="true"
         />
 

@@ -58,7 +58,7 @@ export default function Investors({ label, heading, description, list }: IInvest
                   <p className="font-sans text-base leading-[1.375] font-medium tracking-[-0.02em] text-background">
                     {investor.name}
                   </p>
-                  <p className="font-sans text-base leading-[1.375] font-normal tracking-[-0.025em] text-gray-30">
+                  <p className="font-sans text-base leading-[1.375] font-normal tracking-[-0.025em] whitespace-pre-line text-gray-30">
                     {investor.role}
                   </p>
                 </div>

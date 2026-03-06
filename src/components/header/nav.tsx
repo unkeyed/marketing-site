@@ -81,7 +81,7 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
     <nav
       ref={navRef}
       aria-label={ariaLabel}
-      className={cn('flex items-center gap-10', className)}
+      className={cn('flex', className)}
       onPointerLeave={(event) => {
         if (event.pointerType !== 'mouse') {
           return;
@@ -133,9 +133,13 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                   lastPointerTypeRef.current = '';
                 }}
                 className={cn(
-                  'relative inline-flex items-center gap-0.5 p-0 text-sm leading-none font-medium tracking-tight transition-colors',
+                  'relative inline-flex h-full items-center gap-0.5 px-5 py-0 text-sm leading-none font-medium tracking-tight transition-colors',
                   isOpen && 'after:absolute after:top-full after:left-0 after:h-4.5 after:w-full',
-                  isHovered ? 'text-gray-30' : 'text-background',
+                  isOpen
+                    ? 'bg-gray-94 text-background'
+                    : isHovered
+                      ? 'text-background hover:bg-gray-94'
+                      : 'text-background',
                 )}
               >
                 {label}
@@ -150,7 +154,7 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
 
               <div
                 className={cn(
-                  'absolute top-full left-0 mt-4.5 w-82.5 transition-all duration-200',
+                  'absolute top-full left-0 mt-1.5 w-82.5 transition-all duration-200',
                   isOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
@@ -208,8 +212,8 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
             }}
             onClick={closeDropdown}
             className={cn(
-              'inline-flex items-center gap-0.5 text-sm leading-none font-medium tracking-tight transition-colors',
-              isHovered ? 'text-gray-30' : 'text-background',
+              'inline-flex items-center gap-0.5 px-5 text-sm leading-none font-medium tracking-tight transition-colors first:pl-0 last:pr-6',
+              isHovered ? 'text-background hover:bg-gray-94' : 'text-background',
             )}
           >
             {label}
