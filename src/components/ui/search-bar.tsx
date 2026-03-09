@@ -5,6 +5,7 @@ import { Route } from 'next';
 import { usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 
+import type { IBlogSearchItem } from '@/types/blog';
 import { cn } from '@/lib/utils';
 import { useTouchDevice } from '@/hooks/use-touch-device';
 import { Button } from '@/components/ui/button';
@@ -14,17 +15,19 @@ import SearchDialog from '@/components/ui/search-dialog';
 interface SearchBarProps {
   placeholder?: string;
   className?: string;
-  variant?: 'default' | 'outline';
   showOnRoute?: (Route<string> | URL)[];
   enableCmdK?: boolean;
+  searchItems?: IBlogSearchItem[];
+  suggestions?: IBlogSearchItem[];
 }
 
 function SearchBar({
   placeholder = 'Search...',
   className,
-  variant = 'outline',
   showOnRoute,
   enableCmdK = true,
+  searchItems,
+  suggestions,
   ...props
 }: SearchBarProps) {
   const [open, setOpen] = useState(false);
@@ -58,10 +61,10 @@ function SearchBar({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant={variant}
+          variant="outline"
           aria-label="Search"
           className={cn(
-            'relative h-7 w-full justify-start rounded-lg border border-input bg-muted/50 px-1.5 text-sm font-normal text-muted-foreground shadow-none hover:bg-muted lg:h-8 lg:pl-2.5 [&_svg]:size-3.5',
+            'relative !h-12 w-full justify-start rounded-lg border border-input bg-muted/50 px-2 text-sm font-normal text-muted-foreground shadow-none hover:bg-muted md:!h-8 lg:h-8 lg:pl-2.5 [&_svg]:size-3.5',
             className,
           )}
           size="sm"
@@ -78,7 +81,7 @@ function SearchBar({
           )}
         </Button>
       </DialogTrigger>
-      <SearchDialog open={open} />
+      <SearchDialog open={open} searchItems={searchItems} suggestions={suggestions} />
     </Dialog>
   );
 }

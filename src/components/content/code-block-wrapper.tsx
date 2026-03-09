@@ -87,6 +87,7 @@ function CodeBlockWrapper({
   const { isCopied, handleCopy } = useCopyToClipboard(3000);
 
   const code = extractTextFromNode(children);
+  const isSingleLineCode = code.trim().split('\n').length <= 1;
   const Tag = as;
 
   return (
@@ -105,7 +106,8 @@ function CodeBlockWrapper({
         {children}
         <button
           className={cn(
-            'code-block-copy-button absolute top-4 right-4 flex size-7 items-center justify-center rounded border border-border bg-popover text-muted-foreground',
+            'code-block-copy-button absolute right-4 flex size-7 items-center justify-center rounded border border-border bg-popover text-muted-foreground',
+            isSingleLineCode ? 'top-1/2 -translate-y-1/2' : 'top-4',
             'opacity-100 transition-[color,opacity] duration-300 hover:text-foreground/80 md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100',
             isCopied && 'text-foreground/80',
           )}

@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
 
@@ -8,6 +9,7 @@ interface ICtaProps {
   buttonHref: string;
   poster: string;
   videos: { src: string; type: string }[];
+  className?: string;
 }
 
 export default function Cta({
@@ -17,9 +19,15 @@ export default function Cta({
   buttonHref,
   poster,
   videos,
+  className,
 }: ICtaProps) {
   return (
-    <section className="relative h-[clamp(26.25rem,94vw,28.75rem)] overflow-hidden bg-panel sm:h-[31.25rem] md:h-130 lg:h-[32.5rem] xl:h-[34.125rem]">
+    <section
+      className={cn(
+        'relative h-[clamp(26.25rem,94vw,28.75rem)] overflow-hidden bg-panel sm:h-[31.25rem] md:h-130 lg:h-[32.5rem] xl:h-[34.125rem]',
+        className,
+      )}
+    >
       {/* 
           ffmpeg parameters: 
           mp4: ffmpeg -i input.mov -c:v libx265 -crf 20 -pix_fmt yuv420p10le -vf scale=2560:-2 -preset veryslow -x265-params tune=animation -tag:v hvc1 -movflags faststart -an hero.mp4

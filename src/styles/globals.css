@@ -226,8 +226,21 @@
     font-feature-settings: 'ss01' 1;
   }
 
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .section-container {
     @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-24;
+  }
+
+  .post-container {
+    @apply mx-auto w-full max-w-[var(--spacing-content)] px-5 md:px-8 xl:px-10 2xl:px-48;
   }
 
   .marked-title {

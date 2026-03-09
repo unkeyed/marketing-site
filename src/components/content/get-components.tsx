@@ -11,6 +11,7 @@ import {
 import Image from 'next/image';
 
 import { type IAuthorData, type IBlockquote, type ISlug, type TTableTheme } from '@/types/common';
+import type { ICategory } from '@/types/blog';
 import {
   type IContentRelatedPosts,
   type IContentVideo,
@@ -27,6 +28,7 @@ import Details from '@/components/content/details';
 import FileSystem from '@/components/content/file-system';
 import { Col, Grid } from '@/components/content/grid';
 import Heading from '@/components/content/heading';
+import { Mermaid } from '@/components/content/mermaid';
 import Picture, { IPictureProps } from '@/components/content/picture';
 import {
   RelatedLinkCard,
@@ -50,6 +52,8 @@ interface IGetComponentsOptions {
     authors: IAuthorData[];
     publishedAt: string;
     pathname: string;
+    categories?: ICategory[];
+    category?: ICategory;
   }>;
 }
 
@@ -149,6 +153,41 @@ export const getComponents = (options: IGetComponentsOptions) => {
           alt={props?.alt || ''}
         />
       );
+    },
+    Image: (props: ImgHTMLAttributes<HTMLImageElement> & { unoptimize?: boolean | string }) => {
+      if (!props.src) return null;
+      const width = props?.width ? Number(props.width) : contentWidth;
+      const height = props?.height ? Number(props.height) : 400;
+      return (
+        <Picture
+          className={props.className}
+          src={String(props.src)}
+          alt={props?.alt || ''}
+          width={width}
+          height={height}
+        />
+      );
+    },
+    ImageZoom: ({
+      src,
+      alt = '',
+      width,
+      height,
+      className,
+    }: {
+      src: string;
+      alt?: string;
+      width?: string | number;
+      height?: string | number;
+      className?: string;
+    }) => {
+      const w = width ? Number(width) : contentWidth;
+      const h = height ? Number(height) : 400;
+      return <Picture className={className} src={src} alt={alt} width={w} height={h} />;
+    },
+    Mermaid: ({ chart }: { chart?: string }) => {
+      if (!chart) return null;
+      return <Mermaid chart={chart.trim()} />;
     },
     blockquote: (props: PropsWithChildren) => {
       return <blockquote {...props}>{props.children}</blockquote>;
@@ -256,7 +295,15 @@ export const getComponents = (options: IGetComponentsOptions) => {
     RelatedPostCard: ({ slug, ...props }: { slug: string } & IRelatedPostCard) => {
       const post = relatedPosts.find((post) => post.slug.current === slug);
       if (!post) return null;
-      return <RelatedPostCard {...post} {...props} />;
+      const categoryTitle =
+        post.categories?.[0]?.title ?? post.category?.title ?? undefined;
+      return (
+        <RelatedPostCard
+          {...post}
+          {...props}
+          categoryTitle={categoryTitle}
+        />
+      );
     },
     RelatedLinkCard,
     Accordion,

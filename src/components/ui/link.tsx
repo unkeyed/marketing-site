@@ -15,10 +15,14 @@ const linkVariants = cva(
         /*  border-transparent - To avoid layout shifting when changing the button style in the navbar. */
         primaryBlack: 'bg-background border border-transparent text-foreground hover:bg-gray-12',
         secondary: 'border bg-transparent border-foreground text-foreground hover:bg-gray-12',
+        muted: 'text-muted-foreground hover:text-secondary-foreground/80',
+        foreground: 'text-foreground hover:text-foreground/80',
+        ghost: '',
       },
       size: {
-        small: 'px-6 text-sm',
+        small: 'px-6 text-sm [&_svg]:size-3.5',
         medium: 'px-5 text-base',
+        none: '',
       },
     },
     defaultVariants: {

@@ -6,18 +6,18 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Heading from '@/components/content/heading';
 import Authors from '@/components/pages/authors';
-import Date from '@/components/pages/date';
 
 export interface IRelatedPostCard {
   className?: string;
   // related to IPostData
   authors: IAuthorData[];
-  publishedAt: string;
+  /** First category title to show above the post title */
+  categoryTitle?: string;
   title: string;
   pathname: string;
 }
 
-function RelatedPostCard({ className, authors, publishedAt, title, pathname }: IRelatedPostCard) {
+function RelatedPostCard({ className, authors, categoryTitle, title, pathname }: IRelatedPostCard) {
   return (
     <NextLink
       className={cn(
@@ -28,8 +28,12 @@ function RelatedPostCard({ className, authors, publishedAt, title, pathname }: I
     >
       <article className="flex flex-row justify-between gap-x-5">
         <header className="flex flex-col gap-y-2.5">
-          <Date publishedAt={publishedAt} />
-          <h1 className="line-clamp-3 text-base leading-tight font-medium tracking-tight text-pretty text-foreground md:line-clamp-1 md:text-xl md:leading-snug">
+          {categoryTitle && (
+            <span className="text-[0.8125rem] leading-none font-medium tracking-tight text-gray-70 uppercase">
+              {categoryTitle}
+            </span>
+          )}
+          <h1 className="line-clamp-3 text-xl leading-tight font-medium tracking-tight text-pretty text-foreground md:line-clamp-1 md:text-xl md:leading-snug">
             {title}
           </h1>
         </header>
@@ -103,7 +107,7 @@ function RelatedPosts({ className, title, titleId, children }: IRelatedPostsProp
     <figure className={cn('not-prose related-posts flex flex-col', className)}>
       {title && (
         <Heading
-          className="mb-8 text-2xl leading-tight font-semibold tracking-tight md:text-3xl md:leading-tight"
+          className="mb-8 font-display text-3xl leading-tight font-normal tracking-tight md:text-3xl md:leading-tight"
           id={titleId}
           tag="h2"
         >

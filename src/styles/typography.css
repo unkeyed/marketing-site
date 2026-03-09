@@ -5,21 +5,21 @@
 
   @apply prose-p:text-lg prose-p:font-normal prose-p:text-gray-80;
 
-  @apply prose-h2:mt-0 prose-h2:mb-4 prose-h2:scroll-mt-8 prose-h2:font-sans prose-h2:text-xl prose-h2:leading-snug prose-h2:font-semibold prose-h2:tracking-tight md:prose-h2:mt-14;
+  @apply prose-h2:mt-11 prose-h2:mb-4 prose-h2:scroll-mt-8 prose-h2:text-2xl prose-h2:leading-tight prose-h2:font-normal prose-h2:tracking-tight md:prose-h2:mt-14 md:prose-h2:text-3xl md:prose-h2:leading-tight;
 
-  @apply prose-h3:mt-8 prose-h3:mb-3 prose-h3:scroll-mt-6 prose-h3:text-xl prose-h3:leading-snug prose-h3:font-semibold prose-h3:tracking-tight prose-h3:text-foreground;
+  @apply prose-h3:mt-8 prose-h3:mb-3 prose-h3:scroll-mt-6 prose-h3:text-xl prose-h3:leading-snug prose-h3:font-medium prose-h3:tracking-tight prose-h3:text-foreground;
 
   @apply prose-h4:mt-6 prose-h4:mb-2.5 prose-h4:text-lg prose-h4:font-medium prose-h4:tracking-tight;
 
   @apply prose-p:my-4 prose-p:overflow-x-auto prose-p:leading-normal prose-p:tracking-tight;
 
-  @apply prose-a:rounded-sm prose-a:font-normal prose-a:break-words prose-a:text-foreground prose-a:underline prose-a:decoration-gray-50 prose-a:underline-offset-[0.2em] prose-a:transition-colors prose-a:duration-300 prose-a:hover:text-foreground/85 prose-a:hover:decoration-gray-80;
+  @apply prose-a:rounded-sm prose-a:font-normal prose-a:break-words prose-a:text-foreground prose-a:underline prose-a:decoration-gray-40 prose-a:decoration-dashed prose-a:decoration-[1px] prose-a:underline-offset-[0.26em] prose-a:transition-colors prose-a:duration-300 prose-a:hover:text-foreground/85 prose-a:hover:decoration-gray-70;
 
   @apply prose-ol:flex prose-ol:flex-col prose-ul:flex prose-ul:flex-col;
 
-  @apply prose-ul:my-4 prose-ul:gap-y-2.5 prose-ul:pl-11 md:prose-ul:pl-11;
+  @apply prose-ul:my-6 prose-ul:gap-y-2.5 prose-ul:pl-11 md:prose-ul:pl-11;
 
-  @apply prose-ol:my-4 prose-ol:gap-y-2.5 prose-ol:pl-11 md:prose-ol:pl-11;
+  @apply prose-ol:my-6 prose-ol:gap-y-2.5 prose-ol:pl-11 md:prose-ol:pl-11;
 
   @apply prose-li:m-0 prose-li:text-lg prose-li:leading-normal prose-li:tracking-tight prose-li:text-gray-80;
 
@@ -70,8 +70,6 @@
   }
 
   a {
-    @apply hover:decoration-primary;
-
     strong {
       @apply text-foreground transition-colors duration-300 hover:text-foreground/80;
     }
@@ -153,7 +151,7 @@
       @apply min-w-[min(46rem,100%)] border-separate border-spacing-0 px-5 md:min-w-full md:px-0;
 
       & th {
-        @apply min-w-36 border-b border-border pb-1.5 pr-10 text-left align-top text-sm leading-snug font-medium tracking-tight text-foreground;
+        @apply min-w-36 border-b border-border pr-10 pb-1.5 text-left align-top text-sm leading-snug font-medium tracking-tight text-foreground;
       }
 
       & td {
@@ -363,6 +361,10 @@
       & th {
         @apply pb-3;
       }
+
+      & td {
+        @apply text-gray-80;
+      }
     }
   }
 
@@ -389,7 +391,9 @@
   }
 
   h2 {
-    @apply mt-8;
+    @apply mt-14;
+    font-family: articulat-cf, sans-serif;
+    font-feature-settings: 'ss01' 1;
   }
 
   h2 + p,

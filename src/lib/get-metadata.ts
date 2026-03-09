@@ -1,6 +1,8 @@
 import { Metadata as NextMetadata } from 'next';
 import config from '@/configs/website-config';
 
+import { toAbsoluteSiteUrl } from '@/lib/site-url';
+
 /**
  * Metadata configuration options for page SEO
  * @interface Metadata
@@ -41,14 +43,8 @@ export function getMetadata({
   type = 'website',
   noIndex = false,
 }: Metadata) {
-  const siteUrl = (process.env.NEXT_PUBLIC_DEFAULT_SITE_URL ?? 'http://localhost:3000').replace(
-    /\/$/,
-    '',
-  );
-  const canonicalUrl = new URL(pathname, siteUrl).toString();
-  const imageUrl = imagePath.startsWith('http')
-    ? imagePath
-    : new URL(imagePath, siteUrl).toString();
+  const canonicalUrl = toAbsoluteSiteUrl(pathname);
+  const imageUrl = imagePath.startsWith('http') ? imagePath : toAbsoluteSiteUrl(imagePath);
   const siteName = `${config.projectName.slice(0, 1).toUpperCase()}${config.projectName.slice(1)}`;
 
   return {

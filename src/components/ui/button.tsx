@@ -12,6 +12,11 @@ const buttonVariants = cva(
         secondary: 'border border-foreground text-foreground hover:bg-gray-12',
         dark: 'border border-foreground bg-black text-foreground backdrop-blur-[10px] hover:bg-foreground/10',
         link: 'text-primary underline-offset-4 hover:underline',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+      },
+      size: {
+        xs: 'h-6 rounded px-2.5 text-xs leading-none',
+        sm: 'h-8 rounded-md px-4 text-[0.8125rem]',
       },
     },
     defaultVariants: {
