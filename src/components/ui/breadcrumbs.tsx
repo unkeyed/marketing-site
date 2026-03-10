@@ -15,18 +15,18 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
   if (!items.length) return null;
 
   return (
-    <nav className={cn('flex', className)} aria-label="Breadcrumb">
-      <ol className="flex min-w-0 items-center" role="list">
+    <nav className={cn('flex w-full min-w-0 max-w-full', className)} aria-label="Breadcrumb">
+      <ol className="flex w-full min-w-0 items-center" role="list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           const isFirst = index === 0;
           const showIcon = showBackIconOnFirst && isFirst && item.href;
 
           return (
-            <li key={index} className="flex items-center">
+            <li key={index} className={cn('flex items-center', isLast ? 'min-w-0 flex-1' : 'shrink-0')}>
               {index > 0 && (
                 <span
-                  className="mx-2.5 text-sm leading-none font-medium tracking-tight text-muted-foreground"
+                  className="mx-2.5 text-sm leading-snug font-medium tracking-tight text-muted-foreground"
                   aria-hidden
                 >
                   /
@@ -35,11 +35,12 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
               {item.href && !isLast ? (
                 <Link
                   className={cn(
-                    'gap-x-0.5 px-0 leading-none whitespace-nowrap',
+                    'gap-x-0.5 px-0 leading-snug whitespace-nowrap',
                     isFirst
                       ? 'text-muted-foreground hover:text-foreground'
                       : 'hover:text-foreground',
                     showIcon && 'group',
+                    isLast && 'min-w-0 flex-1',
                   )}
                   variant={isFirst ? 'muted' : 'foreground'}
                   size="small"
@@ -53,12 +54,18 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
                       aria-hidden
                     />
                   )}
-                  <span>{item.label}</span>
+                  <span className={cn(isLast && 'block min-w-0 max-w-full truncate')} title={item.label}>
+                    {item.label}
+                  </span>
                 </Link>
               ) : (
                 <span
-                  className="px-0 text-sm leading-none whitespace-nowrap text-foreground"
+                  className={cn(
+                    'px-0 text-sm leading-snug whitespace-nowrap text-foreground',
+                    isLast && 'block min-w-0 max-w-full truncate',
+                  )}
                   aria-current="page"
+                  title={item.label}
                 >
                   {item.label}
                 </span>

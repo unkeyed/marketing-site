@@ -29,7 +29,7 @@ function RelatedPostCard({ className, authors, categoryTitle, title, pathname }:
       <article className="flex flex-row justify-between gap-x-5">
         <header className="flex flex-col gap-y-2.5">
           {categoryTitle && (
-            <span className="text-[0.8125rem] leading-none font-medium tracking-tight text-gray-70 uppercase">
+            <span className="font-mono text-[0.8125rem] leading-none font-normal tracking-tight text-gray-70 uppercase">
               {categoryTitle}
             </span>
           )}
@@ -107,7 +107,7 @@ function RelatedPosts({ className, title, titleId, children }: IRelatedPostsProp
     <figure className={cn('not-prose related-posts flex flex-col', className)}>
       {title && (
         <Heading
-          className="mb-8 font-display text-3xl leading-tight font-normal tracking-tight md:text-3xl md:leading-tight"
+          className="mb-8 font-display text-2xl leading-tight font-normal tracking-tight md:text-3xl md:leading-tight"
           id={titleId}
           tag="h2"
         >

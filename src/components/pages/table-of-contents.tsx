@@ -70,7 +70,10 @@ function TableOfContents({ className, title = 'Table of contents', items }: ITab
   const handleLinkClick = useCallback(
     (id: string) => (e: MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: shouldReduceMotion ? 'auto' : 'smooth' });
       history.pushState(null, '', `#${id}`);
     },
     [],
