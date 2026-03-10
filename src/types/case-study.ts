@@ -1,6 +1,11 @@
 import { type ReactElement } from 'react';
 
-import { type IAuthorData, type ISeoFields, type ISlug, type ITableOfContentsItem } from '@/types/common';
+import {
+  type IAuthorData,
+  type ISeoFields,
+  type ISlug,
+  type ITableOfContentsItem,
+} from '@/types/common';
 
 export interface INewCaseStudyFrontmatter {
   date: string;

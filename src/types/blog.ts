@@ -62,6 +62,6 @@ export interface IBlogSearchItem {
   title: string;
   description: string;
   url: string;
-  category: 'blog';
+  category: 'blog' | 'glossary';
   searchableText?: string;
 }

@@ -13,7 +13,7 @@ function Aside({ className, sticky = false, children }: IAsideProps) {
   return (
     <aside
       className={cn(
-        'aside -my-10 h-fit max-h-svh overflow-auto py-12',
+        'aside -my-10 h-fit max-h-svh overflow-auto py-9',
         !!sticky && 'sticky top-[var(--sticky-header-height)]',
         className,
       )}

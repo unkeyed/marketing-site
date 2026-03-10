@@ -1,6 +1,6 @@
 import Image from 'next/image';
-
 import pricingLinesImage from '@/assets/images/pricing/lines.png';
+
 import { cn } from '@/lib/utils';
 import {
   CompactCaseStudyCard,
@@ -57,16 +57,18 @@ export default function CaseStudiesGrid({ items, className }: ICaseStudiesGridPr
   const caseStudyGroups = shouldUseMixedGrid ? getCaseStudyGroups(items) : [];
 
   return (
-    <section className={cn('section-container mb-24 pt-12 md:mb-32 lg:mb-40 xl:mb-50 xl:pt-21.5', className)}>
+    <section
+      className={cn(
+        'section-container mb-24 pt-12 md:mb-32 lg:mb-40 xl:mb-50 xl:pt-21.5',
+        className,
+      )}
+    >
       {shouldUseMixedGrid
         ? caseStudyGroups.map((group, groupIndex) => (
             <div key={`case-study-group-${groupIndex}`}>
               <div className="flex flex-col lg:h-108 lg:flex-row xl:h-131 [&>*+*]:-mt-px lg:[&>*+*]:mt-0 [&>*+*]:lg:-ml-px">
                 {group.compact.map((caseStudy, compactIndex) => (
-                  <CompactCaseStudyCard
-                    key={`${caseStudy.href}-${compactIndex}`}
-                    {...caseStudy}
-                  />
+                  <CompactCaseStudyCard key={`${caseStudy.href}-${compactIndex}`} {...caseStudy} />
                 ))}
               </div>
 

@@ -64,14 +64,14 @@ function SearchBar({
           variant="outline"
           aria-label="Search"
           className={cn(
-            'relative !h-12 w-full justify-start rounded-lg border border-input bg-muted/50 px-2 text-sm font-normal text-muted-foreground shadow-none hover:bg-muted md:!h-8 lg:h-8 lg:pl-2.5 [&_svg]:size-3.5',
+            'relative !h-12 w-full justify-start rounded-lg border border-input bg-muted/50 px-2 text-sm font-normal text-muted-foreground shadow-none hover:bg-muted md:!h-8 lg:!h-9 lg:pl-2.5 [&_svg]:size-4',
             className,
           )}
           size="sm"
           {...props}
         >
-          <Search size={12} />
-          <span className="mr-auto ml-0.5 inline-flex text-[0.8125rem] font-normal">
+          <Search />
+          <span className="mr-auto ml-2 inline-flex text-[0.8125rem] font-normal">
             {placeholder}
           </span>
           {!isTouchDevice && enableCmdK && (

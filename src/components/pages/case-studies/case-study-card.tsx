@@ -49,7 +49,11 @@ function CaseStudyCardContent({
   return (
     <div className="flex flex-col gap-5 lg:gap-6 xl:gap-8">
       <div className="flex flex-col gap-3 lg:gap-4">
-        <Badge variant="uppercase" size="sm" className="text-xs font-medium tracking-tight lg:text-sm">
+        <Badge
+          variant="uppercase"
+          size="sm"
+          className="text-xs font-medium tracking-tight lg:text-sm"
+        >
           {category}
         </Badge>
         <TitleTag className="text-xl leading-snug font-normal tracking-tight text-pretty lg:text-2xl xl:text-3xl">
@@ -93,7 +97,13 @@ export function CompactCaseStudyCard({
         className,
       )}
     >
-      <Image src={logoSrc} alt={logoAlt} width={logoWidth} height={logoHeight} className="h-8 w-auto" />
+      <Image
+        src={logoSrc}
+        alt={logoAlt}
+        width={logoWidth}
+        height={logoHeight}
+        className="h-8 w-auto"
+      />
 
       <CaseStudyCardContent
         category={category}
@@ -128,7 +138,7 @@ export function FeaturedCaseStudyCard({
         <Image src={imageSrc} alt={imageAlt} fill className="object-cover" />
       </div>
 
-      <div className="flex flex-1 flex-col justify-end px-6 py-8 md:px-8 md:py-10 lg:pr-12 lg:pl-12 lg:py-12 xl:pr-12 xl:pl-19.5">
+      <div className="flex flex-1 flex-col justify-end px-6 py-8 md:px-8 md:py-10 lg:py-12 lg:pr-12 lg:pl-12 xl:pr-12 xl:pl-19.5">
         <CaseStudyCardContent
           category={category}
           title={title}

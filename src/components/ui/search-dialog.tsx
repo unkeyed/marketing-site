@@ -12,7 +12,14 @@ import { Button } from '@/components/ui/button';
 import { DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
-type ContentCategory = 'documentation' | 'api' | 'guide' | 'component' | 'tutorial' | 'blog';
+type ContentCategory =
+  | 'documentation'
+  | 'api'
+  | 'guide'
+  | 'component'
+  | 'tutorial'
+  | 'blog'
+  | 'glossary';
 
 /** Unified search result item; supports blog and future doc categories. */
 interface SearchItem {
@@ -34,8 +41,13 @@ const CATEGORY_LABELS: Record<ContentCategory, string> = {
   guide: 'Guides',
   component: 'Components',
   tutorial: 'Tutorials',
-  blog: 'Blog posts',
+  blog: 'Blog Posts',
+  glossary: 'Glossary Terms',
 };
+
+function getRecentItemKey(item: Pick<SearchItem, 'category' | 'id'>): string {
+  return `${item.category}:${String(item.id)}`;
+}
 
 function loadRecents(): SearchItem[] {
   if (typeof window === 'undefined') return [];
@@ -43,7 +55,29 @@ function loadRecents(): SearchItem[] {
     const raw = window.localStorage.getItem(BLOG_SEARCH_RECENT_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+
+    const seenItems = new Set<string>();
+    const safeRecents: SearchItem[] = [];
+
+    for (const value of parsed) {
+      if (!value || typeof value !== 'object') continue;
+
+      const item = value as Partial<SearchItem>;
+      if (!item.url || typeof item.url !== 'string') continue;
+      if (!item.title || typeof item.title !== 'string') continue;
+      if (!item.category || typeof item.category !== 'string') continue;
+      if (item.id === undefined || item.id === null) continue;
+
+      const typedItem = item as SearchItem;
+      const itemKey = getRecentItemKey(typedItem);
+      if (seenItems.has(itemKey)) continue;
+
+      seenItems.add(itemKey);
+      safeRecents.push(typedItem);
+    }
+
+    return safeRecents;
   } catch {
     return [];
   }
@@ -219,7 +253,7 @@ function SearchGroup({
       </h3>
       <ul>
         {entries.map(({ item, index: itemIndex }) => (
-          <li key={String(item.id)}>
+          <li key={`${item.category}:${item.url}:${String(item.id)}:${itemIndex}`}>
             <SearchHint
               title={item.title}
               description={item.description}
@@ -271,7 +305,8 @@ export default function SearchDialog({
 
   const addRecent = useCallback((item: SearchItem) => {
     setRecentSearches((prev) => {
-      const next = [item, ...prev.filter((r) => r.url !== item.url)].slice(
+      const itemKey = getRecentItemKey(item);
+      const next = [item, ...prev.filter((r) => getRecentItemKey(r) !== itemKey)].slice(
         0,
         BLOG_SEARCH_RECENT_LIMIT,
       );
@@ -398,6 +433,7 @@ export default function SearchDialog({
       'component',
       'tutorial',
       'blog',
+      'glossary',
     ];
 
     return (

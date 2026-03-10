@@ -15,7 +15,7 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
   if (!items.length) return null;
 
   return (
-    <nav className={cn('flex w-full min-w-0 max-w-full', className)} aria-label="Breadcrumb">
+    <nav className={cn('flex w-full max-w-full min-w-0', className)} aria-label="Breadcrumb">
       <ol className="flex w-full min-w-0 items-center" role="list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -23,7 +23,10 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
           const showIcon = showBackIconOnFirst && isFirst && item.href;
 
           return (
-            <li key={index} className={cn('flex items-center', isLast ? 'min-w-0 flex-1' : 'shrink-0')}>
+            <li
+              key={index}
+              className={cn('flex items-center', isLast ? 'min-w-0 flex-1' : 'shrink-0')}
+            >
               {index > 0 && (
                 <span
                   className="mx-2.5 text-sm leading-snug font-medium tracking-tight text-muted-foreground"
@@ -54,7 +57,10 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
                       aria-hidden
                     />
                   )}
-                  <span className={cn(isLast && 'block min-w-0 max-w-full truncate')} title={item.label}>
+                  <span
+                    className={cn(isLast && 'block max-w-full min-w-0 truncate')}
+                    title={item.label}
+                  >
                     {item.label}
                   </span>
                 </Link>
@@ -62,7 +68,7 @@ function Breadcrumbs({ className, items, showBackIconOnFirst }: IBreadcrumbsProp
                 <span
                   className={cn(
                     'px-0 text-sm leading-snug whitespace-nowrap text-foreground',
-                    isLast && 'block min-w-0 max-w-full truncate',
+                    isLast && 'block max-w-full min-w-0 truncate',
                   )}
                   aria-current="page"
                   title={item.label}
