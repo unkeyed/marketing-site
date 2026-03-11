@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
-import { cn } from '@/lib/utils';
+import { cn, isExternalLink } from '@/lib/utils';
 
 interface IHeaderNavProps {
   className?: string;
@@ -93,6 +93,7 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
         const isHovered = index === hoveredIndex;
         const hasChildren = Array.isArray(children) && children.length > 0;
         const isOpen = openDropdown === index;
+        const isExternal = isExternalLink(href);
 
         if (hasChildren) {
           return (
@@ -166,6 +167,8 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                           href={child.href ?? '#'}
                           className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-gray-94"
                           onClick={closeDropdown}
+                          target={isExternalLink(child.href) ? '_blank' : undefined}
+                          rel={isExternalLink(child.href) ? 'noopener noreferrer' : undefined}
                         >
                           {child.icon && (
                             <div className="flex size-9 items-center justify-center border border-gray-70 bg-foreground">
@@ -204,6 +207,8 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
             key={index}
             href={href ?? '#'}
             aria-current={index === activeIndex ? 'page' : undefined}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
             onPointerEnter={(event) => {
               if (event.pointerType !== 'mouse') {
                 return;

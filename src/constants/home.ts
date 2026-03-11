@@ -1,6 +1,4 @@
 import { createElement, Fragment } from 'react';
-import { Alignment, Fit } from '@rive-app/react-canvas';
-
 import buildDeployConnectImage from '@/assets/images/home/build-deploy/connect.png';
 import buildDeployDeployImage from '@/assets/images/home/build-deploy/deploy.png';
 import buildDeployPreviewImage from '@/assets/images/home/build-deploy/preview.png';
@@ -14,15 +12,17 @@ import portalDocsImage from '@/assets/images/home/portal/docs.png';
 import portalKeysImage from '@/assets/images/home/portal/keys.png';
 import portalZeroImage from '@/assets/images/home/portal/zero.png';
 import { buildDeployTechnologyLogos, homePortfolioLogos } from '@/constants/logos';
+import { APP_URL, DOCS_URL, GITHUB_URL, SIGN_UP_URL } from '@/configs/website-config';
+import { Alignment, Fit } from '@rive-app/react-canvas';
 
 export const homeHeaderLinks = {
   social: [
     { id: 'discord', label: 'Discord', href: 'https://unkey.dev/discord' },
-    { id: 'github', label: 'GitHub', href: 'https://github.com/unkeyed/unkey', metric: '5.1k' },
+    { id: 'github', label: 'GitHub', href: GITHUB_URL, metric: '5.1k' },
   ],
   auth: [
-    { id: 'login', label: 'Login', href: '/app/login' },
-    { id: 'signUp', label: 'Sign Up', href: '/app/sign-up' },
+    { id: 'login', label: 'Login', href: APP_URL },
+    { id: 'signUp', label: 'Sign Up', href: SIGN_UP_URL },
   ],
 } as const;
 
@@ -31,8 +31,8 @@ export const homeContentData = {
     title: 'The Developer Platform for Modern APIs',
     description:
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
-    primaryCta: { label: 'Start for free', href: '/placeholder' },
-    secondaryCta: { label: 'View on GitHub', href: '/placeholder' },
+    primaryCta: { label: 'Start for free', href: APP_URL },
+    secondaryCta: { label: 'View on GitHub', href: GITHUB_URL },
     poster: { src: heroPosterImage.src, width: 1533, height: 908 },
     videos: [
       { src: 'videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
@@ -248,7 +248,7 @@ export const homeContentData = {
     description:
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
     buttonLabel: 'Read the docs',
-    buttonHref: '/docs',
+    buttonHref: DOCS_URL,
     riveDefaults: {
       src: '/rive/home/scale/icons.riv',
       fit: Fit.Cover,
@@ -294,7 +294,7 @@ export const homeContentData = {
     },
     mobileImage: observeDashImage.src,
     buttonLabel: 'Read the docs',
-    buttonHref: '/docs',
+    buttonHref: DOCS_URL,
     columns: [
       {
         lead: 'Automatic logs and metrics collection.',
@@ -318,7 +318,7 @@ export const homeContentData = {
     heading: 'First-class developer experience for your users.',
     subheading: 'API keys, usage, and docs—ready out of the box.',
     buttonLabel: 'Try the Portal',
-    buttonHref: '/portal',
+    buttonHref: APP_URL,
     cards: [
       {
         text: 'Zero code required. A fully hosted developer portal with nothing to build or maintain.',
@@ -341,7 +341,7 @@ export const homeContentData = {
     heading: 'Turn your API stack into one workflow.',
     subheading: 'Start for free, integrate in minutes, and scale when you need to.',
     buttonLabel: 'Start for free',
-    buttonHref: '/placeholder',
+    buttonHref: APP_URL,
     poster: ctaPosterImage.src,
     videos: [
       { src: 'videos/home/cta.mp4', type: 'video/mp4; codecs=hvc1' },

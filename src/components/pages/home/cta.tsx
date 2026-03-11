@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { BackgroundVideo } from '@/components/ui/background-video';
-import { Link } from '@/components/ui/link';
+import { TrackingLink } from '@/components/ui/tracking-link';
 
 interface ICtaProps {
   heading: string;
@@ -48,9 +48,14 @@ export default function Cta({
         <p className="max-w-144 font-display text-2xl leading-[1.125] text-gray-60 sm:text-[1.875rem] md:text-[2rem]">
           {subheading}
         </p>
-        <Link href={buttonHref} className="mt-auto w-fit lg:mt-13 xl:mt-auto">
+        <TrackingLink
+          href={buttonHref}
+          className="mt-auto w-fit lg:mt-13 xl:mt-auto"
+          trackEvent="sign up"
+          trackProperties={{ location: 'CTA' }}
+        >
           {buttonLabel}
-        </Link>
+        </TrackingLink>
       </div>
     </section>
   );

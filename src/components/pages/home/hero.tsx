@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { isExternalLink } from '@/lib/utils';
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
 import Logos from '@/components/pages/logos';
@@ -85,7 +86,12 @@ export default function Hero({
               <Link href={primaryCta.href} variant="primary">
                 {primaryCta.label}
               </Link>
-              <Link href={secondaryCta.href} variant="secondary">
+              <Link
+                href={secondaryCta.href}
+                variant="secondary"
+                target={isExternalLink(secondaryCta.href) ? '_blank' : undefined}
+                rel={isExternalLink(secondaryCta.href) ? 'noopener noreferrer' : undefined}
+              >
                 {secondaryCta.label}
               </Link>
             </div>

@@ -8,7 +8,8 @@ import { homeHeaderLinks } from '@/constants/home';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
-import { cn } from '@/lib/utils';
+import { cn, isExternalLink } from '@/lib/utils';
+import { useTrack } from '@/hooks/use-tracking';
 import { Link } from '@/components/ui/link';
 import { Icons } from '@/components/icons';
 
@@ -17,6 +18,7 @@ interface MobileMenuProps {
 }
 
 function MobileMenu({ items }: MobileMenuProps) {
+  const track = useTrack();
   const [open, setOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [discordLink, githubLink] = homeHeaderLinks.social;
@@ -105,6 +107,7 @@ function MobileMenu({ items }: MobileMenuProps) {
             {items.map((item, index) => {
               const hasChildren = Array.isArray(item.children) && item.children.length > 0;
               const isExpanded = expandedIndex === index;
+              const isExternal = isExternalLink(item.href);
 
               if (hasChildren) {
                 return (
@@ -137,6 +140,8 @@ function MobileMenu({ items }: MobileMenuProps) {
                                 href={child.href ?? '#'}
                                 className="flex items-start gap-3 py-2.5 transition-colors hover:bg-foreground/5"
                                 onClick={() => setOpen(false)}
+                                target={isExternalLink(child.href) ? '_blank' : undefined}
+                                rel={isExternalLink(child.href) ? 'noopener noreferrer' : undefined}
                               >
                                 {child.icon && (
                                   <div className="flex size-9 shrink-0 items-center justify-center border border-gray-70">
@@ -176,6 +181,8 @@ function MobileMenu({ items }: MobileMenuProps) {
                   href={item.href ?? '#'}
                   className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                   onClick={() => setOpen(false)}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
                 >
                   {item.label}
                 </NextLink>
@@ -185,6 +192,8 @@ function MobileMenu({ items }: MobileMenuProps) {
               href={discordLink.href}
               className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
               onClick={() => setOpen(false)}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {discordLink.label}
             </NextLink>
@@ -192,6 +201,8 @@ function MobileMenu({ items }: MobileMenuProps) {
               href={githubLink.href}
               className="flex items-center gap-1 border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
               onClick={() => setOpen(false)}
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
             >
               <Icons.github className="text-background" size={18} aria-hidden="true" />
@@ -206,12 +217,14 @@ function MobileMenu({ items }: MobileMenuProps) {
                 href={loginLink.href}
                 variant="secondary"
                 className="flex-1 border-gray-70 text-background"
+                onClick={() => track('signin', { location: 'navigation-mobile' })}
               >
                 {loginLink.label}
               </Link>
               <Link
                 href={signUpLink.href}
                 className="flex-1 bg-background text-foreground hover:bg-gray-12"
+                onClick={() => track('signup', { location: 'navigation-mobile' })}
               >
                 {signUpLink.label}
               </Link>

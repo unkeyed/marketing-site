@@ -1,10 +1,11 @@
 import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
+import { BOOK_A_CALL_URL, DOCS_URL, GITHUB_URL } from '@/configs/website-config';
 
 export const MENUS = {
   header: [
     {
       label: 'Resources',
-      href: '/resources',
+      href: '/',
       children: [
         {
           label: 'Blog',
@@ -39,7 +40,7 @@ export const MENUS = {
       ],
     },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Docs', href: '/docs' },
+    { label: 'Docs', href: DOCS_URL },
   ],
   footer: {
     description: 'Build better APIs faster',
@@ -49,9 +50,8 @@ export const MENUS = {
         title: 'Company',
         items: [
           { label: 'About', href: '/about' },
-          { label: 'Roadmap', href: '/roadmap' },
           { label: 'Careers', href: '/careers' },
-          { label: 'Source Code', href: 'https://github.com/unkeyed/unkey' },
+          { label: 'Source Code', href: GITHUB_URL },
           { label: 'Status Page', href: 'https://status.unkey.com' },
         ],
       },
@@ -61,7 +61,7 @@ export const MENUS = {
           { label: 'Blog', href: '/blog' },
           { label: 'Changelog', href: '/changelog' },
           { label: 'Templates', href: '/templates' },
-          { label: 'Docs', href: '/docs' },
+          { label: 'Docs', href: DOCS_URL },
           { label: 'Glossary', href: '/glossary' },
           { label: 'Case Studies', href: '/case-studies' },
         ],
@@ -72,7 +72,7 @@ export const MENUS = {
           { label: 'X (Twitter)', href: 'https://x.com/unkeydev' },
           { label: 'Discord', href: 'https://unkey.dev/discord' },
           { label: 'OSS Friends', href: '/oss-friends' },
-          { label: 'Book a Call', href: '/book-a-call' },
+          { label: 'Book a Call', href: BOOK_A_CALL_URL },
         ],
       },
       {
@@ -90,7 +90,7 @@ export const MENUS = {
         icon: 'twitter',
       },
       {
-        href: 'https://github.com/unkeyed/unkey',
+        href: GITHUB_URL,
         label: 'Follow us on GitHub',
         icon: 'github',
       },

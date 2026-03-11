@@ -1,6 +1,7 @@
 import { createElement, Fragment } from 'react';
 
 import { IPricingPlan, IPricingTableFeatures } from '@/types/pricing';
+import { APP_URL, DOCS_URL, ENTERPRISE_CONTACT_URL } from '@/configs/website-config';
 
 export const pricingContentData = {
   title: createElement(
@@ -40,7 +41,7 @@ export const pricingContentData = {
     jumps. Scale gateway capacity when latency
     spikes. Available on every plan.`,
     actionText: 'Read the docs',
-    actionHref: '/docs',
+    actionHref: DOCS_URL,
   },
   calculator: {
     title: 'Calculator',
@@ -132,7 +133,7 @@ export const deployPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Start for Free',
-      href: '/',
+      href: APP_URL,
     },
   },
   {
@@ -173,7 +174,7 @@ export const deployPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Get started',
-      href: '/',
+      href: APP_URL,
     },
   },
   {
@@ -215,7 +216,7 @@ export const deployPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Get started',
-      href: '/',
+      href: APP_URL,
     },
   },
   {
@@ -257,7 +258,7 @@ export const deployPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Get started',
-      href: '/',
+      href: APP_URL,
     },
   },
 ];
@@ -302,7 +303,7 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Start for Free',
-      href: '/',
+      href: APP_URL,
     },
   },
   {
@@ -400,7 +401,7 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Get started',
-      href: '/',
+      href: APP_URL,
     },
   },
   {
@@ -432,7 +433,7 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
     },
     link: {
       label: 'Contact us',
-      href: '/contact',
+      href: ENTERPRISE_CONTACT_URL,
     },
   },
 ];
@@ -561,5 +562,5 @@ export const enterpriseData = {
     'Custom managed API keys',
   ],
   buttonText: 'Contact Sales',
-  buttonUrl: '/contact',
+  buttonUrl: ENTERPRISE_CONTACT_URL,
 };

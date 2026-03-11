@@ -3,6 +3,9 @@ import type { ReactNode } from 'react';
 import '@/styles/globals.css';
 
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { CookieBannerProvider } from '@/contexts/cookie-banner-context';
+
+import { Tracking } from '@/components/tracking';
 
 const inter = Inter({
   weight: ['400', '500', '600'],
@@ -39,7 +42,10 @@ export default function RootLayout({
       <body
         className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        {children}
+        <CookieBannerProvider>
+          {children}
+          <Tracking />
+        </CookieBannerProvider>
       </body>
     </html>
   );

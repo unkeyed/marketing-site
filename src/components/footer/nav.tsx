@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 
 import { IFooterMenuSection } from '@/types/common';
-import { cn } from '@/lib/utils';
+import { cn, isExternalLink } from '@/lib/utils';
 
 interface IFooterNavProps {
   className?: string;
@@ -25,7 +25,7 @@ function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNa
           </h3>
           <ul className="flex flex-col gap-y-3 text-[0.9375rem] leading-snug font-medium tracking-tight text-gray-60">
             {section.items.map((item) => {
-              const isExternal = /^https?:\/\//.test(item.href);
+              const isExternal = isExternalLink(item.href);
 
               return (
                 <li key={item.label}>

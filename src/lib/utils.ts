@@ -185,6 +185,18 @@ export function splitLeadSentence(text: string): { lead: string; rest: string } 
   };
 }
 
+/**
+ * Returns true if the href is an absolute URL (http/https), i.e. an external link.
+ * Use for deciding target="_blank" and rel="noopener noreferrer" on links.
+ *
+ * @param href - Link URL (can be empty or undefined; treated as internal)
+ * @returns true if href starts with http: or https:
+ */
+export function isExternalLink(href: string | null | undefined): boolean {
+  if (href == null || href === '') return false;
+  return /^https?:\/\//.test(href);
+}
+
 export function extractYouTubeId(url: string): string | null {
   // Check if the string is already a valid YouTube ID (11 characters)
   if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {

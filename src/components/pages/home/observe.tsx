@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { isExternalLink } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
 import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
@@ -28,6 +29,8 @@ export default function Observe({
   buttonHref,
   columns,
 }: IObserveProps) {
+  const isExternalButton = isExternalLink(buttonHref);
+
   return (
     <section className="pt-20 md:pt-35 xl:pt-50">
       <div className="container">
@@ -78,7 +81,12 @@ export default function Observe({
               </li>
             ))}
           </ul>
-          <Link href={buttonHref} className="w-fit">
+          <Link
+            href={buttonHref}
+            className="w-fit"
+            target={isExternalButton ? '_blank' : undefined}
+            rel={isExternalButton ? 'noopener noreferrer' : undefined}
+          >
             {buttonLabel}
           </Link>
         </div>

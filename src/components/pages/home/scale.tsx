@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { isExternalLink } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/link';
 import RiveCanvas, { type IRiveConfig } from '@/components/ui/rive-canvas';
@@ -27,6 +28,8 @@ export default function Scale({
   buttonHref,
   features,
 }: IScaleProps) {
+  const isExternalButton = isExternalLink(buttonHref);
+
   return (
     <section
       data-header-theme="light"
@@ -45,7 +48,13 @@ export default function Scale({
             <p className="text-base leading-snug tracking-[-0.01em] text-gray-20 sm:text-lg md:text-[1.125rem] lg:text-xl">
               {description}
             </p>
-            <Link href={buttonHref} variant="primaryBlack" className="w-fit">
+            <Link
+              href={buttonHref}
+              variant="primaryBlack"
+              className="w-fit"
+              target={isExternalButton ? '_blank' : undefined}
+              rel={isExternalButton ? 'noopener noreferrer' : undefined}
+            >
               {buttonLabel}
             </Link>
           </div>

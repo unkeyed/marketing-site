@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import NextLink from 'next/link';
 
 import { type IAuthorData } from '@/types/common';
-import { cn } from '@/lib/utils';
+import { cn, isExternalLink } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Heading from '@/components/content/heading';
 import Authors from '@/components/pages/authors';
@@ -62,9 +62,7 @@ function RelatedLinkCard({
   url,
   isExternal = false,
 }: IRelatedLinkCardProps) {
-  const isAbsoluteUrl = url.match(/^https?:\/\//) !== null;
-
-  const isExternalLink = isExternal || isAbsoluteUrl;
+  const isExternalLinkResult = isExternal || isExternalLink(url);
 
   const badgeLabel = label ? label : isExternal ? 'External' : '';
 
@@ -75,8 +73,8 @@ function RelatedLinkCard({
         className,
       )}
       href={url}
-      target={isExternalLink ? '_blank' : undefined}
-      rel={isExternalLink ? 'noopener noreferrer' : undefined}
+      target={isExternalLinkResult ? '_blank' : undefined}
+      rel={isExternalLinkResult ? 'noopener noreferrer' : undefined}
     >
       <div className="flex flex-row items-center justify-between gap-x-5">
         <div className="flex flex-col gap-y-1.5">

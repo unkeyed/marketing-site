@@ -5,8 +5,10 @@ import { homeHeaderLinks } from '@/constants/home';
 
 import { Link } from '@/components/ui/link';
 import { Icons } from '@/components/icons';
+import { useTrack } from '@/hooks/use-tracking';
 
 export default function HeaderActions() {
+  const track = useTrack();
   const [onLightSection, setOnLightSection] = useState(false);
   const [discordLink, githubLink] = homeHeaderLinks.social;
   const [loginLink, signUpLink] = homeHeaderLinks.auth;
@@ -35,7 +37,7 @@ export default function HeaderActions() {
   return (
     <nav aria-label="Actions" className="hidden items-center gap-16 lg:flex">
       <div className="flex items-center gap-1">
-        <Link href={discordLink.href} size="small">
+        <Link href={discordLink.href} size="small" target="_blank" rel="noopener noreferrer">
           {discordLink.label}
         </Link>
         <Link
@@ -43,6 +45,8 @@ export default function HeaderActions() {
           size="small"
           className="gap-1"
           aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <Icons.github className="text-background" size={18} aria-hidden="true" />
           <span className="sr-only">{githubLink.label}</span>
@@ -56,10 +60,15 @@ export default function HeaderActions() {
           variant={onLightSection ? 'primaryBlack' : 'secondary'}
           size="small"
           className="bg-background transition-colors duration-300"
+          onClick={() => track('signin', { location: 'navigation' })}
         >
           {loginLink.label}
         </Link>
-        <Link href={signUpLink.href} size="small">
+        <Link
+          href={signUpLink.href}
+          size="small"
+          onClick={() => track('signup', { location: 'navigation' })}
+        >
           {signUpLink.label}
         </Link>
       </div>
