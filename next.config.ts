@@ -1,5 +1,11 @@
 import type { NextConfig } from 'next';
 
+const legacySiteOrigin = process.env.LEGACY_SITE_ORIGIN?.replace(/\/$/, '');
+
+if (!legacySiteOrigin) {
+  throw new Error('LEGACY_SITE_ORIGIN is required');
+}
+
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
@@ -25,6 +31,29 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/_next/static/:path*',
+          has: [
+            {
+              type: 'header',
+              key: 'referer',
+              value: 'https?://[^/]+/(templates|careers|docs|oss-friends)(?:/.*)?',
+            },
+          ],
+          destination: `${legacySiteOrigin}/_next/static/:path*`,
+        },
+      ],
+      fallback: [
+        {
+          source: '/:path*',
+          destination: `${legacySiteOrigin}/:path*`,
+        },
+      ],
+    };
   },
 };
 
