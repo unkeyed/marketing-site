@@ -1,11 +1,5 @@
 import type { NextConfig } from 'next';
 
-const legacySiteOrigin = process.env.LEGACY_SITE_ORIGIN?.replace(/\/$/, '');
-
-if (!legacySiteOrigin) {
-  throw new Error('LEGACY_SITE_ORIGIN is required');
-}
-
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
@@ -44,13 +38,25 @@ const nextConfig: NextConfig = {
               value: 'https?://[^/]+/(templates|careers|docs|oss-friends)(?:/.*)?',
             },
           ],
-          destination: `${legacySiteOrigin}/_next/static/:path*`,
+          destination: 'https://www.unkey.com/_next/static/:path*',
         },
       ],
       fallback: [
         {
-          source: '/:path*',
-          destination: `${legacySiteOrigin}/:path*`,
+          source: '/templates',
+          destination: 'https://www.unkey.com/templates',
+        },
+        {
+          source: '/careers',
+          destination: 'https://www.unkey.com/careers',
+        },
+        {
+          source: '/docs',
+          destination: 'https://www.unkey.com/docs',
+        },
+        {
+          source: '/oss-friends',
+          destination: 'https://www.unkey.com/oss-friends',
         },
       ],
     };
