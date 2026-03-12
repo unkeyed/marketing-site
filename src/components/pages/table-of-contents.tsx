@@ -12,9 +12,30 @@ interface ITableOfContentsProps {
   items: readonly ITableOfContentsItem[];
 }
 
+function getCssSizeInPx(value: string, rootFontSize: number) {
+  const trimmedValue = value.trim();
+
+  if (trimmedValue.endsWith('rem')) {
+    return Number.parseFloat(trimmedValue) * rootFontSize;
+  }
+
+  return Number.parseFloat(trimmedValue);
+}
+
+function getAnchorTopOffset() {
+  const rootStyles = getComputedStyle(document.documentElement);
+  const rootFontSize = Number.parseFloat(rootStyles.fontSize);
+  const stickyHeaderOffset = getCssSizeInPx(
+    rootStyles.getPropertyValue('--sticky-header-height'),
+    rootFontSize,
+  );
+
+  // Keep scroll and active-state calculations aligned with heading scroll margin.
+  return stickyHeaderOffset + rootFontSize * 2;
+}
+
 function useActiveAnchor(
   items: readonly ITableOfContentsItem[],
-  viewportOffset = 0.5,
   throttleMs = 100,
 ) {
   const [activeAnchor, setActiveAnchor] = useState<string | null>(null);
@@ -32,7 +53,7 @@ function useActiveAnchor(
   const calcActive = useCallback(() => {
     if (!headingRefs.current.length) return;
 
-    const activationLine = window.innerHeight * viewportOffset;
+    const activationLine = getAnchorTopOffset();
     let currentId: string | null = null;
 
     if (headingRefs.current[0].getTop() > activationLine) {
@@ -46,7 +67,7 @@ function useActiveAnchor(
     }
 
     setActiveAnchor(currentId);
-  }, [viewportOffset]);
+  }, []);
 
   const throttled = useThrottleCallback(calcActive, throttleMs);
 
@@ -60,23 +81,34 @@ function useActiveAnchor(
     };
   }, [throttled, calcActive]);
 
-  return activeAnchor;
+  return { activeAnchor, setActiveAnchor };
 }
 
 function TableOfContents({ className, title = 'Table of contents', items }: ITableOfContentsProps) {
-  const activeAnchor = useActiveAnchor(items);
+  const { activeAnchor, setActiveAnchor } = useActiveAnchor(items);
   const baseDepth = Math.min(...items.map((item) => item.depth));
 
   const handleLinkClick = useCallback(
     (id: string) => (e: MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      document
-        .getElementById(id)
-        ?.scrollIntoView({ behavior: shouldReduceMotion ? 'auto' : 'smooth' });
+      const target = document.getElementById(id);
+
+      if (!target) {
+        return;
+      }
+
+      const topOffset = getAnchorTopOffset();
+      const targetTop = window.scrollY + target.getBoundingClientRect().top - topOffset;
+
+      setActiveAnchor(id);
+      window.scrollTo({
+        top: Math.max(targetTop, 0),
+        behavior: shouldReduceMotion ? 'auto' : 'smooth',
+      });
       history.pushState(null, '', `#${id}`);
     },
-    [],
+    [setActiveAnchor],
   );
 
   if (!items.length) return null;
