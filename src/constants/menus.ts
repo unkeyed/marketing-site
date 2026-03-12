@@ -1,5 +1,6 @@
-import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
 import { BOOK_A_CALL_URL, DOCS_URL, GITHUB_URL } from '@/configs/website-config';
+
+import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
 
 export const MENUS = {
   header: [
@@ -78,8 +79,8 @@ export const MENUS = {
       {
         title: 'Legal',
         items: [
-          { label: 'Terms of Service', href: '/terms-of-service' },
-          { label: 'Privacy Policy', href: '/privacy-policy' },
+          { label: 'Terms of Service', href: '/policies/terms' },
+          { label: 'Privacy Policy', href: '/policies/privacy' },
         ],
       },
     ] satisfies IFooterMenuSection[],
