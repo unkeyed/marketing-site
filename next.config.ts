@@ -43,20 +43,8 @@ const nextConfig: NextConfig = {
       ],
       fallback: [
         {
-          source: '/templates/:path*',
-          destination: 'https://www.unkey.com/templates/:path*',
-        },
-        {
-          source: '/careers/:path*',
-          destination: 'https://www.unkey.com/careers/:path*',
-        },
-        {
-          source: '/docs/:path*',
-          destination: 'https://www.unkey.com/docs/:path*',
-        },
-        {
-          source: '/oss-friends/:path*',
-          destination: 'https://www.unkey.com/oss-friends/:path*',
+          source: '/:path*',
+          destination: 'https://www.unkey.com/:path*',
         },
       ],
     };
