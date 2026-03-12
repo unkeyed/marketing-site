@@ -124,7 +124,11 @@ function FieldLabel({
   );
 }
 
-const estimateRowFormat = { ...calculatorFormat, currency: 'USD' as const, notation: 'compact' as const };
+const estimateRowFormat = {
+  ...calculatorFormat,
+  currency: 'USD' as const,
+  notation: 'compact' as const,
+};
 
 function EstimateRow({ label, value }: { label: string; value: number }) {
   return (
@@ -159,7 +163,7 @@ export default function Calculator() {
 
   return (
     <div className="flex w-full flex-col border border-border lg:flex-row" data-slot="calculator">
-      <div className="flex min-w-0 flex-1 flex-col gap-6 p-8">
+      <div className="flex min-w-0 flex-1 flex-col gap-6 p-5 md:p-8">
         <div className="flex flex-col gap-2">
           <h3 className="font-sans text-2xl leading-tight font-medium text-foreground">
             {content.title}
@@ -338,7 +342,7 @@ export default function Calculator() {
         aria-labelledby="estimate-heading"
         aria-live="polite"
         aria-atomic="true"
-        className="flex flex-1 flex-col gap-6 border-t border-border bg-gray-5 p-8 lg:max-w-72 lg:border-t-0 lg:border-l"
+        className="flex flex-1 flex-col gap-6 border-t border-border bg-gray-5 p-5 md:p-8 lg:max-w-72 lg:border-t-0 lg:border-l"
       >
         <h3
           id="estimate-heading"

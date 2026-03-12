@@ -2,8 +2,8 @@ import Link from 'next/link';
 
 import type { IChangelogPost } from '@/lib/changelog/posts';
 import { cn } from '@/lib/utils';
-import Heading from '@/components/content/heading';
 import { Label } from '@/components/ui/label';
+import Heading from '@/components/content/heading';
 import Content from '@/components/pages/content';
 
 import Date from '../date';
@@ -94,6 +94,7 @@ function PostsList({ posts, currentPage, hasNewer, hasOlder, className }: PostsL
                   {tags.map((tag) => (
                     <Label
                       className="gap-2 px-2 py-1"
+                      labelClassName="!text-[0.8125rem] tracking-[0.01em]"
                       dotColor={tag.dotColor}
                       key={`${slug}-${tag.label}`}
                     >

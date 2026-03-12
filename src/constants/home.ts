@@ -11,8 +11,8 @@ import observeDashImage from '@/assets/images/home/observe/dash.png';
 import portalDocsImage from '@/assets/images/home/portal/docs.png';
 import portalKeysImage from '@/assets/images/home/portal/keys.png';
 import portalZeroImage from '@/assets/images/home/portal/zero.png';
-import { buildDeployTechnologyLogos, homePortfolioLogos } from '@/constants/logos';
 import { APP_URL, DOCS_URL, GITHUB_URL, SIGN_UP_URL } from '@/configs/website-config';
+import { buildDeployTechnologyLogos, homePortfolioLogos } from '@/constants/logos';
 import { Alignment, Fit } from '@rive-app/react-canvas';
 
 export const homeHeaderLinks = {
@@ -81,7 +81,7 @@ export const homeContentData = {
       {
         id: 'control',
         title: 'Control Plane',
-        body: 'Simpler to run. One platform for deployments, gateways, and observability.',
+        body: 'Simpler to run. One single unified platform for deployments, gateways, and full observability.',
         rive: {
           artboard: 'control',
           autoBind: false,

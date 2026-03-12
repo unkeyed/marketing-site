@@ -4,6 +4,7 @@ import NextLink from 'next/link';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Label } from '@/components/ui/label';
 
 export interface IBlogCard {
@@ -60,7 +61,7 @@ function BlogCard({ card }: { card: IBlogCard }) {
 export default function Blog({ label, heading, ctaLabel, ctaHref, cards }: IBlogProps) {
   return (
     <section className="border-t border-gray-20">
-      <div className="section-container py-12 md:py-[5.75rem] xl:pt-50 xl:pb-0 xl:pb-50">
+      <div className="section-container pt-12 md:pt-[5.75rem] xl:pt-50">
         <div className="flex flex-col gap-8 md:gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
           <div className="flex flex-col gap-6 md:gap-8">
             <Label labelClassName="md:text-sm">{label}</Label>
@@ -72,11 +73,23 @@ export default function Blog({ label, heading, ctaLabel, ctaHref, cards }: IBlog
             <NextLink href={ctaHref}>{ctaLabel}</NextLink>
           </Button>
         </div>
+      </div>
 
-        <ul
-          className="mt-10 grid gap-6 sm:gap-8 md:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8"
-          role="list"
-        >
+      <Carousel
+        opts={{ loop: true, align: 'start', containScroll: 'trimSnaps' }}
+        className="mt-10 hidden pb-12 md:block md:pb-[5.75rem] lg:hidden"
+      >
+        <CarouselContent className="mr-8 ml-0 overflow-visible">
+          {cards.map((card) => (
+            <CarouselItem key={card.title} className="md:basis-1/2 md:pl-8">
+              <BlogCard card={card} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+
+      <div className="section-container pb-[5.75rem] md:hidden lg:block xl:pb-50">
+        <ul className="mt-10 grid gap-6 sm:gap-8 lg:mt-16 lg:grid-cols-3 lg:gap-8" role="list">
           {cards.map((card) => (
             <li key={card.title}>
               <BlogCard card={card} />

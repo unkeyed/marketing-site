@@ -22,7 +22,7 @@ const config = {
   githubOrg: 'unkeyed',
   githubRepo: 'unkey',
   blog: {
-    postsPerPage: 8,
+    postsPerPage: 20,
     contentWidth: 704,
     // postCardCoverWidth: 302,
     // featuredPostCount: 2,

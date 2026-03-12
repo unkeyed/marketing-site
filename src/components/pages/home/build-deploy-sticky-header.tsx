@@ -180,11 +180,11 @@ export default function BuildDeployStickyHeader({
         ref={stickyRef}
         className="sticky top-[var(--sticky-header-height)] z-40 -mx-5 self-start bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
       >
-        <div className="grid gap-4 pt-[1.25rem] sm:gap-5 md:pt-6 lg:grid-cols-[60fr_40fr] lg:gap-8 lg:pt-[1.75rem]">
-          <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[2.5rem] md:max-w-[42rem] md:text-[2.25rem] lg:max-w-none lg:text-[2.5rem] xl:text-[3.25rem]">
+        <div className="grid gap-4 pt-[1.25rem] sm:gap-5 md:pt-6 lg:gap-8 xl:grid-cols-[60fr_40fr] xl:pt-[1.75rem]">
+          <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[2.5rem] md:max-w-[42rem] md:text-[2.25rem] lg:max-w-[34rem] lg:text-[2.5rem] xl:max-w-none xl:text-[3.25rem]">
             {heading}
           </h2>
-          <p className="relative max-w-104 text-[1rem] leading-snug tracking-[-0.01em] text-gray-70 sm:text-[1.25rem] md:text-[1.125rem] lg:mt-auto lg:ml-auto lg:text-xl 2xl:-bottom-0.5">
+          <p className="relative max-w-104 text-[1rem] leading-snug tracking-[-0.01em] text-gray-70 sm:text-[1.25rem] md:max-w-126 md:text-[1.125rem] xl:mt-auto xl:ml-auto xl:text-xl 2xl:-bottom-0.5">
             {description}
           </p>
         </div>

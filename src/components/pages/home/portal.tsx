@@ -66,8 +66,7 @@ export default function Portal({
 
         <div className="mt-[1.25rem] flex flex-col gap-5 md:mt-[1.5rem] md:gap-6 lg:mt-[1.75rem] lg:flex-row lg:items-end lg:justify-between xl:mt-8 xl:gap-5">
           <h2 className="max-w-240 font-display text-[1.875rem] leading-[1.125] text-white sm:text-[2.25rem] xl:text-[2.75rem]">
-            {heading}
-            <span className="block text-gray-60">{subheading}</span>
+            {heading} <span className="text-gray-60 min-[860px]:block">{subheading}</span>
           </h2>
           <Link href={buttonHref} className="w-fit">
             {buttonLabel}

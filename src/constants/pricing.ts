@@ -1,7 +1,7 @@
 import { createElement, Fragment } from 'react';
+import { APP_URL, DOCS_URL, ENTERPRISE_CONTACT_URL } from '@/configs/website-config';
 
 import { IPricingPlan, IPricingTableFeatures } from '@/types/pricing';
-import { APP_URL, DOCS_URL, ENTERPRISE_CONTACT_URL } from '@/configs/website-config';
 
 export const pricingContentData = {
   title: createElement(
@@ -132,7 +132,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       ],
     },
     link: {
-      label: 'Start for Free',
+      label: 'Start for free',
       href: APP_URL,
     },
   },
@@ -302,7 +302,7 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
       ],
     },
     link: {
-      label: 'Start for Free',
+      label: 'Start for free',
       href: APP_URL,
     },
   },
@@ -561,6 +561,6 @@ export const enterpriseData = {
     'Custom domains & gateway setup',
     'Custom managed API keys',
   ],
-  buttonText: 'Contact Sales',
+  buttonText: 'Contact sales',
   buttonUrl: ENTERPRISE_CONTACT_URL,
 };

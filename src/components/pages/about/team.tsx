@@ -29,9 +29,9 @@ export default function TeamSection({
         <Label labelClassName="md:text-sm">{badgeLabel}</Label>
 
         <div className="mt-5 md:mt-8">
-          <h2 className="font-display text-3xl leading-[1.125] whitespace-pre-wrap text-foreground sm:text-[2.5rem] md:text-[2.25rem] xl:text-[2.75rem]">
+          <h2 className="font-display text-3xl leading-[1.125] text-foreground sm:text-[2.5rem] md:text-[2.25rem] md:whitespace-pre-wrap xl:text-[2.75rem]">
             {title}
-            <br />
+            {'\n'}
             <span className="text-gray-60">{subtitle}</span>
           </h2>
         </div>

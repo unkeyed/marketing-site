@@ -28,10 +28,10 @@ export default function Cta({
         className,
       )}
     >
-      {/* 
-          ffmpeg parameters: 
-          mp4: ffmpeg -i input.mov -c:v libx265 -crf 20 -pix_fmt yuv420p10le -vf scale=2560:-2 -preset veryslow -x265-params tune=animation -tag:v hvc1 -movflags faststart -an hero.mp4
-          webm: ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 1 -an -f null /dev/null && ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 2 -an -y hero.webm
+      {/*
+          ffmpeg parameters (native 1920×546, 8-bit yuv420p to avoid green tint):
+          mp4: ffmpeg -y -i input.mov -c:v libx265 -crf 22 -pix_fmt yuv420p -preset veryslow -tag:v hvc1 -movflags faststart -an cta.mp4
+          webm: ffmpeg -y -i input.mov -c:v libsvtav1 -crf 32 -pix_fmt yuv420p -svtav1-params preset=3:lookahead=80:keyint=80 -an cta.webm
       */}
 
       <BackgroundVideo
@@ -43,11 +43,8 @@ export default function Cta({
       />
       <div className="relative z-10 container flex h-full flex-col pt-12 pb-10 sm:pt-14 sm:pb-11 md:pt-16 md:pb-12.75 lg:pb-14 xl:pb-12.75">
         <h2 className="max-w-144 font-display text-2xl leading-[1.125] text-white sm:text-[1.875rem] md:text-[2rem]">
-          {heading}
+          {heading} <span className="text-gray-60 min-[480px]:block">{subheading}</span>
         </h2>
-        <p className="max-w-144 font-display text-2xl leading-[1.125] text-gray-60 sm:text-[1.875rem] md:text-[2rem]">
-          {subheading}
-        </p>
         <TrackingLink
           href={buttonHref}
           className="mt-auto w-fit lg:mt-13 xl:mt-auto"

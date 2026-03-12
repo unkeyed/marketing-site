@@ -79,7 +79,7 @@ export default function Hero({
           </h1>
 
           <div className="mt-4 flex flex-col gap-7 md:mt-5 md:flex-row md:items-end md:justify-between md:gap-5">
-            <p className="max-w-80 text-sm leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60 sm:text-base md:max-w-132.75">
+            <p className="max-w-80 text-sm leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60 sm:text-base md:max-w-93.75 lg:max-w-132.75">
               {description}
             </p>
             <div className="mt-1 flex w-full shrink-0 flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap md:mt-0">

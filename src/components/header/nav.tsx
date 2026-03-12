@@ -159,13 +159,13 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                   isOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
-                <ul className="flex w-full flex-col gap-1.5 bg-foreground p-4 shadow-lg">
+                <ul className="flex w-full flex-col bg-foreground shadow-lg">
                   {children.map((child, childIndex) => {
                     return (
                       <li key={childIndex}>
                         <NextLink
                           href={child.href ?? '#'}
-                          className="flex items-start gap-3 py-2.5 pl-2.5 transition-colors hover:bg-gray-94"
+                          className="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-gray-94"
                           onClick={closeDropdown}
                           target={isExternalLink(child.href) ? '_blank' : undefined}
                           rel={isExternalLink(child.href) ? 'noopener noreferrer' : undefined}

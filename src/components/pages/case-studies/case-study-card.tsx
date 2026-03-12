@@ -130,7 +130,7 @@ export function FeaturedCaseStudyCard({
   return (
     <article
       className={cn(
-        'grid border-x border-y border-border lg:min-h-108 lg:grid-cols-2 xl:min-h-106.75 xl:grid-cols-[40rem_1fr]',
+        'grid border-x border-y border-border lg:min-h-108 lg:grid-cols-2 xl:min-h-106.75',
         className,
       )}
     >
@@ -138,7 +138,7 @@ export function FeaturedCaseStudyCard({
         <Image src={imageSrc} alt={imageAlt} fill className="object-cover" />
       </div>
 
-      <div className="flex flex-1 flex-col justify-end px-6 py-8 md:px-8 md:py-10 lg:py-12 lg:pr-12 lg:pl-12 xl:pr-12 xl:pl-19.5">
+      <div className="flex flex-1 flex-col justify-end px-6 py-6 lg:py-12 lg:pr-12 lg:pl-12 xl:pr-12">
         <CaseStudyCardContent
           category={category}
           title={title}

@@ -90,7 +90,7 @@ export default function CaseStudiesPage() {
         titleTag="h1"
         description={contentData.description}
         className="gap-4 md:gap-6 lg:flex-row lg:items-end lg:gap-8 xl:!justify-between"
-        titleClassName="marked-title !leading-[1.125] text-[2rem] md:text-[2.5rem] lg:text-[3rem]"
+        titleClassName="marked-title !leading-[1.125] text-[1.8rem] min-[380px]:text-[2rem] md:text-[2.5rem] lg:text-[3rem]"
         descriptionClassName="text-base md:text-lg md:max-w-[33.25rem] lg:max-w-[22.5rem] min-[1025px]:max-w-[26rem] !tracking-[-0.01em]"
       />
       <CaseStudiesGrid items={contentData.caseStudies} />

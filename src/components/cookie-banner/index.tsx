@@ -38,7 +38,7 @@ export default function CookieBanner({
           <m.div
             key="cookie-banner-modal"
             className={cn(
-              'fixed inset-x-5 bottom-5 z-[45] max-h-[70vh] overflow-y-auto rounded-xl border border-border bg-popover px-5 pt-4 shadow-[0px_8px_24px_0px_rgba(0,0,0,0.25)] md:inset-x-8 md:bottom-8',
+              'fixed inset-x-5 bottom-5 z-[45] max-h-[70vh] overflow-y-auto border border-border bg-popover px-5 pt-4 shadow-[0px_8px_24px_0px_rgba(0,0,0,0.25)] md:inset-x-8 md:bottom-8',
               allowSettingsCustomization ? 'pb-5' : 'pb-4',
               {
                 'max-w-xl': !allowSettingsCustomization,
