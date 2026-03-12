@@ -43,20 +43,20 @@ const nextConfig: NextConfig = {
       ],
       fallback: [
         {
-          source: '/templates',
-          destination: 'https://www.unkey.com/templates',
+          source: '/templates/:path*',
+          destination: 'https://www.unkey.com/templates/:path*',
         },
         {
-          source: '/careers',
-          destination: 'https://www.unkey.com/careers',
+          source: '/careers/:path*',
+          destination: 'https://www.unkey.com/careers/:path*',
         },
         {
-          source: '/docs',
-          destination: 'https://www.unkey.com/docs',
+          source: '/docs/:path*',
+          destination: 'https://www.unkey.com/docs/:path*',
         },
         {
-          source: '/oss-friends',
-          destination: 'https://www.unkey.com/oss-friends',
+          source: '/oss-friends/:path*',
+          destination: 'https://www.unkey.com/oss-friends/:path*',
         },
       ],
     };
