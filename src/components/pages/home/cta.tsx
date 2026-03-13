@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import { cn } from '@/lib/utils';
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { TrackingLink } from '@/components/ui/tracking-link';
@@ -34,12 +36,22 @@ export default function Cta({
           webm: ffmpeg -y -i input.mov -c:v libsvtav1 -crf 32 -pix_fmt yuv420p -svtav1-params preset=3:lookahead=80:keyint=80 -an cta.webm
       */}
 
+      <Image
+        src={poster}
+        alt=""
+        fill
+        quality={95}
+        sizes="(max-width: 640px) 960px"
+        className="pointer-events-none absolute inset-0 z-0 object-cover sm:hidden"
+      />
+
       <BackgroundVideo
         poster={poster}
         videos={videos}
         deferLoad
         rootMargin="200px"
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+        sourceMedia="(min-width: 640px)"
+        className="pointer-events-none absolute inset-0 z-0 hidden h-full w-full object-cover sm:block"
       />
       <div className="relative z-10 container flex h-full flex-col pt-12 pb-10 sm:pt-14 sm:pb-11 md:pt-16 md:pb-12.75 lg:pb-14 xl:pb-12.75">
         <h2 className="max-w-144 font-display text-2xl leading-[1.125] text-white sm:text-[1.875rem] md:text-[2rem]">

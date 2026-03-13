@@ -25,7 +25,7 @@ function Header({ className, menuItems, logoUrl }: IHeaderProps) {
 
   return (
     <header className={cn('sticky top-0 z-50 flex items-center pt-2.5', className)}>
-      <div className="pointer-events-none absolute inset-0 -z-10 h-full backdrop-blur-md" />
+      <div className="pointer-events-none absolute inset-0 -z-10 h-full" />
       <div className="container flex items-center gap-1">
         <div className="relative z-60 flex h-11 flex-1 items-center justify-between bg-foreground pr-0 pl-6">
           <NextLink className="inline-flex shrink-0" href={logoHref}>

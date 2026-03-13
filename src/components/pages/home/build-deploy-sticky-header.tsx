@@ -171,14 +171,14 @@ export default function BuildDeployStickyHeader({
       <div
         aria-hidden
         className={cn(
-          'pointer-events-none fixed inset-x-0 top-0 z-30 h-[var(--sticky-header-height)] bg-black transition-opacity duration-200',
+          'pointer-events-none fixed inset-x-0 top-0 z-30 hidden h-[var(--sticky-header-height)] bg-black transition-opacity duration-200 md:block',
           isStuck ? 'opacity-100' : 'opacity-0',
         )}
       />
 
       <div
         ref={stickyRef}
-        className="sticky top-[var(--sticky-header-height)] z-40 -mx-5 self-start bg-background px-5 md:-mx-8 md:px-8 xl:mx-0 xl:px-0"
+        className="z-40 -mx-5 mb-8 self-start bg-background px-5 md:sticky md:top-[var(--sticky-header-height)] md:-mx-8 md:mb-0 md:px-8 xl:mx-0 xl:px-0"
       >
         <div className="grid gap-4 pt-[1.25rem] sm:gap-5 md:pt-6 lg:gap-8 xl:grid-cols-[60fr_40fr] xl:pt-[1.75rem]">
           <h2 className="font-display text-3xl leading-[1.125] text-white sm:text-[2.5rem] md:max-w-[42rem] md:text-[2.25rem] lg:max-w-[34rem] lg:text-[2.5rem] xl:max-w-none xl:text-[3.25rem]">
@@ -191,7 +191,7 @@ export default function BuildDeployStickyHeader({
 
         <div
           ref={tabsScrollerRef}
-          className="-mx-5 mt-8 h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden"
+          className="-mx-5 mt-8 hidden h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:mt-12 md:block md:h-16 xl:mx-0 xl:mt-20 [&::-webkit-scrollbar]:hidden"
         >
           <nav aria-label="Build and deploy steps" className="h-full">
             <ul className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0">
