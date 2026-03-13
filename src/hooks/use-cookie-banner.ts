@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 
 import { type ICookieBanner, type ICookieSettingsItem } from '@/types/common';
@@ -17,9 +17,7 @@ export interface IConsentLogic {
 const useCookie = (
   key: string,
 ): [string | null, (value: string, options?: Cookies.CookieAttributes) => void] => {
-  const [cookieValue, setCookieValue] = useState<string | null>(
-    () => Cookies.get(key) ?? null,
-  );
+  const [cookieValue, setCookieValue] = useState<string | null>(() => Cookies.get(key) ?? null);
 
   const updateCookie = useCallback(
     (value: string, options?: Cookies.CookieAttributes) => {
@@ -122,6 +120,12 @@ export default function useCookieBanner({
   );
   const [isCookieBannerVisible, setIsCookieBannerVisible] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const lastNotifiedConsentRef = useRef<string | null>(null);
+  const onConsentChangeRef = useRef<ConsentUpdateFunction>(onConsentChange);
+
+  useEffect(() => {
+    onConsentChangeRef.current = onConsentChange;
+  }, [onConsentChange]);
 
   const effectiveConsentLogic = useMemo(() => {
     return { ...defaultConsentLogic, ...consentLogic };
@@ -160,6 +164,7 @@ export default function useCookieBanner({
   useEffect(() => {
     if (cookieValue === null) {
       setIsCookieBannerVisible(true);
+      lastNotifiedConsentRef.current = null;
     } else {
       setIsCookieBannerVisible(false);
       const currentValues = initializeCheckboxValues(cookieValue, cookieSettings);
@@ -167,12 +172,15 @@ export default function useCookieBanner({
 
       const consentObject = safeParseCookieConsent(cookieValue);
       if (consentObject) {
-        onConsentChange(consentObject);
+        if (lastNotifiedConsentRef.current !== cookieValue) {
+          onConsentChangeRef.current(consentObject);
+          lastNotifiedConsentRef.current = cookieValue;
+        }
       } else {
         setIsCookieBannerVisible(true);
       }
     }
-  }, [cookieValue, cookieSettings, onConsentChange]);
+  }, [cookieValue, cookieSettings]);
 
   const handleCheckboxChange = useCallback((index: number) => {
     setCheckboxValues((prevValues) =>
