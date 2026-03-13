@@ -45,8 +45,8 @@ export default function Hero({
 
         {/*  
           Video optimization parameters:
-            mp4 av1: ffmpeg -i hero.mov -c:v libaom-av1 -crf 30 -b:v 0 -pix_fmt yuv420p10le -vf scale=2560:-2 -cpu-used 0 -tiles 4x2 -row-mt 1 -threads 16 -tag:v av01 -movflags faststart -an hero-av1.mp4
-            mp4: ffmpeg -i hero.mov -c:v libx265 -crf 30 -pix_fmt yuv420p10le -vf scale=2560:-2 -preset slow -tag:v hvc1 -movflags faststart -an hero.mp4
+            mp4 av1: ffmpeg -i hero.mov -c:v libaom-av1 -crf 30 -b:v 0 -pix_fmt yuv420p10le -vf scale=2560:-2 -cpu-used 0 -tiles 4x2 -row-mt 1 -threads 32 -strict experimental -tag:v av01 -movflags faststart -an hero-av1.mp4
+            mp4: ffmpeg -i hero.mov -c:v libx265 -crf 30 -pix_fmt yuv420p10le -vf scale=2560:-2 -preset veryslow -tag:v hvc1 -movflags faststart -an hero.mp4
             webm: ffmpeg -i hero.mov -c:v libvpx-vp9 -pix_fmt yuv420p10le -crf 35 -vf scale=2880:-2 -deadline best -an hero.webm
         */}
         <BackgroundVideo
