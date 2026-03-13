@@ -16,6 +16,7 @@ interface IBackgroundVideoProps {
   rootMargin?: string;
   sourceMedia?: string;
   deferLoad?: boolean;
+  preload?: 'none' | 'metadata' | 'auto';
 }
 
 export function BackgroundVideo({
@@ -25,6 +26,7 @@ export function BackgroundVideo({
   rootMargin = '400px',
   sourceMedia,
   deferLoad = false,
+  preload = 'metadata',
 }: IBackgroundVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldLoad, setShouldLoad] = useState(!deferLoad);
@@ -61,7 +63,7 @@ export function BackgroundVideo({
       loop
       muted
       playsInline
-      preload={shouldLoad ? 'metadata' : 'none'}
+      preload={shouldLoad ? preload : 'none'}
       {...(poster ? { poster } : {})}
       aria-hidden="true"
       className={className}

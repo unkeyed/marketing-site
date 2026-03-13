@@ -35,8 +35,8 @@ export const homeContentData = {
     secondaryCta: { label: 'View on GitHub', href: GITHUB_URL },
     poster: { src: heroPosterImage.src, width: 1533, height: 908 },
     videos: [
-      { src: 'videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
-      { src: 'videos/home/hero.webm', type: 'video/webm' },
+      { src: '/videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
+      { src: '/videos/home/hero.webm', type: 'video/webm' },
     ],
     logos: homePortfolioLogos,
   },
@@ -344,8 +344,8 @@ export const homeContentData = {
     buttonHref: APP_URL,
     poster: ctaPosterImage.src,
     videos: [
-      { src: 'videos/home/cta.mp4', type: 'video/mp4; codecs=hvc1' },
-      { src: 'videos/home/cta.webm', type: 'video/webm' },
+      { src: '/videos/home/cta.mp4', type: 'video/mp4; codecs=hvc1' },
+      { src: '/videos/home/cta.webm', type: 'video/webm' },
     ],
   },
 };

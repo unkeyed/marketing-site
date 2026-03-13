@@ -44,17 +44,13 @@ export default function Hero({
         />
 
         {/*  
-          ffmpeg parameters: 
-          mp4: ffmpeg -i input.mov \
-          -c:v libx265 -preset veryslow -crf 34 -tune animation \
-          -vf "scale=2560:-2:flags=lanczos,format=yuv420p10le" \
-          -x265-params "aq-mode=3:aq-strength=0.8:psy-rd=2.0:psy-rdoq=1.0:deblock=-1,-1:no-sao=1" \
-          -tag:v hvc1 -movflags +faststart -an hero.mp4
-
-          webm: ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 1 -an -f null /dev/null && ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 2 -an -y hero.webm
+          Video optimization parameters:
+            mp4: ffmpeg -i input.mov -c:v libx265 -preset veryslow -crf 34 -tune animation -vf "scale=2560:-2:flags=lanczos,format=yuv420p10le" -x265-params "aq-mode=3:aq-strength=0.8:psy-rd=2.0:psy-rdoq=1.0:deblock=-1,-1:no-sao=1" -tag:v hvc1 -movflags +faststart -an hero.mp4
+            webm: ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 1 -an -f null /dev/null && ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 2 -an -y hero.webm
         */}
-
         <BackgroundVideo
+          poster={poster.src}
+          preload="auto"
           videos={videos}
           sourceMedia="(min-width: 640px)"
           className="pointer-events-none absolute inset-0 hidden h-full w-full origin-top scale-[1.02] object-cover object-top sm:block"
