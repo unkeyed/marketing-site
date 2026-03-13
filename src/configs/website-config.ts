@@ -1,4 +1,4 @@
-export const DOCS_URL = 'https://www.unkey.com/docs/introduction';
+export const DOCS_URL = '/docs/introduction';
 export const APP_URL = 'https://app.unkey.com/';
 export const SIGN_UP_URL = 'https://app.unkey.com/auth/sign-up';
 export const GITHUB_URL = 'https://github.com/unkeyed/unkey';

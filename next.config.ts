@@ -1,5 +1,12 @@
 import type { NextConfig } from 'next';
 
+import {
+  LEGACY_NEXT_STATIC_DESTINATION,
+  LEGACY_PUBLIC_ASSET_REWRITES,
+  LEGACY_REFERER_PATTERN,
+  LEGACY_ROUTE_REWRITES,
+} from './src/constants/legacy-rewrites';
+
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
@@ -23,8 +30,36 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  typescript: {
-    ignoreBuildErrors: true,
+  async headers() {
+    return [
+      {
+        source: '/images/:all*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/rive/:all*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/videos/:all*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
   async rewrites() {
     return {
@@ -35,18 +70,13 @@ const nextConfig: NextConfig = {
             {
               type: 'header',
               key: 'referer',
-              value: 'https?://[^/]+/(templates|careers|docs|oss-friends)(?:/.*)?',
+              value: LEGACY_REFERER_PATTERN,
             },
           ],
-          destination: 'https://www.unkey.com/_next/static/:path*',
+          destination: LEGACY_NEXT_STATIC_DESTINATION,
         },
       ],
-      fallback: [
-        {
-          source: '/:path*',
-          destination: 'https://www.unkey.com/:path*',
-        },
-      ],
+      afterFiles: [...LEGACY_PUBLIC_ASSET_REWRITES, ...LEGACY_ROUTE_REWRITES],
     };
   },
 };
