@@ -84,7 +84,7 @@ function Card({
         {description}
       </p>
       {hasLink && !asLink && (
-        <Link className="group/link mt-auto w-fit leading-none" href={linkUrl} size="sm">
+        <Link className="group/link mt-auto w-fit leading-none" href={linkUrl} size="small">
           {linkText}
           <ChevronRightIcon
             className="-mx-0.5 transition-transform duration-300 group-hover/link:translate-x-0.5"
