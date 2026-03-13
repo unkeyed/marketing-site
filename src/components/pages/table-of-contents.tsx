@@ -34,10 +34,7 @@ function getAnchorTopOffset() {
   return stickyHeaderOffset + rootFontSize * 2;
 }
 
-function useActiveAnchor(
-  items: readonly ITableOfContentsItem[],
-  throttleMs = 100,
-) {
+function useActiveAnchor(items: readonly ITableOfContentsItem[], throttleMs = 100) {
   const [activeAnchor, setActiveAnchor] = useState<string | null>(null);
   const headingRefs = useRef<{ id: string; getTop: () => number }[]>([]);
 

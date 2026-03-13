@@ -1,7 +1,7 @@
 ---
-title: "TLS in API: Secure Communication Guide"
+title: 'TLS in API: Secure Communication Guide'
 description: Unlock TLS in API. Learn how it works, its differences with SSL, HTTPS. Dive in now.
-h1: "TLS in API: Implementation & Challenges"
+h1: 'TLS in API: Implementation & Challenges'
 term: transport-layer-security
 categories: []
 takeaways:
@@ -21,7 +21,7 @@ takeaways:
       value: Trust and Keystores
   historicalContext:
     - key: Introduced
-      value: "1999"
+      value: '1999'
     - key: Origin
       value: Web Security (transport-layer-security)
     - key: Evolution
@@ -103,13 +103,15 @@ const fs = require('fs');
 
 const options = {
   key: fs.readFileSync('server-key.pem'),
-  cert: fs.readFileSync('server-cert.pem')
+  cert: fs.readFileSync('server-cert.pem'),
 };
 
-https.createServer(options, (req, res) => {
-  res.writeHead(200);
-  res.end('Hello secure world!\n');
-}).listen(443);
+https
+  .createServer(options, (req, res) => {
+    res.writeHead(200);
+    res.end('Hello secure world!\n');
+  })
+  .listen(443);
 ```
 
 This example demonstrates how to create an HTTPS server in Node.js that listens on port 443, using TLS to secure all communications. Implementing TLS not only helps in compliance with security standards but also builds trust with users by protecting their data.

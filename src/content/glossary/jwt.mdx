@@ -1,7 +1,7 @@
 ---
-title: "JWT API Development: Comprehensive Guide"
+title: 'JWT API Development: Comprehensive Guide'
 description: Unlock JWT power for API development. Learn essentials, key takeaways with practical examples. Master JWT authentication.
-h1: "JWT for API Development: Essentials & Examples"
+h1: 'JWT for API Development: Essentials & Examples'
 term: JWT
 categories: []
 takeaways:
@@ -19,7 +19,7 @@ takeaways:
     - Ensure JWTs are properly signed and encrypted to maintain data integrity and confidentiality.
   historicalContext:
     - key: Introduced
-      value: "2010"
+      value: '2010'
     - key: Origin
       value: Web Services (JWT)
     - key: Evolution
@@ -42,7 +42,7 @@ faq:
   - question: Is JWT good for API authentication?
     answer: Yes, JWT (JSON Web Tokens) is an effective method for API authentication. JWT provides user-based authentication, meaning once a user is authenticated, they receive a secure token that can be used across multiple systems. This token-based approach simplifies the authentication process, as the token can be easily validated and does not require the server to maintain a session or repeatedly access a database. Moreover, JWTs are self-contained, carrying all the necessary user information, which makes them highly scalable and suitable for distributed systems.
   - question: How to use JWT in API?
-    answer: "To use JWT in API, follow these steps: 1. Generate a secret key. This key is used to sign the JWT, ensuring its integrity and authenticity. 2. Create a JWT using the secret key and the necessary payload, which typically includes user information and token expiration time. 3. Send the JWT to the client after successful authentication. 4. The client includes the JWT in the Authorization header of subsequent requests. 5. The server reads the JWT from the request header, decodes it, verifies the signature using the secret key, and if valid, processes the request. 6. If the JWT is expired or signature is invalid, the server responds with an appropriate error message."
+    answer: 'To use JWT in API, follow these steps: 1. Generate a secret key. This key is used to sign the JWT, ensuring its integrity and authenticity. 2. Create a JWT using the secret key and the necessary payload, which typically includes user information and token expiration time. 3. Send the JWT to the client after successful authentication. 4. The client includes the JWT in the Authorization header of subsequent requests. 5. The server reads the JWT from the request header, decodes it, verifies the signature using the secret key, and if valid, processes the request. 6. If the JWT is expired or signature is invalid, the server responds with an appropriate error message.'
   - question: What does JWT mean in API?
     answer: JWT stands for JSON Web Token. In the context of APIs, JWT is a method for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed, typically using a secret key known only to the sender and receiver. JWTs are often used in API authentication and authorization workflows to ensure the client making the request is who they claim to be.
   - question: What is JWT in regard to rest API?

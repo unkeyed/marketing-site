@@ -155,7 +155,7 @@ function PricingCard({
             )}
             {priceType === 'number' && (
               <PriceNumber
-                className="font-display text-5xl leading-[1.25] font-[500] tracking-tight [font-variation-settings:'wght'_500] part-[suffix]:font-sans part-[suffix]:font-normal part-[suffix]:[font-variation-settings:'wght'_400] part-[suffix]:text-2xl"
+                className="font-display text-5xl leading-[1.25] font-[500] tracking-tight [font-variation-settings:'wght'_500] part-[suffix]:font-sans part-[suffix]:text-2xl part-[suffix]:font-normal part-[suffix]:[font-variation-settings:'wght'_400]"
                 value={price}
                 currency={currency}
                 suffix={` ${period}`}

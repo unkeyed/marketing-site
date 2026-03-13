@@ -1,7 +1,7 @@
 ---
-title: "Statelessness in APIs: Comprehensive Guide"
+title: 'Statelessness in APIs: Comprehensive Guide'
 description: Understand statelessness in APIs. Learn differences between stateless and stateful APIs, with examples. Explore REST API design.
-h1: "Statelessness in API Design: Understanding & Examples"
+h1: 'Statelessness in API Design: Understanding & Examples'
 term: Statelessness
 categories: []
 takeaways:
@@ -15,7 +15,7 @@ takeaways:
       value: Typically Stateless
   historicalContext:
     - key: Introduced
-      value: "2000"
+      value: '2000'
     - key: Origin
       value: Web Services (statelessness)
     - key: Evolution
@@ -61,13 +61,13 @@ Statelessness in APIs means that every HTTP request occurs in complete isolation
 
 ## Stateless vs Stateful APIs: Key Differences
 
-| Feature | Stateless API | Stateful API |
-|---------|---------------|--------------|
-| Memory Consumption | Low, as no session data is stored | High, as session data needs to be stored and managed |
-| Scalability | High, easier to scale as each request is independent | Lower, as the server must manage and synchronize session state across requests |
-| Performance | Generally faster, due to the lack of need for session management | Can be slower, especially with large volumes of session data |
-| Complexity | Simpler in design, as it does not require session management | More complex, due to the need for session tracking and management |
-| Use Case | Ideal for public APIs and services where sessions are not necessary | Suitable for applications where user state needs to be preserved across requests |
+| Feature            | Stateless API                                                       | Stateful API                                                                     |
+| ------------------ | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Memory Consumption | Low, as no session data is stored                                   | High, as session data needs to be stored and managed                             |
+| Scalability        | High, easier to scale as each request is independent                | Lower, as the server must manage and synchronize session state across requests   |
+| Performance        | Generally faster, due to the lack of need for session management    | Can be slower, especially with large volumes of session data                     |
+| Complexity         | Simpler in design, as it does not require session management        | More complex, due to the need for session tracking and management                |
+| Use Case           | Ideal for public APIs and services where sessions are not necessary | Suitable for applications where user state needs to be preserved across requests |
 
 ## Examples of Stateless APIs in Practice
 

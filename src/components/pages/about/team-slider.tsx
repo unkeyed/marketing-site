@@ -2,8 +2,6 @@
 
 import { useMemo } from 'react';
 import Image from 'next/image';
-import AutoScroll from 'embla-carousel-auto-scroll';
-
 import artIntensifiesImage from '@/assets/images/about/team/art-intensifies.jpg';
 import breakfastImage from '@/assets/images/about/team/breakfast.jpg';
 import cookingCrewImage from '@/assets/images/about/team/cooking-crew.jpg';
@@ -14,6 +12,8 @@ import jamesFenceImage from '@/assets/images/about/team/james-fence.jpg';
 import jamesThinkingImage from '@/assets/images/about/team/james-thinking.jpg';
 import mikeMorningNeckExerciseImage from '@/assets/images/about/team/mike-morning-neck-exercise.jpg';
 import yardworkImage from '@/assets/images/about/team/yardwork.jpg';
+import AutoScroll from 'embla-carousel-auto-scroll';
+
 import { cn } from '@/lib/utils';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 

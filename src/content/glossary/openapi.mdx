@@ -1,7 +1,7 @@
 ---
-title: "OpenAPI: Comprehensive Guide for Developers"
+title: 'OpenAPI: Comprehensive Guide for Developers'
 description: Unlock OpenAPI power. Learn essentials, evolution to implementation. Discover tools, best practices. Dive in.
-h1: "OpenAPI: Basics to Best Practices"
+h1: 'OpenAPI: Basics to Best Practices'
 term: OpenAPI
 categories: []
 takeaways:
@@ -19,7 +19,7 @@ takeaways:
     - Ensure OpenAPI documents are accurate and up-to-date to maintain API security.
   historicalContext:
     - key: Introduced
-      value: "2010"
+      value: '2010'
     - key: Origin
       value: Web Services (OpenAPI)
     - key: Evolution
@@ -82,7 +82,7 @@ const apiSpec: OpenAPIV3.Document = {
   openapi: '3.0.0',
   info: {
     title: 'Sample API',
-    version: '1.0.0'
+    version: '1.0.0',
   },
   paths: {
     '/pets': {
@@ -95,14 +95,14 @@ const apiSpec: OpenAPIV3.Document = {
               'application/json': {
                 schema: {
                   type: 'array',
-                  items: { $ref: '#/components/schemas/Pet' }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  items: { $ref: '#/components/schemas/Pet' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -110,11 +110,11 @@ const apiSpec: OpenAPIV3.Document = {
         type: 'object',
         properties: {
           id: { type: 'integer', format: 'int64' },
-          name: { type: 'string' }
-        }
-      }
-    }
-  }
+          name: { type: 'string' },
+        },
+      },
+    },
+  },
 };
 ```
 
@@ -130,13 +130,13 @@ const apiSpec: OpenAPIV3.Document = {
 
 The OpenAPI ecosystem includes various tools that enhance API development, from design and documentation to testing and client SDK generation. Here are some popular **API documentation tools**:
 
-| Tool | Purpose | Language/Platform |
-|------|---------|-------------------|
-| Swagger UI | API Documentation | JavaScript |
-| Swagger Codegen | Client SDK Generation | Multiple |
-| Redoc | API Documentation | JavaScript |
-| OpenAPI Generator | Server Stub and Client SDK Generation | Multiple |
-| Postman | API Testing and Exploration | Web, macOS, Windows, Linux |
+| Tool              | Purpose                               | Language/Platform          |
+| ----------------- | ------------------------------------- | -------------------------- |
+| Swagger UI        | API Documentation                     | JavaScript                 |
+| Swagger Codegen   | Client SDK Generation                 | Multiple                   |
+| Redoc             | API Documentation                     | JavaScript                 |
+| OpenAPI Generator | Server Stub and Client SDK Generation | Multiple                   |
+| Postman           | API Testing and Exploration           | Web, macOS, Windows, Linux |
 
 These tools help streamline the API development process, making it easier for developers to create robust and well-documented APIs.
 

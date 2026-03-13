@@ -87,8 +87,8 @@ function GlossaryStickyControls({
           letter,
           element: document.getElementById(`letter-${letter}`),
         }))
-        .filter(
-          (entry): entry is { letter: string; element: HTMLElement } => Boolean(entry.element),
+        .filter((entry): entry is { letter: string; element: HTMLElement } =>
+          Boolean(entry.element),
         );
 
       if (!sections.length) {

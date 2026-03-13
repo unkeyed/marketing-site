@@ -1,7 +1,7 @@
 ---
-title: "API Mock Server: Comprehensive Guide"
+title: 'API Mock Server: Comprehensive Guide'
 description: Discover API Mock Servers. Learn essentials, key takeaways from popular tools to best practices. Dive into Postman Mock Server.
-h1: "API Mock Server: Essentials & Best Practices"
+h1: 'API Mock Server: Essentials & Best Practices'
 term: API Mock Server
 categories: []
 takeaways:
@@ -28,9 +28,9 @@ takeaways:
     - url: https://www.mock-server.com/
       title: MockServer Official Documentation
     - url: https://learning.postman.com/docs/design-apis/mock-apis/set-up-mock-servers/
-      title: "Postman Learning Center: Mock Servers"
+      title: 'Postman Learning Center: Mock Servers'
     - url: https://wiremock.org/
-      title: "WireMock: Open Source API Mocking Tool"
+      title: 'WireMock: Open Source API Mocking Tool'
     - url: https://dev.to/ismailkamil/review-10-top-api-mock-tools-57f7
       title: API Mock Server Review
   definitionAndStructure:
@@ -69,11 +69,11 @@ An **API Mock Server** is a service that mimics the behavior of a real API by re
 
 ## Different Types of API Mock Servers Explained
 
-| Type                  | Description                                                  | Use Case                         |
-|-----------------------|--------------------------------------------------------------|----------------------------------|
-| **Static Mock Server**| Returns fixed responses regardless of the request specifics. | Early stage testing, simple APIs |
-| **Dynamic Mock Server**| Generates responses based on request details.              | Complex scenarios, advanced testing |
-| **Stateful Mock Server**| Maintains state across requests to simulate real interactions. | End-to-end user flow testing     |
+| Type                     | Description                                                    | Use Case                            |
+| ------------------------ | -------------------------------------------------------------- | ----------------------------------- |
+| **Static Mock Server**   | Returns fixed responses regardless of the request specifics.   | Early stage testing, simple APIs    |
+| **Dynamic Mock Server**  | Generates responses based on request details.                  | Complex scenarios, advanced testing |
+| **Stateful Mock Server** | Maintains state across requests to simulate real interactions. | End-to-end user flow testing        |
 
 ## Popular Tools for API Mock Servers
 
@@ -97,12 +97,12 @@ const server = createServer({
 
   // Step 2: Define routes
   routes() {
-    this.get("/api/users", (schema) => {
+    this.get('/api/users', (schema) => {
       return schema.users.all();
     });
 
     // Step 3: Add more routes as needed
-    this.post("/api/users", (schema, request) => {
+    this.post('/api/users', (schema, request) => {
       let attrs = JSON.parse(request.requestBody);
       return schema.users.create(attrs);
     });
@@ -116,11 +116,13 @@ export default server;
 ## Pros and Cons of API Mock Servers
 
 ### Pros:
+
 - **Faster Development**: Enables frontend and backend teams to work simultaneously.
 - **Reduced Costs**: Less dependency on actual deployed environments can lower project costs.
 - **Improved Testing**: Facilitates thorough testing early in the development cycle.
 
 ### Cons:
+
 - **Limited Realism**: Mocks can't perfectly emulate the behavior of real services, potentially hiding issues.
 - **Maintenance Overhead**: Keeping mock servers updated with the actual API can be cumbersome.
 - **Complexity in Dynamic Behavior**: Simulating complex logic or stateful behavior can be challenging and may require sophisticated setup.

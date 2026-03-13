@@ -2,7 +2,7 @@
 title: Audit logging, Next.js SDK, Disable Keys, and more
 date: 2024-01-19
 description: The team has been hard at work adding new features and improving the developer experience. We are excited to announce the following features Audit logging, Next.js SDK, Disable Keys, and more.
-tags: ["product:blue"]
+tags: ['product:blue']
 ---
 
 ## Audit logging (beta)
@@ -32,7 +32,6 @@ The Next.js SDK gives you a type-safe way to verify API keys, below is an exampl
 import { NextRequestWithUnkeyContext, withUnkey } from '@unkey/nextjs';
 
 export const POST = withUnkey(async (req) => {
-
   // Process the request here
   // You have access to the verification response using `req.unkey`
   console.log(req.unkey);
@@ -76,7 +75,6 @@ Check it out on [Github](https://github.com/unkeyed/examples/tree/main/ai-billin
 Adding a CLI to your application is a great way to increase adoption. However, it can be challenging to authenticate users. This example shows you how to use Unkey to authenticate users in your CLI application.
 
 Check it out on [Github](https://github.com/unkeyed/examples/tree/main/unkey-cli)
-
 
 ## Contribution Improvements
 

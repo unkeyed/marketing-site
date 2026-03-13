@@ -3,8 +3,12 @@ import { notFound } from 'next/navigation';
 import config from '@/configs/website-config';
 import { homeContentData } from '@/constants/home';
 
-import { getAllGlossaryTerms, getGlossaryDataBySlug, getGlossaryTermBySlug } from '@/lib/glossary/posts';
 import { getMetadata } from '@/lib/get-metadata';
+import {
+  getAllGlossaryTerms,
+  getGlossaryDataBySlug,
+  getGlossaryTermBySlug,
+} from '@/lib/glossary/posts';
 import GlossaryPost from '@/components/pages/glossary/glossary-post';
 import Cta from '@/components/pages/home/cta';
 

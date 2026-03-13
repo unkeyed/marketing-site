@@ -31,8 +31,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, TNumberInputProps>(functi
     inputRef.current?.dispatchEvent(new Event('change', { bubbles: true }));
   }, []);
 
-  const normalizedValue =
-    value === undefined || value === null ? undefined : String(value);
+  const normalizedValue = value === undefined || value === null ? undefined : String(value);
 
   return (
     <div
@@ -48,7 +47,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, TNumberInputProps>(functi
         disabled={disabled}
         value={normalizedValue}
         className={cn(
-          'remove-number-spinners min-w-0 flex-1 rounded-l-md border-0 border-transparent bg-transparent px-3.5 py-2 text-sm leading-snug tracking-tight outline-none placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50',
+          'remove-number-spinners min-w-0 flex-1 rounded-l-md border-0 border-transparent bg-transparent px-3.5 py-2 text-sm leading-snug tracking-tight outline-none placeholder:text-muted-foreground focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
         )}
         {...props}
       />

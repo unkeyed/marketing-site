@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { homeHeaderLinks } from '@/constants/home';
 
+import { useTrack } from '@/hooks/use-tracking';
 import { Link } from '@/components/ui/link';
 import { Icons } from '@/components/icons';
-import { useTrack } from '@/hooks/use-tracking';
 
 export default function HeaderActions() {
   const track = useTrack();

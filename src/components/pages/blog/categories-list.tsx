@@ -87,7 +87,7 @@ function CategoriesList({ className, categories, variant = 'outline' }: ICategor
                   <li key={index}>
                     <Link
                       className={cn(
-                        'h-auto justify-start gap-2.5 py-[.56rem] font-mono font-normal text-sm leading-[1.375] tracking-[0.42px] whitespace-nowrap uppercase transition-colors duration-200 lg:whitespace-normal',
+                        'h-auto justify-start gap-2.5 py-[.56rem] font-mono text-sm leading-[1.375] font-normal tracking-[0.42px] whitespace-nowrap uppercase transition-colors duration-200 lg:whitespace-normal',
                         shouldUseForegroundText
                           ? 'text-foreground'
                           : 'text-gray-70 hover:text-foreground',

@@ -145,8 +145,7 @@ async function getChangelogPostBySlug(
 
     const safeSlugPrefix = slug.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
     const { content: compiledMdx } = await compileMdx(content, {
-      headingIdPrefix:
-        opts?.prefixHeadingIds && safeSlugPrefix ? `${safeSlugPrefix}--` : undefined,
+      headingIdPrefix: opts?.prefixHeadingIds && safeSlugPrefix ? `${safeSlugPrefix}--` : undefined,
     });
 
     const rawPublishedAt = publishedAt ?? date;
@@ -186,9 +185,7 @@ async function getAllChangelogPosts(opts?: IGetChangelogPostsOptions): Promise<I
 
   const slugs = getSlugsByPath(CHANGELOG_DIR_PATH, '**/*.{md,mdx}');
 
-  const posts = await Promise.all(
-    slugs.map((slug) => getChangelogPostBySlug(slug, opts)),
-  );
+  const posts = await Promise.all(slugs.map((slug) => getChangelogPostBySlug(slug, opts)));
 
   return posts
     .filter((p): p is IChangelogPost => Boolean(p))

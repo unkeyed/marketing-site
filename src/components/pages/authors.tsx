@@ -174,11 +174,7 @@ function Authors({
           hideNamesOn={hideNamesOn}
         />
       ) : (
-        <ExpandedAuthors
-          authors={authors}
-          isMultipleAuthors={isMultipleAuthors}
-          size={size}
-        />
+        <ExpandedAuthors authors={authors} isMultipleAuthors={isMultipleAuthors} size={size} />
       )}
     </div>
   );

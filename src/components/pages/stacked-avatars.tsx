@@ -16,12 +16,7 @@ const sizes = {
   lg: { className: 'size-8 md:size-10', width: 40, height: 40 },
 } as const;
 
-function StackedAvatars({
-  className,
-  avatars,
-  names,
-  size = 'md',
-}: IAuthorsVariantsProps) {
+function StackedAvatars({ className, avatars, names, size = 'md' }: IAuthorsVariantsProps) {
   if (avatars.length === 0) {
     return null;
   }

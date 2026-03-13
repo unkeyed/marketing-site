@@ -32,13 +32,7 @@ function GlossaryPost({ className, glossaryTerm }: IGlossaryPostProps) {
           <div className="not-prose mb-5 flex w-full flex-col gap-4 border border-gray-20 p-5">
             <div className="flex items-start gap-4">
               <div className="flex size-9 items-center justify-center border border-gray-30">
-                <Image
-                  src="/icons/glossary/tldr.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                  aria-hidden
-                />
+                <Image src="/icons/glossary/tldr.svg" alt="" width={20} height={20} aria-hidden />
               </div>
               <p className="pt-1 text-xl leading-snug font-medium tracking-tight text-foreground">
                 TL;DR

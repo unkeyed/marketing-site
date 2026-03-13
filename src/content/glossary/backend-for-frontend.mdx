@@ -1,7 +1,7 @@
 ---
-title: "Backend For Frontend: Comprehensive Guide"
+title: 'Backend For Frontend: Comprehensive Guide'
 description: Unlock Backend For Frontend (BFF) potential. Learn essentials, key takeaways from real-world implementations. Explore BFF vs API Gateway.
-h1: "Backend For Frontend: Advantages & Challenges"
+h1: 'Backend For Frontend: Advantages & Challenges'
 term: Backend For Frontend
 categories: []
 takeaways:
@@ -28,7 +28,7 @@ takeaways:
     - url: https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends
       title: Backends for Frontends
     - url: https://medium.com/mobilepeople/backend-for-frontend-pattern-why-you-need-to-know-it-46f94ce420b0
-      title: "Backend for Frontend pattern: Why you need to know it"
+      title: 'Backend for Frontend pattern: Why you need to know it'
     - url: https://www.geeksforgeeks.org/system-design/backend-for-frontend-pattern/
       title: Backend for Frontend (BFF) Pattern
     - url: https://samnewman.io/patterns/architectural/bff/
@@ -70,18 +70,19 @@ The **Backend For Frontend (BFF)** pattern serves as a server-side component tha
 ## Challenges in Implementing BFF Architecture
 
 Implementing a **Backend For Frontend architecture** can introduce complexity in several areas:
+
 - **Increased Development Effort**: Maintaining separate BFFs for different types of clients can increase development and testing efforts.
 - **Operational Overhead**: Each BFF instance may require separate deployment, monitoring, and scaling, adding to operational costs.
 - **Consistency**: Ensuring consistent functionality across multiple BFFs can be challenging, especially when business logic changes.
 
 ## Comparing BFF with API Gateway and Aggregator Patterns
 
-| Feature               | BFF Pattern                          | API Gateway                        | Aggregator Pattern                 |
-|-----------------------|--------------------------------------|------------------------------------|------------------------------------|
-| Primary Focus         | Client-specific optimization         | Unified entry point for services   | Aggregate data from multiple services |
-| Client Customization  | High (individual per client type)    | Low (common for all clients)       | Medium (based on service needs)    |
-| Complexity            | High (due to multiple BFFs)          | Medium (centralized management)    | High (complex data handling)       |
-| Use Case              | Client-specific features and performance | General API management and routing | Composite data from multiple sources |
+| Feature              | BFF Pattern                              | API Gateway                        | Aggregator Pattern                    |
+| -------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------- |
+| Primary Focus        | Client-specific optimization             | Unified entry point for services   | Aggregate data from multiple services |
+| Client Customization | High (individual per client type)        | Low (common for all clients)       | Medium (based on service needs)       |
+| Complexity           | High (due to multiple BFFs)              | Medium (centralized management)    | High (complex data handling)          |
+| Use Case             | Client-specific features and performance | General API management and routing | Composite data from multiple sources  |
 
 ## Real-World Examples of BFF Implementations
 

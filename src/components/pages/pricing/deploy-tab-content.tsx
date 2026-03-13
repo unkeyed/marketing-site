@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
+import enterpriseBackgroundImage from '@/assets/images/pricing/enterprise-bg.jpg';
 import { deployPricingPlans, enterpriseData, tableFeatures } from '@/constants/pricing';
 import { Check } from 'lucide-react';
 
-import enterpriseBackgroundImage from '@/assets/images/pricing/enterprise-bg.jpg';
 import { Button } from '@/components/ui/button';
 
 import ComparisonTable from './comparison-table';

@@ -19,7 +19,9 @@ export const metadata = getMetadata({
 const contentData = {
   title: (
     <>
-      {'A practical '}<mark>API glossary</mark>{'\r\nfor everyday development'}
+      {'A practical '}
+      <mark>API glossary</mark>
+      {'\r\nfor everyday development'}
     </>
   ),
   description: 'Definitions and examples for the concepts\r\nthat show up in everyday API work.',

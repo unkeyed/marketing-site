@@ -10,8 +10,8 @@ import {
 } from 'react';
 import Image from 'next/image';
 
-import { type IAuthorData, type IBlockquote, type ISlug, type TTableTheme } from '@/types/common';
 import type { ICategory } from '@/types/blog';
+import { type IAuthorData, type IBlockquote, type ISlug, type TTableTheme } from '@/types/common';
 import {
   type IContentRelatedPosts,
   type IContentVideo,
@@ -295,15 +295,8 @@ export const getComponents = (options: IGetComponentsOptions) => {
     RelatedPostCard: ({ slug, ...props }: { slug: string } & IRelatedPostCard) => {
       const post = relatedPosts.find((post) => post.slug.current === slug);
       if (!post) return null;
-      const categoryTitle =
-        post.categories?.[0]?.title ?? post.category?.title ?? undefined;
-      return (
-        <RelatedPostCard
-          {...post}
-          {...props}
-          categoryTitle={categoryTitle}
-        />
-      );
+      const categoryTitle = post.categories?.[0]?.title ?? post.category?.title ?? undefined;
+      return <RelatedPostCard {...post} {...props} categoryTitle={categoryTitle} />;
     },
     RelatedLinkCard,
     Accordion,

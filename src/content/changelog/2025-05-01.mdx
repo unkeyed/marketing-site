@@ -1,12 +1,17 @@
 ---
 title: April Product Update
 date: 2025-04-30
-tags: ["product:blue"]
+tags: ['product:blue']
 ---
 
 ## Create Key Wizard
 
-<Picture src="/images/changelog/2025-05-01/create-key-clean.png" alt="Key Creation Wizard" width="1920" height="1080" />
+<Picture
+  src="/images/changelog/2025-05-01/create-key-clean.png"
+  alt="Key Creation Wizard"
+  width="1920"
+  height="1080"
+/>
 
 Our Create Key wizard just got better! Enjoy these new and improved features:
 
@@ -27,8 +32,12 @@ Our Create Key wizard just got better! Enjoy these new and improved features:
 Our new API Settings screen is designed for intuitive control over your API configurations.
 Adjust default bytes, prefixes, and manage security settings seamlessly.
 
-<Picture src="/images/changelog/2025-05-01/api-settings.jpeg" alt="API Settings" width="1920" height="1080" />
-
+<Picture
+  src="/images/changelog/2025-05-01/api-settings.jpeg"
+  alt="API Settings"
+  width="1920"
+  height="1080"
+/>
 
 ## Roles Returned as Part of `verifyKey`
 
@@ -38,11 +47,16 @@ The `/v1/keys.verifyKey` endpoint has been updated to include a list of roles as
 
 We have introduced proper seeding for log pages and metrics, enhancing the ability to generate realistic test data and improving the development and testing experience. You can easily seed a workspace by running `pnpm local` and selecting `Seed Clickhouse/DB`. Our CLI will then ask a series of questions about what you would like to seed and how much test data you want.
 
-<Picture src="/images/changelog/2025-05-01/seed-data.png" alt="Seed example" width="1920" height="1080" />
+<Picture
+  src="/images/changelog/2025-05-01/seed-data.png"
+  alt="Seed example"
+  width="1920"
+  height="1080"
+/>
 
 ## Other PRs
 
-###  Bug Fixes
+### Bug Fixes
 
 - [#3189](https://github.com/unkeyed/unkey/pull/3189): Tooltip now shows the correct time interval
 - [#3115](https://github.com/unkeyed/unkey/pull/3115): Improve keyboard combinations

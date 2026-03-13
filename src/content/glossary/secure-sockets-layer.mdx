@@ -1,7 +1,7 @@
 ---
-title: "SSL for APIs: Security Best Practices Guide"
+title: 'SSL for APIs: Security Best Practices Guide'
 description: Unlock API security with SSL. Learn essentials of SSL architecture and certificate implementation. Dive into SSL vs TLS. Start mastering.
-h1: "Secure Sockets Layer: API Security Essentials"
+h1: 'Secure Sockets Layer: API Security Essentials'
 term: Secure Sockets Layer
 categories: []
 takeaways:
@@ -19,7 +19,7 @@ takeaways:
     - Ensure proper certificate management to avoid potential security risks.
   historicalContext:
     - key: Introduced
-      value: "1995"
+      value: '1995'
     - key: Origin
       value: Web Security (Secure Sockets Layer)
     - key: Evolution
@@ -28,7 +28,7 @@ takeaways:
     - url: https://www.digicert.com/blog/ssl-information-center/what-is-an-ssl-certificate/
       title: Understanding SSL, TLS, and HTTPS
     - url: https://www.cloudflare.com/learning/ssl/ssl-vs-tls/
-      title: "SSL vs. TLS: What’s the Difference?"
+      title: 'SSL vs. TLS: What’s the Difference?'
     - url: https://www.pcisecuritystandards.org/pdfs/PCI_SSC_Transitioning_from_SSL_Early_TLS_Information%20Supplement_v1.pdf
       title: Transitioning from SSL and Early TLS
   definitionAndStructure:
@@ -83,15 +83,16 @@ To enhance **API security** with SSL, developers must obtain and install an **SS
 3. **Configure your API server to use HTTPS** by default and redirect all HTTP requests to HTTPS.
 
 ```typescript
-import express from 'express';
-import https from 'https';
 import fs from 'fs';
+import https from 'https';
+
+import express from 'express';
 
 const app = express();
 
 const httpsOptions = {
   key: fs.readFileSync('./path/to/private.key'),
-  cert: fs.readFileSync('./path/to/certificate.crt')
+  cert: fs.readFileSync('./path/to/certificate.crt'),
 };
 
 https.createServer(httpsOptions, app).listen(443, () => {

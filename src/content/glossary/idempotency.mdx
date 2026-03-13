@@ -1,7 +1,7 @@
 ---
-title: "Idempotency in APIs: Comprehensive Guide"
+title: 'Idempotency in APIs: Comprehensive Guide'
 description: Understand idempotency in API development. Learn key characteristics, real-world applications, and why PUT is idempotent while POST is not. Dive in now.
-h1: "Idempotency in API Development: Key Characteristics & Implementation"
+h1: 'Idempotency in API Development: Key Characteristics & Implementation'
 term: Idempotency
 categories: []
 takeaways:
@@ -85,7 +85,6 @@ const deleteData = async (url: string) => {
     console.error('Failed to delete data:', error);
   }
 };
-
 ```
 
 ## Why PUT is Idempotent and POST is Not
@@ -111,7 +110,6 @@ const checkForKeyAndProcess = (key: string, data: any) => {
   // Logic to check the key and process data
   return { status: 'Processed', data: data };
 };
-
 ```
 
 ## Real-World Applications of Idempotency

@@ -2,7 +2,7 @@
 title: New onboarding experience
 date: 2023-08-25
 description: We released a new onboarding experience, improved error messages and fixed bugs!
-tags: ["community:red", "operations:orange"]
+tags: ['community:red', 'operations:orange']
 ---
 
 ## A brand new onboarding experience
@@ -48,9 +48,9 @@ Our typescript package `@unkey/api` got two upgrades this week, to make it even 
 You can now verify a key and make business decisions in just a few lines of code. Below is an example:
 
 ```tsx
-import { verifyKey } from "@unkey/api";
+import { verifyKey } from '@unkey/api';
 
-const { result, error } = await verifyKey("key_123");
+const { result, error } = await verifyKey('key_123');
 
 if (error) {
   console.error(error.message);
@@ -71,10 +71,10 @@ console.log(result);
 Our SDK will now automatically retry 5 times with a backoff to smooth over network issues, you can of course override the retry and backoff. Below is an example of 10 retries with a backoff
 
 ```tsx
-import { Unkey } from "@unkey/api";
+import { Unkey } from '@unkey/api';
 
 const unkey = new Unkey({
-  token: "<UNKEY_TOKEN>",
+  token: '<UNKEY_TOKEN>',
   retry: {
     attempts: 10,
     backoff: (previousAttempts) => previousAttempts * 1000, // 0s, 1s, 2s, 3s etc

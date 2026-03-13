@@ -38,7 +38,10 @@ export default function TableDivider({
           )}
 
           {category.features.map((feature) => (
-            <div className="border-b border-gray-12 py-3 last:border-b-0" key={`divider-${feature.name}`} />
+            <div
+              className="border-b border-gray-12 py-3 last:border-b-0"
+              key={`divider-${feature.name}`}
+            />
           ))}
         </Fragment>
       ))}

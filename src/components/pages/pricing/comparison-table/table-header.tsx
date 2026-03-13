@@ -42,7 +42,7 @@ const TableHeader = memo(function TableHeader({
     >
       {isFeatured && (
         <div
-          className="absolute inset-y-0 top-3 left-0 right-0 hidden rounded-t-none border border-b-0 border-gray-8 bg-gray-5 lg:block lg:-left-4 lg:right-3 xl:-left-4 xl:right-6"
+          className="absolute inset-y-0 top-3 right-0 left-0 hidden rounded-t-none border border-b-0 border-gray-8 bg-gray-5 lg:right-3 lg:-left-4 lg:block xl:right-6 xl:-left-4"
           aria-hidden
         />
       )}
@@ -62,7 +62,7 @@ const TableHeader = memo(function TableHeader({
         <div className="mt-1 mb-3 lg:mt-0 xl:mt-1">
           {priceType === 'number' ? (
             <PriceNumber
-              className="lg:text-[13px] xl:text-base part-[left]:text-muted-foreground part-[number]:text-muted-foreground part-[suffix]:text-muted-foreground part-[left]:lg:text-[13px] part-[number]:lg:text-[13px] part-[suffix]:lg:text-[13px] part-[left]:xl:text-base part-[number]:xl:text-base part-[suffix]:xl:text-base"
+              className="lg:text-[13px] xl:text-base part-[left]:text-muted-foreground part-[left]:lg:text-[13px] part-[left]:xl:text-base part-[number]:text-muted-foreground part-[number]:lg:text-[13px] part-[number]:xl:text-base part-[suffix]:text-muted-foreground part-[suffix]:lg:text-[13px] part-[suffix]:xl:text-base"
               value={price}
               currency={plan?.currency}
               suffix={`/month`}

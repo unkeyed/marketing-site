@@ -1,7 +1,7 @@
 ---
-title: "Zero-Downtime API Deployment: Strategies & Guide"
+title: 'Zero-Downtime API Deployment: Strategies & Guide'
 description: Achieve seamless API updates with zero-downtime deployment. Learn key strategies and best practices. Explore Kubernetes, AWS, and Docker deployments. Dive in!
-h1: "Zero-Downtime API Deployment: Strategies & Best Practices"
+h1: 'Zero-Downtime API Deployment: Strategies & Best Practices'
 term: Zero-Downtime API Deployment
 categories: []
 takeaways:
@@ -26,7 +26,7 @@ takeaways:
       value: Standardized Zero-Downtime API Deployment
   recommendedReading:
     - url: https://medium.com/encora-technology-practices/zero-downtime-deployment-techniques-rolling-update-159564793b2c
-      title: "Zero Downtime Deployment Techniques: Rolling Update"
+      title: 'Zero Downtime Deployment Techniques: Rolling Update'
     - url: https://www.informatica.com/resources/articles/zero-downtime-deployment-strategies.html
       title: Zero Downtime Deployment Strategies
     - url: https://www.statsig.com/perspectives/how-to-achieve-a-zero-downtime-deployment
@@ -62,7 +62,6 @@ slug: zero-downtime-api-deployment
 ## Effective Strategies for Zero-Downtime Deployment
 
 1. **Blue-Green Deployment**: This strategy involves deploying the new version of the API alongside the old version. After thorough testing, traffic is routed to the new version, ensuring a smooth transition without downtime.
-   
 2. **Canary Releases**: Gradually rolling out changes to a small subset of users before a full rollout allows developers to monitor the impact and address any issues early on. This is a key aspect of **canary deployment**.
 
 3. **Rolling Updates**: By updating instances incrementally rather than all at once, this strategy minimizes the risk of downtime and ensures that the API remains available throughout the deployment process.
@@ -70,22 +69,24 @@ slug: zero-downtime-api-deployment
 ## Challenges and Best Practices for Zero-Downtime Deployments
 
 ### Challenges:
+
 - **Data Consistency**: Ensuring data consistency across different API versions can be complex.
 - **Managing Dependencies**: Complex dependencies can complicate the deployment process.
 - **Monitoring and Reverting**: Quickly monitoring performance and reverting changes in case of issues is critical.
 
 ### Best Practices:
+
 - **Automate the Deployment Process**: Automation reduces human errors and enhances efficiency.
 - **Feature Toggles**: Use feature toggles to enable or disable features without deploying new code, facilitating **zero downtime deployment with database changes**.
 - **Continuous Monitoring**: Monitor performance during and after deployment to ensure a seamless experience.
 
 ## Tools for Achieving Zero-Downtime Deployment
 
-| Tool          | Description                                           |
-|---------------|-------------------------------------------------------|
-| **Kubernetes**    | Supports rolling updates and can manage containerized applications, making it ideal for **zero downtime deployment Kubernetes**. |
-| **Jenkins**       | Automates parts of the deployment process, streamlining workflows.            |
-| **Terraform**     | Manages infrastructure as code, aiding in consistent deployments, especially in **zero downtime deployment AWS** environments. |
+| Tool           | Description                                                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Kubernetes** | Supports rolling updates and can manage containerized applications, making it ideal for **zero downtime deployment Kubernetes**. |
+| **Jenkins**    | Automates parts of the deployment process, streamlining workflows.                                                               |
+| **Terraform**  | Manages infrastructure as code, aiding in consistent deployments, especially in **zero downtime deployment AWS** environments.   |
 
 ## Case Studies of Zero-Downtime API Deployment
 

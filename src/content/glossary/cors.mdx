@@ -1,7 +1,7 @@
 ---
-title: "CORS in APIs: Comprehensive Guide"
+title: 'CORS in APIs: Comprehensive Guide'
 description: Unlock the power of CORS in API development. Learn essentials and key takeaways from expert examples. Dive into CORS API Gateway. Start now.
-h1: "Understanding CORS: API Development Essentials"
+h1: 'Understanding CORS: API Development Essentials'
 term: CORS
 categories: []
 takeaways:
@@ -19,7 +19,7 @@ takeaways:
     - Understand and correctly implement the Access-Control-Allow-Origin header and related headers to manage CORS effectively.
   historicalContext:
     - key: Introduced
-      value: "2014"
+      value: '2014'
     - key: Origin
       value: Web Security (CORS)
     - key: Evolution
@@ -58,6 +58,7 @@ CORS is a browser mechanism that relaxes the same-origin policy, governing how w
 ## Understanding CORS in API Development
 
 CORS is crucial in **API development** because it enables controlled cross-origin requests and data sharing between web applications and servers. Modern web applications often retrieve data from various sources that may not share the same origin. CORS allows server administrators to define who can access their resources and under what conditions, effectively preventing malicious interactions between sites.
+
 ## How CORS Works: The Mechanism Explained
 
 CORS operates through HTTP headers. When a browser initiates a cross-origin request, it sends an HTTP request to the target server with an `Origin` header. The server can then decide whether to allow or deny the request based on the specified origin. If permitted, the server responds with the `Access-Control-Allow-Origin` header, allowing the browser to grant access to the web application. If this header is absent or the origin is not allowed, the browser blocks access.
@@ -71,14 +72,14 @@ To **enable CORS in a web API**, follow these steps:
 2. **Configure HTTP Methods**: Specify which HTTP methods (GET, POST, etc.) are supported for CORS requests using the `Access-Control-Allow-Methods` header.
 
 > ⚠️ **Security Warning**: Never use `Access-Control-Allow-Origin: *` with credentials.
-This combination is forbidden by the CORS specification and can expose your API to attacks.
+> This combination is forbidden by the CORS specification and can expose your API to attacks.
 
 3. **Handle Preflight Requests**: For "non-simple" requests (those with custom headers,
    methods other than GET/POST/HEAD, or content-types other than application/x-www-form-urlencoded,
    multipart/form-data, or text/plain), browsers send a preflight request using the OPTIONS method.
 
 ```typescript
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const allowCors = (req: Request, res: Response, next: NextFunction) => {
   const allowedOrigins = ['https://example.com', 'https://app.example.com'];
@@ -109,9 +110,9 @@ const fetchData = async () => {
   const response = await fetch('https://api.example.com/data', {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    mode: 'cors' // Ensures requests are made with CORS
+    mode: 'cors', // Ensures requests are made with CORS
   });
   const data = await response.json();
   console.log(data);

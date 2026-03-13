@@ -125,9 +125,7 @@ function getPostDataBySlug(slug: string): IPostData | null {
             ? normalizedImage
             : normalizedImage
               ? toAbsoluteSiteUrl(normalizedImage)
-              : toAbsoluteSiteUrl(
-                  `/api/og?template=blog&title=${encodeURIComponent(title)}`,
-                ),
+              : toAbsoluteSiteUrl(`/api/og?template=blog&title=${encodeURIComponent(title)}`),
         noIndex: Boolean(isDraft),
       },
     };
