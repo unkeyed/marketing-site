@@ -45,8 +45,9 @@ export default function Hero({
 
         {/*  
           Video optimization parameters:
-            mp4: ffmpeg -i input.mov -c:v libx265 -preset veryslow -crf 34 -tune animation -vf "scale=2560:-2:flags=lanczos,format=yuv420p10le" -x265-params "aq-mode=3:aq-strength=0.8:psy-rd=2.0:psy-rdoq=1.0:deblock=-1,-1:no-sao=1" -tag:v hvc1 -movflags +faststart -an hero.mp4
-            webm: ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 1 -an -f null /dev/null && ffmpeg -i input.mov -c:v libsvtav1 -pix_fmt yuv420p10le -b:v 1620k -vf scale=2560:-2 -svtav1-params preset=1:lookahead=120:keyint=80 -pass 2 -an -y hero.webm
+            mp4 av1: ffmpeg -i hero.mov -c:v libaom-av1 -crf 30 -b:v 0 -pix_fmt yuv420p10le -vf scale=2560:-2 -cpu-used 0 -tiles 4x2 -row-mt 1 -threads 16 -tag:v av01 -movflags faststart -an hero-av1.mp4
+            mp4: ffmpeg -i hero.mov -c:v libx265 -crf 30 -pix_fmt yuv420p10le -vf scale=2560:-2 -preset slow -tag:v hvc1 -movflags faststart -an hero.mp4
+            webm: ffmpeg -i hero.mov -c:v libvpx-vp9 -pix_fmt yuv420p10le -crf 35 -vf scale=2880:-2 -deadline best -an hero.webm
         */}
         <BackgroundVideo
           poster={poster.src}

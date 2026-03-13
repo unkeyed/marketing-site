@@ -35,6 +35,7 @@ export const homeContentData = {
     secondaryCta: { label: 'View on GitHub', href: GITHUB_URL },
     poster: { src: heroPosterImage.src, width: 1533, height: 908 },
     videos: [
+      { src: '/videos/home/hero-av1.mp4', type: 'video/mp4; codecs=av01' },
       { src: '/videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
       { src: '/videos/home/hero.webm', type: 'video/webm' },
     ],
