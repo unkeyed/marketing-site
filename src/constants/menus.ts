@@ -14,12 +14,14 @@ export const MENUS = {
           description: 'Read product updates and insights',
           icon: '/icons/header/blog.svg',
         },
+        /*
         {
           label: 'Case studies',
           href: '/case-studies',
           description: 'Practical results from real deployments',
           icon: '/icons/header/case-studies.svg',
         },
+        */
         {
           label: 'Changelog',
           href: '/changelog',
@@ -64,7 +66,7 @@ export const MENUS = {
           { label: 'Templates', href: '/templates' },
           { label: 'Docs', href: DOCS_URL },
           { label: 'Glossary', href: '/glossary' },
-          { label: 'Case Studies', href: '/case-studies' },
+          // { label: 'Case Studies', href: '/case-studies' },
         ],
       },
       {
