@@ -3,8 +3,9 @@ import type { ReactNode } from 'react';
 import '@/styles/globals.css';
 
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { CookieBannerProvider } from '@/contexts/cookie-banner-context';
+import { ConsentManagerProvider } from '@c15t/nextjs';
 
+import { ConsentBanner } from '@/components/cookie-banner/consent-banner';
 import { Tracking } from '@/components/tracking';
 
 const inter = Inter({
@@ -42,10 +43,20 @@ export default function RootLayout({
       <body
         className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <CookieBannerProvider>
+        <ConsentManagerProvider
+          options={{
+            ...(process.env.NEXT_PUBLIC_C15T_MODE
+              ? { mode: 'c15t', backendURL: '/api/c15t' }
+              : { mode: 'offline' }),
+            react: {
+              colorScheme: 'dark',
+            },
+          }}
+        >
           {children}
           <Tracking />
-        </CookieBannerProvider>
+          <ConsentBanner />
+        </ConsentManagerProvider>
       </body>
     </html>
   );

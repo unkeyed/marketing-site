@@ -76,7 +76,18 @@ const nextConfig: NextConfig = {
           destination: LEGACY_NEXT_STATIC_DESTINATION,
         },
       ],
-      afterFiles: [...LEGACY_PUBLIC_ASSET_REWRITES, ...LEGACY_ROUTE_REWRITES],
+      afterFiles: [
+        ...LEGACY_PUBLIC_ASSET_REWRITES,
+        ...LEGACY_ROUTE_REWRITES,
+        ...(process.env.NEXT_PUBLIC_C15T_URL
+          ? [
+              {
+                source: '/api/c15t/:path*',
+                destination: `${process.env.NEXT_PUBLIC_C15T_URL}/:path*`,
+              },
+            ]
+          : []),
+      ],
     };
   },
 };

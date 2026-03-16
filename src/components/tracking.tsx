@@ -1,19 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useConsentManager } from '@c15t/nextjs';
 import { Analytics } from '@vercel/analytics/next';
-
-import { isAnalyticsEnabledByEnv, useHasAnalyticsConsent } from '@/hooks/use-tracking';
 
 export function Tracking() {
   const [isMounted, setIsMounted] = useState(false);
-  const hasConsentForMeasurement = useHasAnalyticsConsent();
+  const { hasConsentFor } = useConsentManager();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted || !isAnalyticsEnabledByEnv || !hasConsentForMeasurement) {
+  if (!isMounted || !hasConsentFor('measurement')) {
     return null;
   }
 
