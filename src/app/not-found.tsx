@@ -1,8 +1,8 @@
 import { MENUS } from '@/constants/menus';
 
-import { Link } from '@/components/ui/link';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import { Link } from '@/components/ui/link';
 
 export default function NotFound() {
   return (
