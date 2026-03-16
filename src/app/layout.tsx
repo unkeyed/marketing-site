@@ -48,6 +48,12 @@ export default function RootLayout({
             ...(process.env.NEXT_PUBLIC_C15T_MODE
               ? { mode: 'c15t', backendURL: '/api/c15t' }
               : { mode: 'offline' }),
+            trackingBlockerConfig: {
+              domainConsentMap: {
+                'unpkg.com': 'necessary',
+                'cdn.jsdelivr.net': 'necessary',
+              },
+            },
             react: {
               colorScheme: 'dark',
             },
