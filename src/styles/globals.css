@@ -168,12 +168,12 @@
 
 @utility font-display {
   font-family: articulat-cf, articulat-cf-fallback, sans-serif;
-  font-feature-settings: 'ss01' 1;
+  font-feature-settings: 'ss02' 1;
 }
 
 @utility font-display-secondary {
-  font-family: articulat-cf, sans-serif;
-  font-feature-settings: 'ss02' 1;
+  font-family: articulat-cf, articulat-cf-fallback, sans-serif;
+  font-feature-settings: 'ss01' 1;
 }
 
 @utility font-label {
