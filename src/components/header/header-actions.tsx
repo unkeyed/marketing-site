@@ -48,7 +48,7 @@ export default function HeaderActions() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icons.github className="text-background" size={18} aria-hidden="true" />
+          <Icons.github className="!size-4.5 text-background" size={18} aria-hidden="true" />
           <span className="sr-only">{githubLink.label}</span>
           <span>{githubLink.metric}</span>
         </Link>
