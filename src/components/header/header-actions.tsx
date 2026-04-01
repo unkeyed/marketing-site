@@ -43,12 +43,12 @@ export default function HeaderActions() {
         <Link
           href={githubLink.href}
           size="small"
-          className="gap-1"
+          className="gap-1 [&_svg]:size-4.5"
           aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icons.github className="!size-4.5 text-background" size={18} aria-hidden="true" />
+          <Icons.github className="text-background" size={18} aria-hidden="true" />
           <span className="sr-only">{githubLink.label}</span>
           <span>{githubLink.metric}</span>
         </Link>
