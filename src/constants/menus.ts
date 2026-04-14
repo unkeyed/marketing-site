@@ -73,7 +73,7 @@ export const MENUS = {
         title: 'Connect',
         items: [
           { label: 'X (Twitter)', href: 'https://x.com/unkeydev' },
-          { label: 'Discord', href: 'https://unkey.dev/discord' },
+          { label: 'Discord', href: 'https://unkey.com/discord' },
           { label: 'OSS Friends', href: '/oss-friends' },
           { label: 'Book a Call', href: BOOK_A_CALL_URL },
         ],
@@ -98,7 +98,7 @@ export const MENUS = {
         icon: 'github',
       },
       {
-        href: 'https://unkey.dev/discord',
+        href: 'https://unkey.com/discord',
         label: 'Join our Discord',
         icon: 'discord',
       },

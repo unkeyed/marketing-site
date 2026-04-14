@@ -17,7 +17,7 @@ import { Alignment, Fit } from '@rive-app/react-canvas';
 
 export const homeHeaderLinks = {
   social: [
-    { id: 'discord', label: 'Discord', href: 'https://unkey.dev/discord' },
+    { id: 'discord', label: 'Discord', href: 'https://unkey.com/discord' },
     { id: 'github', label: 'GitHub', href: GITHUB_URL, metric: '5.1k' },
   ],
   auth: [
