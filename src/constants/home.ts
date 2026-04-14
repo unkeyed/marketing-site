@@ -11,7 +11,7 @@ import observeDashImage from '@/assets/images/home/observe/dash.png';
 import portalDocsImage from '@/assets/images/home/portal/docs.png';
 import portalKeysImage from '@/assets/images/home/portal/keys.png';
 import portalZeroImage from '@/assets/images/home/portal/zero.png';
-import { APP_URL, DOCS_URL, GITHUB_URL, SIGN_UP_URL } from '@/configs/website-config';
+import { APP_URL, GITHUB_URL, SIGN_UP_URL } from '@/configs/website-config';
 import { buildDeployTechnologyLogos, homePortfolioLogos } from '@/constants/logos';
 import { Alignment, Fit } from '@rive-app/react-canvas';
 
@@ -249,7 +249,7 @@ export const homeContentData = {
     description:
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
     buttonLabel: 'Read the docs',
-    buttonHref: DOCS_URL,
+    buttonHref: '/docs/build-and-deploy/regions',
     riveDefaults: {
       src: '/rive/home/scale/icons.riv',
       fit: Fit.Cover,
@@ -295,7 +295,7 @@ export const homeContentData = {
     },
     mobileImage: observeDashImage.src,
     buttonLabel: 'Read the docs',
-    buttonHref: DOCS_URL,
+    buttonHref: '/docs/observability/overview',
     columns: [
       {
         lead: 'Automatic logs and metrics collection.',

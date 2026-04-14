@@ -1,4 +1,4 @@
-import { BOOK_A_CALL_URL, DOCS_URL, GITHUB_URL } from '@/configs/website-config';
+import { BOOK_A_CALL_URL, GITHUB_URL } from '@/configs/website-config';
 
 import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
 
@@ -43,7 +43,7 @@ export const MENUS = {
       ],
     },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Docs', href: DOCS_URL },
+    { label: 'Docs', href: '/docs/introduction' },
   ],
   footer: {
     description: 'Build better APIs faster',
@@ -64,7 +64,7 @@ export const MENUS = {
           { label: 'Blog', href: '/blog' },
           { label: 'Changelog', href: '/changelog' },
           { label: 'Templates', href: '/templates' },
-          { label: 'Docs', href: DOCS_URL },
+          { label: 'Docs', href: '/docs/introduction' },
           { label: 'Glossary', href: '/glossary' },
           // { label: 'Case Studies', href: '/case-studies' },
         ],
