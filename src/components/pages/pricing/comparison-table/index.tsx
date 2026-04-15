@@ -77,10 +77,7 @@ function ComparisonTable({ className, plans, featureCategories }: ComparisonTabl
 
   return (
     <LazyMotion features={domAnimation}>
-      <section
-        className={cn('comparison-table pt-20 md:pt-36 lg:pt-48', className)}
-        style={{ ['--sticky-header-height']: '0rem' } as React.CSSProperties}
-      >
+      <section className={cn('comparison-table pt-20 md:pt-36 lg:pt-48', className)}>
         <div className={cn('mx-auto w-full')}>
           <h2 className="sr-only">Feature Comparison</h2>
           <div

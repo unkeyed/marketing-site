@@ -17,7 +17,7 @@ function Footer() {
     <footer className="relative w-full pt-8 pb-10 md:pt-10 lg:pt-11 lg:pb-18">
       <div className="container flex flex-col gap-y-10 sm:flex-row sm:items-start sm:gap-x-27.5 lg:gap-x-20 xl:justify-start xl:gap-x-40 2xl:gap-x-91">
         <div className="flex max-w-72 flex-col gap-y-10 lg:shrink-0">
-          <NextLink className="inline-flex" href={logoHref}>
+          <NextLink className="inline-flex w-fit self-start" href={logoHref}>
             <Image
               className="block h-auto w-20.75"
               src={logoSrc}

@@ -30,7 +30,7 @@ const FeaturesColumn = memo(function FeaturesColumn({
     >
       <div
         className={cn(
-          'sticky top-(--sticky-header-height) z-30 flex flex-col justify-end bg-background pb-6 md:pb-5 lg:top-[calc(var(--sticky-header-height)+3rem)]',
+          'sticky top-(--sticky-header-height) z-30 flex flex-col justify-end bg-background pb-6 md:pb-5 lg:top-12',
           'before:absolute before:-top-4 before:left-0 before:z-10 before:h-4 before:w-full before:bg-background lg:before:-top-12 lg:before:h-12',
         )}
       >

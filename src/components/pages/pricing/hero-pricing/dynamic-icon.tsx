@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import {
   AlertCircle,
+  Check,
   Database,
   FolderOpen,
   Loader,
@@ -28,6 +29,7 @@ import dynamicIconImports from 'lucide-react/dynamicIconImports';
 
 const staticIcons = {
   'alert-circle': AlertCircle,
+  check: Check,
   rocket: Rocket,
   sparkles: Sparkles,
   star: Star,
