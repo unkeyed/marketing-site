@@ -3,11 +3,12 @@ import { notFound } from 'next/navigation';
 import config from '@/configs/website-config';
 import { ArrowLeft } from 'lucide-react';
 
-import { getAllChangelogPosts, getChangelogPostBySlug } from '@/lib/changelog/posts';
 import { getMetadata } from '@/lib/get-metadata';
 import { Link } from '@/components/ui/link';
 import Content from '@/components/pages/content';
 import Date from '@/components/pages/date';
+
+import { getAllChangelogEntries, getChangelogEntryBySlug } from '../data';
 
 const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 
@@ -19,7 +20,7 @@ interface ChangelogPostPageProps {
 
 export async function generateMetadata({ params }: ChangelogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getChangelogPostBySlug(slug);
+  const post = await getChangelogEntryBySlug(slug);
 
   if (!post || (isProduction && post.isDraft)) {
     return {};
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: ChangelogPostPageProps): Prom
 }
 
 export async function generateStaticParams() {
-  const posts = await getAllChangelogPosts();
+  const posts = await getAllChangelogEntries();
 
   return posts.map((post) => ({
     slug: post.slug,
@@ -45,7 +46,7 @@ export async function generateStaticParams() {
 
 export default async function ChangelogPostPage({ params }: ChangelogPostPageProps) {
   const { slug } = await params;
-  const post = await getChangelogPostBySlug(slug);
+  const post = await getChangelogEntryBySlug(slug);
 
   if (!post || (isProduction && post.isDraft)) {
     notFound();
