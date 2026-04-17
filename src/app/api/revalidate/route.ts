@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    revalidateTag('changelogs');
+    revalidateTag('changelogs', 'max');
     return NextResponse.json({ revalidated: true });
   } catch (err) {
     return NextResponse.json(
