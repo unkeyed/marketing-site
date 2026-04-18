@@ -1,12 +1,5 @@
 import type { NextConfig } from 'next';
 
-import {
-  LEGACY_NEXT_STATIC_DESTINATION,
-  LEGACY_PUBLIC_ASSET_REWRITES,
-  LEGACY_REFERER_PATTERN,
-  LEGACY_ROUTE_REWRITES,
-} from './src/constants/legacy-rewrites';
-
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
@@ -63,22 +56,16 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [
-        {
-          source: '/_next/static/:path*',
-          has: [
-            {
-              type: 'header',
-              key: 'referer',
-              value: LEGACY_REFERER_PATTERN,
-            },
-          ],
-          destination: LEGACY_NEXT_STATIC_DESTINATION,
-        },
-      ],
+      beforeFiles: [],
       afterFiles: [
-        ...LEGACY_PUBLIC_ASSET_REWRITES,
-        ...LEGACY_ROUTE_REWRITES,
+        {
+          source: '/docs',
+          destination: 'https://unkey.mintlify.dev/docs',
+        },
+        {
+          source: '/docs/:match*',
+          destination: 'https://unkey.mintlify.dev/docs/:match*',
+        },
         ...(process.env.NEXT_PUBLIC_C15T_URL
           ? [
               {
