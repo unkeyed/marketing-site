@@ -1,11 +1,12 @@
 import { changelogDescription } from '@/constants/changelog';
 import { homeContentData } from '@/constants/home';
 
-import { getPaginatedChangelogPosts } from '@/lib/changelog/posts';
 import { getMetadata } from '@/lib/get-metadata';
 import ChangelogHero from '@/components/pages/changelog/hero--changelog';
 import PostsList from '@/components/pages/changelog/posts-list';
 import Cta from '@/components/pages/home/cta';
+
+import { getPaginatedChangelogEntries } from './data';
 
 export const metadata = getMetadata({
   title: 'Changelog | Unkey',
@@ -15,7 +16,7 @@ export const metadata = getMetadata({
 
 export default async function ChangelogPage() {
   const currentPage = 1;
-  const paginationData = await getPaginatedChangelogPosts(currentPage);
+  const paginationData = await getPaginatedChangelogEntries(currentPage);
 
   if (!paginationData || paginationData.posts.length === 0) {
     return (
