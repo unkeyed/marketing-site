@@ -1,5 +1,5 @@
 import { createElement, Fragment } from 'react';
-import { APP_URL, DOCS_URL, ENTERPRISE_CONTACT_URL } from '@/configs/website-config';
+import { APP_URL, ENTERPRISE_CONTACT_URL } from '@/configs/website-config';
 
 import { IPricingPlan, IPricingTableFeatures } from '@/types/pricing';
 
@@ -41,7 +41,7 @@ export const pricingContentData = {
     jumps. Scale gateway capacity when latency
     spikes. Available on every plan.`,
     actionText: 'Read the docs',
-    actionHref: DOCS_URL,
+    actionHref: '/docs/platform/workspaces/billing',
   },
   calculator: {
     title: 'Calculator',
