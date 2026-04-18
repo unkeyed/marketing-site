@@ -41,8 +41,6 @@ pnpm build
 
 ## Important notes
 
-- This repository still proxies `/docs`, `/templates`, `/careers`, and `/oss-friends` to
-  `LEGACY_SITE_ORIGIN`, so that environment variable must be set for local development and builds.
 - `NEXT_PUBLIC_DEFAULT_SITE_URL` is used for canonical URLs and sitemap generation.
 - Most content collections use MDX. If you are adding content, it is easiest to start by copying an
   existing file from the same folder in `src/content`.

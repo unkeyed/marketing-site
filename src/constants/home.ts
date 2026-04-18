@@ -318,8 +318,8 @@ export const homeContentData = {
   portal: {
     heading: 'First-class developer experience for your users.',
     subheading: 'API keys, usage, and docs—ready out of the box.',
-    buttonLabel: 'Try the Portal',
-    buttonHref: APP_URL,
+    buttonLabel: 'Coming soon',
+    buttonHref: '',
     cards: [
       {
         text: 'Zero code required. A fully hosted developer portal with nothing to build or maintain.',
