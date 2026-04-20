@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import config from '@/configs/website-config';
 import { homeContentData } from '@/constants/home';
 
 import { getMetadata } from '@/lib/get-metadata';
@@ -49,7 +48,7 @@ export async function generateMetadata({ params }: IGlossaryPostPageProps): Prom
   }
 
   return getMetadata({
-    title: `${glossaryTerm.seo.title} | ${config.projectName}`,
+    title: glossaryTerm.seo.title,
     description: glossaryTerm.seo.description,
     pathname: glossaryTerm.pathname,
     imagePath: glossaryTerm.seo.socialImage,

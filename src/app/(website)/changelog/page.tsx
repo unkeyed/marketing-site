@@ -9,7 +9,7 @@ import Cta from '@/components/pages/home/cta';
 import { getPaginatedChangelogEntries } from './data';
 
 export const metadata = getMetadata({
-  title: 'Changelog | Unkey',
+  title: 'Changelog',
   description: 'Read the latest changelog',
   pathname: '/changelog',
 });

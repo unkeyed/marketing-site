@@ -58,6 +58,15 @@ Single Next.js app (not a monorepo).
 - `src/constants/menus.ts` — navigation structure
 - `components.json` — shadcn/ui config
 
+### Page titles
+
+All titles flow through `getMetadata()` in `src/lib/get-metadata.ts`:
+
+- `title: 'Pricing'` → `Pricing | Unkey`
+- `tagline: '...'` (homepage / hero pages) → `Unkey | ...`
+
+Pass only the page fragment — don't concat ` | Unkey` yourself. Paginated pages reuse the index title.
+
 ## Code Conventions
 
 - **Formatting**: Prettier with 100 char width, single quotes, trailing commas, sorted imports (plugin order: builtins → react/next → third-party → workspace → types → config → lib → hooks → ui → components → styles → relative)

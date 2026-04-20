@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import config from '@/configs/website-config';
 
 import { getPaginatedPosts, getTotalPages } from '@/lib/blog/posts';
 import { getMetadata } from '@/lib/get-metadata';
@@ -61,12 +60,11 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
-  const { page: pageNumber } = await params;
-  const page = parseInt(pageNumber, 10);
+  const { page } = await params;
 
   return getMetadata({
-    title: `Blog${page > 1 ? ` - Page ${page}` : ''} | ${config.projectName}`,
-    description: `Read the latest articles, news, and reviews on our blog ${page > 1 ? `Page ${page}` : ''}`,
+    title: 'Blog',
+    description: 'Read the latest articles, news, and reviews on our blog',
     pathname: `/blog/page/${page}`,
   });
 }

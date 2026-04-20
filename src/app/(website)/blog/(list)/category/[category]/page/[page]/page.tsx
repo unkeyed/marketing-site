@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import config from '@/configs/website-config';
 
 import {
   getCategories,
@@ -74,8 +73,7 @@ export default async function CategoryPagePagination({ params }: CategoryPagePro
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const { category, page: pageNumber } = await params;
-  const page = parseInt(pageNumber, 10);
+  const { category, page } = await params;
   const categoryData = getCategoryBySlug(category);
 
   if (!categoryData) {
@@ -83,8 +81,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 
   return getMetadata({
-    title: `Blog: ${categoryData.title} - page ${page} | ${config.projectName}`,
-    description: `${categoryData.title} Read the latest articles, news, and reviews on our blog ${page > 1 ? `Page ${page}` : ''}`,
+    title: `Blog: ${categoryData.title}`,
+    description: `${categoryData.title} Read the latest articles, news, and reviews on our blog`,
     pathname: `/blog/category/${category}/page/${page}`,
   });
 }

@@ -64,10 +64,9 @@ export default async function ChangelogPaginatedPage({ params }: ChangelogPagina
 
 export async function generateMetadata({ params }: ChangelogPaginatedPageProps): Promise<Metadata> {
   const pageParam = (await params).page;
-  const page = parseInt(pageParam, 10);
 
   return getMetadata({
-    title: `Changelog - Page ${page}`,
+    title: 'Changelog',
     description: 'Read the latest changelog',
     pathname: `/changelog/page/${pageParam}`,
   });

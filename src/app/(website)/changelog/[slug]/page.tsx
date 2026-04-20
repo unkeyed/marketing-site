@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import config from '@/configs/website-config';
 import { ArrowLeft } from 'lucide-react';
 
 import { getMetadata } from '@/lib/get-metadata';
@@ -28,7 +27,7 @@ export async function generateMetadata({ params }: ChangelogPostPageProps): Prom
   const { seo } = post;
 
   return getMetadata({
-    title: `${seo.title} | ${config.projectName}`,
+    title: seo.title,
     description: seo.description,
     pathname: `/changelog/${post.slug}`,
     imagePath: seo.socialImage,
