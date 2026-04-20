@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import config from '@/configs/website-config';
 
 import { ICategory } from '@/types/blog';
 import {
@@ -68,7 +67,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 
   return getMetadata({
-    title: `Blog: ${categoryData.title} | ${config.projectName}`,
+    title: `Blog: ${categoryData.title}`,
     description: `${categoryData.title} Read the latest articles, news, and reviews on our blog`,
     pathname: `/blog/category/${category}`,
   });

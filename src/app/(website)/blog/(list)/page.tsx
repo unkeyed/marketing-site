@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import config from '@/configs/website-config';
 
 import { getPaginatedPosts, getTotalPages } from '@/lib/blog/posts';
 import { getMetadata } from '@/lib/get-metadata';
@@ -34,7 +33,7 @@ export default async function BlogPage() {
 }
 
 export const metadata: Metadata = getMetadata({
-  title: `Blog | ${config.projectName}`,
+  title: 'Blog',
   description: 'Read the latest articles, news, and reviews on our blog',
   pathname: '/blog',
 });

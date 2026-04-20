@@ -3,40 +3,20 @@ import config from '@/configs/website-config';
 
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
-/**
- * Metadata configuration options for page SEO
- * @interface Metadata
- */
+// Pass `title` → "{title} | Unkey". Pass `tagline` (hero pages) → "Unkey | {tagline}".
 type Metadata = {
-  /** Page title */
-  title: string;
-  /** Page description for SEO */
+  title?: string;
+  tagline?: string;
   description: string;
-  /** URL pathname (without domain) */
   pathname: string;
-  /** Path to social sharing image (defaults to site config) */
   imagePath?: string;
-  /** OpenGraph content type (defaults to "website") */
   type?: string;
-  /** Whether search engines should index this page */
   noIndex?: boolean;
 };
 
-/**
- * Generates metadata for Next.js pages including OpenGraph and Twitter card data
- *
- * @param {Metadata} options - Metadata configuration options
- * @param {string} options.title - Page title
- * @param {string} options.description - Page description
- * @param {string} options.pathname - URL pathname (without domain)
- * @param {string} [options.imagePath=config.defaultSocialImage] - Path to social sharing image
- * @param {string} [options.type="website"] - OpenGraph content type
- * @param {boolean} [options.noIndex=false] - Whether search engines should index this page
- *
- * @returns {NextMetadata} Next.js compatible metadata object
- */
 export function getMetadata({
   title,
+  tagline,
   description,
   pathname,
   imagePath = config.defaultSocialImage,
@@ -46,9 +26,10 @@ export function getMetadata({
   const canonicalUrl = toAbsoluteSiteUrl(pathname);
   const imageUrl = imagePath.startsWith('http') ? imagePath : toAbsoluteSiteUrl(imagePath);
   const siteName = `${config.projectName.slice(0, 1).toUpperCase()}${config.projectName.slice(1)}`;
+  const fullTitle = tagline ? `${siteName} | ${tagline}` : `${title} | ${siteName}`;
 
   return {
-    title,
+    title: fullTitle,
     description,
     alternates: {
       canonical: canonicalUrl,
@@ -72,7 +53,7 @@ export function getMetadata({
       apple: '/favicon/apple-touch-icon.png',
     },
     openGraph: {
-      title,
+      title: fullTitle,
       description,
       url: canonicalUrl,
       siteName,
@@ -88,7 +69,7 @@ export function getMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: fullTitle,
       description,
       images: [imageUrl],
     },

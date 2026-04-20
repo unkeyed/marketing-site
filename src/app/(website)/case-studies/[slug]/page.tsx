@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import config from '@/configs/website-config';
 import { homeContentData } from '@/constants/home';
 
 import {
@@ -79,7 +78,7 @@ export async function generateMetadata({ params }: ICaseStudyPageProps): Promise
   const { seo } = caseStudy;
 
   return getMetadata({
-    title: `${seo.title} | ${config.projectName}`,
+    title: seo.title,
     description: seo.description,
     pathname: `/case-studies/${caseStudy.slug.current}`,
     imagePath: seo.socialImage,

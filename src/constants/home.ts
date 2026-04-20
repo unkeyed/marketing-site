@@ -354,7 +354,7 @@ export const homeContentData = {
 export const homePageData = {
   pathname: '/',
   metadata: {
-    title: 'Home',
+    tagline: 'The Developer Platform for Modern APIs',
     description: 'Unkey brings API deployment, gateways, and observability into one platform.',
     pathname: '/',
   },

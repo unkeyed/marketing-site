@@ -13,7 +13,7 @@ import Production from '@/components/pages/home/production';
 import Scale from '@/components/pages/home/scale';
 
 export const metadata: Metadata = getMetadata({
-  title: homePageData.metadata?.title,
+  tagline: homePageData.metadata?.tagline,
   description: homePageData.metadata?.description,
   pathname: homePageData.pathname,
 });
