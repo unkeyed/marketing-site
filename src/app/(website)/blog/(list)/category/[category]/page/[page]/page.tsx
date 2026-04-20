@@ -73,8 +73,7 @@ export default async function CategoryPagePagination({ params }: CategoryPagePro
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const { category, page: pageNumber } = await params;
-  const page = parseInt(pageNumber, 10);
+  const { category, page } = await params;
   const categoryData = getCategoryBySlug(category);
 
   if (!categoryData) {

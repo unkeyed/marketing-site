@@ -60,8 +60,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
-  const { page: pageNumber } = await params;
-  const page = parseInt(pageNumber, 10);
+  const { page } = await params;
 
   return getMetadata({
     title: 'Blog',
