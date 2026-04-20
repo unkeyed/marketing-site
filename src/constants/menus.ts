@@ -29,12 +29,6 @@ export const MENUS = {
           icon: '/icons/header/changelog.svg',
         },
         {
-          label: 'Templates',
-          href: '/templates',
-          description: 'Starter kits to ship faster',
-          icon: '/icons/header/templates.svg',
-        },
-        {
           label: 'Glossary',
           href: '/glossary',
           description: 'Clear definitions for API terms',
@@ -53,7 +47,6 @@ export const MENUS = {
         title: 'Company',
         items: [
           { label: 'About', href: '/about' },
-          { label: 'Careers', href: '/careers' },
           { label: 'Source Code', href: GITHUB_URL },
           { label: 'Status Page', href: 'https://status.unkey.com' },
         ],
@@ -63,7 +56,6 @@ export const MENUS = {
         items: [
           { label: 'Blog', href: '/blog' },
           { label: 'Changelog', href: '/changelog' },
-          { label: 'Templates', href: '/templates' },
           { label: 'Docs', href: '/docs/introduction' },
           { label: 'Glossary', href: '/glossary' },
           // { label: 'Case Studies', href: '/case-studies' },
@@ -74,7 +66,6 @@ export const MENUS = {
         items: [
           { label: 'X (Twitter)', href: 'https://x.com/unkeydev' },
           { label: 'Discord', href: 'https://unkey.com/discord' },
-          { label: 'OSS Friends', href: '/oss-friends' },
           { label: 'Book a Call', href: BOOK_A_CALL_URL },
         ],
       },

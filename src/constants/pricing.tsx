@@ -1,17 +1,17 @@
-import { createElement, Fragment } from 'react';
+import Link from 'next/link';
 import { APP_URL, ENTERPRISE_CONTACT_URL } from '@/configs/website-config';
 
-import { IPricingPlan, IPricingTableFeatures } from '@/types/pricing';
+import type { IPricingPlan, IPricingTableFeatures } from '@/types/pricing';
 
 export const pricingContentData = {
-  title: createElement(
-    Fragment,
-    null,
-    createElement('mark', null, 'Start for free, scale\u00a0'),
-    createElement('mark', null, 'as you go'),
-    ' with',
-    '\n',
-    'predictable usage-based pricing.',
+  title: (
+    <>
+      <mark>Start for free, scale&nbsp;</mark>
+      <mark>as you go</mark>
+      {' with'}
+      {'\n'}
+      predictable usage-based pricing.
+    </>
   ),
   tabs: [
     {
@@ -29,13 +29,12 @@ export const pricingContentData = {
     description: 'We’ve got answers.',
   },
   usageCalculator: {
-    title: createElement(
-      Fragment,
-      null,
-      'Pay for usage.',
-      '\n',
-      'Scale ',
-      createElement('mark', null, 'on demand.'),
+    title: (
+      <>
+        Pay for usage.
+        {'\n'}
+        Scale <mark>on demand.</mark>
+      </>
     ),
     subtitle: `Your spend follows real usage, not plan
     jumps. Scale gateway capacity when latency
@@ -55,7 +54,7 @@ export const pricingContentData = {
     fieldTooltips: {
       cpu: 'Number of virtual CPU cores allocated per running instance',
       memory: 'Amount of RAM allocated per running instance',
-      instances: 'Total number of VM instances running simultaneously',
+      instances: 'Total number of instances running simultaneously',
       egress: 'Total outbound network data transfer per month',
     },
     memoryOptions: [
@@ -114,7 +113,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 0.25 vCPU / 0.25 GB per VM',
+          label: 'Up to 0.25 vCPU / 0.25 GB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -126,7 +125,7 @@ export const deployPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Up to 1,000 managed API keys',
+          label: 'Community support',
           lucideIcon: 'check',
         },
       ],
@@ -151,7 +150,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 2 vCPU / 2 GB per VM',
+          label: 'Up to 2 vCPU / 2 GB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -163,11 +162,11 @@ export const deployPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Up to 1M managed API keys',
+          label: 'Includes $5/mo usage credits',
           lucideIcon: 'check',
         },
         {
-          label: 'Includes $5/mo usage credits',
+          label: 'Email support',
           lucideIcon: 'check',
         },
       ],
@@ -193,7 +192,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 8 vCPU / 8 GB per VM',
+          label: 'Up to 8 vCPU / 8 GB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -205,11 +204,11 @@ export const deployPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Up to 1M managed API keys',
+          label: 'Includes $25/mo usage credits',
           lucideIcon: 'check',
         },
         {
-          label: 'Includes $25/mo usage credits',
+          label: 'Email support',
           lucideIcon: 'check',
         },
       ],
@@ -235,7 +234,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 32 vCPU / 32 GB per VM',
+          label: 'Up to 32 vCPU / 32 GB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -246,12 +245,13 @@ export const deployPricingPlans: IPricingPlan[] = [
           label: 'Custom domains',
           lucideIcon: 'check',
         },
+
         {
-          label: 'Up to 1M managed API keys',
+          label: 'Includes $50/mo usage credits',
           lucideIcon: 'check',
         },
         {
-          label: 'Includes $50/mo usage credits',
+          label: 'Email support',
           lucideIcon: 'check',
         },
       ],
@@ -288,11 +288,11 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: '7-day logs retention',
+          label: '1-day logs retention',
           lucideIcon: 'check',
         },
         {
-          label: '30-day audit log retention',
+          label: '3-day audit log retention',
           lucideIcon: 'check',
         },
         {
@@ -382,11 +382,11 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: '30-day logs retention',
+          label: '7-day logs retention',
           lucideIcon: 'check',
         },
         {
-          label: '90-day audit log retention',
+          label: '14-day audit log retention',
           lucideIcon: 'check',
         },
         {
@@ -426,7 +426,7 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Dedicated support',
+          label: 'Dedicated Slack channel',
           lucideIcon: 'check',
         },
       ],
@@ -445,19 +445,9 @@ export const tableFeatures: IPricingTableFeatures[] = [
         name: 'Projects',
         plans: [
           { planId: 'free', value: '1' },
-          { planId: 'starter', value: 'TBD' },
-          { planId: 'pro', value: 'TBD' },
-          { planId: 'business', value: 'TBD' },
-        ],
-      },
-      {
-        name: 'Max active deployments',
-        tooltip: 'The maximum number of active deployments for a single project',
-        plans: [
-          { planId: 'free', value: '2' },
-          { planId: 'starter', value: 'TBD' },
-          { planId: 'pro', value: 'TBD' },
-          { planId: 'business', value: 'TBD' },
+          { planId: 'starter', value: 'Unlimited' },
+          { planId: 'pro', value: 'Unlimited' },
+          { planId: 'business', value: 'Unlimited' },
         ],
       },
       {
@@ -470,7 +460,7 @@ export const tableFeatures: IPricingTableFeatures[] = [
         ],
       },
       {
-        name: 'Max vCPU per VM',
+        name: 'Max vCPU per Instance',
         plans: [
           { planId: 'free', value: '0.25' },
           { planId: 'starter', value: '2' },
@@ -479,57 +469,84 @@ export const tableFeatures: IPricingTableFeatures[] = [
         ],
       },
       {
-        name: 'Max RAM (GB) per VM',
+        name: 'Max RAM (GB) per Instance',
         plans: [
           { planId: 'free', value: '0.25' },
           { planId: 'starter', value: '2' },
           { planId: 'pro', value: '8' },
           { planId: 'business', value: '32' },
-        ],
-      },
-      {
-        name: 'Replicas per project',
-        plans: [
-          { planId: 'free', value: 'TBD' },
-          { planId: 'starter', value: 'TBD' },
-          { planId: 'pro', value: 'TBD' },
-          { planId: 'business', value: 'TBD' },
         ],
       },
       {
         name: 'Custom domains',
         plans: [
           { planId: 'free', value: false },
-          { planId: 'starter', value: true },
-          { planId: 'pro', value: true },
-          { planId: 'business', value: true },
+          { planId: 'starter', value: '1' },
+          { planId: 'pro', value: '10' },
+          { planId: 'business', value: '100' },
         ],
       },
       {
         name: 'Sentinel per project',
         plans: [
-          { planId: 'free', value: '3 replicas Prod / 1 Preview' },
-          { planId: 'starter', value: '3 replicas Prod / 1 Preview' },
+          { planId: 'free', value: '1 replica Prod / 1 Preview' },
+          { planId: 'starter', value: '1 replicas Prod / 1 Preview' },
           { planId: 'pro', value: '3 replicas Prod / 1 Preview' },
           { planId: 'business', value: '3 replicas Prod / 1 Preview' },
         ],
       },
       {
-        name: 'Sentinel Managed API Keys',
-        plans: [
-          { planId: 'free', value: '1000' },
-          { planId: 'starter', value: '1M' },
-          { planId: 'pro', value: '1M' },
-          { planId: 'business', value: '1M' },
-        ],
-      },
-      {
         name: 'Included usage',
         plans: [
-          { planId: 'free', value: '$0' },
+          { planId: 'free', value: false },
           { planId: 'starter', value: '$5' },
           { planId: 'pro', value: '$25' },
           { planId: 'business', value: '$50' },
+        ],
+      },
+      {
+        name: 'Regions',
+        plans: [
+          { planId: 'free', value: '1' },
+          { planId: 'starter', value: '3' },
+          { planId: 'pro', value: 'All' },
+          { planId: 'business', value: 'All' },
+        ],
+      },
+      {
+        name: 'Team members',
+        plans: [
+          { planId: 'free', value: '1' },
+          { planId: 'starter', value: '1' },
+          { planId: 'pro', value: 'Unlimited' },
+          { planId: 'business', value: 'Unlimited' },
+        ],
+      },
+      {
+        name: 'Log retention',
+        plans: [
+          { planId: 'free', value: '1 day' },
+          { planId: 'starter', value: '3 days' },
+          { planId: 'pro', value: '7 days' },
+          { planId: 'business', value: '14 days' },
+        ],
+      },
+      {
+        name: 'Audit log retention',
+        plans: [
+          { planId: 'free', value: '3 days' },
+          { planId: 'starter', value: '7 days' },
+          { planId: 'pro', value: '14 days' },
+          { planId: 'business', value: '30 days' },
+        ],
+      },
+      {
+        name: 'Support',
+        plans: [
+          { planId: 'free', value: 'Community' },
+          { planId: 'starter', value: 'Email' },
+          { planId: 'pro', value: 'Email' },
+          { planId: 'business', value: 'Email' },
         ],
       },
     ],
@@ -538,16 +555,79 @@ export const tableFeatures: IPricingTableFeatures[] = [
 
 export const faqItems = [
   {
-    question: 'What counts as valid?',
-    answer: `A valid request is a key verification or a ratelimit operation that result in proividng access to your
-          service. Requests may be invalid due to exceeding limits, keys being expired or disabled, or other
-          factors. To protect your business from abuse, we do not charge for invalid requests. Only key
-          verification and ratelimiting requests are billable. All regular API requests are always free.\r\n
-          Only key verification and ratelimiting requests are billable. All regular API requests are always free.`,
+    question: 'How does usage-based billing work with included credits?',
+    answer: `Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets your usage-based charges for compute, egress, and Sentinels. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates shown in the calculator.`,
   },
   {
-    question: 'What happens when I go over my plan?',
-    answer: `When you go over your plan, you will be charged for the additional requests. You will be charged $0.0001 per request.`,
+    question: 'How do I avoid runaway costs?',
+    answer: `Unlike serverless platforms that autoscale without bounds, Unkey Deploy runs containers with a max replica count you set per region, giving you a predictable compute ceiling. We bill for actual vCPU, memory, and egress, not per request.`,
+  },
+  {
+    question: 'Can I try a paid plan, and can I downgrade later?',
+    answer: `There's no trial, but the Free tier lets you build and test Unkey without a credit card. You can upgrade anytime, and downgrades take effect at the end of your current billing cycle.`,
+  },
+  {
+    question: 'How is compute metered?',
+    answer: `We meter vCPU and memory in 10-second intervals for the entire time a container is running, plus egress by the gigabyte. Unkey automatically scales your workload down during idle periods to minimize cost, and back up when traffic returns.`,
+  },
+  {
+    question: 'What is a Sentinel and how do I pick a tier?',
+    answer: `A Sentinel is a reverse proxy that sits in front of your deployment, enforcing policies like authentication and rate limiting on every request before it reaches your app. Every environment gets its own isolated Sentinel automatically: 3 replicas for production, 1 for preview. The tier controls the Sentinel's compute resources (vCPU and memory), so pick a higher tier if you expect high request volume or need lower tail latency. The free tier (1/4 vCPU, 1/2 GB) is included on every plan and fits most workloads.`,
+  },
+  {
+    question: "What happens when I hit my plan's limits?",
+    answer: `Each plan caps the max size of an Instance, the number of Instances, and total CPU and memory allocated across your workspace. If a new deployment would exceed any of these, it fails with a clear error. Running applications keep serving traffic without interruption, so you can upgrade or free up capacity before redeploying.`,
+  },
+  {
+    question: 'Do preview deployments count against my usage?',
+    answer: `Yes, preview deployments are billed the same as production. Their vCPU, memory, and egress count against your included credits and then your usage-based rate. Preview environments do get a smaller Sentinel (1 replica instead of 3) to keep the overhead low.`,
+  },
+  {
+    question: 'How long are logs retained?',
+    answer: `Request logs are retained for 1 day on Free and 7 days on Pro. Audit logs are retained for 3 days on Free and 14 days on Pro. Enterprise plans offer custom retention. Export is not yet available, but it's on the roadmap.`,
+  },
+  {
+    question: 'Can I migrate existing API keys from another provider?',
+    answer: (
+      <p>
+        Yes. You can import pre-hashed keys from your current system into Unkey without requiring
+        your users to generate new ones. Existing keys keep working, and Unkey never sees the
+        plaintext. See the{' '}
+        <Link href="/docs/platform/apis/migrations/introduction" className="underline">
+          migration docs
+        </Link>{' '}
+        for the full flow.
+      </p>
+    ),
+  },
+  {
+    question: 'Where are my workloads hosted, and can I pick regions?',
+    answer: (
+      <p>
+        We deploy on AWS across multiple regions. You pick which regions to deploy to and traffic
+        routes to the nearest healthy region automatically. See the{' '}
+        <Link href="/docs/build-and-deploy/regions" className="underline">
+          regions docs
+        </Link>{' '}
+        for the current list.
+      </p>
+    ),
+  },
+  {
+    question: 'Do you offer SOC 2 compliance?',
+    answer: `Yes, Unkey is SOC 2 compliant. Contact us if you need a copy of our report or have specific compliance requirements for your Enterprise deployment.`,
+  },
+  {
+    question: 'How do I get SSO, SAML, or audit log exports?',
+    answer: (
+      <p>
+        These are available on request. Reach out to{' '}
+        <Link href="mailto:support@unkey.com" className="underline">
+          support@unkey.com
+        </Link>{' '}
+        and we&apos;ll work with you to get them set up.
+      </p>
+    ),
   },
 ];
 
@@ -555,12 +635,7 @@ export const enterpriseData = {
   title: 'Enterprise',
   description:
     'Connect with our team for higher resource limits, dedicated requirements, annual contracts, and more.',
-  features: [
-    'Custom vCPU / RAM limits',
-    'Custom Sentinel scaling',
-    'Custom domains & gateway setup',
-    'Custom managed API keys',
-  ],
+  features: ['Custom limits', 'Dedicated infrastructure', 'Dedicated Slack channel'],
   buttonText: 'Contact sales',
   buttonUrl: ENTERPRISE_CONTACT_URL,
 };
