@@ -77,6 +77,25 @@ const nextConfig: NextConfig = {
       ],
     };
   },
+  async redirects() {
+    return [
+      {
+        source: '/discord',
+        destination: 'https://discord.gg/fDbezjbJbD',
+        permanent: false,
+      },
+      {
+        source: '/github',
+        destination: 'https://github.com/unkeyed/unkey',
+        permanent: false,
+      },
+      {
+        source: '/meet',
+        destination: 'https://cal.com/team/unkey',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
