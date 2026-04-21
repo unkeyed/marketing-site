@@ -52,7 +52,7 @@ export const pricingContentData = {
       egress: 'Egress / month',
     },
     fieldTooltips: {
-      cpu: 'Number of virtual CPU cores allocated per running instance',
+      cpu: 'Number of active virtual CPU cores per running instance',
       memory: 'Amount of RAM allocated per running instance',
       instances: 'Total number of instances running simultaneously',
       egress: 'Total outbound network data transfer per month',
