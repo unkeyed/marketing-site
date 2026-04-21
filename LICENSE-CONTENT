@@ -1,0 +1,80 @@
+UNKEY MARKETING CONTENT LICENSE
+
+Copyright (c) 2026 Unkeyed, Inc. All rights reserved.
+
+================================================================================
+SCOPE
+================================================================================
+
+This license governs the "Content" of this repository, which includes, but is
+not limited to:
+
+  * All files under `src/content/` (blog posts, glossary entries, changelog,
+    case studies, legal pages, and any other MDX or prose content).
+  * All copywriting, headlines, and marketing text rendered by pages in
+    `src/app/` that is authored by Unkey (as distinct from code structure,
+    markup, or styling).
+  * All illustrations, photographs, diagrams, and non-logo graphics in
+    `public/` and `src/assets/` (excluding items covered by TRADEMARKS.md,
+    which carries stricter terms).
+  * Product screenshots, case study assets, and customer-facing copy.
+
+This license does NOT apply to the software source code of this repository.
+Source code is licensed separately under the GNU Affero General Public License
+v3.0 (see LICENSE). This license also does NOT apply to Unkey trademarks,
+logos, or brand marks, which are governed by TRADEMARKS.md.
+
+================================================================================
+GRANT
+================================================================================
+
+The Content is made available under the Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International Public License
+("CC BY-NC-ND 4.0"). The full text of that license is available at:
+
+  https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+
+In plain language, you may:
+
+  * View the Content.
+  * Share unmodified copies of the Content for non-commercial purposes, with
+    attribution to Unkey and a link back to the original source.
+
+You may NOT:
+
+  * Use the Content, in whole or in part, for any commercial purpose.
+  * Create derivative works, adaptations, translations, or modified versions
+    of the Content.
+  * Republish the Content on another site, blog, or publication without
+    explicit written permission from Unkeyed, Inc.
+  * Use the Content to train, fine-tune, or otherwise adapt machine learning
+    models without explicit written permission from Unkeyed, Inc.
+
+================================================================================
+SUPPLEMENTAL TERMS
+================================================================================
+
+1. Attribution. Any permitted use of the Content must include visible
+   attribution in the form "Content by Unkey (https://unkey.com)" adjacent to
+   the reused material.
+
+2. No implied endorsement. Nothing in this license grants permission to
+   suggest that Unkey endorses you, your product, or your use of the Content.
+
+3. Reservation of rights. All rights not expressly granted are reserved by
+   Unkeyed, Inc. If you want to use the Content in a way this license does
+   not permit, contact legal@unkey.com.
+
+4. Severability. If any provision of this license is held unenforceable, the
+   remaining provisions will continue in full force.
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+THE CONTENT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE CONTENT OR THE USE
+OR OTHER DEALINGS IN THE CONTENT.
