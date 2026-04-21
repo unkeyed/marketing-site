@@ -568,7 +568,7 @@ export const faqItems = [
   },
   {
     question: 'How is compute metered?',
-    answer: `We meter vCPU and memory in 10-second intervals for the entire time a container is running, plus egress by the gigabyte. Unkey automatically scales your workload down during idle periods to minimize cost, and back up when traffic returns.`,
+    answer: `You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls. An API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed for the time an instance is running, and egress by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
   },
   {
     question: 'What is a Sentinel and how do I pick a tier?',
