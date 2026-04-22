@@ -45,8 +45,6 @@ Every Deploy project ships with Sentinel, our reverse proxy, in front of it.
  
 Sentinel enforces policies on every request before it ever reaches your app: API key auth, rate limiting, firewall rules, logging, OpenAPI validation. The controls you'd normally bolt into your application code live at the gateway instead, so your API stays focused on business logic.
  
-Each environment gets its own isolated Sentinel instance, automatically. Production runs with three replicas, preview with one, so a misconfigured policy or a traffic spike in preview can't take production down with it. Healthy requests get routed to healthy instances in the same region. Bad requests never make it to your code.
- 
 Auth, rate limits, and a gateway are table stakes for a real API. We made them the default, not a weekend project.
  
 ## Public beta starts today
@@ -57,4 +55,4 @@ Spin up a project, push some code, and tell us what's missing.
  
 Ship APIs, not infrastructure.
  
-[Get started at unkey.com](https://app.unkey.com)
+[Get started at [app.unkey.com](https://app.unkey.com)
