@@ -11,7 +11,7 @@ material you intend to use.
 |---------------|--------------------------------------------------|--------------------------------------------|------------------|
 | Source code   | TypeScript, CSS, config, build scripts           | GNU Affero General Public License v3.0     | `LICENSE`        |
 | Content       | MDX, blog posts, case studies, marketing copy, non-brand imagery | CC BY-NC-ND 4.0 plus supplemental terms    | `LICENSE-CONTENT`|
-| Trademarks    | The Unkey name, logos, wordmark, brand assets    | All rights reserved, limited nominative use | `TRADEMARKS.md`  |
+| Brand         | The Unkey name, logos, wordmark, brand assets    | Common-law trademark rights, limited nominative use | `TRADEMARKS.md`  |
 
 ## Source code (AGPL-3.0)
 
@@ -39,11 +39,13 @@ You may view and share unmodified copies of the Content for non-commercial
 purposes with attribution. You may not create derivative works, republish the
 Content commercially, or use the Content to train machine learning models.
 
-## Trademarks (all rights reserved)
+## Brand (common-law trademark, limited nominative use)
 
-The Unkey name, logo, wordmark, and associated brand assets are trademarks
-of Unkeyed, Inc. They are not licensed under AGPL-3.0 or CC BY-NC-ND 4.0.
-See `TRADEMARKS.md` for the full policy.
+The Unkey name, logo, wordmark, and associated brand assets are unregistered
+trademarks of Unkeyed, Inc., used in commerce in connection with Unkey's
+software and infrastructure services. They are not licensed under AGPL-3.0
+or CC BY-NC-ND 4.0. The Unkey logo is also a copyrighted work of
+Unkeyed, Inc. See `TRADEMARKS.md` for the full policy.
 
 If you fork this repository to build your own project, you must remove or
 replace all Unkey branding before publishing, hosting, or distributing the
@@ -59,9 +61,10 @@ The three-layer split reflects three distinct interests:
 2. The content represents editorial and marketing work, not reusable
    software. Restricting derivatives and commercial reuse protects against
    clone sites that lift our writing wholesale.
-3. The trademarks identify Unkey as a company. Trademark law operates
+3. The brand identifies Unkey as a company. Trademark law operates
    independently of copyright, and nothing in the code or content license
-   grants permission to use the Unkey name or logo.
+   grants permission to use the Unkey name or logo. The Unkey logo is also
+   copyrighted, giving a second independent basis for protection.
 
 ## Contributing
 
