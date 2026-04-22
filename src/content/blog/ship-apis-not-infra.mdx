@@ -1,0 +1,58 @@
+---
+date: 20206-04-22
+title: 'Ship APIs not infrastructure'
+description: 'Today we are shipping three things: a new website, a new brand, and Unkey Deploy in public beta.'
+image: '/images/blog-images/covers/ship-apis.png'
+author: james
+tags: ['company']
+---
+ 
+Unkey started narrow. We built a tool for API key management, and for a long time that's what people knew us as.
+ 
+That framing is outdated. Unkey is now an open source API development platform: keys, rate limiting, analytics, identity, and now deployments, built for teams who ship APIs as their product.
+ 
+The brand had to catch up. So we rebuilt the site from scratch, reworked the brand, and sharpened the voice. What you see today is the brand finally matching the product.
+ 
+## Thank you, Pixelpoint
+ 
+We worked with [Pixelpoint](https://pixelpoint.io) on the rebrand, and they were excellent.
+ 
+They understood the brief fast, pushed back where it mattered, and delivered work that actually feels like us: technical, confident, zero fluff. Every round made the work sharper.
+ 
+If you're looking for a design partner who genuinely gets developer products, talk to them. If you an X user you should check out this post from [Alex](https://x.com/alex_barashkov/status/2046584943367586172?s=20) which gives a great highlight of the process.
+ 
+## Why Unkey Deploy?
+ 
+Every API team we've spoken to over the past two years was duct taping the same stack together: CI, a runtime, rate limiting, auth, observability, a queue, a cache. Each piece fine on its own, the seams between them painful.
+ 
+And a surprising number of them were fighting their runtime. Cold starts on requests that should be warm. Function size limits on workloads that were never a good fit for serverless. Region juggling. Timeouts on long running jobs. Stateful code pretending to be stateless. This included us, just read our [serverless exit](https://www.unkey.com/blog/serverless-exit) post.
+ 
+We kept hearing the same thing: "I just want a server I can push my API to."
+ 
+So we built one.
+ 
+## Real servers. Not serverless.
+ 
+Unkey Deploy runs on real servers. Long running processes, always warm, global by default.
+ 
+That means no cold starts. No 15 minute timeouts. No function size ceilings. No pretending stateful work is stateless. Just the boring, dependable model servers have always been good at, with the developer experience of a modern platform on top.
+ 
+Git push. Your API is live. That's the loop.
+ 
+## Sentinel sits in front of it
+ 
+Every Deploy project ships with Sentinel, our reverse proxy, in front of it.
+ 
+Sentinel enforces policies on every request before it ever reaches your app: API key auth, rate limiting, firewall rules, logging, OpenAPI validation. The controls you'd normally bolt into your application code live at the gateway instead, so your API stays focused on business logic.
+ 
+Auth, rate limits, and a gateway are table stakes for a real API. We made them the default, not a weekend project.
+ 
+## Public beta starts today
+ 
+Deploy is in public beta from today, and it's free until we ship GA. The whole point of this phase is to put it in the hands of real teams, break it in ways we haven't, and let your feedback shape what GA looks like.
+ 
+Spin up a project, push some code, and tell us what's missing.
+ 
+Ship APIs, not infrastructure.
+ 
+[Get started at [app.unkey.com](https://app.unkey.com)
