@@ -50,3 +50,27 @@ pnpm build
 ## How to contribute
 
 Follow our [contributing guide](https://engineering.unkey.com/contributing)
+
+## License
+
+This repository uses a three-layer license split. Different parts of the
+project carry different terms.
+
+- **Source code** is licensed under the **GNU Affero General Public License
+  v3.0**. See [`LICENSE`](./LICENSE).
+- **Content** (blog posts, case studies, glossary, marketing copy, and
+  non-brand imagery) is licensed under **CC BY-NC-ND 4.0** with supplemental
+  terms. See [`LICENSE-CONTENT`](./LICENSE-CONTENT).
+- **Unkey brand assets**, including the name and logo, are common-law
+  trademarks of Unkeyed, Inc. See [`TRADEMARKS.md`](./TRADEMARKS.md).
+
+For a full explanation of how the three layers interact, see
+[`LICENSING.md`](./LICENSING.md).
+
+If you fork this repository to build your own project, you must remove or
+replace all Unkey branding and content before publishing or hosting your
+fork.
+
+For commercial licensing or permission requests, contact legal@unkey.com.
+ 
+For commercial licensing or permission requests, contact legal@unkey.com.
