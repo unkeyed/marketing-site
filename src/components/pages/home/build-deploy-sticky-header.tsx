@@ -185,7 +185,7 @@ export default function BuildDeployStickyHeader({
           className={cn(
             'grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out',
             'grid-rows-[1fr] opacity-100',
-            isStuck && 'md:grid-rows-[0fr] md:opacity-0',
+            isStuck && 'md:max-2xl:grid-rows-[0fr] md:max-2xl:opacity-0',
           )}
         >
           <div className="min-h-0">
