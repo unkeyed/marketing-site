@@ -1,0 +1,70 @@
+---
+date: 2026-04-23
+title: Unkey raised $4.5M to ship APIs, not infrastructure
+image: '/images/blog-images/covers/seed.png'
+description: Today we're announcing our $4.5M seed round, led by Uncork Capital, with follow-on from Essence VC and Sunflower Capital and others.
+author: james
+tags: ['company']
+---
+ 
+The round funds one thing: making Unkey the fastest way to go from code to a production API.
+ 
+## The promise developers were sold
+ 
+For a decade, shipping a web app has gotten dramatically easier. Push to a branch, get a preview URL, merge to main, you're live. Frontend developers have Vercel, Netlify, Railway or Cloudflare. Backend developers, the people actually building the APIs that power every product, got stuck.
+ 
+If you want to ship an API today, you're still wiring up container registries, load balancers, autoscaling groups, secrets managers, observability pipelines, and a CI config long enough to qualify as a novel.
+ 
+Platforms like Render and Railway take some of that pain away, and they deserve credit for it. `git push`, get a URL, done. But they stop at deployment. The moment you want to actually run a production API, the SaaS sprawl begins. One vendor for API keys. Another for rate limiting. Another for an API gateway. Another for usage analytics and metering. Another for billing. Another for observability. Five invoices, five dashboards, five SDKs, five sources of truth, all stitched together with glue code someone on your team has to own.
+ 
+The "boring" parts of running an API eat weeks that should go into the product. Developers don't want to be integrators. They want to ship.
+ 
+Backend developers deserve better. Not just "push to deploy," the whole thing: deploy, expose, secure, meter, monetize. One platform, one mental model. That's what Unkey is provides.
+ 
+## Why servers, not serverless
+ 
+Here's where we break from the current consensus: Unkey runs on real servers.
+ 
+Serverless was supposed to be the answer. In practice, it traded one set of problems (ops) for a worse set (cold starts, runtime limits, vendor quirks, surprise bills, debugging through logs and prayer). APIs are stateful, long-lived, and hot.
+ 
+With Unkey, you `git push` and we run your API on servers that are warm, observable, and predictable. No cold starts. No runtime gymnastics. No bill that doubles because a crawler found your endpoint. You get the developer experience of a modern platform with the performance profile of infrastructure you'd build yourself, if you had three months to burn.
+
+You also get **instant rollbacks**. For the first 30 minutes after a deploy, which is when you catch most regressions, we keep the previous version running. One click and traffic is back on the good version in seconds. After that window, rollbacks are still one click, they just take longer because we have to start the container.
+
+## Built on what's already working
+ 
+Unkey is open source. Thousands of developers use our API development platform today for auth, rate limiting, usage tracking, and the primitives every API needs. Deploy is the natural next step: the same opinionated, developer-first philosophy, applied to the boring work of actually running the thing.
+ 
+If you've used Unkey for keys and rate limits, Deploy will feel familiar. If you haven't, Deploy is a good reason to start.
+ 
+## The investors
+ 
+We picked partners who understand developer tools and aren't afraid of opinionated infrastructure bets.
+ 
+Uncork Capital led the round, with Andy McLoughlin, Managing Partner. Uncork has a long track record of backing opinionated developer and infrastructure companies early (LaunchDarkly, Tailscale, Nuon).
+ 
+> Teams building modern APIs still cobble together five separate tools to get to production: auth, rate limiting, analytics, billing, and access controls. Unkey collapses that stack into a single platform built for how backend teams actually build and ship today. James and the team bring deep product judgment and a clear point of view on where API infrastructure is headed, and we're thrilled to be backing them.
+>
+> Andy McLoughlin, Managing Partner, Uncork Capital
+ 
+Essence VC and Sunflower Capital doubled down from our pre-seed. Tokyo Black, Step Function, and other top VCs joined this round.
+ 
+## What the money goes into
+ 
+Three things:
+ 
+1. **Improving deployments.** It's live today. The roadmap is faster deploys, more regions, better observability, and rock-solid zero-downtime rollouts.
+2. **Open source.** We keep investing in the core Unkey platform. More primitives, better SDKs, a deeper free tier.
+3. **The team.** We're hiring engineers who care about developer experience and are allergic to unnecessary complexity.
+
+## If you build APIs for a living
+ 
+You shouldn't have to be a distributed systems expert to ship one.
+ 
+That's the bet. That's what the $4.5M is for.
+ 
+Deploying on Unkey is live today. Sign up at [app.unkey.com](https://app.unkey.com). And if you want to see how the platform works under the hood, [star us on GitHub](https://github.com/unkeyed/unkey).
+ 
+Ship APIs, not infrastructure.
+ 
+James & Andreas
