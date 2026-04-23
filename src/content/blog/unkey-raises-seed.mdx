@@ -1,13 +1,13 @@
 ---
 date: 2026-04-23
-title: Unkey raised $4.6M to ship APIs, not infrastructure
+title: Unkey raised $4.5M to ship APIs, not infrastructure
 image: '/images/blog-images/covers/seed.png'
-description: Today we're announcing our $4.6M seed round, led by Uncork Capital, with follow-on from Essence VC and Sunflower Capital and others.
+description: Today we're announcing our $4.5M seed round, led by Uncork Capital, with follow-on from Essence VC and Sunflower Capital and others.
 author: james
 tags: ['company']
 ---
  
-The round funds one thing: making Unkey Deploy the fastest way to go from code to a production API.
+The round funds one thing: making Unkey the fastest way to go from code to a production API.
  
 ## The promise developers were sold
  
@@ -19,16 +19,18 @@ Platforms like Render and Railway take some of that pain away, and they deserve 
  
 The "boring" parts of running an API eat weeks that should go into the product. Developers don't want to be integrators. They want to ship.
  
-We think backend developers deserve the Vercel moment. Not just "push to deploy," the whole thing: deploy, expose, secure, meter, monetize. One platform, one mental model. That's what Unkey Deploy is.
+Backend developers deserve better. Not just "push to deploy," the whole thing: deploy, expose, secure, meter, monetize. One platform, one mental model. That's what Unkey is provides.
  
 ## Why servers, not serverless
  
-Here's where we break from the current consensus: Unkey Deploy runs on real servers.
+Here's where we break from the current consensus: Unkey runs on real servers.
  
 Serverless was supposed to be the answer. In practice, it traded one set of problems (ops) for a worse set (cold starts, runtime limits, vendor quirks, surprise bills, debugging through logs and prayer). APIs are stateful, long-lived, and hot.
  
-With Unkey Deploy, you `git push` and we run your API on servers that are warm, observable, and predictable. No cold starts. No runtime gymnastics. No bill that doubles because a crawler found your endpoint. You get the developer experience of a modern platform with the performance profile of infrastructure you'd build yourself, if you had three months to burn.
- 
+With Unkey, you `git push` and we run your API on servers that are warm, observable, and predictable. No cold starts. No runtime gymnastics. No bill that doubles because a crawler found your endpoint. You get the developer experience of a modern platform with the performance profile of infrastructure you'd build yourself, if you had three months to burn.
+
+You also get **instant rollbacks**. For the first 30 minutes after a deploy, which is when you catch most regressions, we keep the previous version running. One click and traffic is back on the good version in seconds. After that window, rollbacks are still one click, they just take longer because we have to start the container.
+
 ## Built on what's already working
  
 Unkey is open source. Thousands of developers use our API development platform today for auth, rate limiting, usage tracking, and the primitives every API needs. Deploy is the natural next step: the same opinionated, developer-first philosophy, applied to the boring work of actually running the thing.
@@ -51,7 +53,7 @@ Essence VC and Sunflower Capital doubled down from our pre-seed. Tokyo Black, St
  
 Three things:
  
-1. **Unkey Deploy.** It's live today. The roadmap is faster deploys, more regions, better observability, and rock-solid zero-downtime rollouts.
+1. **Improving deployments.** It's live today. The roadmap is faster deploys, more regions, better observability, and rock-solid zero-downtime rollouts.
 2. **Open source.** We keep investing in the core Unkey platform. More primitives, better SDKs, a deeper free tier.
 3. **The team.** We're hiring engineers who care about developer experience and are allergic to unnecessary complexity.
 
@@ -61,7 +63,7 @@ You shouldn't have to be a distributed systems expert to ship one.
  
 That's the bet. That's what the $4.6M is for.
  
-Unkey Deploy is live today. Sign up at [app.unkey.com](https://app.unkey.com). And if you want to see how the platform works under the hood, [star us on GitHub](https://github.com/unkeyed/unkey).
+Deploying on Unkey is live today. Sign up at [app.unkey.com](https://app.unkey.com). And if you want to see how the platform works under the hood, [star us on GitHub](https://github.com/unkeyed/unkey).
  
 Ship APIs, not infrastructure.
  
