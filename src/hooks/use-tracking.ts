@@ -10,8 +10,8 @@ type TrackParams = Parameters<typeof vercelTrack>;
  * Returns a track function that only sends events to Vercel Analytics when the user has given analytics cookie consent.
  */
 export function useTrack() {
-  const { hasConsentFor } = useConsentManager();
-  const hasConsent = hasConsentFor('measurement');
+  const { has } = useConsentManager();
+  const hasConsent = has('marketing');
 
   return useCallback(
     (...args: TrackParams) => {
