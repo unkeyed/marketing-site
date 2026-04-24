@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import '@/styles/globals.css';
 
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { ConsentManagerProvider } from '@c15t/nextjs';
 
+import { ConsentProvider } from '@/components/consent-provider';
 import { ConsentBanner } from '@/components/cookie-banner/consent-banner';
 import { Tracking } from '@/components/tracking';
 
@@ -43,26 +43,11 @@ export default function RootLayout({
       <body
         className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <ConsentManagerProvider
-          options={{
-            ...(process.env.NEXT_PUBLIC_C15T_MODE
-              ? { mode: 'c15t', backendURL: '/api/c15t' }
-              : { mode: 'offline' }),
-            trackingBlockerConfig: {
-              domainConsentMap: {
-                'unpkg.com': 'necessary',
-                'cdn.jsdelivr.net': 'necessary',
-              },
-            },
-            react: {
-              colorScheme: 'dark',
-            },
-          }}
-        >
+        <ConsentProvider>
           {children}
           <Tracking />
           <ConsentBanner />
-        </ConsentManagerProvider>
+        </ConsentProvider>
       </body>
     </html>
   );

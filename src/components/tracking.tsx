@@ -6,13 +6,13 @@ import { Analytics } from '@vercel/analytics/next';
 
 export function Tracking() {
   const [isMounted, setIsMounted] = useState(false);
-  const { hasConsentFor } = useConsentManager();
+  const { has } = useConsentManager();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted || !hasConsentFor('measurement')) {
+  if (!isMounted || !has('marketing')) {
     return null;
   }
 
