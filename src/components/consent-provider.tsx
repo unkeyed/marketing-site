@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { ConsentManagerProvider } from '@c15t/nextjs';
 
-const isC15tMode = process.env.NEXT_PUBLIC_C15T_MODE === 'c15t';
+const isHostedMode = process.env.NEXT_PUBLIC_C15T_MODE === 'hosted';
 
 const acceptButtonClassName =
   'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-none px-5 text-sm font-medium bg-foreground text-background hover:bg-gray-90 sm:min-w-28 sm:flex-none';
@@ -30,7 +30,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
   return (
     <ConsentManagerProvider
       options={{
-        ...(isC15tMode ? { mode: 'hosted', backendURL: '/api/c15t' } : { mode: 'offline' }),
+        ...(isHostedMode ? { mode: 'hosted', backendURL: '/api/c15t' } : { mode: 'offline' }),
         networkBlocker: {
           rules: [
             { domain: 'unpkg.com', category: 'necessary' },
