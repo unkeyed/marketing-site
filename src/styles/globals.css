@@ -88,7 +88,7 @@
   --color-accent-foreground: hsl(0 0% 98%);
 
   /* ui/button, ui/form */
-  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive: hsl(0 91% 71%);
   --color-destructive-foreground: hsl(0 0% 98%);
 
   /* ui/input, ui/textarea, focus ring */
