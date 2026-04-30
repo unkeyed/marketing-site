@@ -30,7 +30,9 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
   return (
     <ConsentManagerProvider
       options={{
-        ...(isHostedMode ? { mode: 'hosted', backendURL: '/api/c15t' } : { mode: 'offline' }),
+        ...(isHostedMode
+          ? { mode: 'hosted', backendURL: 'https://production-unkey.inth.app/' }
+          : { mode: 'offline' }),
         networkBlocker: {
           rules: [
             { domain: 'unpkg.com', category: 'necessary' },
