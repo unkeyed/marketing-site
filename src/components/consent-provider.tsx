@@ -5,9 +5,7 @@ import { ConsentManagerProvider } from '@c15t/nextjs';
 
 const isHostedMode = process.env.NEXT_PUBLIC_C15T_MODE === 'hosted';
 
-const acceptButtonClassName =
-  'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-none px-5 text-sm font-medium bg-foreground text-background hover:bg-gray-90 sm:min-w-28 sm:flex-none';
-const rejectButtonClassName =
+const consentButtonClassName =
   'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-none border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground px-5 text-sm font-medium sm:min-w-28 sm:flex-none';
 
 const brandColors = {
@@ -46,7 +44,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
           colors: brandColors,
           dark: brandColors,
           consentActions: {
-            accept: { variant: 'primary', mode: 'stroke' },
+            accept: { variant: 'neutral', mode: 'stroke' },
             reject: { variant: 'neutral', mode: 'stroke' },
             customize: { variant: 'neutral', mode: 'ghost' },
           },
@@ -61,8 +59,8 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
             consentDialogTag: { className: 'hidden' },
             consentWidgetAccordion: { className: 'rounded-none' },
             consentWidgetTag: { className: 'hidden' },
-            buttonPrimary: { className: acceptButtonClassName, noStyle: true },
-            buttonSecondary: { className: rejectButtonClassName, noStyle: true },
+            buttonPrimary: { className: consentButtonClassName, noStyle: true },
+            buttonSecondary: { className: consentButtonClassName, noStyle: true },
           },
         },
       }}
