@@ -65,9 +65,6 @@ export const pricingContentData = {
       { value: '4', label: '4 GB' },
       { value: '8', label: '8 GB' },
       { value: '16', label: '16 GB' },
-      { value: '32', label: '32 GB' },
-      { value: '64', label: '64 GB' },
-      { value: '128', label: '128 GB' },
     ],
     sentinelTier: {
       label: 'Sentinel tier',
@@ -234,7 +231,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 32 vCPU / 32 GB per Instance',
+          label: 'Up to 16 vCPU / 32 GB per Instance',
           lucideIcon: 'check',
         },
         {
