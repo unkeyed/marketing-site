@@ -45,7 +45,6 @@ function useEstimate(state: {
   memory: string;
   instances: number;
   egress: number;
-  sentinelTier: string;
 }) {
   return React.useMemo(() => {
     const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -59,16 +58,11 @@ function useEstimate(state: {
     const egressCost = egressGb * RATE_EGRESS_PER_GB;
     const usageBased = vcpuCost + memoryCost + egressCost;
 
-    const sentinelOption = content.sentinelTierOptions.find((t) => t.value === state.sentinelTier);
-    const sentinels = sentinelOption?.cost ?? 0;
-
-    const total = Math.round((usageBased + sentinels) * 100) / 100;
-    const usageRounded = Math.round(usageBased * 100) / 100;
+    const total = Math.round(usageBased * 100) / 100;
     const round2 = (n: number) => Math.round(n * 100) / 100;
 
     return {
-      usageBased: usageRounded,
-      sentinels,
+      usageBased: total,
       total,
       breakdown: {
         vcpu: round2(vcpuCost),
@@ -76,7 +70,7 @@ function useEstimate(state: {
         egress: round2(egressCost),
       },
     };
-  }, [state.cpu, state.memory, state.instances, state.egress, state.sentinelTier]);
+  }, [state.cpu, state.memory, state.instances, state.egress]);
 }
 
 const INTEGER_INPUT_BLOCKED_KEYS = ['.', ',', 'e', 'E', '-', '+', 'Decimal'];
@@ -151,14 +145,12 @@ export default function Calculator() {
   const [memory, setMemory] = React.useState('4');
   const [instances, setInstances] = React.useState('4');
   const [egress, setEgress] = React.useState('120');
-  const [sentinelTier, setSentinelTier] = React.useState('free');
 
   const estimate = useEstimate({
     cpu,
     memory,
     instances: Number(instances) || 0,
     egress: Number(egress) || 0,
-    sentinelTier,
   });
 
   return (
@@ -312,29 +304,6 @@ export default function Calculator() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="sentinel-tier"
-              className="font-sans text-sm font-medium tracking-tight text-muted-foreground"
-            >
-              {content.sentinelTier.label}
-            </label>
-            <Select value={sentinelTier} onValueChange={setSentinelTier}>
-              <SelectTrigger id="sentinel-tier" className="h-9 rounded-md">
-                <SelectValue placeholder={content.sentinelTier.placeholder} />
-              </SelectTrigger>
-              <SelectContent>
-                {content.sentinelTierOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="font-sans text-2xs leading-snug tracking-tight text-muted-foreground">
-              {content.sentinelTier.helperText}
-            </p>
-          </div>
         </form>
       </div>
 
@@ -353,7 +322,6 @@ export default function Calculator() {
 
         <div className="flex flex-col gap-2">
           <EstimateRow label={content.estimate.usageBased} value={estimate.usageBased} />
-          <EstimateRow label={content.estimate.sentinels} value={estimate.sentinels} />
 
           <div className="mt-2 h-px w-full bg-border" role="separator" />
 
