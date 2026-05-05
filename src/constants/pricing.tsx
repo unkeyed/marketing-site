@@ -37,8 +37,8 @@ export const pricingContentData = {
       </>
     ),
     subtitle: `Your spend follows real usage, not plan
-    jumps. Scale gateway capacity when latency
-    spikes. Available on every plan.`,
+    jumps. Pay only for the CPU, memory, and egress
+    you actually use. Available on every plan.`,
     actionText: 'Read the docs',
     actionHref: '/docs/platform/workspaces/billing',
   },
@@ -66,23 +66,10 @@ export const pricingContentData = {
       { value: '8', label: '8 GB' },
       { value: '16', label: '16 GB' },
     ],
-    sentinelTier: {
-      label: 'Sentinel tier',
-      placeholder: 'Select tier',
-      helperText: '3 Sentinels for production, 1 for preview included by default.',
-    },
-    sentinelTierOptions: [
-      { value: 'free', label: '1/4 vCPU, 1/2 GB – Free (Included)', cost: 0 },
-      { value: '0.5-1', label: '1/2 vCPU, 1 GB – $20/mo', cost: 20 },
-      { value: '0.5-2', label: '1/2 vCPU, 2 GB – $30/mo', cost: 30 },
-      { value: '4-8', label: '4 vCPU, 8 GB – $150/mo', cost: 150 },
-      { value: '8-16', label: '8 vCPU, 16 GB – $300/mo', cost: 300 },
-    ],
     cpuPlaceholder: '0.5',
     estimate: {
       heading: 'Estimate',
       usageBased: 'Usage-based',
-      sentinels: 'Sentinels',
       total: 'Total',
       perMonth: '/ mo',
     },
@@ -484,15 +471,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
         ],
       },
       {
-        name: 'Sentinel per project',
-        plans: [
-          { planId: 'free', value: '1 replica Prod / 1 Preview' },
-          { planId: 'starter', value: '1 replicas Prod / 1 Preview' },
-          { planId: 'pro', value: '3 replicas Prod / 1 Preview' },
-          { planId: 'business', value: '3 replicas Prod / 1 Preview' },
-        ],
-      },
-      {
         name: 'Included usage',
         plans: [
           { planId: 'free', value: false },
@@ -553,7 +531,7 @@ export const tableFeatures: IPricingTableFeatures[] = [
 export const faqItems = [
   {
     question: 'How does usage-based billing work with included credits?',
-    answer: `Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets your usage-based charges for compute, egress, and Sentinels. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates shown in the calculator.`,
+    answer: `Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets your usage-based charges for compute and egress. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates shown in the calculator.`,
   },
   {
     question: 'How do I avoid runaway costs?',
@@ -566,10 +544,6 @@ export const faqItems = [
   {
     question: 'How is compute metered?',
     answer: `You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls. An API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed for the time an instance is running, and egress by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
-  },
-  {
-    question: 'What is a Sentinel and how do I pick a tier?',
-    answer: `A Sentinel is a reverse proxy that sits in front of your deployment, enforcing policies like authentication and rate limiting on every request before it reaches your app. Every environment gets its own isolated Sentinel automatically: 3 replicas for production, 1 for preview. The tier controls the Sentinel's compute resources (vCPU and memory), so pick a higher tier if you expect high request volume or need lower tail latency. The free tier (1/4 vCPU, 1/2 GB) is included on every plan and fits most workloads.`,
   },
   {
     question: "What happens when I hit my plan's limits?",
