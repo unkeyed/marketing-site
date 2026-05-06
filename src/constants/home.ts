@@ -249,7 +249,7 @@ export const homeContentData = {
     description:
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
     buttonLabel: 'Read the docs',
-    buttonHref: '/docs/build-and-deploy/regions',
+    buttonHref: 'https://unkey.com/docs/build-and-deploy/regions',
     riveDefaults: {
       src: '/rive/home/scale/icons.riv',
       fit: Fit.Cover,
@@ -295,7 +295,7 @@ export const homeContentData = {
     },
     mobileImage: observeDashImage.src,
     buttonLabel: 'Read the docs',
-    buttonHref: '/docs/observability/overview',
+    buttonHref: 'https://unkey.com/docs/observability/overview',
     columns: [
       {
         lead: 'Automatic logs and metrics collection.',

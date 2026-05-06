@@ -37,7 +37,7 @@ export const MENUS = {
       ],
     },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Docs', href: '/docs/introduction' },
+    { label: 'Docs', href: 'https://unkey.com/docs/introduction' },
   ],
   footer: {
     description: 'Build better APIs faster',
@@ -56,7 +56,7 @@ export const MENUS = {
         items: [
           { label: 'Blog', href: '/blog' },
           { label: 'Changelog', href: '/changelog' },
-          { label: 'Docs', href: '/docs/introduction' },
+          { label: 'Docs', href: 'https://unkey.com/docs/introduction' },
           { label: 'Glossary', href: '/glossary' },
           // { label: 'Case Studies', href: '/case-studies' },
         ],

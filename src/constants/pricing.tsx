@@ -40,7 +40,7 @@ export const pricingContentData = {
     jumps. Pay only for the CPU, memory, and egress
     you actually use. Available on every plan.`,
     actionText: 'Read the docs',
-    actionHref: '/docs/platform/workspaces/billing',
+    actionHref: 'https://unkey.com/docs/platform/workspaces/billing',
   },
   calculator: {
     title: 'Calculator',
@@ -564,7 +564,10 @@ export const faqItems = [
         Yes. You can import pre-hashed keys from your current system into Unkey without requiring
         your users to generate new ones. Existing keys keep working, and Unkey never sees the
         plaintext. See the{' '}
-        <Link href="/docs/platform/apis/migrations/introduction" className="underline">
+        <Link
+          href="https://unkey.com/docs/platform/apis/migrations/introduction"
+          className="underline"
+        >
           migration docs
         </Link>{' '}
         for the full flow.
@@ -577,7 +580,7 @@ export const faqItems = [
       <p>
         We deploy on AWS across multiple regions. You pick which regions to deploy to and traffic
         routes to the nearest healthy region automatically. See the{' '}
-        <Link href="/docs/build-and-deploy/regions" className="underline">
+        <Link href="https://unkey.com/docs/build-and-deploy/regions" className="underline">
           regions docs
         </Link>{' '}
         for the current list.
