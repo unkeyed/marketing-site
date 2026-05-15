@@ -49,7 +49,7 @@ export interface RemarkImageOptions {
 export function remarkImage({
   external = true,
   useImport = true,
-  publicDir = path.join(process.cwd(), 'public'),
+  publicDir = path.join(/*turbopackIgnore: true*/ process.cwd(), 'public'),
 }: RemarkImageOptions = {}): Transformer<Root, Root> {
   return async (tree, file) => {
     const importsToInject: { variableName: string; importPath: string }[] = [];

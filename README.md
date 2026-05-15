@@ -19,7 +19,7 @@ in `src/content`.
 Requirements:
 
 - Node.js 20+
-- pnpm 10+
+- pnpm 11+
 
 Create a local env file and start the app:
 
