@@ -9,7 +9,7 @@ import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/m
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt, getTimeToRead } from '@/lib/utils';
 
-const CASE_STUDIES_DIR_PATH = path.join(process.cwd(), 'src/content/case-studies');
+const CASE_STUDIES_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src/content/case-studies');
 
 function getCaseStudySlugs(): string[] {
   const files = globSync('*.mdx', {

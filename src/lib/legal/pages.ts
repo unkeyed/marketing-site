@@ -8,7 +8,7 @@ import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/m
 import { getExcerpt } from '@/lib/utils';
 
 // Directory containing markdown legal pages
-const LEGAL_DIR_PATH = path.join(process.cwd(), config.legal.contentDir);
+const LEGAL_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), config.legal.contentDir);
 
 function getSlugsByPath(globPattern: string, ignore: string[] = []): string[] {
   const files = globSync(globPattern, {

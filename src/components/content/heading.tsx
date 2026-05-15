@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import copy from 'copy-to-clipboard';
 import { Link } from 'lucide-react';
+import type { Variants } from 'motion/react';
 import { AnimatePresence, domAnimation, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 
@@ -17,13 +18,13 @@ interface HeadingProps {
   id?: string;
 }
 
-const iconVariants = {
+const iconVariants: Variants = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },
 };
 
-const checkIconVariants = {
+const checkIconVariants: Variants = {
   initial: { opacity: 0, pathLength: 0 },
   animate: {
     opacity: 1,

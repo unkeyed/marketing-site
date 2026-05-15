@@ -17,7 +17,7 @@ import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/m
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt } from '@/lib/utils';
 
-const GLOSSARY_DIR_PATH = path.join(process.cwd(), 'src/content/glossary');
+const GLOSSARY_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src/content/glossary');
 const GLOSSARY_SEARCH_SUGGESTIONS_LIMIT = 8;
 const GLOSSARY_SEARCH_CONTENT_MAX_LENGTH = 3000;
 
