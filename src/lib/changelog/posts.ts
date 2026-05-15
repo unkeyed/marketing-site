@@ -11,7 +11,7 @@ import { getExcerpt, getFormattedDate, getTimeToRead } from '@/lib/utils';
 
 export const POSTS_PER_PAGE = 20;
 
-const CHANGELOG_DIR_PATH = path.join(process.cwd(), config.changelog.contentDir);
+const CHANGELOG_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), config.changelog.contentDir);
 const CHANGELOG_FILE_EXTENSIONS = ['.md', '.mdx'] as const;
 
 export interface IChangelogTag {

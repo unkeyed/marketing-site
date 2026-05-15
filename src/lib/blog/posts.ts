@@ -12,7 +12,7 @@ import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt, getTimeToRead } from '@/lib/utils';
 
 const POSTS_PER_PAGE = config.blog.postsPerPage;
-const BLOG_DIR_PATH = path.join(process.cwd(), config.blog.contentDir);
+const BLOG_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), config.blog.contentDir);
 
 function toCategorySlug(tag: string): string {
   return tag.toLowerCase().trim();
