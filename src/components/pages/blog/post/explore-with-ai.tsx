@@ -46,16 +46,17 @@ function PerplexityIcon({ className }: IServiceIconProps) {
       className={className}
       viewBox="0 0 24 24"
       fill="currentColor"
+      fillRule="evenodd"
       aria-hidden="true"
       role="img"
     >
-      <path d="M22.398 1.5v6.187l-5.31-5.157v4.594h5.31v6.844h-2.578v6.937l-5.39-4.984v4.578h-4.86v-4.578l-5.39 4.984v-6.937H1.602V7.124h5.296V2.531L1.602 7.687V1.5l5.296 5.156V1.5h4.86v6.078l4.74-4.547v3.063h.011V1.5zm-4.86 6.281V3.094l-4.74 4.547V3.094h-1.39v6.094H4.181v3.578h2.717v6.234l4.51-4.171v4.171h1.39v-4.171l4.51 4.171v-6.234h2.717V9.187h-7.18v-1.39h4.692z" />
+      <path d="M19.785 0v7.272H22.5V17.62h-2.935V24l-7.037-6.194v6.145h-1.091v-6.152L4.392 24v-6.465H1.5V7.188h2.884V0l7.053 6.494V.19h1.09v6.49L19.786 0zm-7.257 9.044v7.319l5.946 5.234V14.44l-5.946-5.397zm-1.099-.08l-5.946 5.398v7.235l5.946-5.234V8.965zm8.136 7.58h1.844V8.349H13.46l6.105 5.54v2.655zm-8.982-8.28H2.59v8.195h1.8v-2.576l6.192-5.62zM5.475 2.476v4.71h5.115l-5.115-4.71zm13.219 0l-5.115 4.71h5.115v-4.71z" />
     </svg>
   );
 }
 
 function ExploreWithAI({ className, slug, title }: IExploreWithAIProps) {
-  const markdownUrl = toAbsoluteSiteUrl(`/blog/${slug}/llms.md`);
+  const markdownUrl = toAbsoluteSiteUrl(`/blog/${slug}.md`);
   const prompt = `Read this blog post by Unkey and help me explore it: "${title}" — ${markdownUrl}`;
   const encoded = encodeURIComponent(prompt);
 
