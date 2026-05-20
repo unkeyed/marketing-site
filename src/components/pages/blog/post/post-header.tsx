@@ -4,6 +4,7 @@ import { IPost } from '@/types/blog';
 import { cn } from '@/lib/utils';
 import Breadcrumbs from '@/components/ui/breadcrumbs';
 import Authors from '@/components/pages/authors';
+import ExploreWithAI from '@/components/pages/blog/post/explore-with-ai';
 import Date from '@/components/pages/date';
 
 interface IPostHeaderProps {
@@ -12,7 +13,7 @@ interface IPostHeaderProps {
 }
 
 function PostHeader({ className, post }: IPostHeaderProps) {
-  const { title, authors, publishedAt, caption, readingTime, cover } = post;
+  const { title, authors, publishedAt, caption, readingTime, cover, slug } = post;
 
   const breadcrumbItems = [{ label: 'Blog', href: '/blog' }, { label: title }];
 
@@ -53,6 +54,7 @@ function PostHeader({ className, post }: IPostHeaderProps) {
           </time>
         </div>
       </div>
+      <ExploreWithAI className="mt-6" slug={slug.current} title={title} />
     </header>
   );
 }
