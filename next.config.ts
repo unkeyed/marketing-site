@@ -77,7 +77,12 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [],
+      beforeFiles: [
+        {
+          source: '/blog/:slug.md',
+          destination: '/api/blog/:slug',
+        },
+      ],
       afterFiles: [
         {
           source: '/docs',
