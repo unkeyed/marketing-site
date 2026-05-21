@@ -82,6 +82,10 @@ const nextConfig: NextConfig = {
           source: '/blog/:slug.md',
           destination: '/api/blog/:slug',
         },
+        {
+          source: '/pricing.md',
+          destination: '/api/pricing',
+        },
       ],
       afterFiles: [
         {
