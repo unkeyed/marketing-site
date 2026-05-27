@@ -46,14 +46,14 @@ export const pricingContentData = {
     title: 'Calculator',
     subtitle: 'Estimate monthly costs based on your infrastructure needs.',
     fieldLabels: {
-      cpu: 'Active CPU / instance',
-      memory: 'Memory / instance',
+      cpu: 'Avg active CPU / instance',
+      memory: 'Avg memory / instance',
       instances: 'Number of instances',
       egress: 'Egress / month',
     },
     fieldTooltips: {
-      cpu: 'Number of active virtual CPU cores per running instance',
-      memory: 'Amount of RAM allocated per running instance',
+      cpu: 'Average active virtual CPU per running instance. Billed on actual usage, not your configured ceiling.',
+      memory: 'Average memory used per running instance. Billed on actual usage, not your configured ceiling.',
       instances: 'Total number of instances running simultaneously',
       egress: 'Total outbound network data transfer per month',
     },
@@ -82,43 +82,6 @@ export const pricingContentData = {
 };
 
 export const deployPricingPlans: IPricingPlan[] = [
-  {
-    id: 'free',
-    name: 'Free',
-    // lucideIcon: "gem",
-    description: 'Deploy your first API fast. Great for quick prototypes.',
-    currency: 'USD',
-    monthlyPrice: 0,
-    annualPrice: 0,
-    priceMonthlyLabel: ' / mo',
-    priceAnnualLabel: ' / mo',
-    priceType: 'number',
-    features: {
-      title: 'What’s included',
-      items: [
-        {
-          label: 'Up to 0.25 vCPU / 0.25 GB per Instance',
-          lucideIcon: 'check',
-        },
-        {
-          label: '1 concurrent build',
-          lucideIcon: 'check',
-        },
-        {
-          label: 'No custom domains',
-          lucideIcon: 'check',
-        },
-        {
-          label: 'Community support',
-          lucideIcon: 'check',
-        },
-      ],
-    },
-    link: {
-      label: 'Start for free',
-      href: APP_URL,
-    },
-  },
   {
     id: 'starter',
     name: 'Starter',
@@ -428,7 +391,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Projects',
         plans: [
-          { planId: 'free', value: '1' },
           { planId: 'starter', value: 'Unlimited' },
           { planId: 'pro', value: 'Unlimited' },
           { planId: 'business', value: 'Unlimited' },
@@ -437,7 +399,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Concurrent Builds',
         plans: [
-          { planId: 'free', value: '1' },
           { planId: 'starter', value: '1' },
           { planId: 'pro', value: '1' },
           { planId: 'business', value: '1' },
@@ -446,7 +407,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Max vCPU per Instance',
         plans: [
-          { planId: 'free', value: '0.25' },
           { planId: 'starter', value: '2' },
           { planId: 'pro', value: '8' },
           { planId: 'business', value: '32' },
@@ -455,7 +415,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Max RAM (GB) per Instance',
         plans: [
-          { planId: 'free', value: '0.25' },
           { planId: 'starter', value: '2' },
           { planId: 'pro', value: '8' },
           { planId: 'business', value: '32' },
@@ -464,7 +423,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Custom domains',
         plans: [
-          { planId: 'free', value: false },
           { planId: 'starter', value: '1' },
           { planId: 'pro', value: '10' },
           { planId: 'business', value: '100' },
@@ -473,7 +431,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Included usage',
         plans: [
-          { planId: 'free', value: false },
           { planId: 'starter', value: '$5' },
           { planId: 'pro', value: '$25' },
           { planId: 'business', value: '$50' },
@@ -482,7 +439,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Regions',
         plans: [
-          { planId: 'free', value: '1' },
           { planId: 'starter', value: '3' },
           { planId: 'pro', value: 'All' },
           { planId: 'business', value: 'All' },
@@ -491,7 +447,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Team members',
         plans: [
-          { planId: 'free', value: '1' },
           { planId: 'starter', value: '1' },
           { planId: 'pro', value: 'Unlimited' },
           { planId: 'business', value: 'Unlimited' },
@@ -500,7 +455,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Log retention',
         plans: [
-          { planId: 'free', value: '1 day' },
           { planId: 'starter', value: '3 days' },
           { planId: 'pro', value: '7 days' },
           { planId: 'business', value: '14 days' },
@@ -509,7 +463,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Audit log retention',
         plans: [
-          { planId: 'free', value: '3 days' },
           { planId: 'starter', value: '7 days' },
           { planId: 'pro', value: '14 days' },
           { planId: 'business', value: '30 days' },
@@ -518,7 +471,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Support',
         plans: [
-          { planId: 'free', value: 'Community' },
           { planId: 'starter', value: 'Email' },
           { planId: 'pro', value: 'Email' },
           { planId: 'business', value: 'Email' },
@@ -539,11 +491,11 @@ export const faqItems = [
   },
   {
     question: 'Can I try a paid plan, and can I downgrade later?',
-    answer: `There's no trial, but the Free tier lets you build and test Unkey without a credit card. You can upgrade anytime, and downgrades take effect at the end of your current billing cycle.`,
+    answer: `There's no trial, but Starter is just $5/mo and includes $5 in usage credits — enough to build and test Unkey Deploy end-to-end. You can upgrade anytime, and downgrades take effect at the end of your current billing cycle.`,
   },
   {
     question: 'How is compute metered?',
-    answer: `You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls. An API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed for the time an instance is running, and egress by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
+    answer: `Both vCPU and memory are billed on average actual usage, not the ceiling you configured. You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls — an API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed by average GB-seconds actually used by your instance, so right-sizing for headroom doesn't penalize you. Egress is billed by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
   },
   {
     question: "What happens when I hit my plan's limits?",
@@ -555,7 +507,7 @@ export const faqItems = [
   },
   {
     question: 'How long are logs retained?',
-    answer: `Request logs are retained for 1 day on Free and 7 days on Pro. Audit logs are retained for 3 days on Free and 14 days on Pro. Enterprise plans offer custom retention. Export is not yet available, but it's on the roadmap.`,
+    answer: `Request logs are retained for 3 days on Starter, 7 days on Pro, and 14 days on Business. Audit logs are retained for 7 days on Starter, 14 days on Pro, and 30 days on Business. Enterprise plans offer custom retention. Export is not yet available, but it's on the roadmap.`,
   },
   {
     question: 'Can I migrate existing API keys from another provider?',
