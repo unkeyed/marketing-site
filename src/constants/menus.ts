@@ -49,6 +49,7 @@ export const MENUS = {
           { label: 'About', href: '/about' },
           { label: 'Source Code', href: GITHUB_URL },
           { label: 'Status Page', href: 'https://status.unkey.com' },
+          { label: 'Roadmap', href: 'https://feedback.unkey.com/roadmap' },
         ],
       },
       {
@@ -58,6 +59,7 @@ export const MENUS = {
           { label: 'Changelog', href: '/changelog' },
           { label: 'Docs', href: 'https://unkey.com/docs/introduction' },
           { label: 'Glossary', href: '/glossary' },
+          { label: 'Feature Request', href: 'https://feedback.unkey.com/' },
           // { label: 'Case Studies', href: '/case-studies' },
         ],
       },
