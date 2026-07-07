@@ -1,0 +1,146 @@
+---
+date: 2026-07-07
+title: 'From Endpoint to API'
+description: 'Deploy, protect, meter, and observe your API in one workflow with Unkey, instead of stitching together API infrastructure.'
+image: '/images/blog-images/covers/from-endpoint-to-api/og-1080.png'
+author: james
+tags: ['company']
+---
+
+Every real API ships with a hidden checklist.
+
+At first it looks simple: write an endpoint, return JSON, push it somewhere. Then production shows up with a clipboard.
+
+Where does it deploy? What domain does it use? Is TLS configured? What sits in front of it? How do customers authenticate? Where do rate limits live? Can you see logs per request? Can you track usage per customer? What happens when a bad deploy goes out? Can you roll back without turning the launch into an incident?
+
+The endpoint is usually the cleanest part of the system. The work around the endpoint is where APIs get slow to ship.
+
+That is the work Unkey collapses into one workflow.
+
+## The API is not just the code
+
+Most teams start with the part they care about: the product logic.
+
+Maybe it's an endpoint that enriches data, runs an AI workflow, sends a message, searches an index, or exposes a core internal capability to customers. The first version can be simple: a route, a handler, a response.
+
+But as soon as another person or company depends on it, the API needs a product layer around it:
+
+- deployment
+- domains and TLS
+- a gateway
+- API keys
+- rate limits
+- usage tracking
+- request logs
+- runtime logs
+- metrics
+- rollbacks
+- key rotation
+- permissions
+- customer access
+
+None of these pieces stay optional for long. They are the difference between "we have an endpoint" and "we run an API people can depend on."
+
+## Why API infrastructure gets fragmented
+
+The problem isn't that these pieces are impossible. It's that they usually come from different places.
+
+You deploy with one tool. Configure domains somewhere else. Add a gateway or proxy in front. Store API keys in your database. Reach for Redis when rate limits become urgent. Pipe logs into another system. Build a usage table. Add a dashboard later. Write internal scripts to revoke, rotate, or inspect keys. Then add more glue code every time a customer asks for a plan, quota, or usage report.
+
+Each decision makes sense in isolation. Together, they create a stack nobody meant to design.
+
+That stack has a cost:
+
+- Product work waits on infrastructure work.
+- Operational questions require jumping between systems.
+- Customer-level usage is hard to answer quickly.
+- Every team invents a slightly different version of API auth and limits.
+- Launching a new API feels heavier than it should.
+
+This is how APIs get treated like side projects, even when they're becoming products.
+
+## Unkey is the workflow around your API
+
+Unkey started with API keys, but the job is bigger than key management.
+
+Modern APIs need a full workflow: deploy the service, route traffic through a gateway, protect requests, enforce limits, meter usage, inspect behavior, and manage customer access.
+
+Unkey brings that workflow together, so the API doesn't have to be surrounded by a custom pile of infrastructure before it can feel production-ready.
+
+The point isn't to give you another dashboard for one narrow task. It's to make the path from "I built an API" to "customers can safely use this API" much shorter.
+
+You can start from a new service or an existing API. Either way, the API gets the same surrounding control plane: keys, limits, usage, logs, and operational visibility.
+
+## The full loop: deploy, protect, meter, observe
+
+Shipping a real API is a loop, not a checklist you complete once.
+
+You deploy the API. You protect it before traffic reaches your application code. You meter usage so access can map to customers, plans, quotas, or credits. You observe requests so you can understand what's happening in production.
+
+Then you do it again as the API changes.
+
+### Deploy an API
+
+Start with the service itself. Unkey can deploy your API and give you the operational basics around it: a live URL, build logs, preview environments, routing, and a rollback path.
+
+That matters because deployment shouldn't be a separate infrastructure project every time you want to launch or test an API. The faster you can get from repo to reachable endpoint, the faster you can learn from real usage.
+
+### Protect the API
+
+Once an API has users, it needs a boundary.
+
+That boundary shouldn't live as scattered checks across every handler. It should be enforced consistently at the edge of the API.
+
+With Unkey, you can issue API keys, verify requests, revoke access, rotate credentials, add expiration, attach metadata, and enforce rate limits. You can shape access by customer, environment, product tier, or use case.
+
+The goal is simple: every request should be tied to an identity, a policy, and a limit before it reaches the work your API performs.
+
+### Meter usage
+
+If your API is valuable, usage matters.
+
+You need to know who is calling it, how often, and under which constraints. That's true whether you're building a paid API product, protecting an internal platform, or giving customers programmatic access to your app.
+
+Metering turns raw traffic into something you can operate. It lets you enforce quotas, model plans, understand adoption, spot abuse, and answer customer questions without digging through a pile of logs.
+
+### Observe what happens
+
+Production APIs need fast answers.
+
+Was the request accepted? Which key made it? Was it rate limited? How long did it take? Did the application fail, or did the request never make it that far? Is one customer suddenly using more than expected?
+
+Unkey gives you request and runtime visibility around the API workflow, so debugging doesn't start with five tabs and a guess.
+
+Observability isn't just for incidents. It's how you understand whether the API is becoming useful.
+
+## Three ways to start
+
+You don't need to adopt the whole workflow at once. Start from the problem in front of you.
+
+### Deploy a new API
+
+If you're starting from a repo, use Unkey to get the API live and production-shaped from the beginning. Deploy it, inspect logs, test previews, and keep a rollback path close.
+
+This is the fastest path when the problem is, "I've built the API. Now I need it online."
+
+### Add keys and limits to an existing API
+
+If your API already runs somewhere, start with access control.
+
+Add API keys, verification, rate limits, expiration, metadata, and usage tracking around the traffic you already have. This is the right path when your homemade key table or one-off rate limiter is starting to feel brittle.
+
+### Build a metered API product
+
+If the API is part of your business model, start with the product layer.
+
+Issue keys per customer, attach usage limits or credits, track consumption, and give yourself the foundation for plans, quotas, analytics, and customer self-service.
+
+This is the path for teams turning endpoints into something customers pay for, depend on, and manage over time.
+
+## Ship the API
+
+Developers don't set out to build infrastructure around APIs. They set out to ship something useful.
+
+But useful APIs need more than a URL. They need deployment, protection, metering, observability, and a way to manage customer access without rebuilding the same control plane from scratch.
+
+That's Unkey's point of view: ship APIs, not infrastructure.
