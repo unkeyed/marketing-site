@@ -7,140 +7,85 @@ author: james
 tags: ['company']
 ---
 
-Every real API ships with a hidden checklist.
+Every real API ships with a hidden checklist. At first, building one feels almost disappointingly simple: write a handler, return some JSON, push it somewhere. Then production shows up with a clipboard.
 
-At first it looks simple: write an endpoint, return JSON, push it somewhere. Then production shows up with a clipboard.
+Where does it deploy? What domain does it use? Is TLS configured? How do customers authenticate? Where do rate limits live? Can you see every request, and can you answer why one customer is getting throttled while another isn't? What happens when Friday's deploy breaks on Monday morning?
 
-Where does it deploy? What domain does it use? Is TLS configured? What sits in front of it? How do customers authenticate? Where do rate limits live? Can you see logs per request? Can you track usage per customer? What happens when a bad deploy goes out? Can you roll back without turning the launch into an incident?
+The endpoint is rarely the hard part. Everything around it is, and that's usually where shipping slows down.
 
-The endpoint is usually the cleanest part of the system. The work around the endpoint is where APIs get slow to ship.
+# The API is not just the code
 
-That is the work Unkey collapses into one workflow.
+Most APIs begin life as product code. Maybe they enrich data, run an AI workflow, search an index, send messages, or wrap an internal service so customers can build on top of it. The first version doesn't need much. The second version does.
 
-## The API is not just the code
+The moment another team depends on your API, or worse, a paying customer, you're no longer maintaining an endpoint. You're operating a product. And operating a product means thinking about a whole set of things that have nothing to do with your business logic:
 
-Most teams start with the part they care about: the product logic.
-
-Maybe it's an endpoint that enriches data, runs an AI workflow, sends a message, searches an index, or exposes a core internal capability to customers. The first version can be simple: a route, a handler, a response.
-
-But as soon as another person or company depends on it, the API needs a product layer around it:
-
-- deployment
-- domains and TLS
-- a gateway
+- Deployment
+- Domains and TLS
+- Authentication
 - API keys
-- rate limits
-- usage tracking
-- request logs
-- runtime logs
-- metrics
-- rollbacks
-- key rotation
-- permissions
-- customer access
+- Rate limits
+- Usage tracking
+- Request logs
+- Rollbacks
+- Permissions
+- Customer access
 
-None of these pieces stay optional for long. They are the difference between "we have an endpoint" and "we run an API people can depend on."
+None of these are particularly exciting, and none of them stay optional for very long.
 
-## Why API infrastructure gets fragmented
+# Infrastructure grows one decision at a time
 
-The problem isn't that these pieces are impossible. It's that they usually come from different places.
+Almost nobody sets out to design an overly complicated API platform. It happens gradually.
 
-You deploy with one tool. Configure domains somewhere else. Add a gateway or proxy in front. Store API keys in your database. Reach for Redis when rate limits become urgent. Pipe logs into another system. Build a usage table. Add a dashboard later. Write internal scripts to revoke, rotate, or inspect keys. Then add more glue code every time a customer asks for a plan, quota, or usage report.
+You deploy with one service because it's familiar. You add a gateway because authentication got annoying. Someone asks for rate limits, so Redis appears. A customer wants usage numbers, so you build a table. Support asks which requests failed yesterday, so logs get shipped somewhere else.
 
-Each decision makes sense in isolation. Together, they create a stack nobody meant to design.
+Every one of these decisions is reasonable. The problem is that nobody is making them together. A year later, you've accidentally built an API platform out of six different products and three internal scripts, not because you wanted to, but because every customer request nudged the architecture a little further.
 
-That stack has a cost:
+# The mistake is not Redis
 
-- Product work waits on infrastructure work.
-- Operational questions require jumping between systems.
-- Customer-level usage is hard to answer quickly.
-- Every team invents a slightly different version of API auth and limits.
-- Launching a new API feels heavier than it should.
+People often assume the hard part is choosing the right tools. It usually isn't. Redis isn't the problem, and neither is your gateway.
 
-This is how APIs get treated like side projects, even when they're becoming products.
+The real mistake is solving infrastructure problems before you've decided how your API should behave as a product. Rate limiting, for example, isn't really about traffic. It's about business policy: who gets access, how much, how often, and what happens when they exceed it.
 
-## Unkey is the workflow around your API
+Those are product questions. Infrastructure should express the answers, not define them.
 
-Unkey started with API keys, but the job is bigger than key management.
+# That is the workflow Unkey tries to collapse
 
-Modern APIs need a full workflow: deploy the service, route traffic through a gateway, protect requests, enforce limits, meter usage, inspect behavior, and manage customer access.
+Unkey started with API keys, but keys were never the whole job. Real APIs need a continuous workflow: deploy the service, protect requests before they hit your application, associate every request with a customer, measure usage, and understand what happened when something breaks. Then you repeat it all as the API evolves.
 
-Unkey brings that workflow together, so the API doesn't have to be surrounded by a custom pile of infrastructure before it can feel production-ready.
+The goal isn't another dashboard. It's shortening the distance between "I built an API" and "customers can safely depend on it."
 
-The point isn't to give you another dashboard for one narrow task. It's to make the path from "I built an API" to "customers can safely use this API" much shorter.
+# Shipping is a loop
 
-You can start from a new service or an existing API. Either way, the API gets the same surrounding control plane: keys, limits, usage, logs, and operational visibility.
+A production API is never really finished. You deploy, you learn, you adjust limits, you onboard new customers, you investigate unusual traffic, you change pricing, you rotate keys, and then you ship again.
 
-## The full loop: deploy, protect, meter, observe
+Good API infrastructure makes that loop smaller. Not because it removes the complexity, but because it keeps the complexity in one place.
 
-Shipping a real API is a loop, not a checklist you complete once.
+# Protecting requests is not enough
 
-You deploy the API. You protect it before traffic reaches your application code. You meter usage so access can map to customers, plans, quotas, or credits. You observe requests so you can understand what's happening in production.
+Authentication answers one question: who is making this request? Operating an API means answering several more. Should they be allowed? How much have they already used? Which plan are they on? Should this request count against credits? Should support be able to explain why it failed?
 
-Then you do it again as the API changes.
+None of those questions belong inside every route handler. They belong around the API.
 
-### Deploy an API
+# Observability is more than debugging
 
-Start with the service itself. Unkey can deploy your API and give you the operational basics around it: a live URL, build logs, preview environments, routing, and a rollback path.
+Most people think of logs as something you reach for during an incident, but they're just as useful on good days. When one customer suddenly triples their usage, that's a signal. When nobody touches a new endpoint for two weeks, that's a signal too.
 
-That matters because deployment shouldn't be a separate infrastructure project every time you want to launch or test an API. The faster you can get from repo to reachable endpoint, the faster you can learn from real usage.
+Observability isn't only about finding problems. It's how you learn whether the API you're building is actually becoming useful.
 
-### Protect the API
+# Three ways to start
 
-Once an API has users, it needs a boundary.
+If you're building a new API, start by deploying it with the operational pieces already in place.
 
-That boundary shouldn't live as scattered checks across every handler. It should be enforced consistently at the edge of the API.
+If you already have traffic, start by replacing the homemade authentication and rate limiting that has quietly become everyone's least favorite part of the codebase.
 
-With Unkey, you can issue API keys, verify requests, revoke access, rotate credentials, add expiration, attach metadata, and enforce rate limits. You can shape access by customer, environment, product tier, or use case.
+And if the API is becoming part of your business, start with metering. Customers don't buy endpoints. They buy predictable access, usage, and reliability.
 
-The goal is simple: every request should be tied to an identity, a policy, and a limit before it reaches the work your API performs.
+Different starting points, same destination.
 
-### Meter usage
+# Ship the API
 
-If your API is valuable, usage matters.
+Developers don't wake up excited to build key rotation systems, or usage dashboards, or rollback workflows. They build APIs because they're trying to solve someone else's problem.
 
-You need to know who is calling it, how often, and under which constraints. That's true whether you're building a paid API product, protecting an internal platform, or giving customers programmatic access to your app.
+Production doesn't care about that distinction. Eventually, every useful API needs deployment, protection, metering, observability, and customer management. Production is always going to arrive with a clipboard. The only question is whether you're scrambling to answer every item on it, or whether those answers are already built into the platform.
 
-Metering turns raw traffic into something you can operate. It lets you enforce quotas, model plans, understand adoption, spot abuse, and answer customer questions without digging through a pile of logs.
-
-### Observe what happens
-
-Production APIs need fast answers.
-
-Was the request accepted? Which key made it? Was it rate limited? How long did it take? Did the application fail, or did the request never make it that far? Is one customer suddenly using more than expected?
-
-Unkey gives you request and runtime visibility around the API workflow, so debugging doesn't start with five tabs and a guess.
-
-Observability isn't just for incidents. It's how you understand whether the API is becoming useful.
-
-## Three ways to start
-
-You don't need to adopt the whole workflow at once. Start from the problem in front of you.
-
-### Deploy a new API
-
-If you're starting from a repo, use Unkey to get the API live and production-shaped from the beginning. Deploy it, inspect logs, test previews, and keep a rollback path close.
-
-This is the fastest path when the problem is, "I've built the API. Now I need it online."
-
-### Add keys and limits to an existing API
-
-If your API already runs somewhere, start with access control.
-
-Add API keys, verification, rate limits, expiration, metadata, and usage tracking around the traffic you already have. This is the right path when your homemade key table or one-off rate limiter is starting to feel brittle.
-
-### Build a metered API product
-
-If the API is part of your business model, start with the product layer.
-
-Issue keys per customer, attach usage limits or credits, track consumption, and give yourself the foundation for plans, quotas, analytics, and customer self-service.
-
-This is the path for teams turning endpoints into something customers pay for, depend on, and manage over time.
-
-## Ship the API
-
-Developers don't set out to build infrastructure around APIs. They set out to ship something useful.
-
-But useful APIs need more than a URL. They need deployment, protection, metering, observability, and a way to manage customer access without rebuilding the same control plane from scratch.
-
-That's Unkey's point of view: ship APIs, not infrastructure.
+That's the job Unkey is trying to do.
