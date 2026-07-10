@@ -1,0 +1,62 @@
+---
+title: July 10, 2026
+date: 2026-07-10
+tags: ['product:blue']
+---
+## New features
+
+### Secure one-time links for API keys
+
+After creating an API key in the dashboard, you can now share the secret with a one-time,
+time-boxed link. The link reveals the API Key one time, then it is no longer usable.
+
+![secure key sharing screenshot](/images/changelog/2026-07-10/keyCreation.png)
+
+This gives you the ability to safely share keys with team members or customers. 
+
+### Custom build commands
+
+Automatic builds now support an explicit build command per environment. This is useful for
+monorepos or apps that need a focused command such as `pnpm --filter api build`.
+
+### Add roles and permissions while creating a key
+
+The dashboard key creation flow now lets you attach roles and permissions before the key is
+created. You can issue a key with the right access from the start instead of creating it first
+and editing it afterward.
+
+![permissions and roles on a key screenshot](/images/changelog/2026-07-10/permsOnKey.png)
+
+## Updates
+
+### Key management is consistent across dashboard and API
+
+Dashboard actions for creating, updating, deleting, rotating, and editing API keys now follow
+the same public API behavior as programmatic key management. Existing dashboard flows keep the
+same shape, with more consistent validation and errors.
+
+### Gateway key authentication can enforce key rate limits
+
+Gateway API key authentication can now enforce the named rate limits configured on a key,
+matching the behavior you already get when verifying keys through the API.
+
+See [Key Rate Limits](https://www.unkey.com/docs/platform/apis/features/ratelimiting/overview).
+
+## Bug fixes
+
+- Non-admin workspace members can no longer rename a workspace or change billing customer
+details.
+- GitHub app installation checks now verify ownership before connecting an installation.
+- Role edits no longer risk saving an empty association state before existing keys and
+permissions finish loading.
+- Deep-linked list pages no longer reset to the first page before data loads.
+- Key creation now validates the minimum byte length before submitting, so errors appear
+earlier in the dashboard.
+- Dashboard error toasts now show the intended human-readable message instead of raw response
+bodies.
+- Deleted deployments and domains no longer leave background retries running.
+- Custom build root directories are validated more strictly before a deployment starts.
+- Ratelimit origin handling is less sensitive to tiny transient blips, reducing unnecessary
+fail-fast behavior.
+- Security-sensitive tokens now use uniform character selection.
+
