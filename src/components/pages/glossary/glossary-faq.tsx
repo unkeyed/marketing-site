@@ -2,7 +2,7 @@
 
 import { Minus, Plus } from 'lucide-react';
 
-import type { IGlossaryFaqItem } from '@/types/glossary';
+import type { IGlossaryCompiledFaqItem } from '@/types/glossary';
 import { cn } from '@/lib/utils';
 import {
   Accordion,
@@ -14,7 +14,7 @@ import {
 interface IGlossaryFaqProps {
   className?: string;
   term: string;
-  items: IGlossaryFaqItem[];
+  items: IGlossaryCompiledFaqItem[];
 }
 
 function GlossaryFaq({ className, term, items }: IGlossaryFaqProps) {
@@ -48,7 +48,7 @@ function GlossaryFaq({ className, term, items }: IGlossaryFaqProps) {
                 {item.question}
               </span>
             </AccordionTrigger>
-            <AccordionContent className="pr-12 pb-6 text-base leading-normal tracking-tight text-muted-foreground">
+            <AccordionContent className="pr-12 pb-6 text-base leading-normal tracking-tight text-muted-foreground [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-2 [&_code]:font-mono [&_code]:text-[0.9375em] [&_code]:text-foreground [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:font-medium [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-6 [&>*+*]:mt-3 [&_li+li]:mt-3">
               {item.answer}
             </AccordionContent>
           </AccordionItem>

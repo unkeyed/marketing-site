@@ -5,6 +5,7 @@ import slugify from 'slugify';
 
 import type { IBlogSearchItem } from '@/types/blog';
 import type {
+  IGlossaryCompiledFaqItem,
   IGlossaryFaqItem,
   IGlossaryLetterGroup,
   IGlossaryTakeaways,
@@ -13,7 +14,12 @@ import type {
   INewGlossaryFrontmatter,
 } from '@/types/glossary';
 import { getAllPosts } from '@/lib/blog/posts';
-import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/markdown';
+import {
+  compileMarkdownString,
+  compileMdx,
+  readAndParseMarkdown,
+  removeMarkdownSymbols,
+} from '@/lib/markdown';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt } from '@/lib/utils';
 
@@ -129,6 +135,24 @@ function getGlossaryDataBySlug(slug: string): IGlossaryTermData | null {
   }
 }
 
+// YAML folded scalars (`>-`) collapse the single line breaks inside a paragraph into spaces,
+// so every `\n` left in the parsed value marks an intentional block break (paragraph, list item).
+// Restore them as blank lines so the string parses as separate markdown blocks.
+function restoreMarkdownBlockBreaks(text: string): string {
+  return text.replace(/\n(?!\n)/g, '\n\n');
+}
+
+async function compileGlossaryFaqItem(item: IGlossaryFaqItem): Promise<IGlossaryCompiledFaqItem> {
+  try {
+    const answer = await compileMarkdownString(restoreMarkdownBlockBreaks(item.answer));
+
+    return { question: item.question, answer };
+  } catch (error) {
+    console.error(`Error compiling glossary FAQ answer: ${item.question}`, error);
+    return { question: item.question, answer: item.answer };
+  }
+}
+
 async function getGlossaryTermBySlug(slug: string): Promise<IGlossaryTerm | null> {
   try {
     const glossaryTermData = getGlossaryDataBySlug(slug);
@@ -144,10 +168,12 @@ async function getGlossaryTermBySlug(slug: string): Promise<IGlossaryTerm | null
         relatedPosts,
       },
     );
+    const faq = await Promise.all(glossaryTermData.faq.map(compileGlossaryFaqItem));
 
     return {
       ...glossaryTermData,
       content: compiledMdx,
+      faq,
       tableOfContents,
     };
   } catch (error) {

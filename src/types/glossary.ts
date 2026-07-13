@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import type { ISeoFields, ITableOfContentsItem } from '@/types/common';
 
@@ -20,6 +20,11 @@ export interface IGlossaryUsageInApis {
 export interface IGlossaryFaqItem {
   question: string;
   answer: string;
+}
+
+export interface IGlossaryCompiledFaqItem {
+  question: string;
+  answer: ReactNode;
 }
 
 export interface IGlossaryTakeaways {
@@ -58,8 +63,9 @@ export interface IGlossaryTermData {
   seo: ISeoFields;
 }
 
-export interface IGlossaryTerm extends Omit<IGlossaryTermData, 'content'> {
+export interface IGlossaryTerm extends Omit<IGlossaryTermData, 'content' | 'faq'> {
   content: ReactElement;
+  faq: IGlossaryCompiledFaqItem[];
   tableOfContents: ITableOfContentsItem[];
 }
 
