@@ -317,9 +317,12 @@
     }
   }
 
+  /* counter() (singular), not counters(): the scope of a preceding sibling list's
+     counter extends over later lists, so counters() prefixes their markers with the
+     earlier list's final count (e.g. every FAQ list rendering as "5.1.", "5.2.", …) */
   ol {
     li::marker {
-      content: counters(list-item, '.') '. ';
+      content: counter(list-item) '. ';
     }
   }
 
