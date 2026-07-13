@@ -64,6 +64,24 @@ export async function compileMdx(source: string, opts: CompileMdxOptions = {}) {
 }
 
 /**
+ * Compiles a plain markdown string (e.g. from frontmatter fields) into a React element.
+ * Uses `format: 'md'` so MDX-specific characters like `<` and `{` are treated as literal text.
+ */
+export async function compileMarkdownString(source: string) {
+  const { content } = await compileMDX({
+    source,
+    options: {
+      mdxOptions: {
+        format: 'md',
+        remarkPlugins: [remarkGfm],
+      },
+    },
+  });
+
+  return content;
+}
+
+/**
  * Removes markdown symbols, HTML tags, emojis, and other special characters from text
  * @param {string} text - The text to clean and normalize
  * @returns {string} The text with all markdown and special characters removed
@@ -110,6 +128,6 @@ export function readAndParseMarkdown<T>(filePath: string): TMarkdownDataResponse
     };
   } catch (error) {
     console.error(`Error reading markdown file: ${filePath}`, error);
-    throw new Error(`Failed to read markdown file: ${filePath}`);
+    throw new Error(`Failed to read markdown file: ${filePath}`, { cause: error });
   }
 }
