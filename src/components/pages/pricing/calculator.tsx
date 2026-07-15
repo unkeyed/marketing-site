@@ -29,6 +29,7 @@ const calculatorFormat = {
 
 const RATE_VCPU_PER_SEC = 0.000006944444;
 const RATE_GB_PER_SEC = 0.000003472222;
+const RATE_DISK_PER_GB_SEC = 0.00000006;
 const RATE_EGRESS_PER_GB = 0.05;
 
 const DAYS_IN_MONTH = 30;
@@ -43,6 +44,7 @@ const LIMITS = {
 function useEstimate(state: {
   cpu: string;
   memory: string;
+  disk: string;
   instances: number;
   egress: number;
 }) {
@@ -50,13 +52,15 @@ function useEstimate(state: {
     const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
     const cpuCount = clamp(Number(state.cpu) || 0, 0, LIMITS.cpu.max);
     const memoryGb = Number(state.memory) || 0;
+    const diskGb = Number(state.disk) || 0;
     const vmCount = clamp(state.instances || 0, 0, LIMITS.instances.max);
     const egressGb = clamp(state.egress || 0, 0, LIMITS.egress.max);
 
     const vcpuCost = vmCount * cpuCount * SECONDS_IN_MONTH * RATE_VCPU_PER_SEC;
     const memoryCost = vmCount * memoryGb * SECONDS_IN_MONTH * RATE_GB_PER_SEC;
+    const diskCost = vmCount * diskGb * SECONDS_IN_MONTH * RATE_DISK_PER_GB_SEC;
     const egressCost = egressGb * RATE_EGRESS_PER_GB;
-    const usageBased = vcpuCost + memoryCost + egressCost;
+    const usageBased = vcpuCost + memoryCost + diskCost + egressCost;
 
     const total = Math.round(usageBased * 100) / 100;
     const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -67,10 +71,11 @@ function useEstimate(state: {
       breakdown: {
         vcpu: round2(vcpuCost),
         memory: round2(memoryCost),
+        disk: round2(diskCost),
         egress: round2(egressCost),
       },
     };
-  }, [state.cpu, state.memory, state.instances, state.egress]);
+  }, [state.cpu, state.memory, state.disk, state.instances, state.egress]);
 }
 
 const INTEGER_INPUT_BLOCKED_KEYS = ['.', ',', 'e', 'E', '-', '+', 'Decimal'];
@@ -143,12 +148,14 @@ function EstimateRow({ label, value }: { label: string; value: number }) {
 export default function Calculator() {
   const [cpu, setCpu] = React.useState('0.5');
   const [memory, setMemory] = React.useState('4');
+  const [disk, setDisk] = React.useState('0');
   const [instances, setInstances] = React.useState('4');
   const [egress, setEgress] = React.useState('120');
 
   const estimate = useEstimate({
     cpu,
     memory,
+    disk,
     instances: Number(instances) || 0,
     egress: Number(egress) || 0,
   });
@@ -223,6 +230,24 @@ export default function Calculator() {
                 </SelectTrigger>
                 <SelectContent>
                   {content.memoryOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <FieldLabel htmlFor="calc-disk" tooltip={content.fieldTooltips.disk}>
+                {content.fieldLabels.disk}
+              </FieldLabel>
+              <Select value={disk} onValueChange={setDisk}>
+                <SelectTrigger id="calc-disk" className="h-9 rounded-md">
+                  <SelectValue placeholder="None" />
+                </SelectTrigger>
+                <SelectContent>
+                  {content.diskOptions.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </SelectItem>
@@ -354,6 +379,12 @@ export default function Calculator() {
             <span>{content.rateLabels.memory}</span>
             <span className="text-right">
               ${RATE_GB_PER_SEC.toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>{content.rateLabels.disk}</span>
+            <span className="text-right">
+              ${RATE_DISK_PER_GB_SEC.toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}
             </span>
           </div>
           <div className="flex items-center justify-between">

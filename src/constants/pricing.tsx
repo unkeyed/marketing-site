@@ -48,12 +48,14 @@ export const pricingContentData = {
     fieldLabels: {
       cpu: 'Avg active CPU / instance',
       memory: 'Avg memory / instance',
+      disk: 'Ephemeral disk / instance',
       instances: 'Number of instances',
       egress: 'Egress / month',
     },
     fieldTooltips: {
       cpu: 'Average active virtual CPU per running instance. Billed on actual usage, not your configured ceiling.',
       memory: 'Average memory used per running instance. Billed on actual usage, not your configured ceiling.',
+      disk: 'Ephemeral disk volume mounted per instance. Billed on the allocated size for as long as the instance runs. Up to 10 GiB per instance.',
       instances: 'Total number of instances running simultaneously',
       egress: 'Total outbound network data transfer per month',
     },
@@ -66,6 +68,13 @@ export const pricingContentData = {
       { value: '8', label: '8 GB' },
       { value: '16', label: '16 GB' },
     ],
+    diskOptions: [
+      { value: '0', label: 'None' },
+      { value: '1', label: '1 GB' },
+      { value: '2', label: '2 GB' },
+      { value: '5', label: '5 GB' },
+      { value: '10', label: '10 GB' },
+    ],
     cpuPlaceholder: '0.5',
     estimate: {
       heading: 'Estimate',
@@ -76,6 +85,7 @@ export const pricingContentData = {
     rateLabels: {
       vcpu: 'vCPU/sec',
       memory: 'Memory/GB/sec',
+      disk: 'Disk/GB/sec',
       egress: 'Egress/GB',
     },
   },
@@ -421,6 +431,14 @@ export const tableFeatures: IPricingTableFeatures[] = [
         ],
       },
       {
+        name: 'Max ephemeral disk per Instance',
+        plans: [
+          { planId: 'starter', value: '10 GiB' },
+          { planId: 'pro', value: '10 GiB' },
+          { planId: 'business', value: '10 GiB' },
+        ],
+      },
+      {
         name: 'Custom domains',
         plans: [
           { planId: 'starter', value: '1' },
@@ -495,7 +513,7 @@ export const faqItems = [
   },
   {
     question: 'How is compute metered?',
-    answer: `Both vCPU and memory are billed on average actual usage, not the ceiling you configured. You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls — an API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed by average GB-seconds actually used by your instance, so right-sizing for headroom doesn't penalize you. Egress is billed by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
+    answer: `Both vCPU and memory are billed on average actual usage, not the ceiling you configured. You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls — an API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed by average GB-seconds actually used by your instance, so right-sizing for headroom doesn't penalize you. Ephemeral disk is billed by GB-seconds on the volume size you allocate, for as long as the instance runs. Egress is billed by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
   },
   {
     question: "What happens when I hit my plan's limits?",
