@@ -241,7 +241,7 @@ function buildBody(): string {
     '',
     '**Do you offer SOC 2 compliance?**',
     '',
-    'Yes, Unkey is SOC 2 compliant. Contact support@unkey.com if you need a copy of our report or have specific compliance requirements for your Enterprise deployment.',
+    'Yes, Unkey is SOC 2 Type II certified. Visit our Trust Center at https://trust.inc/unkey to request a copy of our report, or contact support@unkey.com if you have specific compliance requirements for your Enterprise deployment.',
     '',
     '**How do I get SSO, SAML, or audit log exports?**',
     '',

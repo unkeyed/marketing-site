@@ -541,7 +541,16 @@ export const faqItems = [
   },
   {
     question: 'Do you offer SOC 2 compliance?',
-    answer: `Yes, Unkey is SOC 2 compliant. Contact us if you need a copy of our report or have specific compliance requirements for your Enterprise deployment.`,
+    answer: (
+      <p>
+        Yes, Unkey is SOC 2 Type II certified. Visit our{' '}
+        <Link href="https://trust.inc/unkey" className="underline">
+          Trust Center
+        </Link>{' '}
+        to request a copy of our report, or contact us if you have specific compliance requirements
+        for your Enterprise deployment.
+      </p>
+    ),
   },
   {
     question: 'How do I get SSO, SAML, or audit log exports?',
