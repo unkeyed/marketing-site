@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
+import { ShieldCheck } from 'lucide-react';
 import config from '@/configs/website-config';
 import { MENUS } from '@/constants/menus';
 
@@ -33,6 +34,15 @@ function Footer() {
             <p className="text-sm leading-tight font-medium -tracking-wide text-gray-40">
               {MENUS.footer.copyright}
             </p>
+            <NextLink
+              className="inline-flex w-fit items-center gap-x-1.5 rounded-full border border-gray-40/40 px-3 py-1.5 text-xs leading-none font-medium tracking-tight text-gray-60 transition-colors duration-200 hover:border-gray-60/60 hover:text-white"
+              href="https://trust.inc/unkey"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ShieldCheck className="size-3.5" aria-hidden="true" />
+              SOC 2 Type II Certified
+            </NextLink>
           </div>
         </div>
         <Nav className="w-full flex-1" sections={MENUS.footer.main} />

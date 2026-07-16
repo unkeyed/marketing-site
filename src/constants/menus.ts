@@ -76,6 +76,7 @@ export const MENUS = {
         items: [
           { label: 'Terms of Service', href: '/policies/terms' },
           { label: 'Privacy Policy', href: '/policies/privacy' },
+          { label: 'Trust Center', href: 'https://trust.inc/unkey' },
         ],
       },
     ] satisfies IFooterMenuSection[],
