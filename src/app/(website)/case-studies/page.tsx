@@ -1,8 +1,11 @@
 import { homeContentData } from '@/constants/home';
 
+import { type ICaseStudyData } from '@/types/case-study';
+import { getAllCaseStudies } from '@/lib/case-studies/posts';
 import { getMetadata } from '@/lib/get-metadata';
 import Hero from '@/components/pages/blog/hero--blog';
 import CaseStudiesGrid from '@/components/pages/case-studies/case-studies-grid';
+import { type TCaseStudyCardProps } from '@/components/pages/case-studies/case-study-card';
 import Cta from '@/components/pages/home/cta';
 
 export const metadata = getMetadata({
@@ -22,68 +25,41 @@ const contentData = {
   ),
   description:
     'Case studies showing how teams integrated\r\nthe platform, scaled confidently, and kept\r\nproduction predictable.',
-  caseStudies: [
-    {
-      variant: 'compact' as const,
-      category: 'Artificial Intelligence',
-      title: 'Operational intelligence at scale.',
-      description:
-        'How a fast-growing SaaS team unified workflows to support product-led expansion.',
-      href: '/case-studies/case-study-example',
-      logoSrc: '/images/case-studies/logos/logo-example-2.svg',
-      logoAlt: 'Customer logo',
-      logoWidth: 80,
-      logoHeight: 32,
-    },
-    {
-      variant: 'compact' as const,
-      category: 'Artificial Intelligence',
-      title: 'From fragmented tools to one system.',
-      description:
-        'How an operations team reduced complexity and accelerated execution across teams.',
-      href: '/case-studies/case-study-example',
-      logoSrc: '/images/case-studies/logos/logo-example-3.svg',
-      logoAlt: 'Customer logo',
-      logoWidth: 143,
-      logoHeight: 32,
-    },
-    {
-      category: 'Artificial Intelligence',
-      title: 'From fragmented tools to one system.',
-      description:
-        'How an operations team reduced complexity and accelerated execution across teams.',
-      href: '/case-studies/case-study-example',
-      imageSrc: '/images/case-studies/image-1.jpg',
-      imageAlt: 'Case study visual for artificial intelligence customer',
-    },
-    {
-      variant: 'compact' as const,
-      category: 'Artificial Intelligence',
-      title: 'From fragmented tools to one system.',
-      description:
-        'How an operations team reduced complexity and accelerated execution across teams.',
-      href: '/case-studies/case-study-example',
-      logoSrc: '/images/case-studies/logos/logo-example.svg',
-      logoAlt: 'Customer logo',
-      logoWidth: 127,
-      logoHeight: 25,
-    },
-    {
-      variant: 'compact' as const,
-      category: 'Artificial Intelligence',
-      title: 'Operational intelligence at scale.',
-      description:
-        'How a fast-growing SaaS team unified workflows to support product-led expansion.',
-      href: '/case-studies/case-study-example',
-      logoSrc: '/images/case-studies/logos/logo-example-2.svg',
-      logoAlt: 'Customer logo',
-      logoWidth: 80,
-      logoHeight: 32,
-    },
-  ],
 };
 
+function toCaseStudyCard(caseStudy: ICaseStudyData): TCaseStudyCardProps {
+  const category =
+    caseStudy.companyOverview?.items.find((item) => item.label === 'Industry')?.content ??
+    'Case Study';
+
+  const base = {
+    category,
+    title: caseStudy.title,
+    description: caseStudy.caption,
+    href: caseStudy.pathname,
+  };
+
+  if (caseStudy.cover) {
+    return {
+      ...base,
+      imageSrc: caseStudy.cover,
+      imageAlt: `${caseStudy.title} cover image`,
+    };
+  }
+
+  return {
+    ...base,
+    variant: 'compact' as const,
+    logoSrc: caseStudy.companyOverview?.logoSrc ?? '',
+    logoAlt: caseStudy.companyOverview?.logoAlt ?? caseStudy.title,
+    logoWidth: caseStudy.companyOverview?.logoWidth,
+    logoHeight: caseStudy.companyOverview?.logoHeight,
+  };
+}
+
 export default function CaseStudiesPage() {
+  const caseStudies = getAllCaseStudies().map(toCaseStudyCard);
+
   return (
     <main className="pt-10 md:pt-24">
       <Hero
@@ -94,7 +70,7 @@ export default function CaseStudiesPage() {
         titleClassName="marked-title !leading-[1.125] text-[1.8rem] min-[380px]:text-[2rem] md:text-[2.5rem] lg:text-[3rem]"
         descriptionClassName="text-base md:text-lg md:max-w-[33.25rem] lg:max-w-[22.5rem] min-[1025px]:max-w-[26rem] !tracking-[-0.01em]"
       />
-      <CaseStudiesGrid items={contentData.caseStudies} />
+      <CaseStudiesGrid items={caseStudies} />
       <Cta {...homeContentData.cta} />
     </main>
   );
