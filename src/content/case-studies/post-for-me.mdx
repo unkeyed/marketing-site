@@ -1,0 +1,100 @@
+---
+date: 2026-07-15
+title: 'How Post for Me hit $13K MRR on Unkey'
+image: '/images/case-studies/post-for-me/cover.png'
+description: 'Running keys and deployments on Unkey, Post for Me scaled their social media API to $13K MRR in under a year.'
+author: james
+companyOverview:
+  logo:
+    src: '/images/case-studies/post-for-me/post-for-me-logo-dark.png'
+    alt: 'Post for Me logo'
+    width: 143
+    height: 32
+  items:
+    - label: About
+      content: A unified API for posting and analytics across all major social media platforms
+    - label: Industry
+      content: Social Media Infrastructure / API-first SaaS
+---
+
+<Blockquote
+  quote="It's fast, reliable, and we built a business over $13,000 MRR in less than a year on them. They scaled with us and supported us along the whole journey."
+  authors={[{ name: 'Caleb', photo: '/images/case-studies/post-for-me/headshot_2024.jpeg' }]}
+  role="CEO"
+  className="[&_blockquote_p]:font-normal"
+  size="xs"
+/>
+
+## Key outcomes with Unkey
+
+- $13,000+ MRR in under a year, built entirely on Unkey keys and deployments.
+- Migrated off Railway and Vercel, consolidating hosting into a single platform.
+- Per-customer rate limits enabled without interruption as usage grew.
+- Unauthenticated requests blocked before they ever touch Post for Me's servers.
+- Zero engineering time spent maintaining auth or deployment infrastructure.
+
+## When your product is the API, the stakes are higher
+
+Post for Me is a social media aggregation service that unifies every major platform into a single API for posting and analytics. AI agents use it to run social accounts, products build scheduling features on top of it, and marketing teams automate content distribution through it.
+
+That puts Post for Me in an unusual position: the API is not a supporting feature of the product. It *is* the product. Every millisecond of latency, every failed key validation, and every deployment hiccup is directly visible to paying customers.
+
+"The core of our product that we're selling is the API," explains Caleb, Post for Me's CEO. "We knew that we would need to come to market backed with the best, most reliable technologies in order to serve our customers with the best experience."
+
+So Caleb and Matt made the same call a growing number of startups are making: build on Unkey from day one.
+
+## The challenge: fragmentation was eroding trust
+
+Keys were never the problem. Unkey handled authentication from launch, and Caleb describes being "spoiled with reliability and easy implementation from the rip." When they needed to layer in global rate limits, and later per-customer limits, they flipped them on without any interruption to the service.
+
+Hosting was a different story. As Post for Me grew, Caleb spread the application across multiple providers to manage costs and hedge against downtime. The strategy backfired.
+
+Every new provider meant another vetting process, another integration, and another point of failure. When any service was interrupted, users were rightfully upset. Worse, the churn of migrations planted doubt: customers began asking, "Can you guys handle the scale?"
+
+The fragmentation was costing three things at once: engineering time, money, and user trust.
+
+<Blockquote
+  quote="The level of complexity that was immediately taken off of our plate was AMAZING. We were relieved when we moved over to Unkey."
+  authors={[{ name: 'Caleb', photo: '/images/case-studies/post-for-me/headshot_2024.jpeg' }]}
+  role="CEO"
+  className="[&_blockquote_p]:font-normal"
+  size="xs"
+/>
+
+## The switch: consolidating keys and deployments
+
+When Unkey announced hosting, the decision took no deliberation. "It was a no-brainer for us to move over," Caleb says. The costs of their existing platforms were climbing while stability declined, and Unkey deployments meant collapsing their multi-provider sprawl into the platform they already trusted for auth.
+
+The migration matched their day-one experience with keys. Setup was fast enough that Caleb's effort went into planning how the product should run, not wrestling with configuration. They deleted Railway and Vercel from their stack entirely.
+
+One thing did catch Caleb off guard: the support. "We're not just fanboys of the Unkey product. We look to the Unkey team as a golden standard for the way that we run customer support on Post for Me."
+
+## Why keys and deployments belong together
+
+For Post for Me, the value of a unified platform is architectural, not just operational. Authentication and hosting are the two questions every API request must answer: where is the service, and should this caller have access?
+
+"They're complementary entry layers that set the foundation for an API application," Caleb explains. "By unifying these into a single platform, we derisk the stability of this entrypoint."
+
+The practical payoff: key validation happens before a request ever reaches Post for Me's servers. Unvalidated traffic never consumes their resources. And per-customer rate limits let them set safe global defaults, then accommodate individual customers' use cases on request.
+
+<Blockquote
+  quote="Trusted partners like Unkey offload the strain that comes with deployment infrastructure, enabling us to move right into the building, unblocked by distribution."
+  authors={[{ name: 'Caleb', photo: '/images/case-studies/post-for-me/headshot_2024.jpeg' }]}
+  role="CEO"
+  className="[&_blockquote_p]:font-normal"
+  size="xs"
+/>
+
+## From $0 to $13K MRR in under a year
+
+With the entrypoint derisked, Post for Me's engineering time goes where it should: into what the product actually does. In less than a year, that focus carried them past $13,000 in monthly recurring revenue, with Unkey scaling alongside them the entire way.
+
+And Caleb isn't done. Post for Me is moving additional processing systems onto Unkey hosting and launching new product verticals, all with Unkey managing both deployment and access.
+
+Caleb's advice to teams evaluating Unkey is characteristically direct: "Do it."
+
+<RelatedPosts title="Read more">
+  <RelatedPostCard slug="audit-logs-ga" />
+  <RelatedPostCard slug="using-unkey-with-auth" />
+  <RelatedPostCard slug="ratelimiting-public" />
+</RelatedPosts>
