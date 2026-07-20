@@ -81,9 +81,6 @@ export async function generateMetadata({ params }: ICaseStudyPageProps): Promise
     title: seo.title,
     description: seo.description,
     pathname: `/case-studies/${caseStudy.slug.current}`,
-    imagePath: seo.socialImage,
-    // noIndex: seo.noIndex,
-    // @TODO: Remove this once as soon as the pages are published
-    noIndex: true,
+    imagePath: seo.socialImage
   });
 }
