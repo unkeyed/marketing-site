@@ -14,14 +14,12 @@ export const MENUS = {
           description: 'Read product updates and insights',
           icon: '/icons/header/blog.svg',
         },
-        /*
         {
           label: 'Case studies',
           href: '/case-studies',
           description: 'Practical results from real deployments',
           icon: '/icons/header/case-studies.svg',
         },
-        */
         {
           label: 'Changelog',
           href: '/changelog',

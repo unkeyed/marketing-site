@@ -17,6 +17,25 @@ interface ICaseStudyCompanyOverviewProps {
   items: readonly ICaseStudyCompanyOverviewItem[];
 }
 
+function isExternalUrl(value: ReactNode): value is string {
+  return typeof value === 'string' && /^https?:\/\//.test(value.trim());
+}
+
+function formatUrlLabel(url: string): string {
+  const trimmed = url.trim();
+
+  try {
+    const { host, pathname } = new URL(trimmed);
+    const path = pathname === '/' ? '' : pathname.replace(/\/$/, '');
+    return `${host}${path}`;
+  } catch {
+    return trimmed
+      .replace(/^https?:\/\//, '')
+      .replace(/[?#].*$/, '')
+      .replace(/\/$/, '');
+  }
+}
+
 function CaseStudyCompanyOverview({
   className,
   logoSrc,
@@ -48,7 +67,18 @@ function CaseStudyCompanyOverview({
               {item.label}
             </dt>
             <dd className="text-sm leading-snug font-normal tracking-tight text-muted-foreground">
-              {item.content}
+              {isExternalUrl(item.content) ? (
+                <a
+                  href={item.content.trim()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-sm font-normal break-words text-foreground underline decoration-gray-40 decoration-dashed decoration-[1px] underline-offset-[0.26em] transition-colors duration-300 hover:text-foreground/85 hover:decoration-gray-70"
+                >
+                  {formatUrlLabel(item.content)}
+                </a>
+              ) : (
+                item.content
+              )}
             </dd>
           </div>
         ))}
