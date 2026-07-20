@@ -3,13 +3,21 @@ import path from 'path';
 import { authors as authorsList } from '@/content/blog/taxonomy/authors';
 import { globSync } from 'glob';
 
-import { ICaseStudy, ICaseStudyData, INewCaseStudyFrontmatter } from '@/types/case-study';
+import {
+  ICaseStudy,
+  ICaseStudyData,
+  ICaseStudyReadMoreItem,
+  INewCaseStudyFrontmatter,
+} from '@/types/case-study';
 import { getAllPosts } from '@/lib/blog/posts';
 import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/markdown';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt, getTimeToRead } from '@/lib/utils';
 
-const CASE_STUDIES_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src/content/case-studies');
+const CASE_STUDIES_DIR_PATH = path.join(
+  /*turbopackIgnore: true*/ process.cwd(),
+  'src/content/case-studies',
+);
 
 function getCaseStudySlugs(): string[] {
   const files = globSync('*.mdx', {
@@ -83,6 +91,33 @@ function getCaseStudyDataBySlug(slug: string): ICaseStudyData | null {
   }
 }
 
+const READ_MORE_LIMIT = 3;
+
+/**
+ * Builds the "Read more" list shown at the end of a case study.
+ * Prefers other case studies (newest first) and fills any remaining slots with
+ * the latest blog posts, so the section stays current without manual curation.
+ */
+function getReadMoreItems(currentSlug: string): ICaseStudyReadMoreItem[] {
+  const otherCaseStudies: ICaseStudyReadMoreItem[] = getAllCaseStudies()
+    .filter((caseStudy) => caseStudy.slug.current !== currentSlug)
+    .map((caseStudy) => ({
+      title: caseStudy.title,
+      pathname: caseStudy.pathname,
+      authors: caseStudy.authors,
+      categoryTitle: 'Case Study',
+    }));
+
+  const latestPosts: ICaseStudyReadMoreItem[] = getAllPosts().map((post) => ({
+    title: post.title,
+    pathname: post.pathname,
+    authors: post.authors,
+    categoryTitle: post.category?.title,
+  }));
+
+  return [...otherCaseStudies, ...latestPosts].slice(0, READ_MORE_LIMIT);
+}
+
 async function getCaseStudyBySlug(slug: string): Promise<ICaseStudy | null> {
   try {
     const caseStudyData = getCaseStudyDataBySlug(slug);
@@ -100,6 +135,7 @@ async function getCaseStudyBySlug(slug: string): Promise<ICaseStudy | null> {
       ...caseStudyData,
       content: compiledMdx,
       tableOfContents,
+      readMore: getReadMoreItems(slug),
     };
   } catch (error) {
     console.error(`Error compiling case study by slug: ${slug}`, error);

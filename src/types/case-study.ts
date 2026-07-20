@@ -52,7 +52,15 @@ export interface ICaseStudyData {
   seo: ISeoFields;
 }
 
+export interface ICaseStudyReadMoreItem {
+  title: string;
+  pathname: string;
+  authors: IAuthorData[];
+  categoryTitle?: string;
+}
+
 export interface ICaseStudy extends Omit<ICaseStudyData, 'content'> {
   content: ReactElement;
   tableOfContents: ITableOfContentsItem[];
+  readMore: ICaseStudyReadMoreItem[];
 }

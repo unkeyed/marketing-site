@@ -1,4 +1,5 @@
 import { ICaseStudy } from '@/types/case-study';
+import { RelatedPostCard, RelatedPosts } from '@/components/content/related-posts';
 import ArticleWithSidebar from '@/components/pages/article-with-sidebar';
 import BackToTop from '@/components/pages/back-to-top';
 import CaseStudyCompanyOverview from '@/components/pages/case-studies/case-study-company-overview';
@@ -20,7 +21,24 @@ function CaseStudyPost({ className, caseStudy }: ICaseStudyPostProps) {
     <ArticleWithSidebar
       className={className}
       header={<PostHeader post={caseStudy} breadcrumbItems={breadcrumbItems} />}
-      content={caseStudy.content}
+      content={
+        <>
+          {caseStudy.content}
+          {caseStudy.readMore.length > 0 ? (
+            <RelatedPosts className="mt-11 md:mt-14" title="Read more">
+              {caseStudy.readMore.map((item) => (
+                <RelatedPostCard
+                  key={item.pathname}
+                  authors={item.authors}
+                  categoryTitle={item.categoryTitle}
+                  title={item.title}
+                  pathname={item.pathname}
+                />
+              ))}
+            </RelatedPosts>
+          ) : null}
+        </>
+      }
       contentClassName="prose-clear-first-child prose-lg"
       sidebar={
         <>
