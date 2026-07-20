@@ -54,11 +54,11 @@ export const MENUS = {
         title: 'Resources',
         items: [
           { label: 'Blog', href: '/blog' },
+          { label: 'Case Studies', href: '/case-studies' },
           { label: 'Changelog', href: '/changelog' },
           { label: 'Docs', href: 'https://unkey.com/docs/introduction' },
           { label: 'Glossary', href: '/glossary' },
           { label: 'Feature Request', href: 'https://feedback.unkey.com/' },
-          // { label: 'Case Studies', href: '/case-studies' },
         ],
       },
       {

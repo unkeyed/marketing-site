@@ -13,7 +13,6 @@ export const metadata = getMetadata({
   description:
     'Case studies showing how teams integrated the platform, scaled confidently, and kept production predictable.',
   pathname: '/case-studies',
-  noIndex: true,
 });
 
 const contentData = {
