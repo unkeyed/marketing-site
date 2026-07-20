@@ -83,6 +83,10 @@ const nextConfig: NextConfig = {
           destination: '/api/blog/:slug',
         },
         {
+          source: '/case-studies/:slug.md',
+          destination: '/api/case-studies/:slug',
+        },
+        {
           source: '/pricing.md',
           destination: '/api/pricing',
         },

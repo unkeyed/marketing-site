@@ -48,6 +48,13 @@ Articles on API development, security, observability, and product updates. Appen
 - [Blog index (HTML)](https://www.unkey.com/blog)
 - Example: [https://www.unkey.com/blog/audit-logs-ga.md](https://www.unkey.com/blog/audit-logs-ga.md)
 
+## Case studies
+
+How teams build and scale on Unkey. Append `.md` to any case study URL to receive the raw markdown source.
+
+- [Case studies index (HTML)](https://www.unkey.com/case-studies)
+- Example: [https://www.unkey.com/case-studies/post-for-me.md](https://www.unkey.com/case-studies/post-for-me.md)
+
 ## Changelog
 
 Unkey product updates and changes.
