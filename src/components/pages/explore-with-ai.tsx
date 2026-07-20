@@ -1,11 +1,17 @@
-import { cn } from '@/lib/utils';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
+import { cn } from '@/lib/utils';
 import { TrackingLink } from '@/components/ui/tracking-link';
 
 interface IExploreWithAIProps {
   className?: string;
   slug: string;
   title: string;
+  /** Base path segment for the markdown source, e.g. "/blog" or "/case-studies". */
+  basePath?: string;
+  /** Human label used in the AI prompt, e.g. "blog post" or "case study". */
+  contentLabel?: string;
+  /** Analytics event name. */
+  trackEvent?: string;
 }
 
 interface IServiceIconProps {
@@ -55,9 +61,16 @@ function PerplexityIcon({ className }: IServiceIconProps) {
   );
 }
 
-function ExploreWithAI({ className, slug, title }: IExploreWithAIProps) {
-  const markdownUrl = toAbsoluteSiteUrl(`/blog/${slug}.md`);
-  const prompt = `Read this blog post by Unkey and help me explore it: "${title}" — ${markdownUrl}`;
+function ExploreWithAI({
+  className,
+  slug,
+  title,
+  basePath = '/blog',
+  contentLabel = 'blog post',
+  trackEvent = 'blog open in llm',
+}: IExploreWithAIProps) {
+  const markdownUrl = toAbsoluteSiteUrl(`${basePath}/${slug}.md`);
+  const prompt = `Read this ${contentLabel} by Unkey and help me explore it: "${title}" — ${markdownUrl}`;
   const encoded = encodeURIComponent(prompt);
 
   const services = [
@@ -98,7 +111,7 @@ function ExploreWithAI({ className, slug, title }: IExploreWithAIProps) {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            trackEvent="blog open in llm"
+            trackEvent={trackEvent}
             trackProperties={{ service: name, slug }}
           >
             <Icon className="size-4 shrink-0" />

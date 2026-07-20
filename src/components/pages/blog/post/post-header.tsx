@@ -4,8 +4,8 @@ import { IPost } from '@/types/blog';
 import { cn } from '@/lib/utils';
 import Breadcrumbs from '@/components/ui/breadcrumbs';
 import Authors from '@/components/pages/authors';
-import ExploreWithAI from '@/components/pages/blog/post/explore-with-ai';
 import Date from '@/components/pages/date';
+import ExploreWithAI from '@/components/pages/explore-with-ai';
 
 interface IPostHeaderProps {
   className?: string;

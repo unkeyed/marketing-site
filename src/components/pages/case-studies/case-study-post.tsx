@@ -20,7 +20,18 @@ function CaseStudyPost({ className, caseStudy }: ICaseStudyPostProps) {
   return (
     <ArticleWithSidebar
       className={className}
-      header={<PostHeader post={caseStudy} breadcrumbItems={breadcrumbItems} />}
+      header={
+        <PostHeader
+          post={caseStudy}
+          breadcrumbItems={breadcrumbItems}
+          exploreWithAI={{
+            slug: caseStudy.slug.current,
+            basePath: '/case-studies',
+            contentLabel: 'case study',
+            trackEvent: 'case study open in llm',
+          }}
+        />
+      }
       content={
         <>
           {caseStudy.content}

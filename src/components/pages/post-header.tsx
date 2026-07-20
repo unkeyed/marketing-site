@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import Breadcrumbs from '@/components/ui/breadcrumbs';
 import Authors from '@/components/pages/authors';
 import Date from '@/components/pages/date';
+import ExploreWithAI from '@/components/pages/explore-with-ai';
 
 interface IPostHeaderData {
   title: string;
@@ -15,13 +16,21 @@ interface IPostHeaderData {
   cover?: string;
 }
 
+interface IPostHeaderExploreWithAI {
+  slug: string;
+  basePath?: string;
+  contentLabel?: string;
+  trackEvent?: string;
+}
+
 interface IPostHeaderProps {
   className?: string;
   post: IPostHeaderData;
   breadcrumbItems: IBreadcrumbItem[];
+  exploreWithAI?: IPostHeaderExploreWithAI;
 }
 
-function PostHeader({ className, post, breadcrumbItems }: IPostHeaderProps) {
+function PostHeader({ className, post, breadcrumbItems, exploreWithAI }: IPostHeaderProps) {
   const { title, authors, publishedAt, caption, readingTime, cover } = post;
 
   return (
@@ -61,6 +70,16 @@ function PostHeader({ className, post, breadcrumbItems }: IPostHeaderProps) {
           </time>
         </div>
       </div>
+      {exploreWithAI ? (
+        <ExploreWithAI
+          className="mt-6"
+          slug={exploreWithAI.slug}
+          title={title}
+          basePath={exploreWithAI.basePath}
+          contentLabel={exploreWithAI.contentLabel}
+          trackEvent={exploreWithAI.trackEvent}
+        />
+      ) : null}
     </header>
   );
 }
