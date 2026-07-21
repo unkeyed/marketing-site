@@ -34,6 +34,13 @@ Action-oriented (RPC-style) endpoints for keys, identities, permissions, rate li
 - [API reference overview (Markdown)](https://www.unkey.com/docs/api-reference/overview.md)
 - [API reference overview (HTML)](https://www.unkey.com/docs/api-reference/overview)
 
+Every page below is available as raw markdown — append `.md` to the URL (index pages included).
+
+## Home & company
+
+- [Home (Markdown)](https://www.unkey.com/index.md)
+- [About (Markdown)](https://www.unkey.com/about.md) · [About (HTML)](https://www.unkey.com/about)
+
 ## Pricing
 
 Plans, features, and per-request pricing.
@@ -41,38 +48,49 @@ Plans, features, and per-request pricing.
 - [Pricing (Markdown)](https://www.unkey.com/pricing.md)
 - [Pricing (HTML)](https://www.unkey.com/pricing)
 
+## Programs
+
+Credits and support for startups and current YC batch companies.
+
+- [Startups Program (Markdown)](https://www.unkey.com/startups.md) · [HTML](https://www.unkey.com/startups)
+- [Y Combinator Program (Markdown)](https://www.unkey.com/yc.md) · [HTML](https://www.unkey.com/yc)
+
 ## Blog
 
-Articles on API development, security, observability, and product updates. Append `.md` to any post URL to receive the raw markdown source.
+Articles on API development, security, observability, and product updates. The index enumerates every post; append `.md` to any post URL to receive the raw markdown source.
 
+- [Blog index (Markdown)](https://www.unkey.com/blog.md)
 - [Blog index (HTML)](https://www.unkey.com/blog)
 - Example: [https://www.unkey.com/blog/audit-logs-ga.md](https://www.unkey.com/blog/audit-logs-ga.md)
 
 ## Case studies
 
-How teams build and scale on Unkey. Append `.md` to any case study URL to receive the raw markdown source.
+How teams build and scale on Unkey. The index enumerates every case study; append `.md` to any case study URL to receive the raw markdown source.
 
+- [Case studies index (Markdown)](https://www.unkey.com/case-studies.md)
 - [Case studies index (HTML)](https://www.unkey.com/case-studies)
 - Example: [https://www.unkey.com/case-studies/post-for-me.md](https://www.unkey.com/case-studies/post-for-me.md)
 
 ## Changelog
 
-Unkey product updates and changes.
+Unkey product updates and changes. The index enumerates every entry; append `.md` to any changelog entry URL to receive the raw markdown source.
 
-- [Changelog](https://www.unkey.com/changelog)
+- [Changelog index (Markdown)](https://www.unkey.com/changelog.md)
+- [Changelog index (HTML)](https://www.unkey.com/changelog)
 
 ## Glossary
 
-Clear definitions for API and platform terms.
+Clear definitions for API and platform terms. The index enumerates every term; append `.md` to any glossary term URL to receive the raw markdown source.
 
-- [Glossary](https://www.unkey.com/glossary)
+- [Glossary index (Markdown)](https://www.unkey.com/glossary.md)
+- [Glossary index (HTML)](https://www.unkey.com/glossary)
 
 ## Legal
 
-Terms of service and privacy policy.
+Terms of service and privacy policy. Append `.md` to either URL for the raw markdown source.
 
-- [Terms of Service](https://www.unkey.com/policies/terms)
-- [Privacy Policy](https://www.unkey.com/policies/privacy)
+- [Terms of Service (Markdown)](https://www.unkey.com/policies/terms.md) · [HTML](https://www.unkey.com/policies/terms)
+- [Privacy Policy (Markdown)](https://www.unkey.com/policies/privacy.md) · [HTML](https://www.unkey.com/policies/privacy)
 
 ## SDKs
 

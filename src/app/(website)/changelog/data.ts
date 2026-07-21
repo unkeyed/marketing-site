@@ -157,6 +157,7 @@ async function buildGithubPost(
     readingTime: getTimeToRead(entry.source.replace(/^---[\s\S]*?---/, '')),
     tags: GITHUB_TAGS,
     content,
+    rawContent: entry.source.replace(/^---[\s\S]*?---/, '').trim(),
     seo: {
       title: entry.title || entry.slug,
       description: entry.description ?? '',

@@ -67,6 +67,33 @@ async function getLegalPageBySlug(slug: string): Promise<ILegalPage | null> {
 }
 
 /**
+ * Reads the raw markdown source (frontmatter stripped) for a legal page,
+ * used to serve the `.md` endpoint.
+ */
+function getLegalPageRawBySlug(
+  slug: string,
+): { title: string; updatedAt: string; content: string } | null {
+  try {
+    const filePath = path.join(LEGAL_DIR_PATH, `${slug}.md`);
+    const { data, content } = readAndParseMarkdown<ILegalPageData>(filePath);
+
+    if (!data) {
+      console.error(`Legal page not found: ${slug}`);
+      return null;
+    }
+
+    return {
+      title: data.title,
+      updatedAt: data.updatedAt ?? new Date().toISOString().slice(0, 10),
+      content: content.trim(),
+    };
+  } catch (error) {
+    console.error(`Error fetching raw legal page by slug: ${slug}`, error);
+    return null;
+  }
+}
+
+/**
  * Returns metadata (without TOC) for **all** legal markdown pages.
  * The array is sorted alphabetically by title so that navigation remains stable.
  *
@@ -84,4 +111,4 @@ async function getAllLegalPages(): Promise<ILegalPageData[]> {
     .filter((page) => !(isProd && page.isDraft));
 }
 
-export { getAllLegalPages, getLegalPageBySlug };
+export { getAllLegalPages, getLegalPageBySlug, getLegalPageRawBySlug };

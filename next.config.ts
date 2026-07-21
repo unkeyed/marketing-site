@@ -78,6 +78,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // Per-item markdown sources
         {
           source: '/blog/:slug.md',
           destination: '/api/blog/:slug',
@@ -87,8 +88,58 @@ const nextConfig: NextConfig = {
           destination: '/api/case-studies/:slug',
         },
         {
+          source: '/glossary/:slug.md',
+          destination: '/api/glossary/:slug',
+        },
+        {
+          source: '/changelog/:slug.md',
+          destination: '/api/changelog/:slug',
+        },
+        // Index / listing markdown
+        {
+          source: '/blog.md',
+          destination: '/api/blog',
+        },
+        {
+          source: '/case-studies.md',
+          destination: '/api/case-studies',
+        },
+        {
+          source: '/glossary.md',
+          destination: '/api/glossary',
+        },
+        {
+          source: '/changelog.md',
+          destination: '/api/changelog',
+        },
+        // Static / standalone pages
+        {
+          source: '/index.md',
+          destination: '/api/home',
+        },
+        {
           source: '/pricing.md',
           destination: '/api/pricing',
+        },
+        {
+          source: '/about.md',
+          destination: '/api/about',
+        },
+        {
+          source: '/startups.md',
+          destination: '/api/startups',
+        },
+        {
+          source: '/yc.md',
+          destination: '/api/yc',
+        },
+        {
+          source: '/policies/terms.md',
+          destination: '/api/policies/terms',
+        },
+        {
+          source: '/policies/privacy.md',
+          destination: '/api/policies/privacy',
         },
       ],
       afterFiles: [

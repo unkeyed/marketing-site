@@ -4,6 +4,7 @@ import type { IGlossaryTerm } from '@/types/glossary';
 import Breadcrumbs from '@/components/ui/breadcrumbs';
 import ArticleWithSidebar from '@/components/pages/article-with-sidebar';
 import BackToTop from '@/components/pages/back-to-top';
+import ExploreWithAI from '@/components/pages/explore-with-ai';
 import GlossaryFaq from '@/components/pages/glossary/glossary-faq';
 import GlossaryTakeaways from '@/components/pages/glossary/glossary-takeaways';
 import TableOfContents from '@/components/pages/table-of-contents';
@@ -25,6 +26,14 @@ function GlossaryPost({ className, glossaryTerm }: IGlossaryPostProps) {
           <h1 className="mt-2 font-display text-4xl leading-[1.125] font-normal whitespace-pre-line text-foreground md:text-5xl lg:text-[3.25rem] xl:text-[3.5rem]">
             {glossaryTerm.h1}
           </h1>
+          <ExploreWithAI
+            className="mt-6"
+            slug={glossaryTerm.slug}
+            title={glossaryTerm.term}
+            basePath="/glossary"
+            contentLabel="glossary term"
+            trackEvent="glossary open in llm"
+          />
         </header>
       }
       content={

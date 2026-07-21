@@ -6,6 +6,7 @@ import { getMetadata } from '@/lib/get-metadata';
 import { Link } from '@/components/ui/link';
 import Content from '@/components/pages/content';
 import Date from '@/components/pages/date';
+import ExploreWithAI from '@/components/pages/explore-with-ai';
 
 import { getAllChangelogEntries, getChangelogEntryBySlug } from '../data';
 
@@ -50,7 +51,7 @@ export default async function ChangelogPostPage({ params }: ChangelogPostPagePro
   if (!post || (isProduction && post.isDraft)) {
     notFound();
   }
-  const { title, publishedAt, readingTime, content } = post;
+  const { slug: postSlug, title, publishedAt, readingTime, content } = post;
 
   return (
     <main className="pb-12 md:pb-14 lg:pb-16 xl:pb-24">
@@ -79,6 +80,15 @@ export default async function ChangelogPostPage({ params }: ChangelogPostPagePro
             <h1 className="md:leading-tighter lg:leading-tighter mt-5 text-3xl leading-tight font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
               {title}
             </h1>
+
+            <ExploreWithAI
+              className="mt-6"
+              slug={postSlug}
+              title={title}
+              basePath="/changelog"
+              contentLabel="changelog entry"
+              trackEvent="changelog open in llm"
+            />
 
             <Content
               className="prose-clear-first-child prose-lg mt-6 md:mt-7 lg:mt-8"
