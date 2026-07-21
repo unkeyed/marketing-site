@@ -94,6 +94,8 @@ export interface IChangelogPost extends Omit<IChangelogPostMetadata, 'publishedA
   readingTime: string;
   tags: IChangelogTag[];
   content: ReactElement;
+  /** Raw markdown source (frontmatter stripped), used to serve the `.md` endpoint. */
+  rawContent: string;
 }
 
 /**
@@ -163,6 +165,7 @@ async function getChangelogPostBySlug(
       readingTime: getTimeToRead(plainContent),
       tags: normalizedTags,
       content: compiledMdx,
+      rawContent: content.trim(),
       seo: {
         title: seo?.title ?? title,
         description: seo?.description ?? getExcerpt({ content: plainContent, length: 160 }),
