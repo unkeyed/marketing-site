@@ -1,0 +1,58 @@
+---
+title: Deployments API, gateway policies API, and more
+date: 2026-07-17
+tags: ['product:blue']
+---
+
+## New features
+
+### Manage deployments through the API
+
+New `/v2/deployments` endpoints let you get, list, start, stop, promote, and roll back
+deployments programmatically. Everything you previously did from the Deployments tab is now
+scriptable, with a dedicated permission per action and precise error codes when a deployment
+isn't in a state to be acted on.
+
+See how to use them in our [API Reference](https://www.unkey.com/docs/api-reference/deployments/create-deployment)
+
+### Multi-line environment variable values
+
+Environment variables now support multi-line values, so PEM keys, certificate chains, and
+formatted JSON work end-to-end. The size limit per value is now 16 KB.
+
+See [variables](https://www.unkey.com/docs/platform/variables/overview).
+
+### Manage gateway policies via API
+
+New endpoints let you list and update your gateway policies programmatically, so you can
+automate authentication, rate limiting, firewall, and validation rules instead of editing them
+in the dashboard.
+
+
+See how to use them in our [API Reference](https://www.unkey.com/docs/api-reference/gateway/list-policies)
+
+## Updates
+
+### Runtime setting sliders follow your quota
+
+The CPU, memory, storage, and instance sliders in app runtime settings now reflect your
+workspace's actual quota instead of fixed caps. If your quota was raised, you can reach it from
+the dashboard.
+
+### Better region selection
+
+Region pickers are now a multi-select with removable chips, and no longer overflow when you
+select four or more regions.
+
+## Bug fixes
+
+- Enabling credits, metadata, ratelimits, or expiration in the key creation dialog registers
+reliably again.
+- Adding a new environment variable now shows the redeploy prompt, so changes aren't silently
+left pending.
+- Failed invitation acceptance shows a helpful message instead of raw internal error text.
+- Fixed field alignment in the member invite form.
+- Sign-in now validates the post-authentication redirect URL.
+- The dashboard sends stricter security headers, including CSP and HSTS.
+- Environment variable drafts are no longer persisted to browser storage.
+- Audit log locations are only recorded from validated client IPs.
