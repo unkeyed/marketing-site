@@ -1,0 +1,70 @@
+---
+date: 2026-07-22
+title: 'How Quiver scales frontier AI models on Unkey'
+image: '/images/case-studies/quiver/cover.png'
+description: 'Quiver secures its Arrow SVG generation API with Unkey. Integrated in under a day, with key management handled ever since.'
+author: james
+companyOverview:
+  logo:
+    src: '/images/case-studies/quiver/logo-light.svg'
+    alt: 'Quiver logo'
+    width: 143
+    height: 143
+  items:
+    - label: About
+      content: A frontier AI lab building models for graphic design, including Arrow, a model for SVG generation
+    - label: Industry
+      content: AI / Developer Infrastructure
+---
+ 
+<Blockquote
+  quote="Just try it out. It is so simple and you get to an MVP super fast. Once everything runs and you notice you never have a problem, you don't even think about switching."
+  authors={[{ name: 'Nicklas Scharpff', photo: '/images/case-studies/quiver/headshot.jpeg' }]}
+  role="Co-founder, Quiver"
+  className="[&_blockquote_p]:font-normal"
+  size="xs"
+/>
+## Key outcomes with Unkey
+ 
+- Integrated into production in less than a day.
+- Comfortably serving hundreds of thousands of users with Unkey handling keys and rate limiting.
+- Enterprise contracts established with leading partners, all built on Unkey's API infrastructure.
+- Skipped months of building and maintaining in-house key management.
+- Deployment confidence at an all-time high, with zero auth incidents since signing up.
+
+## When the API is the gateway to a frontier model
+ 
+Quiver is a frontier AI lab focused on models for graphic design. Their flagship model, Arrow, generates SVGs, and companies like Flora.ai, Vercel, and ComfyUI consume it through Quiver's API, the main gateway for their entire B2B business.
+ 
+That architecture leaves no room for a weak link. "If our API gateway does not work, we can't serve our models," the team explains. "Having a reliable partner that strives for fast, scalable, and secure rate limiting and API keys is a must."
+ 
+For a lab whose engineering talent should be pushing model quality forward, every hour spent on auth and rate limiting plumbing is an hour not spent on the frontier.
+ 
+## The decision: build, buy, or Unkey
+ 
+Quiver faced the classic infrastructure fork: build key management and rate limiting in-house, or evaluate options like AWS API Gateway and Zuplo. Unkey offered a third path: purpose-built keys and rate limiting without adopting a full gateway.
+ 
+Unkey short-circuited the debate. The team already knew Unkey from X, and the fact that the platform is open source meant they could inspect exactly what they were adopting. "That made the decision to try Unkey very simple," they say.
+ 
+The trial barely qualified as one: Unkey was live in production in under a day. Instead of migrating an existing system or maintaining homegrown auth, Quiver jumped straight to shipping.
+ 
+<Blockquote
+  quote="The communication with the Unkey team reassured us it was the right choice. Every question was answered swiftly, and ideas and feedback were taken seriously."
+  authors={[{ name: 'Nicklas Scharpff', photo: '/images/case-studies/quiver/headshot.jpeg' }]}
+  role="Co-founder, Quiver"
+  className="[&_blockquote_p]:font-normal"
+  size="xs"
+/>
+## Scaling to hundreds of thousands of users
+ 
+With keys and rate limiting handled, Quiver's growth ran unobstructed. Today they comfortably serve hundreds of thousands of users and have established enterprise contracts with leading partners, all running stable on Unkey's API infrastructure.
+ 
+Asked to quantify the impact, the team reaches past engineering hours to something more telling: "Does sleeping whole nights through count? Then it's all of them since we signed up"
+ 
+Confidence shipping API changes, in their words, "has never been stronger."
+ 
+## What's next: tier-based limits and Unkey Deploy
+ 
+Quiver is expanding their rate limiting to be tier-based and plans to go deeper into Unkey's granular API and SDK. They're also exploring whether long-running background jobs, the kind that need serverful infrastructure rather than short-lived functions, can run on Unkey Deploy.
+ 
+Their advice for teams evaluating Unkey is simple: try it, ship an MVP fast, and notice how quickly key management becomes something you never think about again.

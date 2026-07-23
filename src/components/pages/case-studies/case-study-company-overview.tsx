@@ -50,13 +50,14 @@ function CaseStudyCompanyOverview({
 
   return (
     <div className={cn('flex w-full flex-col gap-5', className)} aria-label="Company overview">
-      <div className="pb-3">
+      <div className="flex justify-center pb-3">
         <Image
           src={logoSrc}
           alt={logoAlt}
           width={logoWidth}
           height={logoHeight}
-          className="h-auto w-auto max-w-full object-contain"
+          style={{ width: logoWidth, height: logoHeight }}
+          className="max-w-full object-contain"
         />
       </div>
 
