@@ -37,27 +37,31 @@ export const pricingContentData = {
       </>
     ),
     subtitle: `Your spend follows real usage, not plan
-    jumps. Pay only for the CPU, memory, and egress
-    you actually use. Available on every plan.`,
+    jumps. Usage charges cover compute, storage, egress,
+    and active keys. Available on every plan.`,
     actionText: 'Read the docs',
     actionHref: 'https://unkey.com/docs/platform/workspaces/billing',
   },
   calculator: {
     title: 'Calculator',
-    subtitle: 'Estimate monthly costs based on your infrastructure needs.',
+    subtitle: 'Estimate monthly costs based on your infrastructure and key usage.',
     fieldLabels: {
       cpu: 'Avg active CPU / instance',
       memory: 'Avg memory / instance',
       disk: 'Ephemeral disk / instance',
       instances: 'Number of instances',
       egress: 'Egress / month',
+      activeKeys: 'Active keys / month',
     },
     fieldTooltips: {
       cpu: 'Average active virtual CPU per running instance. Billed on actual usage, not your configured ceiling.',
-      memory: 'Average memory used per running instance. Billed on actual usage, not your configured ceiling.',
+      memory:
+        'Average memory used per running instance. Billed on actual usage, not your configured ceiling.',
       disk: 'Ephemeral disk volume mounted per instance. Billed on the allocated size for as long as the instance runs. Up to 10 GiB per instance.',
       instances: 'Total number of instances running simultaneously',
       egress: 'Total outbound network data transfer per month',
+      activeKeys:
+        'Distinct keys with at least one verification during the month through a Key Auth policy on Unkey Deploy.',
     },
     memoryOptions: [
       { value: '0.25', label: '1/4 GB' },
@@ -87,6 +91,7 @@ export const pricingContentData = {
       memory: 'Memory/GB/sec',
       disk: 'Disk/GB/sec',
       egress: 'Egress/GB',
+      activeKeys: 'Active key/month',
     },
   },
 };
@@ -501,11 +506,11 @@ export const tableFeatures: IPricingTableFeatures[] = [
 export const faqItems = [
   {
     question: 'How does usage-based billing work with included credits?',
-    answer: `Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets your usage-based charges for compute and egress. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates shown in the calculator.`,
+    answer: `Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets all Deploy usage charges, including compute, storage, egress, and active keys. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates shown in the calculator.`,
   },
   {
     question: 'How do I avoid runaway costs?',
-    answer: `Unlike serverless platforms that autoscale without bounds, Unkey Deploy runs containers with a max replica count you set per region, giving you a predictable compute ceiling. We bill for actual vCPU, memory, and egress, not per request.`,
+    answer: `Unlike serverless platforms that autoscale without bounds, Unkey Deploy runs containers with a max replica count you set per region, giving you a predictable compute ceiling. We bill for actual vCPU, memory, storage, and egress, plus monthly active keys, not per request.`,
   },
   {
     question: 'Can I try a paid plan, and can I downgrade later?',
@@ -516,12 +521,16 @@ export const faqItems = [
     answer: `Both vCPU and memory are billed on average actual usage, not the ceiling you configured. You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls — an API that spends most of its time waiting on a database or upstream service is billed only for the milliseconds your code was on-CPU. Memory is billed by average GB-seconds actually used by your instance, so right-sizing for headroom doesn't penalize you. Ephemeral disk is billed by GB-seconds on the volume size you allocate, for as long as the instance runs. Egress is billed by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.`,
   },
   {
+    question: 'What is an active key?',
+    answer: `An active key is a distinct API key with at least one verification during the billing month through a Key Auth policy on Unkey Deploy. Each active key costs $0.002 per month, and the charge counts against your plan's included usage credits.`,
+  },
+  {
     question: "What happens when I hit my plan's limits?",
     answer: `Each plan caps the max size of an Instance, the number of Instances, and total CPU and memory allocated across your workspace. If a new deployment would exceed any of these, it fails with a clear error. Running applications keep serving traffic without interruption, so you can upgrade or free up capacity before redeploying.`,
   },
   {
     question: 'Do preview deployments count against my usage?',
-    answer: `Yes, preview deployments are billed the same as production. Their vCPU, memory, and egress count against your included credits and then your usage-based rate. Preview environments do get a smaller Sentinel (1 replica instead of 3) to keep the overhead low.`,
+    answer: `Yes, preview deployments are billed the same as production. Their compute, storage, egress, and active key usage count against your included credits and then your usage-based rate. Preview environments do get a smaller Sentinel (1 replica instead of 3) to keep the overhead low.`,
   },
   {
     question: 'How long are logs retained?',

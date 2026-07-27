@@ -3,19 +3,10 @@ import { homeContentData } from '@/constants/home';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
 export function GET() {
-  const {
-    hero,
-    controlPlane,
-    buildDeploy,
-    gateway,
-    production,
-    scale,
-    observe,
-    portal,
-    cta,
-  } = homeContentData;
+  const { hero, controlPlane, buildDeploy, gateway, production, scale, observe, portal, cta } =
+    homeContentData;
 
-  const bullets = <T,>(items: readonly T[], title: (item: T) => string, body: (item: T) => string) =>
+  const bullets = <T>(items: readonly T[], title: (item: T) => string, body: (item: T) => string) =>
     items.map((item) => `- **${title(item)}** — ${body(item)}`);
 
   const body = [
@@ -97,7 +88,7 @@ export function GET() {
     '',
     '## Two products, one platform',
     '',
-    '- **Deployment platform** — Run your APIs as real containers across AWS regions with Git-based deploys, preview environments, immutable versions, and instant rollbacks. Pay only for the vCPU, memory, and egress you actually use.',
+    '- **Deployment platform** — Run your APIs as real containers across AWS regions with Git-based deploys, preview environments, immutable versions, and instant rollbacks. Usage charges cover compute, storage, egress, and active keys.',
     '- **API Management** — Issue, verify, and manage API keys with globally enforced rate limits, permissions, analytics, and instant revocation. Tiered plans by monthly request volume, with a free tier to start.',
     '',
     '## Get started',
