@@ -9,6 +9,8 @@ interface RouteParams {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-static';
+
 export async function GET(_request: Request, { params }: RouteParams) {
   const { slug } = await params;
   const post = getPostDataBySlug(slug);

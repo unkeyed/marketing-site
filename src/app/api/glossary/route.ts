@@ -1,6 +1,8 @@
 import { getAllGlossaryTerms } from '@/lib/glossary/posts';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   const terms = getAllGlossaryTerms();
 

@@ -2,6 +2,8 @@ import { homeContentData } from '@/constants/home';
 
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export function GET() {
   const { hero, controlPlane, buildDeploy, gateway, production, scale, observe, portal, cta } =
     homeContentData;

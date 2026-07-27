@@ -1,6 +1,8 @@
 import { getAllChangelogEntries } from '@/app/(website)/changelog/data';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   const entries = await getAllChangelogEntries();
 

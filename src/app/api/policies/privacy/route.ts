@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { getLegalPageRawBySlug } from '@/lib/legal/pages';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   const page = getLegalPageRawBySlug('privacy');
 

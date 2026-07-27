@@ -1,6 +1,8 @@
 import { getAllPosts } from '@/lib/blog/posts';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   const posts = await getAllPosts();
 

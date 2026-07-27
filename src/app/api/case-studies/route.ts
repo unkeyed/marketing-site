@@ -1,6 +1,8 @@
 import { getAllCaseStudies } from '@/lib/case-studies/posts';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   const caseStudies = getAllCaseStudies();
 
