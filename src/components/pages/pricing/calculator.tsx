@@ -31,6 +31,7 @@ const RATE_VCPU_PER_SEC = 0.000006944444;
 const RATE_GB_PER_SEC = 0.000003472222;
 const RATE_DISK_PER_GB_SEC = 0.00000006;
 const RATE_EGRESS_PER_GB = 0.05;
+const RATE_PER_ACTIVE_KEY = 0.002;
 
 const DAYS_IN_MONTH = 30;
 const SECONDS_IN_MONTH = DAYS_IN_MONTH * 24 * 60 * 60;
@@ -39,6 +40,7 @@ const LIMITS = {
   cpu: { min: 0.25, max: 96, step: 0.25, default: 0.5 },
   instances: { min: 1, max: 999, step: 1, default: 4 },
   egress: { min: 0, max: 100000, step: 1, default: 120 },
+  activeKeys: { min: 0, max: 10000000, step: 1, default: 1000 },
 } as const;
 
 function useEstimate(state: {
@@ -47,6 +49,7 @@ function useEstimate(state: {
   disk: string;
   instances: number;
   egress: number;
+  activeKeys: number;
 }) {
   return React.useMemo(() => {
     const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -55,12 +58,14 @@ function useEstimate(state: {
     const diskGb = Number(state.disk) || 0;
     const vmCount = clamp(state.instances || 0, 0, LIMITS.instances.max);
     const egressGb = clamp(state.egress || 0, 0, LIMITS.egress.max);
+    const activeKeys = clamp(state.activeKeys || 0, 0, LIMITS.activeKeys.max);
 
     const vcpuCost = vmCount * cpuCount * SECONDS_IN_MONTH * RATE_VCPU_PER_SEC;
     const memoryCost = vmCount * memoryGb * SECONDS_IN_MONTH * RATE_GB_PER_SEC;
     const diskCost = vmCount * diskGb * SECONDS_IN_MONTH * RATE_DISK_PER_GB_SEC;
     const egressCost = egressGb * RATE_EGRESS_PER_GB;
-    const usageBased = vcpuCost + memoryCost + diskCost + egressCost;
+    const activeKeysCost = activeKeys * RATE_PER_ACTIVE_KEY;
+    const usageBased = vcpuCost + memoryCost + diskCost + egressCost + activeKeysCost;
 
     const total = Math.round(usageBased * 100) / 100;
     const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -73,9 +78,10 @@ function useEstimate(state: {
         memory: round2(memoryCost),
         disk: round2(diskCost),
         egress: round2(egressCost),
+        activeKeys: round2(activeKeysCost),
       },
     };
-  }, [state.cpu, state.memory, state.disk, state.instances, state.egress]);
+  }, [state.cpu, state.memory, state.disk, state.instances, state.egress, state.activeKeys]);
 }
 
 const INTEGER_INPUT_BLOCKED_KEYS = ['.', ',', 'e', 'E', '-', '+', 'Decimal'];
@@ -151,6 +157,7 @@ export default function Calculator() {
   const [disk, setDisk] = React.useState('0');
   const [instances, setInstances] = React.useState('4');
   const [egress, setEgress] = React.useState('120');
+  const [activeKeys, setActiveKeys] = React.useState('1000');
 
   const estimate = useEstimate({
     cpu,
@@ -158,6 +165,7 @@ export default function Calculator() {
     disk,
     instances: Number(instances) || 0,
     egress: Number(egress) || 0,
+    activeKeys: Number(activeKeys) || 0,
   });
 
   return (
@@ -327,8 +335,42 @@ export default function Calculator() {
                 className="h-9"
               />
             </div>
-          </div>
 
+            <div className="flex flex-col gap-2">
+              <FieldLabel htmlFor="calc-active-keys" tooltip={content.fieldTooltips.activeKeys}>
+                {content.fieldLabels.activeKeys}
+              </FieldLabel>
+              <Input
+                id="calc-active-keys"
+                type="number"
+                min={LIMITS.activeKeys.min}
+                max={LIMITS.activeKeys.max}
+                step={LIMITS.activeKeys.step}
+                value={activeKeys}
+                onKeyDown={blockNonIntegerKey}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw === '') {
+                    setActiveKeys('');
+                    return;
+                  }
+                  const n = Math.floor(Number(raw));
+                  if (!Number.isNaN(n)) {
+                    setActiveKeys(
+                      String(Math.max(LIMITS.activeKeys.min, Math.min(LIMITS.activeKeys.max, n))),
+                    );
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value.trim() === '') {
+                    setActiveKeys(String(LIMITS.activeKeys.default));
+                  }
+                }}
+                suffix="keys"
+                className="h-9"
+              />
+            </div>
+          </div>
         </form>
       </div>
 
@@ -390,6 +432,10 @@ export default function Calculator() {
           <div className="flex items-center justify-between">
             <span>{content.rateLabels.egress}</span>
             <span className="text-right">${RATE_EGRESS_PER_GB.toFixed(2)}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>{content.rateLabels.activeKeys}</span>
+            <span className="text-right">${RATE_PER_ACTIVE_KEY.toFixed(3)}</span>
           </div>
         </div>
       </section>

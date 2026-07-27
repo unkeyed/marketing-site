@@ -10,7 +10,9 @@ import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
 const RATE_VCPU_PER_SEC = 0.000006944444;
 const RATE_GB_PER_SEC = 0.000003472222;
+const RATE_DISK_PER_GB_SEC = 0.00000006;
 const RATE_EGRESS_PER_GB = 0.05;
+const RATE_PER_ACTIVE_KEY = 0.002;
 
 function formatUsd(value: number): string {
   return `$${value.toLocaleString('en-US')}`;
@@ -79,7 +81,14 @@ function buildDeployLimitsTable(): string {
 }
 
 function buildApiManagementTable(): string {
-  const headers = ['Plan', 'Price', 'Valid Requests / mo', 'API Keys', 'Log Retention', 'Audit Log'];
+  const headers = [
+    'Plan',
+    'Price',
+    'Valid Requests / mo',
+    'API Keys',
+    'Log Retention',
+    'Audit Log',
+  ];
   const rows: string[][] = [];
 
   const free = apiManagementPricingPlans.find((p) => p.id === 'free');
@@ -90,8 +99,17 @@ function buildApiManagementTable(): string {
   const pro = apiManagementPricingPlans.find((p) => p.id === 'pro');
   if (pro?.priceTiers) {
     for (const tier of pro.priceTiers) {
-      const requests = tier.featureOverrides?.['valid-requests']?.replace(' valid requests / mo', '') ?? tier.label;
-      rows.push([pro.name, `${formatUsd(tier.monthlyPrice)}/mo`, requests, '1M', '7 days', '14 days']);
+      const requests =
+        tier.featureOverrides?.['valid-requests']?.replace(' valid requests / mo', '') ??
+        tier.label;
+      rows.push([
+        pro.name,
+        `${formatUsd(tier.monthlyPrice)}/mo`,
+        requests,
+        '1M',
+        '7 days',
+        '14 days',
+      ]);
     }
   }
 
@@ -104,11 +122,8 @@ function buildApiManagementTable(): string {
 }
 
 function renderTable(headers: string[], rows: string[][]): string {
-  const widths = headers.map((h, i) =>
-    Math.max(h.length, ...rows.map((r) => (r[i] ?? '').length)),
-  );
-  const pad = (cells: string[]) =>
-    `| ${cells.map((c, i) => c.padEnd(widths[i])).join(' | ')} |`;
+  const widths = headers.map((h, i) => Math.max(h.length, ...rows.map((r) => (r[i] ?? '').length)));
+  const pad = (cells: string[]) => `| ${cells.map((c, i) => c.padEnd(widths[i])).join(' | ')} |`;
   const sep = `| ${widths.map((w) => '-'.repeat(w)).join(' | ')} |`;
   return [pad(headers), sep, ...rows.map(pad)].join('\n');
 }
@@ -131,8 +146,16 @@ function buildBody(): string {
     ['Resource', 'Rate'],
     [
       ['vCPU / second', `$${RATE_VCPU_PER_SEC.toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`],
-      ['Memory / GB / second', `$${RATE_GB_PER_SEC.toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`],
+      [
+        'Memory / GB / second',
+        `$${RATE_GB_PER_SEC.toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`,
+      ],
+      [
+        'Disk / GB / second',
+        `$${RATE_DISK_PER_GB_SEC.toFixed(9).replace(/0+$/, '').replace(/\.$/, '')}`,
+      ],
       ['Egress / GB', `$${RATE_EGRESS_PER_GB.toFixed(2)}`],
+      ['Active key / month', `$${RATE_PER_ACTIVE_KEY.toFixed(3)}`],
     ],
   );
 
@@ -143,7 +166,7 @@ function buildBody(): string {
     '',
     'Unkey has two products with independent pricing:',
     '',
-    '- **Unkey Deploy** — Run APIs as containers. Pay for the CPU, memory, and egress you actually use.',
+    '- **Unkey Deploy** — Run APIs as containers. Usage charges cover compute, storage, egress, and active keys.',
     '- **API Management** — Issue, verify, and manage API keys with tiered request volume plans.',
     '',
     `Source: ${sourceUrl}`,
@@ -152,7 +175,7 @@ function buildBody(): string {
     '',
     '## Unkey Deploy',
     '',
-    'Deploy your code as containers across AWS regions. Deploy is a paid product — start on Starter at $5/mo. All plans include monthly usage credits that offset usage-based charges; beyond the included credits, you pay for average actual vCPU seconds and memory GB-seconds (not the ceilings you configured) plus egress GB. Unused credits do not roll over.',
+    'Deploy your code as containers across AWS regions. Deploy is a paid product — start on Starter at $5/mo. All plans include monthly usage credits that offset usage-based charges; beyond the included credits, you pay for average actual vCPU seconds and memory GB-seconds (not the ceilings you configured), allocated disk GB-seconds, egress GB, and active keys. Unused credits do not roll over.',
     '',
     '### Plans',
     '',
@@ -164,7 +187,7 @@ function buildBody(): string {
     '',
     ratesTable,
     '',
-    'Both vCPU and memory are billed on average actual usage, not the ceilings you configured. You only pay for CPU time when your code is actually executing, not while idle waiting on I/O. Memory is billed on average GB-seconds actually used by your instance. Egress is billed by the gigabyte. Preview deployments are billed at the same rates as production.',
+    'Both vCPU and memory are billed on average actual usage, not the ceilings you configured. You only pay for CPU time when your code is actually executing, not while idle waiting on I/O. Memory is billed on average GB-seconds actually used by your instance. Ephemeral disk is billed by allocated GB-seconds, and egress is billed by the gigabyte. An active key is a distinct API key with at least one verification during the billing month through a Key Auth policy on Unkey Deploy. Preview deployments are billed at the same rates as production.',
     '',
     '### Deploy Plan Limits',
     '',
@@ -209,11 +232,11 @@ function buildBody(): string {
     '',
     '**How does usage-based billing work with included credits?**',
     '',
-    'Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets your usage-based charges for compute and egress. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates.',
+    'Each paid plan includes a monthly credit allowance (e.g. $25/mo on Pro) that offsets all Deploy usage charges, including compute, storage, egress, and active keys. Credits reset at the start of each billing cycle and do not roll over. Once credits are used up, additional usage is billed at the standard per-unit rates.',
     '',
     '**How do I avoid runaway costs?**',
     '',
-    'Unlike serverless platforms that autoscale without bounds, Unkey Deploy runs containers with a max replica count you set per region, giving you a predictable compute ceiling. We bill for actual vCPU, memory, and egress, not per request.',
+    'Unlike serverless platforms that autoscale without bounds, Unkey Deploy runs containers with a max replica count you set per region, giving you a predictable compute ceiling. We bill for actual vCPU, memory, storage, and egress, plus monthly active keys, not per request.',
     '',
     '**Can I try a paid plan, and can I downgrade later?**',
     '',
@@ -221,7 +244,11 @@ function buildBody(): string {
     '',
     '**How is compute metered?**',
     '',
-    "Both vCPU and memory are billed on average actual usage, not the ceilings you configured. You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls. Memory is billed by average GB-seconds actually used by your instance, so right-sizing for headroom doesn't penalize you. Egress is billed by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.",
+    "Both vCPU and memory are billed on average actual usage, not the ceilings you configured. You only pay for CPU time when your code is actually executing, not while it's idle waiting on I/O or network calls. Memory is billed by average GB-seconds actually used by your instance, so right-sizing for headroom doesn't penalize you. Ephemeral disk is billed by allocated GB-seconds, and egress is billed by the gigabyte. Unkey automatically scales your workload during low activity periods to optimize cost, without introducing cold starts.",
+    '',
+    '**What is an active key?**',
+    '',
+    "An active key is a distinct API key with at least one verification during the billing month through a Key Auth policy on Unkey Deploy. Each active key costs $0.002 per month, and the charge counts against your plan's included usage credits.",
     '',
     "**What happens when I hit my plan's limits?**",
     '',
@@ -229,7 +256,7 @@ function buildBody(): string {
     '',
     '**Do preview deployments count against my usage?**',
     '',
-    'Yes, preview deployments are billed the same as production. Their vCPU, memory, and egress count against your included credits and then your usage-based rate. Preview environments do get a smaller Sentinel (1 replica instead of 3) to keep the overhead low.',
+    'Yes, preview deployments are billed the same as production. Their compute, storage, egress, and active key usage count against your included credits and then your usage-based rate. Preview environments do get a smaller Sentinel (1 replica instead of 3) to keep the overhead low.',
     '',
     '**Can I migrate existing API keys from another provider?**',
     '',
