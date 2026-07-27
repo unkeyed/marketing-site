@@ -2,6 +2,8 @@ import { startupsContentData } from '@/constants/startups';
 
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export function GET() {
   const { description, benefits } = startupsContentData;
 

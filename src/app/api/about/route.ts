@@ -2,6 +2,8 @@ import { aboutContentData } from '@/constants/about';
 
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export function GET() {
   const { values, team, investors } = aboutContentData;
 

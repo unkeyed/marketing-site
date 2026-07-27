@@ -2,6 +2,8 @@ import { ycContentData } from '@/constants/yc';
 
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
+export const dynamic = 'force-static';
+
 export function GET() {
   const { description, benefits } = ycContentData;
 
