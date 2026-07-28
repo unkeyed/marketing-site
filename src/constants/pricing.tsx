@@ -424,7 +424,7 @@ export const tableFeatures: IPricingTableFeatures[] = [
         plans: [
           { planId: 'starter', value: '2' },
           { planId: 'pro', value: '8' },
-          { planId: 'business', value: '32' },
+          { planId: 'business', value: '16' },
         ],
       },
       {
