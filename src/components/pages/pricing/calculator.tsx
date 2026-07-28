@@ -37,7 +37,7 @@ const DAYS_IN_MONTH = 30;
 const SECONDS_IN_MONTH = DAYS_IN_MONTH * 24 * 60 * 60;
 
 const LIMITS = {
-  cpu: { min: 0.25, max: 96, step: 0.25, default: 0.5 },
+  cpu: { min: 0.25, max: 16, step: 0.25, default: 0.5 },
   instances: { min: 1, max: 999, step: 1, default: 4 },
   egress: { min: 0, max: 100000, step: 1, default: 120 },
   activeKeys: { min: 0, max: 10000000, step: 1, default: 1000 },
