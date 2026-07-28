@@ -71,6 +71,7 @@ export const pricingContentData = {
       { value: '4', label: '4 GB' },
       { value: '8', label: '8 GB' },
       { value: '16', label: '16 GB' },
+      { value: '32', lavbel '32 GB'}
     ],
     diskOptions: [
       { value: '0', label: 'None' },
