@@ -1,0 +1,120 @@
+---
+title: Deploy an API in 5 Steps with Unkey
+description: Learn how to deploy an API in 5 easy steps using Unkey. Follow this tutorial for a successful API deployment today!
+h1: How to Deploy an API with Unkey in 5 Steps
+tags:
+  - deploy an API
+  - API deployment
+  - Unkey deploy
+audienceLevel: intermediate
+postType: tutorial
+updatedAt: 2026-07-28T19:44:04.632Z
+slug: deploy-an-api-with-unkey
+---
+
+Deploying an API can often seem like a daunting task, especially when considering the complexities of production environments, scalability, and maintenance. However, with Unkey, the process is streamlined to a few simple steps, allowing you to focus more on development and less on deployment logistics. In this tutorial, you'll learn how to deploy a production-grade API using Unkey, from initial setup to live deployment and verification.
+
+## Prerequisites for API Deployment
+
+Before you begin, ensure you have the following:
+
+- An **Unkey account** set up and ready.
+- A **GitHub account** linked to Unkey for repository management.
+- **Docker installed** on your local machine if you plan to use custom Dockerfiles.
+- Basic familiarity with **GitHub workflows** and **Docker**.
+
+## Step 1: Create a New Project in Unkey
+
+First, log into your Unkey dashboard. Here’s how to set up a new project:
+
+1. Navigate to the **Projects** section in the sidebar.
+2. Click **New Project**.
+3. Enter a project name and slug.
+4. Click **Create Project**.
+
+```plaintext
+Expected Result: A new project is created in your Unkey dashboard.
+```
+
+## Step 2: Connect Your GitHub Repository
+
+To enable automatic deployments via GitHub, follow these steps:
+
+1. In your project dashboard, click **Import from GitHub**.
+2. If prompted, authorize the Unkey GitHub App to access your repositories.
+3. Select the repository you want to deploy.
+
+```plaintext
+Expected Result: Your GitHub repository is now linked to your Unkey project.
+```
+
+## Step 3: Configure Build Settings
+
+Configure the build settings to specify how Unkey should handle the deployment:
+
+1. In the project settings, find the **Build Settings** section.
+2. Specify the **Root Directory** if your project is not in the root of the repository.
+3. Enter the path to your **Dockerfile** if you have a custom Docker setup.
+4. Adjust any other settings like build commands or environment variables as needed.
+
+```bash
+# Example configuration
+Root Directory: /path/to/api
+Dockerfile: /path/to/api/Dockerfile
+```
+
+```plaintext
+Expected Result: Build settings are configured for your API project.
+```
+
+## Step 4: Deploy Your API
+
+Now, trigger the deployment from your Unkey dashboard:
+
+1. Go back to the main page of your project in the Unkey dashboard.
+2. Click **Deploy**.
+3. Select the branch you want to deploy if prompted.
+
+```plaintext
+Expected Result: Unkey initiates the build and deployment process. You can monitor the progress in the dashboard.
+```
+
+## Step 5: Verify Your API Deployment
+
+Once the deployment status shows as **Ready**, verify that your API is functioning:
+
+1. Navigate to the **Domains** section of your project dashboard.
+2. Click on the provided URL to access your deployed API.
+3. Optionally, send a test request to confirm the API responds correctly.
+
+```bash
+curl https://your-project.unkey.app/api/v1/test
+```
+
+```json
+{
+  "message": "API is working"
+}
+```
+
+```plaintext
+Expected Result: Your API responds to requests at the deployed URL.
+```
+
+## Troubleshooting Common Deployment Issues
+
+If you encounter issues, consider these common fixes:
+
+- **Build fails**: Check the Dockerfile and build logs for errors.
+- **API not responding**: Verify environment variables and network settings.
+- **Deployment not updating**: Ensure the latest commit is pushed to the branch you are deploying.
+
+## Next Steps After Deployment
+
+After your API is successfully deployed, you might want to:
+
+- Set up additional environments like staging or development in Unkey.
+- Explore advanced Unkey features like auto-scaling, region settings, and custom domains.
+- Integrate more services or databases with your API.
+
+By following these steps, you've successfully deployed a production-grade API using Unkey, demonstrating how straightforward and efficient the process can be with the right tools.
