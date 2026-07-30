@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test": "playwright test",
+    "test:e2e": "playwright test",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "typecheck": "next typegen && tsc --noEmit"
@@ -74,6 +76,7 @@
     "@eslint/js": "10.0.1",
     "@ianvs/prettier-plugin-sort-imports": "4.7.1",
     "@next/eslint-plugin-next": "16.2.6",
+    "@playwright/test": "1.61.1",
     "@shikijs/rehype": "4.0.2",
     "@shikijs/transformers": "4.0.2",
     "@tailwindcss/typography": "0.5.19",
