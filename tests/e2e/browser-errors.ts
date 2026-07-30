@@ -1,6 +1,6 @@
 import type { ConsoleMessage, Page } from '@playwright/test';
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3000';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3100';
 const baseOrigin = new URL(baseURL).origin;
 
 function isApplicationConsoleError(message: ConsoleMessage): boolean {
