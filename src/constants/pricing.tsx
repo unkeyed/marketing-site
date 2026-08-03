@@ -113,7 +113,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 2 vCPU / 2 GB per Instance',
+          label: 'Up to 1 vCPU / 2 GB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -121,7 +121,7 @@ export const deployPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Custom domains',
+          label: '1 custom domain',
           lucideIcon: 'check',
         },
         {
@@ -155,7 +155,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 8 vCPU / 8 GB per Instance',
+          label: 'Up to 4 vCPU / 8 GB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -163,7 +163,7 @@ export const deployPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Custom domains',
+          label: 'Unlimited custom domains',
           lucideIcon: 'check',
         },
         {
@@ -205,7 +205,7 @@ export const deployPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: 'Custom domains',
+          label: 'Unlimited custom domains',
           lucideIcon: 'check',
         },
 
@@ -423,8 +423,8 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Max vCPU per Instance',
         plans: [
-          { planId: 'starter', value: '2' },
-          { planId: 'pro', value: '8' },
+          { planId: 'starter', value: '1' },
+          { planId: 'pro', value: '4' },
           { planId: 'business', value: '16' },
         ],
       },
@@ -448,8 +448,8 @@ export const tableFeatures: IPricingTableFeatures[] = [
         name: 'Custom domains',
         plans: [
           { planId: 'starter', value: '1' },
-          { planId: 'pro', value: '10' },
-          { planId: 'business', value: '100' },
+          { planId: 'pro', value: 'Unlimited' },
+          { planId: 'business', value: 'Unlimited' },
         ],
       },
       {
@@ -458,14 +458,6 @@ export const tableFeatures: IPricingTableFeatures[] = [
           { planId: 'starter', value: '$5' },
           { planId: 'pro', value: '$25' },
           { planId: 'business', value: '$50' },
-        ],
-      },
-      {
-        name: 'Regions',
-        plans: [
-          { planId: 'starter', value: '3' },
-          { planId: 'pro', value: 'All' },
-          { planId: 'business', value: 'All' },
         ],
       },
       {
