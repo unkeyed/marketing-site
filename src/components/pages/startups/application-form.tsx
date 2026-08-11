@@ -34,7 +34,6 @@ export const VC_ACCELERATOR_OPTIONS = [
   'Sunflower Capital',
   'Techstars',
   'Uncork',
-  'Vercel OSS',
   'YC',
   'Other',
 ] as const;

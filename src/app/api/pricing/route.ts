@@ -48,7 +48,6 @@ function buildDeployPlansTable(): string {
     'Max vCPU / Instance',
     'Max RAM / Instance',
     'Custom Domains',
-    'Regions',
   ];
   const rows = deployPricingPlans.map((plan) => [
     plan.name,
@@ -57,9 +56,8 @@ function buildDeployPlansTable(): string {
     findPlanValue('Max vCPU per Instance', plan.id),
     `${findPlanValue('Max RAM (GB) per Instance', plan.id)} GB`,
     findPlanValue('Custom domains', plan.id),
-    findPlanValue('Regions', plan.id),
   ]);
-  rows.push(['Enterprise', 'Custom', 'Custom', 'Custom', 'Custom', 'Custom', 'All']);
+  rows.push(['Enterprise', 'Custom', 'Custom', 'Custom', 'Custom', 'Custom']);
   return renderTable(headers, rows);
 }
 
