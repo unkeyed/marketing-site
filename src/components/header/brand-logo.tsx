@@ -6,6 +6,13 @@ import NextLink from 'next/link';
 import config from '@/configs/website-config';
 import { Download } from 'lucide-react';
 
+import {
+  HeaderPopover,
+  HeaderPopoverItem,
+  HeaderPopoverPreview,
+  HeaderPopoverText,
+} from './header-popover';
+
 interface IBrandLogoProps {
   alt: string;
   href: string;
@@ -81,11 +88,12 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
       </NextLink>
 
       {isOpen && (
-        <div
+        <HeaderPopover
           id={menuId}
           role="menu"
           aria-label="Download brand assets"
-          className="absolute top-full -left-6 z-70 mt-1.5 w-82.5 bg-foreground shadow-lg"
+          isOpen={isOpen}
+          className="-left-6 z-70"
           onKeyDown={(event) => {
             if (event.key === 'Escape') {
               event.preventDefault();
@@ -114,41 +122,34 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
             items[nextIndex]?.focus();
           }}
         >
-          <ul className="flex flex-col">
-            {brandAssets.map((asset, index) => (
-              <li key={asset.href}>
-                <a
-                  ref={index === 0 ? focusMenuItem : undefined}
-                  role="menuitem"
-                  href={asset.href}
-                  download={asset.filename}
-                  className="group flex items-start gap-3 px-5 py-4 transition-colors outline-none hover:bg-gray-94 focus-visible:bg-gray-94"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <span
-                    className={`flex size-9 shrink-0 items-center justify-center border border-gray-70 ${asset.previewClassName}`}
-                  >
-                    <Image
-                      src={asset.href}
-                      alt=""
-                      width={asset.width}
-                      height={asset.height}
-                      className="max-h-5 max-w-7 object-contain"
-                      aria-hidden
-                    />
-                  </span>
-                  <span className="flex min-w-0 flex-1 flex-col gap-1.5">
-                    <span className="text-sm leading-none font-medium tracking-tight text-background">
-                      {asset.label}
-                    </span>
-                    <span className="text-xs leading-tight tracking-tight text-gray-40">SVG</span>
-                  </span>
-                  <Download className="mt-2.5 size-3.5 shrink-0 text-gray-40 transition-colors group-hover:text-background group-focus-visible:text-background" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {brandAssets.map((asset, index) => (
+            <HeaderPopoverItem
+              key={asset.href}
+              className="group outline-none focus-visible:bg-gray-94"
+            >
+              <a
+                ref={index === 0 ? focusMenuItem : undefined}
+                role="menuitem"
+                href={asset.href}
+                download={asset.filename}
+                onClick={() => setIsOpen(false)}
+              >
+                <HeaderPopoverPreview className={asset.previewClassName}>
+                  <Image
+                    src={asset.href}
+                    alt=""
+                    width={asset.width}
+                    height={asset.height}
+                    className="max-h-5 max-w-7 object-contain"
+                    aria-hidden
+                  />
+                </HeaderPopoverPreview>
+                <HeaderPopoverText className="flex-1" label={asset.label} description="SVG" />
+                <Download className="mt-2.5 size-3.5 shrink-0 text-gray-40 transition-colors group-hover:text-background group-focus-visible:text-background" />
+              </a>
+            </HeaderPopoverItem>
+          ))}
+        </HeaderPopover>
       )}
     </div>
   );

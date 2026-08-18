@@ -9,6 +9,13 @@ import { ChevronDown } from 'lucide-react';
 import { IMenuItem } from '@/types/common';
 import { cn, isExternalLink } from '@/lib/utils';
 
+import {
+  HeaderPopover,
+  HeaderPopoverItem,
+  HeaderPopoverPreview,
+  HeaderPopoverText,
+} from './header-popover';
+
 interface IHeaderNavProps {
   className?: string;
   items: IMenuItem[];
@@ -153,51 +160,32 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                 />
               </button>
 
-              <div
-                className={cn(
-                  'absolute top-full left-0 mt-1.5 w-82.5 transition-all duration-200',
-                  isOpen ? 'visible opacity-100' : 'invisible opacity-0',
-                )}
-              >
-                <ul className="flex w-full flex-col bg-foreground shadow-lg">
-                  {children.map((child, childIndex) => {
-                    return (
-                      <li key={childIndex}>
-                        <NextLink
-                          href={child.href ?? '#'}
-                          className="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-gray-94"
-                          onClick={closeDropdown}
-                          target={isExternalLink(child.href) ? '_blank' : undefined}
-                          rel={isExternalLink(child.href) ? 'noopener noreferrer' : undefined}
-                        >
-                          {child.icon && (
-                            <div className="flex size-9 items-center justify-center border border-gray-70 bg-foreground">
-                              <Image
-                                src={child.icon}
-                                alt=""
-                                width={20}
-                                height={20}
-                                className="size-5 shrink-0"
-                                aria-hidden
-                              />
-                            </div>
-                          )}
-                          <div className="flex flex-col gap-1.5">
-                            <span className="text-sm leading-none font-medium tracking-tight text-background">
-                              {child.label}
-                            </span>
-                            {child.description && (
-                              <span className="text-xs leading-tight tracking-tight text-gray-40">
-                                {child.description}
-                              </span>
-                            )}
-                          </div>
-                        </NextLink>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+              <HeaderPopover isOpen={isOpen} className="left-0">
+                {children.map((child, childIndex) => (
+                  <HeaderPopoverItem key={childIndex}>
+                    <NextLink
+                      href={child.href ?? '#'}
+                      onClick={closeDropdown}
+                      target={isExternalLink(child.href) ? '_blank' : undefined}
+                      rel={isExternalLink(child.href) ? 'noopener noreferrer' : undefined}
+                    >
+                      {child.icon && (
+                        <HeaderPopoverPreview>
+                          <Image
+                            src={child.icon}
+                            alt=""
+                            width={20}
+                            height={20}
+                            className="size-5 shrink-0"
+                            aria-hidden
+                          />
+                        </HeaderPopoverPreview>
+                      )}
+                      <HeaderPopoverText label={child.label} description={child.description} />
+                    </NextLink>
+                  </HeaderPopoverItem>
+                ))}
+              </HeaderPopover>
             </div>
           );
         }
