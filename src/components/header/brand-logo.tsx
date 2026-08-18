@@ -16,6 +16,7 @@ const brandAssets = [
   {
     label: 'Black wordmark',
     href: config.logo.dark,
+    filename: 'unkey-wordmark-black.svg',
     width: 83,
     height: 28,
     previewClassName: 'bg-gray-94',
@@ -23,6 +24,7 @@ const brandAssets = [
   {
     label: 'White wordmark',
     href: config.logo.light,
+    filename: 'unkey-wordmark-white.svg',
     width: 83,
     height: 28,
     previewClassName: 'bg-gray-12',
@@ -30,6 +32,7 @@ const brandAssets = [
   {
     label: 'Black logo',
     href: '/favicon/favicon-light.svg',
+    filename: 'unkey-logo-black.svg',
     width: 40,
     height: 40,
     previewClassName: 'bg-gray-94',
@@ -37,6 +40,7 @@ const brandAssets = [
   {
     label: 'White logo',
     href: '/favicon/favicon-dark.svg',
+    filename: 'unkey-logo-white.svg',
     width: 40,
     height: 40,
     previewClassName: 'bg-gray-12',
@@ -109,7 +113,7 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
           id={menuId}
           role="menu"
           aria-label="Download brand assets"
-          className="absolute top-full left-0 z-70 mt-2.5 w-80 border border-gray-90 bg-foreground p-2 shadow-lg"
+          className="absolute top-full left-0 z-70 mt-1.5 w-82.5 bg-foreground shadow-lg"
           onKeyDown={(event) => {
             if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
               return;
@@ -131,38 +135,40 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
             items[nextIndex]?.focus();
           }}
         >
-          <p className="px-2 pt-1 pb-2 text-xs font-medium tracking-tight text-gray-40">
-            Download brand assets
-          </p>
-          <div className="grid grid-cols-2 gap-2">
+          <ul className="flex flex-col">
             {brandAssets.map((asset, index) => (
-              <a
-                key={asset.href}
-                ref={index === 0 ? firstAssetRef : undefined}
-                role="menuitem"
-                href={asset.href}
-                download
-                className="group min-w-0 p-1 transition-colors outline-none hover:bg-gray-94 focus-visible:bg-gray-94"
-                onClick={() => setIsOpen(false)}
-              >
-                <span
-                  className={`flex h-16 items-center justify-center border border-gray-80 px-4 ${asset.previewClassName}`}
+              <li key={asset.href}>
+                <a
+                  ref={index === 0 ? firstAssetRef : undefined}
+                  role="menuitem"
+                  href={asset.href}
+                  download={asset.filename}
+                  className="group flex items-center gap-3 px-5 py-3.5 transition-colors outline-none hover:bg-gray-94 focus-visible:bg-gray-94"
+                  onClick={() => setIsOpen(false)}
                 >
-                  <Image
-                    src={asset.href}
-                    alt=""
-                    width={asset.width}
-                    height={asset.height}
-                    aria-hidden
-                  />
-                </span>
-                <span className="flex items-center justify-between gap-2 px-1 pt-2 pb-1 text-xs font-medium text-background">
-                  <span>{asset.label}</span>
-                  <Download className="size-3.5 shrink-0 text-gray-40 group-hover:text-background group-focus-visible:text-background" />
-                </span>
-              </a>
+                  <span
+                    className={`flex h-10 w-20 shrink-0 items-center justify-center border border-gray-70 px-2 ${asset.previewClassName}`}
+                  >
+                    <Image
+                      src={asset.href}
+                      alt=""
+                      width={asset.width}
+                      height={asset.height}
+                      className="max-h-7 max-w-14 object-contain"
+                      aria-hidden
+                    />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="text-sm leading-none font-medium tracking-tight text-background">
+                      {asset.label}
+                    </span>
+                    <span className="text-xs leading-none tracking-tight text-gray-40">SVG</span>
+                  </span>
+                  <Download className="size-3.5 shrink-0 text-gray-40 transition-colors group-hover:text-background group-focus-visible:text-background" />
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </div>
