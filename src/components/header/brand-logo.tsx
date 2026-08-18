@@ -58,7 +58,7 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
 
   return (
     <div
-      className="relative shrink-0"
+      className="relative flex shrink-0 items-center"
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
           setIsOpen(false);
