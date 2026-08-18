@@ -113,7 +113,7 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
           id={menuId}
           role="menu"
           aria-label="Download brand assets"
-          className="absolute top-full left-0 z-70 mt-1.5 w-82.5 bg-foreground shadow-lg"
+          className="absolute top-full -left-6 z-70 mt-1.5 w-82.5 bg-foreground shadow-lg"
           onKeyDown={(event) => {
             if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
               return;
