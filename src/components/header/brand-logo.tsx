@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import config from '@/configs/website-config';
@@ -47,45 +47,17 @@ const brandAssets = [
   },
 ];
 
+function focusMenuItem(element: HTMLAnchorElement | null) {
+  element?.focus();
+}
+
 function BrandLogo({ alt, href, src }: IBrandLogoProps) {
   const menuId = useId();
-  const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
-  const firstAssetRef = useRef<HTMLAnchorElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    firstAssetRef.current?.focus();
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-        logoRef.current?.focus();
-      }
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen]);
 
   return (
     <div
-      ref={containerRef}
       className="relative shrink-0"
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
@@ -115,6 +87,13 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
           aria-label="Download brand assets"
           className="absolute top-full -left-6 z-70 mt-1.5 w-82.5 bg-foreground shadow-lg"
           onKeyDown={(event) => {
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              setIsOpen(false);
+              logoRef.current?.focus();
+              return;
+            }
+
             if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
               return;
             }
@@ -139,7 +118,7 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
             {brandAssets.map((asset, index) => (
               <li key={asset.href}>
                 <a
-                  ref={index === 0 ? firstAssetRef : undefined}
+                  ref={index === 0 ? focusMenuItem : undefined}
                   role="menuitem"
                   href={asset.href}
                   download={asset.filename}
