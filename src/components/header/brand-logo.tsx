@@ -122,28 +122,28 @@ function BrandLogo({ alt, href, src }: IBrandLogoProps) {
                   role="menuitem"
                   href={asset.href}
                   download={asset.filename}
-                  className="group flex items-center gap-3 px-5 py-3.5 transition-colors outline-none hover:bg-gray-94 focus-visible:bg-gray-94"
+                  className="group flex items-start gap-3 px-5 py-4 transition-colors outline-none hover:bg-gray-94 focus-visible:bg-gray-94"
                   onClick={() => setIsOpen(false)}
                 >
                   <span
-                    className={`flex h-10 w-20 shrink-0 items-center justify-center border border-gray-70 px-2 ${asset.previewClassName}`}
+                    className={`flex size-9 shrink-0 items-center justify-center border border-gray-70 ${asset.previewClassName}`}
                   >
                     <Image
                       src={asset.href}
                       alt=""
                       width={asset.width}
                       height={asset.height}
-                      className="max-h-7 max-w-14 object-contain"
+                      className="max-h-5 max-w-7 object-contain"
                       aria-hidden
                     />
                   </span>
-                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <span className="text-sm leading-none font-medium tracking-tight text-background">
                       {asset.label}
                     </span>
-                    <span className="text-xs leading-none tracking-tight text-gray-40">SVG</span>
+                    <span className="text-xs leading-tight tracking-tight text-gray-40">SVG</span>
                   </span>
-                  <Download className="size-3.5 shrink-0 text-gray-40 transition-colors group-hover:text-background group-focus-visible:text-background" />
+                  <Download className="mt-2.5 size-3.5 shrink-0 text-gray-40 transition-colors group-hover:text-background group-focus-visible:text-background" />
                 </a>
               </li>
             ))}
