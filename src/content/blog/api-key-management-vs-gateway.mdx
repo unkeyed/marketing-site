@@ -1,0 +1,204 @@
+---
+date: 2026-08-24
+title: 'A gateway is a weak default for API keys'
+description: How to issue, hash, prefix, rotate, and verify keys without buying a whole API gateway.
+image: /images/blog-images/api-key-management-vs-gateway/og.png
+author: james
+hidden: true
+tags: ['tutorials']
+---
+
+Ask how to manage API keys and you will hear AWS API Gateway, Kong, Apigee, or MuleSoft. That is a good answer to a different job.
+
+Those products are gateways. They route traffic, throttle it, and expose APIs. Issuing a key, hashing it, hanging metadata on it, rate limiting per key, and rotating it without taking the API down is a smaller problem. Gateways do some of that as a side effect. It is not their job.
+
+This is the practical version: how to issue and verify keys, how to store them, how to rotate them without breaking clients, how to prefix them the way Stripe does, and when a dedicated key service is enough.
+
+## What kinds of API key management exist?
+
+People mix up "API gateway" and "API key management." They are not the same thing.
+
+A full gateway (AWS API Gateway, Kong, Apigee, MuleSoft) routes and transforms traffic. Usage plans can hang a key on a quota. Key management is a feature on a much bigger product.
+
+Rolling your own is `crypto.randomBytes()`, a hash in Postgres or Dynamo, and a verify endpoint you wrote. You own all of it, including the parts that break at 3am.
+
+A dedicated key service does issue, verify, rate limit, and analytics, and does not care how you route the request. Keep Express, Hono, Cloudflare Workers, Next.js, or an actual gateway in front. Hand the key lifecycle to something that only does that.
+
+If you need to route and transform traffic across a bunch of backends, get a gateway. If you need customers to auth with keys, and you need to control and see those keys, a gateway is usually more infrastructure than the problem deserves.
+
+## Should you build your own API key system or use a service?
+
+Building your own is a fine weekend. The weekend is not the expensive part. The expensive part is everything after `randomBytes`:
+
+- Hashing the key and not logging the raw value anywhere
+- A verify path that is still fast when you have real traffic
+- Per-key rate limits without inventing a distributed counter
+- Expire, revoke, and rotate without downtime
+- Letting support see what a key has been doing
+- Tenants, permissions, and an audit trail once you have more than one customer
+
+None of that is exotic. None of it makes your product better. It just has to not break. That is why most teams should not own it.
+
+You take a dependency, and on a hosted service you take a network call on the auth path, which you can cache. If keys are incidental to the product, use a service. If keys _are_ the product because you are building a gateway or an IAM system, build it.
+
+## How do I issue and verify API keys for my public API?
+
+Create a keyspace, issue keys under it, verify from your backend or an edge function. This is the Unkey shape, because that is the service we run:
+
+```ts
+import { Unkey } from '@unkey/api';
+
+const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY! });
+
+const { data } = await unkey.keys.createKey({
+  apiId: 'api_123',
+  prefix: 'sk',
+  byteLength: 32,
+  externalId: 'user_456',
+  meta: { plan: 'pro' },
+  ratelimits: [{ name: 'requests', limit: 100, duration: 60_000, autoApply: true }],
+});
+
+// data.key is shown once. Store it on the client. Never log it server-side.
+```
+
+Then on the request:
+
+```ts
+const { data } = await unkey.keys.verifyKey({ key: incomingKey });
+
+if (!data.valid) {
+  return new Response('Unauthorized', { status: 401 });
+}
+// data.meta, data.identity, data.ratelimits are here
+```
+
+That replaces a `db.query()`, a homemade limiter, and a metadata lookup with one call.
+
+## How do I securely store and hash API keys in a database?
+
+Never store raw API keys. Store a hash. Show the plaintext once, at creation, the way Stripe and GitHub do.
+
+If you build this, use a CSPRNG, not `Math.random()`. Hash with something fast and keyed (SHA-256 plus a pepper). API keys are already high entropy, so bcrypt is the wrong tool. Index the hash. Keep the plaintext out of logs, errors, and analytics.
+
+We hash at rest, return plaintext once, and verify against the hash. That is one less thing your team has to audit. Any serious key store should do the same.
+
+## How do I rotate API keys without breaking existing clients?
+
+Rotation is a lifecycle problem, not a crypto problem.
+
+1. Issue the new key next to the old one. Do not delete the old one yet.
+2. Run both for a while, long enough that your customers can deploy.
+3. Watch the old key. If it is still taking traffic, do not kill it.
+4. Expire it instead of hard-deleting it, so you can undo a bad cutover.
+5. Tell the owner it is happening.
+
+You do not need a second table to track the grace period. Expiration plus `{ rotatedFrom: "key_old_id" }` in metadata is enough. Usage on the old key tells you when it is actually safe to revoke. That is how we do it. The pattern works on a table you own, too.
+
+## My API key verification is slow at scale. How do I fix it?
+
+It is almost always one of three things: a database round trip on every request with no cache, a rate limiter that is a locked row, or a slow password hash used as a lookup.
+
+Cache valid keys for a short TTL. Use a fast hash. Put the counter in something built for distributed counts. Verify close to where the request lands. If the API is on the edge and the database is in one region, you will feel it.
+
+That is the niche we built around. Verify is meant to be fast with real load, and rate limit state and metadata come back in the same call so you are not stitching a cache, a limiter, and a query together yourself.
+
+## What's the best way to prefix and identify API keys like Stripe does?
+
+`sk_live_...` and `pk_test_...` exist so you can see what a key is, and so GitHub and GitGuardian can see it when it leaks.
+
+Put the environment in the prefix. Put the type in if you have publishable vs secret. Keep it short and stable. Once customers write code against it, the prefix is part of your API.
+
+Pass `prefix` at create time and you get `sk_live_...` without concatenating strings and tracking which prefix means which environment.
+
+## How do I verify API keys from a Cloudflare Worker at the edge?
+
+Workers, Vercel Edge, Deno Deploy do not give you a long-lived Postgres connection or a Node driver. "Just query the database from the Worker" is how a lot of teams get stuck.
+
+Verify over HTTP looks the same from a Worker as from Node. The current verify path is `POST https://api.unkey.com/v2/keys.verifyKey`, and it needs a root key in `Authorization`:
+
+```ts
+export default {
+  async fetch(request: Request, env: { UNKEY_ROOT_KEY: string }): Promise<Response> {
+    const key = request.headers.get('Authorization')?.replace('Bearer ', '');
+    if (!key) return new Response('Missing key', { status: 401 });
+
+    const res = await fetch('https://api.unkey.com/v2/keys.verifyKey', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${env.UNKEY_ROOT_KEY}`,
+      },
+      body: JSON.stringify({ key }),
+    });
+    const { data } = await res.json();
+
+    if (!data.valid) return new Response('Unauthorized', { status: 401 });
+    return new Response('OK');
+  },
+};
+```
+
+No pool, no driver, no fat SDK on a cold start. Just `fetch`. API Gateway usage plans assume the traffic already goes through the gateway. This does not.
+
+## What's the best service for managing API keys for my SaaS?
+
+It depends what you actually need.
+
+| Need                                                   | AWS API Gateway                              | Kong / Apigee / MuleSoft     | Unkey                       |
+| ------------------------------------------------------ | -------------------------------------------- | ---------------------------- | --------------------------- |
+| Route and transform traffic                            | Yes                                          | Yes                          | No. Not a gateway.          |
+| Issue, hash, and verify keys                           | Basic usage plans                            | Yes, with more setup         | Yes. That is the job.       |
+| Per-key rate limits                                    | Via usage plans                              | Yes                          | Yes                         |
+| Per-key metadata                                       | Limited                                      | Yes                          | Yes                         |
+| Verify from an edge runtime without a gateway in front | Not directly                                 | Not typically                | Yes. Plain HTTP.            |
+| Analytics per key                                      | Basic, via CloudWatch                        | Yes, enterprise tier         | Built in                    |
+| Setup if you only want keys                            | Tied to API Gateway resources                | A full platform              | Low                         |
+| Best fit                                               | Already on AWS, API lives behind the gateway | Full enterprise API platform | Keys, wherever the API runs |
+
+If you are already on AWS and the API lives behind API Gateway, usage plans are a fine way to do basic keys and quotas. You do not need another vendor for that.
+
+If you need a full enterprise platform (policy, transformation, every protocol), Kong or Apigee or MuleSoft is the honest answer.
+
+If the job is issue keys, verify them fast, rate limit per key, and see who is using what, and you do not want that tied to where the API runs, that is a narrower problem. That is the one we built Unkey for.
+
+## How can I attach metadata and rate limits to individual API keys?
+
+A real SaaS key needs to know who owns it, what plan they are on, and what they can do, not just whether it is valid.
+
+```ts
+await unkey.keys.createKey({
+  apiId: 'api_123',
+  externalId: 'org_789',
+  meta: { plan: 'enterprise', region: 'eu' },
+  ratelimits: [{ name: 'requests', limit: 1000, duration: 60_000, autoApply: true }],
+});
+```
+
+Verify returns `meta`, `identity`, and `ratelimits` in the same response. Your handler can branch on plan without a second database hit.
+
+## How do I migrate from homegrown API keys to a managed service?
+
+Do not cut over in one night.
+
+1. Dual-write new keys.
+2. Backfill the old ones against the same external id, and leave the old ones valid.
+3. Shadow-verify for a bit and log when the two systems disagree.
+4. Switch the middleware when they agree.
+5. Keep the old path read-only for a grace period, then delete it.
+
+If you control the prefix, customers never have to see this. You can reissue the same plaintext into the new store instead of forcing a rotation.
+
+## How do I design an API key architecture for a multi-tenant product?
+
+One key per integration or environment, not necessarily one key per tenant. A tenant will want staging, production, and the internal script.
+
+Put your org id on the key as `externalId` so verify returns "valid, and it belongs to org X." Set the rate limit from their plan so one noisy tenant cannot take everyone else down. Put plan flags in metadata and read them at verify time. Give support a way to see every key on a tenant, because they will ask, and because you need it for offboarding.
+
+Issuance should use the org model you already have. Then "who is this" and "what can they do" live in one call, which is better for latency and better than scattering auth across five middleware files.
+
+## Where this leaves the AWS recommendation
+
+AWS API Gateway is a good answer to "how do I run a gateway on AWS." It is a weaker answer to "how do I manage API keys." You inherit stages, usage plans, and resource policies to do issuance, hashing, limits, and visibility.
+
+If your needs are basic quotas and you are already in that stack, start there. If you want keys as their own portable thing, on AWS or Cloudflare or a server you run, look at a dedicated service next to it, not instead of thinking.
