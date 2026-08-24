@@ -161,16 +161,16 @@ Measure p99 from the region your Worker actually runs in. Decide closed vs open 
 
 It depends what you actually need.
 
-| Need                                                   | AWS API Gateway                              | Kong / Apigee / MuleSoft     | Unkey                       |
-| ------------------------------------------------------ | -------------------------------------------- | ---------------------------- | --------------------------- |
-| Route and transform traffic                            | Yes                                          | Yes                          | No. Not a gateway.          |
-| Issue, hash, and verify keys                           | Basic usage plans                            | Yes, with more setup         | Yes. That is the job.       |
-| Per-key rate limits                                    | Via usage plans                              | Yes                          | Yes                         |
-| Per-key metadata                                       | Limited                                      | Yes                          | Yes                         |
-| Verify from an edge runtime without a gateway in front | Not directly                                 | Not typically                | Yes. Plain HTTP.            |
-| Analytics per key                                      | Basic, via CloudWatch                        | Yes, enterprise tier         | Built in                    |
-| Setup if you only want keys                            | Tied to API Gateway resources                | A full platform              | Low                         |
-| Best fit                                               | Already on AWS, API lives behind the gateway | Full enterprise API platform | Keys, wherever the API runs |
+| Need                                                   | AWS API Gateway                              | Kong / Apigee / MuleSoft     | Unkey                                                          |
+| ------------------------------------------------------ | -------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| Route and transform traffic                            | Yes                                          | Yes                          | API keys work standalone; Unkey Deployments include a gateway. |
+| Issue, hash, and verify keys                           | Basic usage plans                            | Yes, with more setup         | Yes. That is the job.                                          |
+| Per-key rate limits                                    | Via usage plans                              | Yes                          | Yes                                                            |
+| Per-key metadata                                       | Limited                                      | Yes                          | Yes                                                            |
+| Verify from an edge runtime without a gateway in front | Not directly                                 | Not typically                | Yes. Plain HTTP.                                               |
+| Analytics per key                                      | Basic, via CloudWatch                        | Yes, enterprise tier         | Built in                                                       |
+| Setup if you only want keys                            | Tied to API Gateway resources                | A full platform              | Low                                                            |
+| Best fit                                               | Already on AWS, API lives behind the gateway | Full enterprise API platform | Keys, wherever the API runs                                    |
 
 If you are already on AWS and the API lives behind API Gateway, usage plans are a fine way to do basic keys and quotas. You do not need another vendor for that.
 
