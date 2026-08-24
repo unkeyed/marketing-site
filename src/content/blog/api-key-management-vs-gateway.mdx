@@ -39,7 +39,7 @@ Building your own is a fine weekend. The weekend is not the expensive part. The 
 
 None of that is exotic. None of it makes your product better. It just has to not break. That is why most teams should not own it.
 
-You take a dependency, and on a hosted service you take a network call on the auth path, which you can cache. If keys are incidental to the product, use a service. If keys _are_ the product because you are building a gateway or an IAM system, build it.
+You take a dependency, and on a hosted service you take a network call on the auth path. Cache it if you need to, and decide now whether a failed hop closes the request or opens it. If keys are incidental to the product, use a service. If keys _are_ the product because you are building a gateway or an IAM system, build it.
 
 ## How do I issue and verify API keys for my public API?
 
@@ -59,7 +59,7 @@ const { data } = await unkey.keys.createKey({
   ratelimits: [{ name: 'requests', limit: 100, duration: 60_000, autoApply: true }],
 });
 
-// data.key is shown once. Store it on the client. Never log it server-side.
+// data.key is shown once. Give it to the customer. Never log it server-side.
 ```
 
 Then on the request:
@@ -79,7 +79,7 @@ That replaces a `db.query()`, a homemade limiter, and a metadata lookup with one
 
 Never store raw API keys. Store a hash. Show the plaintext once, at creation, the way Stripe and GitHub do.
 
-If you build this, use a CSPRNG, not `Math.random()`. Hash with something fast and keyed (SHA-256 plus a pepper). API keys are already high entropy, so bcrypt is the wrong tool. Index the hash. Keep the plaintext out of logs, errors, and analytics.
+If you build this, use a CSPRNG, not `Math.random()`. Hash with HMAC-SHA256 and a server-side key. A SHA-256 of `pepper + key` is not a keyed hash. API keys are already high entropy, so bcrypt is the wrong tool. Index the hash. Keep the plaintext out of logs, errors, and analytics.
 
 We hash at rest, return plaintext once, and verify against the hash. That is one less thing your team has to audit. Any serious key store should do the same.
 
@@ -99,7 +99,9 @@ You do not need a second table to track the grace period. Expiration plus `{ rot
 
 It is almost always one of three things: a database round trip on every request with no cache, a rate limiter that is a locked row, or a slow password hash used as a lookup.
 
-Cache valid keys for a short TTL. Use a fast hash. Put the counter in something built for distributed counts. Verify close to where the request lands. If the API is on the edge and the database is in one region, you will feel it.
+Cache valid keys for a short TTL if you need to. Use a fast hash. Put the counter in something built for distributed counts. Verify close to where the request lands. If the API is on the edge and the database is in one region, you will feel it.
+
+A cache has a cost. A revoked key stays valid until the TTL expires. Ten seconds is a different product than ten minutes. Pick the window you can defend.
 
 That is the niche we built around. Verify is meant to be fast with real load, and rate limit state and metadata come back in the same call so you are not stitching a cache, a limiter, and a query together yourself.
 
@@ -140,6 +142,20 @@ export default {
 ```
 
 No pool, no driver, no fat SDK on a cold start. Just `fetch`. API Gateway usage plans assume the traffic already goes through the gateway. This does not.
+
+The example above does a blocking call on the auth path, with no cache and no fallback. That is the honest simple path. What happens when that hop is slow or down is the next section.
+
+## What happens if the key service is down?
+
+You take a dependency. On a hosted service that is a network call on every verify. If we time out or we are down, your auth path fails unless you planned for it.
+
+Degraded-closed: if verify does not return, reject the request. Your API is as available as we are. That is the right default for anything that holds customer data.
+
+Degraded-open: if verify times out, let the request through. You stay up. A revoked or unknown key can also get through for the length of the outage. Use this on read-only or low-stakes routes where being down is worse than a bad key slipping through.
+
+Cache only if you need our hop off your p99. The tradeoff is revocation latency. We propagate a revoke in seconds. Your cache is what actually delays it. A cached "valid" lives until the TTL expires, including after you hit revoke.
+
+Measure p99 from the region your Worker actually runs in. Decide closed vs open before you ship the `fetch`.
 
 ## What's the best service for managing API keys for my SaaS?
 
@@ -187,7 +203,7 @@ Do not cut over in one night.
 4. Switch the middleware when they agree.
 5. Keep the old path read-only for a grace period, then delete it.
 
-If you control the prefix, customers never have to see this. You can reissue the same plaintext into the new store instead of forcing a rotation.
+If you already store hashes, migrate the hashes. That is the path that does not force a rotation, and it is the one that matches "never store plaintext." If your old system stored raw keys, which it should not have, hash them and import the hashes. Do not copy plaintext into the new store. If you have neither the hash nor the plaintext, you have to rotate.
 
 ## How do I design an API key architecture for a multi-tenant product?
 
@@ -202,3 +218,5 @@ Issuance should use the org model you already have. Then "who is this" and "what
 AWS API Gateway is a good answer to "how do I run a gateway on AWS." It is a weaker answer to "how do I manage API keys." You inherit stages, usage plans, and resource policies to do issuance, hashing, limits, and visibility.
 
 If your needs are basic quotas and you are already in that stack, start there. If you want keys as their own portable thing, on AWS or Cloudflare or a server you run, look at a dedicated service next to it, not instead of thinking.
+
+Ship APIs, not infrastructure.
