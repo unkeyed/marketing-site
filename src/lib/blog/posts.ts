@@ -87,6 +87,7 @@ function getPostDataBySlug(slug: string): IPostData | null {
       tags,
       isFeatured = false,
       isDraft = false,
+      isHidden = false,
     } = data;
     const normalizedImage = image?.trim();
     const publishedAt = date ? new Date(date).toISOString() : new Date().toISOString();
@@ -111,6 +112,7 @@ function getPostDataBySlug(slug: string): IPostData | null {
       cover: normalizedImage,
       isFeatured: Boolean(isFeatured),
       isDraft: Boolean(isDraft),
+      isHidden: Boolean(isHidden),
       publishedAt,
       caption: description ?? '',
       content,
@@ -195,12 +197,26 @@ function getAllPosts(): IPostData[] {
 }
 
 /**
+ * Returns the posts that should be surfaced in listings — the feed, category
+ * pages, pagination, search and related suggestions. Posts flagged
+ * `isHidden` in their frontmatter are excluded here so they never appear in
+ * any on-site discovery surface, while remaining fully reachable by their
+ * direct URL and indexable by search engines / AI crawlers (which rely on
+ * {@link getAllPosts} for static generation and the sitemap).
+ *
+ * @returns {IPostData[]} Sorted array of non-hidden posts.
+ */
+function getVisiblePosts(): IPostData[] {
+  return getAllPosts().filter((post) => !post.isHidden);
+}
+
+/**
  * Collects a unique list of categories that are referenced by the available posts.
  *
  * @returns {ICategory[]} Array of category objects with url.
  */
 function getCategories(): ICategory[] {
-  const posts = getAllPosts();
+  const posts = getVisiblePosts();
   const usedCategorySlugs = new Set<string>();
   for (const post of posts) {
     for (const c of post.categories) {
@@ -232,7 +248,7 @@ function getCategoryBySlug(slug: string): ICategory | null {
  * @returns {IPostData[]} Array of posts that belong to the specified category.
  */
 function getPostsByCategory(slug: string): IPostData[] {
-  return getAllPosts().filter((post) => post.categories.some((c) => c.slug.current === slug));
+  return getVisiblePosts().filter((post) => post.categories.some((c) => c.slug.current === slug));
 }
 
 /**
@@ -241,7 +257,7 @@ function getPostsByCategory(slug: string): IPostData[] {
  * @returns {IPostData[] | null} Array of featured posts or `null` if no featured posts exist.
  */
 function getFeaturedPost(): IPostData[] | null {
-  const posts = getAllPosts().filter((post) => post.isFeatured);
+  const posts = getVisiblePosts().filter((post) => post.isFeatured);
   return posts.length > 0 ? posts : null;
 }
 
@@ -254,7 +270,7 @@ function getPostCounts(): {
   total: number;
   nonFeatured: number;
 } {
-  const allPosts = getAllPosts();
+  const allPosts = getVisiblePosts();
   return {
     total: allPosts.length,
     nonFeatured: allPosts.filter((post) => !post.isFeatured).length,
@@ -311,8 +327,8 @@ function getTotalPagesByCategory(slug: string): number {
  */
 function getPaginatedPosts(page = 1, options?: { nonFeaturedOnly?: boolean }): IPostData[] {
   const posts = options?.nonFeaturedOnly
-    ? getAllPosts().filter((p) => !p.isFeatured)
-    : getAllPosts();
+    ? getVisiblePosts().filter((p) => !p.isFeatured)
+    : getVisiblePosts();
 
   const start = (page - 1) * POSTS_PER_PAGE;
   const end = start + POSTS_PER_PAGE;
@@ -352,7 +368,7 @@ const BLOG_SEARCH_CONTENT_MAX_LENGTH = 3000;
  * Includes title, caption, pathname, and optional plain-text content for full-text search.
  */
 function getBlogSearchItems(): IBlogSearchItem[] {
-  const posts = getAllPosts();
+  const posts = getVisiblePosts();
   return posts.map((post) => {
     const plainContent = removeMarkdownSymbols(post.content);
     const searchableText =
@@ -376,7 +392,7 @@ const BLOG_SEARCH_SUGGESTIONS_LIMIT = 8;
  * Returns the latest N posts as suggestions for the search dialog (when query is empty).
  */
 function getBlogSearchSuggestions(limit = BLOG_SEARCH_SUGGESTIONS_LIMIT): IBlogSearchItem[] {
-  const posts = getAllPosts();
+  const posts = getVisiblePosts();
   return posts.slice(0, limit).map((post) => ({
     id: post.slug.current,
     title: post.title,
@@ -390,6 +406,7 @@ export {
   getPostDataBySlug,
   getPostBySlug,
   getAllPosts,
+  getVisiblePosts,
   getCategories,
   getCategoryBySlug,
   getFeaturedPost,

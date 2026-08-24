@@ -1,10 +1,10 @@
-import { getAllPosts } from '@/lib/blog/posts';
+import { getVisiblePosts } from '@/lib/blog/posts';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
 export const dynamic = 'force-static';
 
 export async function GET() {
-  const posts = await getAllPosts();
+  const posts = getVisiblePosts();
 
   const lines = posts.map((post) => {
     const htmlUrl = toAbsoluteSiteUrl(post.pathname);

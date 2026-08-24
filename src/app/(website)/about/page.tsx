@@ -1,7 +1,7 @@
 import { aboutBlogFallbackImages, aboutContentData } from '@/constants/about';
 import { homeContentData } from '@/constants/home';
 
-import { getAllPosts } from '@/lib/blog/posts';
+import { getVisiblePosts } from '@/lib/blog/posts';
 import { getMetadata } from '@/lib/get-metadata';
 import { getFormattedDate } from '@/lib/utils';
 import Blog from '@/components/pages/about/blog';
@@ -17,7 +17,7 @@ export const metadata = getMetadata({
 });
 
 export default function AboutPage() {
-  const blogCards = getAllPosts()
+  const blogCards = getVisiblePosts()
     .slice(0, 3)
     .map((post, index) => ({
       href: post.pathname,

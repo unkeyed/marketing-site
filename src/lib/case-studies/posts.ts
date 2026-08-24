@@ -9,7 +9,7 @@ import {
   ICaseStudyReadMoreItem,
   INewCaseStudyFrontmatter,
 } from '@/types/case-study';
-import { getAllPosts } from '@/lib/blog/posts';
+import { getAllPosts, getVisiblePosts } from '@/lib/blog/posts';
 import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/markdown';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt, getTimeToRead } from '@/lib/utils';
@@ -108,7 +108,7 @@ function getReadMoreItems(currentSlug: string): ICaseStudyReadMoreItem[] {
       categoryTitle: 'Case Study',
     }));
 
-  const latestPosts: ICaseStudyReadMoreItem[] = getAllPosts().map((post) => ({
+  const latestPosts: ICaseStudyReadMoreItem[] = getVisiblePosts().map((post) => ({
     title: post.title,
     pathname: post.pathname,
     authors: post.authors,

@@ -26,6 +26,8 @@ export interface IPostMeta {
   cover?: string;
   isFeatured?: boolean;
   isDraft?: boolean;
+  /** Hidden from feeds, category listings, search and related suggestions — still reachable by direct URL and crawlers. */
+  isHidden?: boolean;
   content: string;
   publishedAt: string;
   seo: ISeoFields;
@@ -41,6 +43,12 @@ export interface INewPostFrontmatter {
   tags?: string[];
   isFeatured?: boolean;
   isDraft?: boolean;
+  /**
+   * When true, the post is excluded from the blog feed, category listings,
+   * search and related-post suggestions, but remains reachable by its direct
+   * URL and stays indexable by search engines and AI crawlers.
+   */
+  isHidden?: boolean;
 }
 
 export interface IPostData extends Omit<IPostMeta, 'authors' | 'category'> {
