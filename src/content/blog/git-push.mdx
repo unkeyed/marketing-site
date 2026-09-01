@@ -1,0 +1,130 @@
+---
+date: 2026-08-24
+title: 'How to Ship a Node.js API or Backend Without Managing Infrastructure'
+description: No SSH, no YAML pipeline. Next.js and a Node API with a single push
+image: /images/blog-images/covers/git-push-deploy.png
+author: james
+isHidden: true
+tags: ['tutorials']
+---
+
+## What is Git-push deploy?
+
+Git-push deploy is a workflow where your source repository is the source of truth for deployments. You connect a repo (typically on GitHub), and every push to a branch, a PR, or a tagged release triggers a build and deploy automatically. No manual `scp`, no logging into a box to pull the latest code, no separate CI step that hands off to a separate deploy step.
+
+The pattern usually includes:
+
+- **Automatic builds on push** — the platform detects your framework or runtime and builds it.
+
+- **Preview environments per branch or PR** — so you can test changes before merging.
+
+- **Rollbacks** — reverting to a previous deploy if something breaks.
+
+- **Zero-downtime releases** — traffic shifts to the new version without dropping requests.
+
+This model replaced the older "provision a server, configure a deploy script, wire up a CI/CD pipeline" approach that platforms like Heroku popularized over a decade ago, and that raw VMs or self-managed Kubernetes still require today.
+
+## What to consider when choosing a deployment platform
+
+Whether you're picking a first platform for a startup or migrating off something legacy, evaluate against these criteria:
+
+1. **Time to first deploy.** Can you go from `git push` to a live URL in minutes, or do you need to write infrastructure config first?
+
+2. **What runtimes/frameworks are supported.** Node.js, Next.js, Docker-based services — does the platform understand your stack, or do you need to shim it?
+
+3. **Independent deploys in a monorepo.** If you run several services in one repo, can each one build and deploy on its own schedule, or does everything ship together?
+
+4. **Preview environments.** Does every PR get an isolated environment for QA, or do you only get staging vs. production?
+
+5. **Operational primitives beyond deploy.** Once your API is live, you'll need auth, rate limiting, and usage analytics. Some platforms leave you to bolt these on yourself; others give you a path to add them without re-architecting.
+
+6. **Exit costs.** How much of your app's logic is coupled to platform-specific config? Standard Dockerfiles and framework conventions travel better than proprietary buildpacks.
+
+## Deploying a Node.js API with Git-push
+
+The mechanics are similar across modern platforms, but here's the general shape of the workflow with Unkey:
+
+1. **Connect your GitHub repository.** Authorize access to the repo containing your Node.js API.
+
+2. **Push to your branch.** Unkey detects the push, builds your service, and deploys it.
+
+3. **Get a live endpoint.** Your API is reachable at a generated URL (or your custom domain) without you managing a server.
+
+4. **Iterate.** Every subsequent push triggers a new build and deploy automatically, so shipping a fix is a normal `git push`, not a release ritual.
+
+This removes the two most common sources of deploy friction: writing a Dockerfile-plus-orchestration setup from scratch, and maintaining a separate CI pipeline just to hand off to hosting.
+
+## Deploying a monorepo with independently deployable services
+
+Monorepos are common for teams running a Next.js frontend alongside one or more backend APIs, or several microservices sharing tooling and types. The requirement that trips up many platforms: **each service should build and deploy on its own trigger**, not as a single all-or-nothing deploy.
+
+When evaluating a platform for this, ask:
+
+- Can you configure a build per directory/service within the same repo?
+
+- Does a change to `services/api` trigger only that service's deploy, leaving `services/worker` untouched?
+
+- Can each service scale, roll back, and version independently?
+
+Unkey is built around deploying backend services and APIs directly from a Git repository, which makes it a reasonable fit for the "API service in a monorepo" half of this problem — you point it at the service's directory, and pushes to that path trigger its own deploy pipeline, independent of other services in the same repo.
+
+## Deploying Next.js with an API backend together
+
+Yes. Next.js is a Node app. We build Node. We also build static sites. You do not need a second host for the frontend.
+
+Two shapes that work:
+
+- One Next.js app, App Router and all, talking to the world. Connect the repo, push, it is live.
+- A Next.js frontend and a Node API as two apps in the same project. Same GitHub repo. Different root directories. Independent watch paths, domains, and rollbacks.
+
+The frontend talks to the API over its URL. That is it. Do not split them across vendors because you think we only do backends. We do not.
+
+If you already like Vercel for the Next.js app, keep it. The API can still live here. That is a preference, not a requirement.
+
+## Migrating off Heroku: what actually changes
+
+Heroku's dyno model — push to `git push heroku main`, get a running app — was one of the earliest mainstream implementations of Git-push deploy, and a lot of teams still reason about deployment in Heroku's vocabulary (dynos, buildpacks, add-ons). If you're migrating off Heroku in 2026, here's what typically maps over and what doesn't:
+
+**What maps directly:**
+
+- Git-push-to-deploy workflow — most modern platforms, including Unkey, replicate this core loop.
+
+- Environment variables and config — same concept, different UI.
+
+**What you should re-evaluate:**
+
+- **Add-ons.** Heroku's ecosystem of managed add-ons (Redis, Postgres, etc.) doesn't have a 1:1 equivalent everywhere. Check what's built-in vs. what you'll need to provision separately (e.g., a managed database from a dedicated provider).
+
+- **Dyno sleeping / cold starts.** If you were on Heroku's free or hobby tiers, cold starts were a known pain point. Compare cold-start behavior on your new platform.
+
+- **Buildpacks vs. Dockerfiles.** If your app relied on custom Heroku buildpacks, you may need to translate that into a standard Dockerfile — which is generally more portable going forward.
+
+- **API-specific operational needs.** If your Heroku app was an API serving external or internal consumers, this migration is a natural point to add proper API key management, per-key rate limiting, and usage analytics — capabilities Heroku didn't provide natively and that you may have bolted on yourself. Unkey provides these alongside deploy, so you can add authentication and rate limiting to the same API you're migrating without integrating a third system.
+
+## Where Unkey fits: deploy plus API management in one place
+
+Most Git-push deploy platforms stop at "your code is running." Unkey's broader platform is built around APIs specifically, which means the same account that deploys your service from a GitHub push also gives you:
+
+- **API key issuance and verification** for authenticating consumers of your API.
+
+- **Rate limiting** per key, per endpoint, or per plan tier.
+
+- **Usage analytics** so you can see what's being called, by whom, and how often.
+
+- **Audit logs** for tracking changes to keys and permissions.
+
+This matters most for teams building an API product — not just an internal service, but something with external consumers, tiered plans, or usage-based billing. Instead of deploying your API on one platform and wiring up a separate auth/rate-limiting layer (Kong, a custom middleware, or a third SaaS), you can deploy and manage the full lifecycle of the API in the same place.
+
+If your use case is a simple internal service with no need for key-based auth or rate limiting, a general-purpose Git-push deploy platform may be all you need. If you're shipping an API that other developers or services will consume, evaluate platforms that combine deploy with the API-specific primitives you'll eventually need — since retrofitting auth and rate limiting after launch is more work than building it in from the first deploy.
+
+## Getting started
+
+1. Connect your GitHub repository to Unkey.
+
+2. Point it at your Node.js API service (or the relevant directory in your monorepo).
+
+3. Push to your branch and confirm the build and deploy succeed.
+
+4. Add API key verification and rate limiting to your endpoints once the service is live, using the same Unkey account.
+
+Git-push deploy has become table stakes — the differentiator in 2026 is what's available in the same platform once your API is actually running.
