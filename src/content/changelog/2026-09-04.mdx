@@ -1,0 +1,126 @@
+---
+title: Custom domains, gateway analytics, and image deploys
+date: 2026-09-04
+tags: ['product:blue']
+---
+
+## New features
+
+### Custom domains through the API
+
+New endpoints let you create, get, list, delete, and verify custom domains. You can attach a domain and check DNS the same way you already do from the dashboard.
+
+
+### Always-on gateway request logs
+
+The gateway now writes a base request log on every request. Five extra capture settings stay opt-in, so you can turn up detail when you need it.
+
+### Gateway request analytics
+
+New `analytics.getGatewayRequests` endpoint runs SQL over the requests Unkey routed to your deployments. You can break down paths, status codes, and latency from a trusted backend with a root key.
+
+See [gateway request analytics](https://www.unkey.com/docs/platform/analytics/get-gateway-requests).
+
+### Runtime log analytics
+
+New `analytics.getRuntimeLogs` endpoint runs SQL over deployment stdout and stderr. You can query runtime output the same way you already query gateway traffic.
+
+See [runtime log analytics](https://www.unkey.com/docs/platform/analytics/get-runtime-logs).
+
+### Rate-limit analytics over SQL
+
+Rate-limit data is queryable through the analytics API. You can break down limits, rejections, and usage the same way you already query verifications.
+
+See [rate-limit analytics](https://www.unkey.com/docs/platform/analytics/get-ratelimits).
+
+### Per-policy credit cost
+
+Gateway key authentication can override credit cost on a per-policy basis, so expensive routes can cost more than cheap ones without a second key.
+
+### Deploy from a container image
+
+The new-app flow accepts a container image as a source, not only a GitHub repo. Build the image yourself and point Unkey at it.
+
+See [deploying a pre-built image](https://www.unkey.com/docs/build-and-deploy/cli).
+
+### Compound ratelimit identifiers
+
+Ratelimit policies can use a compound identifier. That lets you limit "this user on this route" without standing up a second limiter.
+
+### Role permissions through the API
+
+You can set permissions on a role, and attach them when you create one, so the role is usable immediately.
+
+### Connect GitHub through the API
+
+New endpoints install the GitHub app and connect repos to apps, so you can wire deployments without clicking through the dashboard.
+
+### Explicit production environments
+
+An environment can be marked as production. Production is no longer implied by the name.
+
+### More of the API in the CLI
+
+`unkey api` now covers projects, apps, deployments, gateway policies, analytics, domains, GitHub installs, role permissions, and related workspace operations.
+
+See the [CLI](https://www.unkey.com/docs/cli/overview).
+
+### Project-scoped permissions
+
+Root keys and roles can use a project-scoped permission catalog. Resources and actions are named for the project they apply to, so access can stop at one project instead of the whole workspace.
+
+See [root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions).
+
+### Richer audit events
+
+Audit logs now record more key and rate-limit actions. You get a clearer trail when keys are created, updated, verified, or when rate limits are applied and overridden.
+
+See [audit log event types](https://www.unkey.com/docs/audit-log/types).
+
+## Updates
+
+### Logs and Requests
+
+App Logs and Requests live in the sidebar. Deployment logs and requests sit behind a more menu with rollback, promote, wake, and stop. Gateway and runtime log filters are tighter.
+
+### Deploy flow
+
+A deploy that fails because you hit a quota now sends you to the Limits page. The dashboard suggests root directories and watch paths. Watch paths are validated across the dashboard and API before a deploy starts. Successful deploys get a short celebration, and source is click-to-copy.
+
+### Gateway policy permissions
+
+Gateway policy access is split into read and write permissions, so you can grant list access without granting updates. Dashboard copy now says policies, not Sentinel policies.
+
+See [gateway policies](https://www.unkey.com/docs/platform/gateway/policies/overview).
+
+### Root key permissions in the dashboard
+
+The dashboard now shows the full root-key permission set when you create or edit a root key.
+
+### Account settings
+
+Account settings moved out of the workspace settings rail to their own account route.
+
+### Names
+
+API names are no longer validated as slugs. Role names created in the dashboard are valid in OpenAPI.
+
+## Bug fixes
+
+- `permissions.setRolePermissions` accepts a role id or name, including dotted role names
+- Searching permissions in the dashboard keeps the matching permission details when you assign them
+- Root key usage is attributed to the key owner
+- Oversized login session cookies no longer cause a redirect loop
+- Resuming or upgrading after a canceled Compute plan works again
+- `keys.updateKey` accepts `null` ratelimits instead of rejecting the request
+- Production domain filtering on the app overview returns the right domains
+- The usage page resolves the app from the environment, and preview and branch domains render correctly
+- Default projects can no longer be deleted or left in a broken state
+- Frontline distinguishes usage exhaustion from other failures, and WebSocket streaming no longer stalls
+- A transient error no longer causes a deployment change to be skipped
+- Terminal pods are not counted as active instances
+- Stripe: recover missed subscription payments, tear down Compute on cancel, re-arm spend-budget alerts, stop re-billing accumulated egress after a restart, and reset API rate limits on upgrades
+- Dashboard docs links point at pages that exist
+- API signup webhook alerts deliver again
+- Transient integration and ratelimit push failures recover instead of sticking
+- Clipboard writes fail quietly when the browser rejects `writeText`
