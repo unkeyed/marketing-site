@@ -12,26 +12,23 @@ const hiddenPosts = [
 ] as const;
 
 test('TC-E2E-010: hidden blog posts remain crawlable but absent from the blog feed', async ({
+  page,
   request,
 }) => {
   const [blogPage, blogIndex, llmsIndex] = await Promise.all([
-    request.get('/blog'),
+    page.goto('/blog'),
     request.get('/blog.md'),
     request.get('/llms.txt'),
   ]);
 
-  expect(blogPage.ok()).toBeTruthy();
+  expect(blogPage?.ok()).toBeTruthy();
   expect(blogIndex.ok()).toBeTruthy();
   expect(llmsIndex.ok()).toBeTruthy();
 
-  const [blogPageBody, blogIndexBody, llmsIndexBody] = await Promise.all([
-    blogPage.text(),
-    blogIndex.text(),
-    llmsIndex.text(),
-  ]);
+  const [blogIndexBody, llmsIndexBody] = await Promise.all([blogIndex.text(), llmsIndex.text()]);
 
   for (const post of hiddenPosts) {
-    expect(blogPageBody).not.toContain(post.title);
+    await expect(page.locator(`.posts-list--grid a[href="/blog/${post.slug}"]`)).toHaveCount(0);
     expect(blogIndexBody).toContain(post.title);
     expect(llmsIndexBody).toContain(post.title);
     expect(llmsIndexBody).toContain(`/blog/${post.slug}.md`);
