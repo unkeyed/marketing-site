@@ -78,6 +78,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // Enrich the static llms.txt source with links to posts excluded from site feeds.
+        {
+          source: '/llms.txt',
+          destination: '/api/llms',
+        },
         // Per-item markdown sources
         {
           source: '/blog/:slug.md',

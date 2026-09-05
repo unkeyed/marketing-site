@@ -1,0 +1,164 @@
+---
+date: 2026-09-05
+title: Unkey vs Kong, Zuplo, and AWS API Gateway: when you need a gateway (and when you don’t)
+description: When Unkey is enough, and when Kong, Zuplo, or AWS API Gateway still wins.
+image: '/images/blog-images/unkey-vs-trad/og.png'
+author: james
+tags: ['marketing']
+---
+
+Unkey is one platform: API keys, compute, a gateway, and a developer portal for your users.
+
+Keys: issue, verify, revoke, per-key limits, metadata, analytics. Compute: run your API as real containers with previews, multi-region, and rollbacks. Gateway: auth, rate limits, firewall, and OpenAPI validation in front of that compute, before your instances see traffic. Portal: your users manage their own keys and see their usage.
+
+Kong, Zuplo, and AWS API Gateway are gateway-first. They also do keys, as part of a bigger traffic job.
+
+If you want the conceptual “gateway vs keys” argument, check out: [A gateway is a weak default for API keys](https://unkey.com/blog/api-key-management-vs-gateway). This post is the product compare. I run Unkey, so I’ll say where each product wins, including theirs.
+
+## What each product is
+
+### Unkey
+
+[Unkey](https://unkey.com/docs/introduction) is one control plane. Keys, compute, gateway, portal. None of them is a side feature.
+
+**API keys.** Create keys, verify them over SDK or HTTP, revoke them, hang metadata and per-key rate limits on them, and see usage. Keys work on their own. Your API can live on Express, Hono, Cloudflare Workers, Next.js, or behind someone else’s proxy. You don’t have to put Unkey in the request path to use keys.
+
+**Compute.** Run your APIs as real containers on Unkey: Git or image in, automatic domains, multi-region routing, rollbacks, preview environments. See [build and serve on Unkey](https://unkey.com/docs/build-and-deploy/overview).
+
+**Gateway.** When your app runs on Unkey compute, the gateway sits in front and enforces policies before instances see traffic: API key auth, rate limiting, logging, firewall, OpenAPI validation. Details: [gateway overview](https://unkey.com/docs/platform/gateway/overview). That is a real gateway for apps on Unkey. It is not Kong- or Zuplo-class multi-protocol transform or plugin ecosystem.
+
+**Developer portal.** Hosted portal for your users: they manage their API keys and see their usage and analytics, without you building that UI. First-class surface. Zuplo’s bet is different: programmable edge gateway as the product, with the portal sitting at the center of that stack. We overlap on “users manage keys.” We diverge on whether the programmable edge is what you’re buying.
+
+Use keys alone. Run compute and gateway together. Ship the portal so your users self-serve. Combine them. Shortlist by the job you need.
+
+### Kong Gateway
+
+Kong is an enterprise / OSS reverse-proxy gateway. You own Services, Routes, Consumers, and a large plugin surface. Kubernetes Ingress Controller, multi-protocol traffic (REST, gRPC, GraphQL, WebSocket), self-hosted or Konnect. That’s the product. Key auth is a plugin among many. If your buying job is “run and operate a full proxy platform,” Kong is built for that. Ops surface _is_ the product.
+
+### Zuplo
+
+Zuplo is a managed, edge-deployed programmable API gateway. TypeScript policies, OpenAPI-native routes, GitOps, and a built-in developer portal sit at the center. It bundles gateway, portal, and key management for teams whose product bet is the edge gateway itself. Keys and rate limits are there. The programmable edge and portal are why you buy it.
+
+### AWS API Gateway
+
+AWS API Gateway is the managed regional API service on AWS: HTTP, REST, and WebSocket APIs, usage plans and API keys, Lambda or HTTP integrations, IAM and resource policies. Strong when the API already lives in AWS behind the gateway. Metering and ops stay inside the AWS console. You inherit stages, usage plans, and resource wiring to do basic keys and quotas.
+
+## Decision table
+
+Use this when you’re still arguing in a Slack thread. As of September 2026. Verify against first-party docs before you paste it into a procurement deck.
+
+| Need                                             | Unkey                                                                     | Kong                                            | Zuplo                                                      | AWS API Gateway                           |
+| ------------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------- |
+| Issue, verify, revoke API keys                   | First-class                                                               | Via plugins / consumers                         | Built in                                                   | Usage plans + API keys                    |
+| Per-key rate limits & metadata                   | Yes                                                                       | Yes (more setup)                                | Yes                                                        | Quotas via usage plans. Metadata limited  |
+| App compute / hosting                            | First-class Unkey compute (containers, previews, multi-region, rollbacks) | Bring your own backends                         | Bring your own / integrate                                 | Integrate Lambda, ALB, HTTP               |
+| Request routing & transformation                 | Gateway routes to your Unkey compute. Not deep multi-protocol transform   | Deep: plugins and proxy control                 | Programmable edge policies                                 | Integrations, mappings, stages            |
+| In the request path vs beside the app            | Keys can sit beside your app. Compute + gateway put Unkey in path         | In path (that’s the product)                    | In path (edge)                                             | In path                                   |
+| Developer portal                                 | First-class: users manage keys and see their usage                        | Available in platform / Konnect stacks          | Built-in, central to the product (gateway + portal + keys) | Developer portals exist in AWS tooling    |
+| Multi-protocol / K8s ingress                     | Not that product                                                          | Strong (gRPC, WS, GraphQL, KIC)                 | HTTP/edge-programmable focus                               | HTTP/REST/WebSocket on AWS                |
+| Verify keys at the edge without owning a gateway | Yes: HTTP/SDK from Workers etc.                                           | Typically need Kong in front                    | Gateway _is_ the edge                                      | Assumes traffic hits API Gateway          |
+| Ops burden                                       | Hosted keys and portal. Hosted compute + gateway if the app runs on Unkey | You (or Konnect) run control plane + data plane | Managed edge                                               | AWS-managed control. You own integrations |
+
+Current pricing shapes live on [unkey.com/pricing](https://unkey.com/pricing). API management and compute are billed as products on the platform. I’m not pasting dollar tables here so this page doesn’t go stale overnight.
+
+## Unkey vs Kong
+
+### Choose Unkey when…
+
+You want customer API keys with per-key limits and analytics, a portal so those customers manage keys themselves, or you want to run the API on Unkey compute with the gateway enforcing auth and limits before your code runs, without standing up Kong’s Admin API, database, and plugin stack. The job is “ship and protect an API,” not “operate an enterprise reverse proxy.” Portable keys on any host fit here. So does compute + gateway when you want one control plane for the app and the traffic rules.
+
+### Choose Kong when…
+
+You need the plugin ecosystem, multi-protocol mediation, Kubernetes ingress ownership, air-gapped or heavily customized proxy control, or a service-mesh-adjacent ops model you already staff for. If request/response transform across many backends _is_ the product, buy the proxy. Our gateway is not Kong.
+
+### Can you use both?
+
+Yes. Run Kong (or any proxy) for routing and transform. Use Unkey for key lifecycle beside the proxy: verify from your service, or issue, revoke, and limit keys in Unkey while Kong handles everything else on the path. That’s coexistence, not a compromise. A lot of teams bought Kong only to issue keys. That’s one of the jobs we built Unkey for. Keep Kong if you still need the rest. Or drop the proxy tax and run compute + gateway on Unkey when you don’t.
+
+## Unkey vs Zuplo
+
+### Choose Unkey when…
+
+You want first-class keys, compute, a gateway on that compute, and a portal where your users manage keys and see usage, without buying a programmable edge gateway as the center of the stack. Keys that work on any host matter. So does running the API on Unkey when you want compute and gateway in the same control plane.
+
+### Choose Zuplo when…
+
+Your product bet is a managed, edge-native programmable gateway with TypeScript policies, OpenAPI-first routes, and a portal that sits at the center of that bet from day one. Overlap with us on keys, rate limits, and a user-facing key portal is real. The difference is whether the programmable edge gateway _is_ the product. If it is, Zuplo is the honest shortlist pick.
+
+### Correct the stale take
+
+Third-party guides still say “Unkey is not a gateway” or paint us as keys-only. That’s incomplete. Keys are first-class. So is compute. So is the gateway in front of apps on Unkey: API key auth, rate limiting, logging, firewall, and OpenAPI validation before instances see the request ([gateway docs](https://unkey.com/docs/platform/gateway/overview)). So is the portal your users use to manage keys and see their analytics. That updates the “keys-only” framing. It does **not** mean we match Kong or Zuplo on multi-protocol transform or plugin depth. Don’t cite us as a drop-in for those jobs.
+
+## Unkey vs AWS API Gateway
+
+### Choose AWS when…
+
+The API already sits on API Gateway. Basic usage plans, keys, and quotas are enough. You want zero extra vendor on the auth path and you’re fine tying key lifecycle to API Gateway resources, stages, and CloudWatch. That’s a coherent stack. I said the same thing in the [conceptual post’s AWS close](https://unkey.com/blog/api-key-management-vs-gateway). I’m not walking it back.
+
+### Choose Unkey when…
+
+Keys must work outside API Gateway: Cloudflare Workers, a non-AWS host, multi-cloud, or a server you run. You want richer per-key metadata, limits, and analytics without inheriting usage-plan wiring. Or you want Unkey compute plus gateway policies without tying issuance to API Gateway resources. Same key model whether the app runs on Unkey or somewhere else.
+
+### Don’t redo the hashing chapter here
+
+Issue, hash, rotate, edge verify, outage modes (degraded-open vs closed), and the AWS recommendation close are already written. Link [A gateway is a weak default for API keys](https://unkey.com/blog/api-key-management-vs-gateway) and move on. This page’s job is named product choice, not another crypto tutorial.
+
+## When you still need a heavy gateway
+
+Buy or keep a heavy (or edge-programmable) gateway when you need any of these:
+
+- Deep request/response transformation across many backends
+- Multi-protocol mediation (gRPC, GraphQL, WebSocket as first-class proxy jobs)
+- Kubernetes ingress ownership and the control plane that comes with it
+- An enterprise plugin / IdP matrix you already standardized on
+- A programmable edge gateway where the portal is the product surface
+
+Unkey does not replace those jobs. Unkey **can** replace “we bought Kong (or stood up API Gateway usage plans) only to issue and quota keys.” It **can** replace “we need somewhere to run the API plus a gateway in front” when Unkey compute + gateway fit. If that’s you, stop paying the wrong tax. If it isn’t, keep the heavy gateway and put keys where they belong.
+
+## How Unkey compute + gateway fit
+
+[Compute on Unkey](https://unkey.com/docs/build-and-deploy/overview) builds from GitHub or a pre-built image, assigns domains, runs multi-region, keeps previous versions for instant rollbacks, and gives every branch a preview environment.
+
+The [gateway](https://unkey.com/docs/platform/gateway/overview) sits in front of that compute. Policies are per environment. Preview rules don’t leak into production. On each request the gateway evaluates configured policies in order. Pass, and it forwards to a healthy instance in the same region. Fail, and your app never sees the request. Within a region, distribution across instances is random. No session affinity.
+
+Common policies: API key authentication (identity forwarded to your app on a request header), rate limiting, logging, firewall, OpenAPI request validation. The dashboard configures API key auth, rate limiting, firewall, and OpenAPI validation today. Other policy types go through support.
+
+Keeping your own host? Skip Unkey compute. Call verify from your middleware or Worker. Same key model. You write the “reject before handler” bit yourself, or put another proxy in front and still use Unkey for key lifecycle.
+
+## Migration and coexistence
+
+**DIY keys → Unkey:** Import pre-hashed keys so users don’t rotate. Contact us for a migration ID, import hashes with config, then point verify at Unkey. Full flow: [migrations introduction](https://unkey.com/docs/platform/apis/migrations/introduction). Dual-write and shadow-verify patterns are in the [Aug 24 post](https://unkey.com/blog/api-key-management-vs-gateway). Don’t cut over in one night.
+
+**Keeping Kong / Zuplo / AWS for routing:** Leave the proxy. Move issuance, revoke, per-key limits, and analytics to Unkey. Coexistence is normal.
+
+**Leaving API Gateway usage plans:** Dual-write new keys, backfill hashes against the same external id, shadow-verify until the systems agree, then switch middleware. Keep the old path read-only for a grace period. Again: hashes in, not plaintext. Details in migrations docs and the conceptual post.
+
+Docs start at [introduction](https://unkey.com/docs/introduction). Pricing: [unkey.com/pricing](https://unkey.com/pricing).
+
+## FAQ
+
+### Is Unkey an API gateway or only API key management?
+
+Neither. Unkey is a platform: API keys, compute, a gateway in front of apps that run on that compute, and a developer portal so your users manage keys and see their usage. Keys work from your own app without putting Unkey in the request path. On Unkey compute, the gateway enforces API key auth, rate limiting, logging, firewall, and OpenAPI validation before traffic reaches your instances. That is a real gateway for those apps. It is not a Kong- or Zuplo-class multi-protocol proxy with a full transformation and plugin ecosystem.
+
+### Unkey vs Kong: which should I pick?
+
+Unkey when you want keys, a user portal for those keys, or Unkey compute + gateway, without operating Kong’s control plane, database, and plugin stack. Kong when you need an enterprise reverse proxy: Kubernetes ingress, large plugin ecosystem, multi-protocol routing (including gRPC, WebSocket, GraphQL), and deep request/response control you own end to end. Many teams run both: Kong for routing, Unkey for key lifecycle. Or they move the app to Unkey compute when they don’t need Kong’s surface.
+
+### Unkey vs Zuplo: which should I pick?
+
+Unkey when you want first-class keys, Unkey compute, the gateway on that compute, and a portal for users to manage keys and see usage, without buying a programmable edge gateway as the center of the stack. Zuplo when your product bet is a managed, edge-native programmable gateway with TypeScript policies, OpenAPI-first routes, and a portal at the center of that bet. They overlap on keys, rate limits, and a user-facing key portal. They differ on whether the programmable edge gateway is the product.
+
+### Unkey vs AWS API Gateway: which should I pick?
+
+AWS when the API already lives there and usage plans plus API keys cover your quotas. Unkey when keys need to work outside that gateway, you want richer per-key metadata and analytics, or you want Unkey compute with gateway policies without tying key lifecycle to API Gateway resources. Conceptual AWS guidance: [A gateway is a weak default for API keys](https://unkey.com/blog/api-key-management-vs-gateway).
+
+### Can Unkey sit beside Kong, Zuplo, or AWS?
+
+Yes. Keep the heavy or edge gateway for routing and transform. Use Unkey for issue, verify, revoke, per-key limits, analytics, and the portal your users already expect. Or run Unkey compute + gateway when you don’t need that heavier surface. The false choice is “gateway _or_ keys.” Buy the gateway for gateway work. Buy keys and a user portal for key work. Buy compute when you want the app on Unkey too.
+
+---
+
+**Takeaway:** Shortlist by job, not by category label. Keys, per-key control, and a portal for your users → Unkey. App compute plus gateway without Kong/Zuplo ops → Unkey. Multi-protocol transform, K8s ingress, or programmable-edge-as-product → Kong, Zuplo, or AWS, with Unkey beside them if you still want a proper key store.
+
+Ship APIs, not infrastructure.
