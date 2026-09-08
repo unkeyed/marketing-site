@@ -33,6 +33,8 @@ export default defineConfig({
         command:
           process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? 'pnpm dev --hostname 127.0.0.1 --port 3100',
         url: baseURL,
+        // Empty values win over `.env`, so e2e runs never POST to the real ai-visibility ingest.
+        env: { AI_VIS_INGEST_URL: '', AI_VIS_INGEST_SECRET: '' },
         reuseExistingServer: false,
         timeout: 120_000,
       }

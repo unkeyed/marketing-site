@@ -16,9 +16,13 @@ import { track } from '@vercel/analytics/server';
  *     CDN cache entry — is never altered, so human delivery is untouched and
  *     there's no risk of a markdown body being cached under the HTML URL.
  *
- * The `matcher` is scoped to the markdown surface plus the specific pages that
- * have a `.md` twin, so unrelated (human) traffic never touches the proxy.
- * Tracking is pushed onto `event.waitUntil`, so responses are never blocked.
+ * It also forwards AI bot and AI-referred requests to the internal ai-visibility
+ * service (see `forwardToAiVisibility`). For that hook to see docs, blog, and
+ * robots traffic, the `matcher` runs the proxy on every non-asset request. The
+ * markdown logic above is still a no-op for ordinary HTML requests: branch 1
+ * only fires on `/llms.txt` and `*.md`, and branch 2 only redirects when the
+ * client explicitly sends `Accept: text/markdown`.
+ * All tracking is pushed onto `event.waitUntil`, so responses are never blocked.
  */
 
 // Lowercase substrings matched against the User-Agent. Covers the crawlers and
@@ -72,6 +76,95 @@ const MARKDOWN_SECTIONS = new Set(['blog', 'case-studies', 'glossary', 'changelo
 // Sub-routes under those sections that are listings, not items (no `.md` twin).
 const NON_ITEM_SEGMENTS = new Set(['category', 'page']);
 
+// Bot tokens forwarded to ai-visibility. Differs from AI_AGENT_SIGNATURES above on
+// purpose: this is the set the ai-visibility service verifies against vendor IP ranges,
+// and the two lists are owned by different consumers. Do not merge them.
+const BOT_TOKENS = [
+  'GPTBot',
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'ClaudeBot',
+  'Claude-SearchBot',
+  'Claude-User',
+  'PerplexityBot',
+  'Perplexity-User',
+  'Googlebot',
+  'GoogleOther',
+  'Google-Agent',
+  'meta-externalagent',
+  'meta-externalfetcher',
+  'Bytespider',
+  'Amazonbot',
+  'Applebot',
+  'CCBot',
+  'DuckAssistBot',
+  'MistralAI-User',
+  'MistralAI-Index',
+  'MistralAI-Training',
+  'cohere-training-data-crawler',
+  'GrokBot',
+].map((t) => t.toLowerCase());
+
+const AI_REFERERS = [
+  'chatgpt.com',
+  'chat.openai.com',
+  'claude.ai',
+  'perplexity.ai',
+  'gemini.google.com',
+  'bard.google.com',
+  'copilot.microsoft.com',
+  'bing.com/chat',
+  'grok.com',
+  'meta.ai',
+  'deepseek.com',
+  'chat.mistral.ai',
+];
+
+export function interesting(ua: string, referer: string, path: string): boolean {
+  const u = ua.toLowerCase();
+  if (BOT_TOKENS.some((t) => u.includes(t))) {
+    return true;
+  }
+  const r = referer.toLowerCase();
+  if (AI_REFERERS.some((h) => r.includes(h))) {
+    return true;
+  }
+  return path.includes('utm_source=chatgpt') || path.includes('utm_source=perplexity');
+}
+
+// Copy AI bot / AI-referred requests to the ai-visibility ingest endpoint. Never
+// awaited, never alters the response, inert when the env vars are unset.
+function forwardToAiVisibility(event: NextFetchEvent, request: NextRequest): void {
+  const ua = request.headers.get('user-agent') ?? '';
+  const referer = request.headers.get('referer') ?? '';
+  const path = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  if (!interesting(ua, referer, path)) {
+    return;
+  }
+  // Unset or empty (as shipped in `.env.example`) both disable the hook.
+  const url = process.env.AI_VIS_INGEST_URL;
+  const secret = process.env.AI_VIS_INGEST_SECRET;
+  if (!url || !secret) {
+    return;
+  }
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null;
+  event.waitUntil(
+    fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-ingest-secret': secret },
+      body: JSON.stringify({
+        ts: Date.now(),
+        host: request.nextUrl.hostname,
+        path,
+        method: request.method,
+        ua,
+        ip,
+        referer: referer || null,
+      }),
+    }).catch(() => undefined),
+  );
+}
+
 function detectAgent(userAgent: string): string | null {
   const ua = userAgent.toLowerCase();
   return AI_AGENT_SIGNATURES.find((signature) => ua.includes(signature)) ?? null;
@@ -118,6 +211,9 @@ function trackMarkdownRead(
 }
 
 export function proxy(request: NextRequest, event: NextFetchEvent) {
+  // Must run before branches 1 and 2, which return early.
+  forwardToAiVisibility(event, request);
+
   const { pathname } = request.nextUrl;
   const agent = detectAgent(request.headers.get('user-agent') ?? '');
 
@@ -149,26 +245,5 @@ export function proxy(request: NextRequest, event: NextFetchEvent) {
 }
 
 export const config = {
-  matcher: [
-    // Markdown surface (observed for analytics).
-    '/llms.txt',
-    '/(.*)\\.md',
-    // Pages with a `.md` twin (content negotiation via `Accept: text/markdown`).
-    // Keep in sync with MARKDOWN_PAGES / MARKDOWN_SECTIONS above.
-    '/',
-    '/pricing',
-    '/about',
-    '/startups',
-    '/yc',
-    '/blog',
-    '/blog/:slug',
-    '/case-studies',
-    '/case-studies/:slug',
-    '/glossary',
-    '/glossary/:slug',
-    '/changelog',
-    '/changelog/:slug',
-    '/policies/terms',
-    '/policies/privacy',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
