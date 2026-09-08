@@ -120,7 +120,7 @@ const AI_REFERERS = [
   'chat.mistral.ai',
 ];
 
-export function interesting(ua: string, referer: string, path: string): boolean {
+export function isAiTraffic(ua: string, referer: string, path: string): boolean {
   const u = ua.toLowerCase();
   if (BOT_TOKENS.some((t) => u.includes(t))) {
     return true;
@@ -138,7 +138,7 @@ function forwardToAiVisibility(event: NextFetchEvent, request: NextRequest): voi
   const ua = request.headers.get('user-agent') ?? '';
   const referer = request.headers.get('referer') ?? '';
   const path = `${request.nextUrl.pathname}${request.nextUrl.search}`;
-  if (!interesting(ua, referer, path)) {
+  if (!isAiTraffic(ua, referer, path)) {
     return;
   }
   // Unset or empty (as shipped in `.env.example`) both disable the hook.
