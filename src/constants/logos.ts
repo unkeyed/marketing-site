@@ -53,17 +53,6 @@ export const portfolioLogos: IPortfolioLogo[] = [
   },
 ];
 
-export const homePortfolioLogos: IPortfolioLogo[] = [
-  ...portfolioLogos,
-  {
-    alt: 'Plain logo',
-    src: '/images/logos/portfolio/plain.svg',
-    width: 74,
-    height: 22,
-    wrapperClassName: 'h-[1.375rem] w-[4.625rem]',
-  },
-];
-
 export const buildDeployTechnologyLogos: ITechnologyLogo[] = [
   {
     alt: 'Python',
