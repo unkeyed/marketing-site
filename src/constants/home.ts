@@ -12,7 +12,7 @@ import portalDocsImage from '@/assets/images/home/portal/docs.png';
 import portalKeysImage from '@/assets/images/home/portal/keys.png';
 import portalZeroImage from '@/assets/images/home/portal/zero.png';
 import { APP_URL, GITHUB_URL, SIGN_UP_URL } from '@/configs/website-config';
-import { buildDeployTechnologyLogos, homePortfolioLogos } from '@/constants/logos';
+import { buildDeployTechnologyLogos, portfolioLogos } from '@/constants/logos';
 import { Alignment, Fit } from '@rive-app/react-canvas';
 
 export const homeHeaderLinks = {
@@ -39,7 +39,7 @@ export const homeContentData = {
       { src: '/videos/home/hero.mp4', type: 'video/mp4; codecs=hvc1' },
       { src: '/videos/home/hero.webm', type: 'video/webm' },
     ],
-    logos: homePortfolioLogos,
+    logos: portfolioLogos,
   },
   controlPlane: {
     heading: createElement(
