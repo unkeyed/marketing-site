@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-
 import { compileMDX } from 'next-mdx-remote/rsc';
 
 import {
@@ -8,6 +7,7 @@ import {
   IChangelogPost,
   IChangelogTag,
   POSTS_PER_PAGE,
+  resolvePublishedDate,
 } from '@/lib/changelog/posts';
 import {
   rehypeCode,
@@ -39,6 +39,7 @@ interface GitHubContentEntry {
 function parseFrontmatter(source: string): {
   title: string;
   description?: string;
+  date?: string;
 } {
   const match = source.match(/^---\n([\s\S]*?)\n---/);
   if (!match) {
@@ -52,7 +53,7 @@ function parseFrontmatter(source: string): {
     return m ? m[1].replace(/^["']|["']$/g, '').trim() : undefined;
   };
 
-  return { title: get('title') ?? '', description: get('description') };
+  return { title: get('title') ?? '', description: get('description'), date: get('date') };
 }
 
 async function fetchRawChangelogs(): Promise<
@@ -89,9 +90,10 @@ async function fetchRawChangelogs(): Promise<
             return null;
           }
           const source = (await raw.text()).replace(/^noindex:\s*.+$/m, '');
-          const date = file.name.slice(0, -4); // YYYY-MM-DD from filename
-          const { title, description } = parseFrontmatter(source);
-          return { slug: date, date, title, description, source };
+          const slug = file.name.slice(0, -4);
+          const { title, description, date: frontmatterDate } = parseFrontmatter(source);
+          const date = resolvePublishedDate(frontmatterDate, slug);
+          return { slug, date, title, description, source };
         } catch (err) {
           console.error(`Failed to process changelog file ${file.name}:`, err);
           return null;
