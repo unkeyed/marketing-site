@@ -56,10 +56,7 @@ RUN npm run build
 CMD ["node", "dist/index.js"]
 ```
 
-<Note>
-  The secret ID must match the environment variable key you configured in your deployment settings.
-  Secrets are only available during the build stage where they are mounted.
-</Note>
+The secret ID must match the environment variable key you configured in your deployment settings. Secrets are only available during the build stage where they are mounted.
 
 ### OpenAPI diff viewer
 
