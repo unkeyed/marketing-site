@@ -11,7 +11,10 @@ import { getExcerpt, getFormattedDate, getTimeToRead } from '@/lib/utils';
 
 export const POSTS_PER_PAGE = 20;
 
-const CHANGELOG_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), config.changelog.contentDir);
+const CHANGELOG_DIR_PATH = path.join(
+  /*turbopackIgnore: true*/ process.cwd(),
+  config.changelog.contentDir,
+);
 const CHANGELOG_FILE_EXTENSIONS = ['.md', '.mdx'] as const;
 
 export interface IChangelogTag {
@@ -114,6 +117,37 @@ function getSlugsByPath(baseDir: string, globPattern: string, ignore: string[] =
   });
 }
 
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}/;
+
+/**
+ * Resolves a post's publish date (YYYY-MM-DD) from frontmatter, falling back to a
+ * date-prefixed filename. Never falls back to the build date, which would make
+ * backfilled entries appear as if they were published today.
+ */
+export function resolvePublishedDate(value: unknown, slug: string): string {
+  if (value instanceof globalThis.Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+
+  if (typeof value === 'string') {
+    const match = value.trim().match(ISO_DATE_PATTERN);
+    if (match) return match[0];
+
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+  }
+
+  const slugMatch = path.basename(slug).match(ISO_DATE_PATTERN);
+  if (slugMatch) {
+    if (value === undefined) {
+      console.warn(`Changelog "${slug}" has no frontmatter date; using filename date.`);
+    }
+    return slugMatch[0];
+  }
+
+  throw new Error(`Changelog "${slug}" is missing a valid "date" in frontmatter.`);
+}
+
 function resolveChangelogFilePath(slug: string): string | null {
   for (const ext of CHANGELOG_FILE_EXTENSIONS) {
     const candidatePath = path.join(CHANGELOG_DIR_PATH, `${slug}${ext}`);
@@ -150,11 +184,7 @@ async function getChangelogPostBySlug(
       headingIdPrefix: opts?.prefixHeadingIds && safeSlugPrefix ? `${safeSlugPrefix}--` : undefined,
     });
 
-    const rawPublishedAt = publishedAt ?? date;
-    const publishedDateIso =
-      rawPublishedAt instanceof globalThis.Date
-        ? rawPublishedAt.toISOString().slice(0, 10)
-        : (rawPublishedAt ?? new Date().toISOString().slice(0, 10));
+    const publishedDateIso = resolvePublishedDate(publishedAt ?? date, slug);
 
     return {
       slug,
