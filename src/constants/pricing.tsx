@@ -113,7 +113,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 1 vCPU / 2 GB per Instance',
+          label: 'Up to 2 vCPU / 2 GB per Instance',
           lucideIcon: 'check',
         },
         {
