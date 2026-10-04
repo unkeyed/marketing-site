@@ -1,0 +1,104 @@
+---
+date: 2026-10-04
+title: 'Best serverless platform to host a small API in 2026'
+description: Workers, Vercel, Railway, Fly.io, and Unkey for a small API. What Unkey Compute and API Management actually do.
+image: '/images/blog-images/serverless-2026/og.png'
+author: james
+isHidden: true
+tags: ['marketing']
+---
+
+When you need to host a small API without managing servers, the usual list is Cloudflare Workers, Vercel Functions, Railway, and Fly.io. Unkey belongs on that list for a different reason. [Compute](https://unkey.com/docs/compute) runs your app, and [API Management](https://unkey.com/docs/api-management) can sit in front of it with API keys, rate limits, and request logs. You can use either product on its own.
+
+"Serverless" here means you are not provisioning machines. Unkey does not run your API as a function. It runs a container that stays up and listens on a port.
+
+## What you are actually choosing
+
+A small API rarely stays a single route. You also choose where these live:
+
+- API keys, including reroll and revoke
+- Rate limits
+- Request logs and usage
+- Who is allowed to call which route
+
+Workers, Vercel, Railway, and Fly will run the code. Keys and limits are something you add. On Unkey they can run in the gateway, before the request reaches your app, once you add a policy.
+
+## What Unkey actually does
+
+Compute takes a GitHub repository, or a container image you already built. A new app starts at 0.25 vCPU, 256 MiB, one replica, and one region. You change that later. Plans cap it: Starter is 2 vCPU and 2 GiB per instance, Pro is 8 and 8, Business is 16 and 32. Usage above the plan is metered. A monthly spend budget can stop Compute instead of letting the bill run.
+
+Regions today are Oregon, Northern Virginia, Frankfurt, and Singapore. You pick one to five. The nearest gateway serves the request from a region where that deployment is running.
+
+The gateway is in front of every deployment. With no policies, it forwards the request. You can add policies to check an Unkey API key, rate limit, block a request, validate against your OpenAPI spec, or log headers, query, and body. A policy change applies on the next deployment.
+
+Keys are created in API Management, then attached to the app with a keyspace on an API key policy. After a key passes, your app can read `X-Unkey-Principal`. The same keys work if you host somewhere else and call `keys.verifyKey` yourself. Identities group keys so they share metadata and a rate limit. They are not a user login system.
+
+Request logs, runtime logs, and metrics are on the deployment. Audit logs are separate. They record who changed the workspace, not who called the API.
+
+GitHub is the git host. The CLI does not build your repo. It deploys an image that is already in a registry.
+
+```bash
+unkey deploy ghcr.io/acme/payments:1.4.2 \
+  --project=payments \
+  --env=production \
+  --root-key=$UNKEY_ROOT_KEY
+```
+
+Add `--keyspace-id` when that deployment should require keys. `unkey deploy` does not read a key saved with `unkey auth login`.
+
+## A small Hono API
+
+Your process has to listen on `PORT`. This is not a Worker-style default export.
+
+```typescript
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+
+const app = new Hono();
+
+app.get('/', (c) => {
+  return c.json({ message: 'Hello from Unkey' });
+});
+
+const port = Number(process.env.PORT ?? 8080);
+
+serve({
+  fetch: app.fetch,
+  port,
+});
+```
+
+With no Dockerfile, Unkey detects the language and builds the image. Use a Dockerfile when you need system packages or your own build. The container must exit on `SIGTERM` and keep its own filesystem writes under 128 MiB. Anything bigger goes on the disk at `/data`.
+
+## How the options differ
+
+|               | Unkey                                                                                               | Cloudflare Workers               | Vercel Functions                         | Railway                 | Fly.io                  |
+| ------------- | --------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------- | ----------------------- | ----------------------- |
+| What runs     | A container that stays up, from GitHub or an image you built                                        | JavaScript on their edge runtime | Functions, usually next to a Next.js app | Containers              | Containers              |
+| API keys      | Gateway policy against keys you issue in API Management, or verify keys from your own code anywhere | You add it                       | You add it                               | You add it              | You add it              |
+| Rate limits   | Gateway policy, or limits on the key                                                                | You add it                       | You add it                               | You add it              | You add it              |
+| Logs          | Gateway request logs, runtime logs, metrics                                                         | The platform's own logs          | The platform's own logs                  | The platform's own logs | The platform's own logs |
+| Where it runs | Oregon, Northern Virginia, Frankfurt, Singapore. You choose.                                        | Their edge network               | Their regions                            | Their regions           | Their regions           |
+
+I am not scoring cold starts or price. Those change, and a table of guesses is worse than no table.
+
+## When to pick each
+
+Pick Unkey when the API needs keys, rate limits, or request logs in the same place as the deploy, and you are fine running a container rather than a function. You need a Compute plan to deploy. The free API Management tier does not include it.
+
+Pick Cloudflare Workers when you want the Worker's runtime and the lowest hop to the user. Keep the Worker, and use Unkey API Management if you still want keys. There is a [Workers guide](https://unkey.com/docs/api-management/guides/cloudflare-workers).
+
+Pick Vercel when the API is part of a Next.js app you already want there. Compute can build Next.js too. A frontend and an API can be two apps in one GitHub repo. Leaving the frontend on Vercel is a preference.
+
+Pick Railway or Fly when you want a general container host, including things that are not an HTTP API, and you will handle keys yourself.
+
+## Get it running
+
+1. Sign in at [app.unkey.com](https://app.unkey.com) and pick a Compute plan.
+2. Create a project, create an app, and import the GitHub repo.
+3. Push. The default branch goes to production. Other branches get a preview URL on `unkey.app`.
+4. Add a keyspace and an API key policy, then redeploy so the policy is on the live deployment.
+
+The first deploy is [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github). Keys on the gateway are [API key authentication](https://unkey.com/docs/compute/gateway/api-key-auth).
+
+The cheapest function host wins if the API is one stateless route and it stays that way. The moment other people call it, you still need keys, limits, and a log of what they did. That is the part Unkey is for, whether the process runs on Compute or somewhere else.
