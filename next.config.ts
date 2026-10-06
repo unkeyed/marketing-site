@@ -149,12 +149,24 @@ const nextConfig: NextConfig = {
       ],
       afterFiles: [
         {
+          source: '/_mintlify/:path*',
+          destination: 'https://unkeyed.mintlify.site/_mintlify/:path*',
+        },
+        {
+          source: '/api/request',
+          destination: 'https://unkeyed.mintlify.site/_mintlify/api/request',
+        },
+        {
           source: '/docs',
-          destination: 'https://unkey.mintlify.dev/docs',
+          destination: 'https://unkeyed.mintlify.site/docs',
         },
         {
           source: '/docs/:match*',
-          destination: 'https://unkey.mintlify.dev/docs/:match*',
+          destination: 'https://unkeyed.mintlify.site/docs/:match*',
+        },
+        {
+          source: '/mintlify-assets/:path+',
+          destination: 'https://unkeyed.mintlify.site/mintlify-assets/:path+',
         },
         ...(process.env.NEXT_PUBLIC_C15T_URL
           ? [
