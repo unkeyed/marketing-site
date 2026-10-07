@@ -1,0 +1,62 @@
+---
+date: 2026-10-07
+title: 'September shipped spend by project, log drains, and a local gateway'
+description: 'Where the money went, where the events go, and the same gateway checks on your machine.'
+image: '/images/blog-images/september-2026/og.png'
+author: james
+tags: ['product']
+---
+
+The usage page shows where your Compute spend went. You can drain workspace events to the place you already watch them. And the gateway runs on your machine.
+
+That's September.
+
+## You can see where the money went
+
+A stacked daily chart splits Compute cost by project. Hover a day and you'll see that day's projects ranked. Today's bar stays pale until the day is over.
+
+Open a project and you get spend by resource, and a table for each app. Every cell is a cost. Hover it and you see the quantity behind it.
+
+![Daily Compute spend by project](/images/blog-images/september-2026/usage-spend.png)
+
+## Send the events where you already look
+
+You shouldn't have to live in the dashboard to know what happened. You can send one stream of workspace events to an HTTPS endpoint or an Axiom dataset. Pick from audit logs, key verifications, gateway requests, runtime logs, or rate limits. You can filter a drain by event type, keyspace, source, status class, severity, namespace, or pass and block results.
+
+HTTP drains send JSON, NDJSON, or Splunk HEC, and that includes CrowdStrike NG-SIEM. The settings page shows how many drains you're using against your workspace limit. Every workspace starts at zero, so [contact support](mailto:support@unkey.com) and we'll raise it.
+
+See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains).
+
+![Create a log drain](/images/blog-images/september-2026/log-drains.png)
+
+## The gateway runs on your machine
+
+You can run the Unkey gateway on your own machine. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
+
+See [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
+
+## One row per deployment, and a list of live branches
+
+Each deployment is now a single row. The live production release gets a filled Production pill, and older production releases and previews get an outline. Deploys from the CLI, the API, or the dashboard show where they came from.
+
+![Deployment rows](/images/blog-images/september-2026/deployments.png)
+
+On a Git-connected app, the overview lists your active preview branches, newest first. From there you can stop, wake, redeploy, or cancel each one. Long branch lists load one page at a time.
+
+![Active branches](/images/blog-images/september-2026/active-branches.png)
+
+## Rotate a key and keep the original expiry
+
+`keys.rerollKey` now accepts `expiration: null`. The original key keeps its current expiry. You can still set a grace period if you want the old secret to stop working. The rotate dialog in the dashboard gives you the same choice.
+
+See [rerolling keys](https://www.unkey.com/docs/api-management/keys/rerolling-keys).
+
+![Rotate a key and keep the original](/images/blog-images/september-2026/rotate-key.png)
+
+## Policies can match the client IP
+
+Gateway policies can now match the client IP against `in` or `notIn` lists of addresses and CIDR ranges. Use a firewall policy to block a range, or to allow only the ranges you list. The gateway reads the connection address, so a caller can't swap in a different one.
+
+See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
+
+The smaller updates and the bug fixes are in the [September 30 changelog](https://www.unkey.com/changelog/2026-09-30).
