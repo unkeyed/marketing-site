@@ -1,23 +1,31 @@
 ---
 date: 2026-10-07
-title: 'September shipped spend by project, log drains, and a local gateway'
-description: 'Where the money went, where the events go, and the same gateway checks on your machine.'
-image: '/images/blog-images/september-2026/og.png'
+title: 'See the spend, query the traffic, run the gateway locally'
+description: 'September shipped the bill by project, SQL over your logs, image deploys, and tighter keys.'
+image: '/images/blog-images/covers/september-2026/og-1080.png'
 author: james
 tags: ['product']
 ---
 
-The usage page shows where your Compute spend went. You can drain workspace events to the place you already watch them. And the gateway runs on your machine.
+You can see where Compute spend went. You can query the traffic that caused it. And you can run the same gateway on your machine before you ship.
 
 That's September.
 
 ## You can see where the money went
 
-A stacked daily chart splits Compute cost by project. Hover a day and you'll see that day's projects ranked. Today's bar stays pale until the day is over.
+The usage page shows where your Compute spend went during the month. A stacked daily chart splits cost by project. Hover a day and you'll see that day's projects ranked. Today's bar stays pale until the day is over.
 
 Open a project and you get spend by resource and a table for each app. Every cell is a cost. Hover it and you see the quantity behind it.
 
 ![Daily Compute spend by project](/images/blog-images/september-2026/usage-spend.png)
+
+## Query the traffic, don't scroll it
+
+The gateway now writes a base request log on every request. Five extra capture settings stay opt-in, so you can turn the detail up when you need it.
+
+`analytics.getGatewayRequests` runs SQL over the requests Unkey routed to your deployments. Break down paths, status codes, and latency from a trusted backend with a root key. `analytics.getRuntimeLogs` does the same for a deployment's stdout and stderr. Rate-limit data is queryable the same way: limits, rejections, and usage.
+
+See [gateway request analytics](https://www.unkey.com/docs/platform/analytics/get-gateway-requests), [runtime log analytics](https://www.unkey.com/docs/platform/analytics/get-runtime-logs), and [rate-limit analytics](https://www.unkey.com/docs/platform/analytics/get-ratelimits).
 
 ## Send the events where you already look
 
@@ -25,15 +33,23 @@ You shouldn't have to live in the dashboard to know what happened. You can send 
 
 HTTP drains send JSON, NDJSON, or Splunk HEC, and that includes CrowdStrike NG-SIEM. The settings page shows how many drains you're using against your workspace limit. Every workspace starts at zero, so [contact support](mailto:support@unkey.com) and we'll raise it.
 
-See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains).
+Audit logs also record more key and rate-limit actions, so the trail is clearer when a key is created, updated, or verified, and when a rate limit is applied or overridden.
+
+See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains) and [audit log event types](https://www.unkey.com/docs/audit-log/types).
 
 ![Create a log drain](/images/blog-images/september-2026/log-drains.png)
 
-## The gateway runs on your machine
+## Deploy an image, or run the gateway on localhost
+
+The new-app flow accepts a container image as a source, not only a GitHub repo. Build the image yourself and point Unkey at it.
 
 Same gateway, now on localhost. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
 
-See [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
+An environment can be marked as production. Production is no longer implied by the name. You can create, get, list, delete, and verify custom domains through the API, and attach a domain and check DNS the same way you already do from the dashboard. The dashboard can list those domains for a workspace, a project, or an app.
+
+The dashboard suggests root directories and watch paths, and those paths are checked before a deploy starts. If a deploy fails because you hit a quota, it sends you to the Limits page. A successful deploy gets a short celebration, and the source is click to copy.
+
+See [deploying a pre-built image](https://www.unkey.com/docs/build-and-deploy/cli) and [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
 
 ## One row per deployment, and a list of live branches
 
@@ -41,24 +57,70 @@ Each deployment is one row now. The live production release gets a filled Produc
 
 ![Deployment rows](/images/blog-images/september-2026/deployments.png)
 
-On a Git-connected app, the overview lists your active preview branches, newest first. From there you can stop, wake, redeploy, or cancel each one. Long branch lists load one page at a time.
+On a Git-connected app, the overview lists your active preview branches, newest first. From there you can stop, wake, redeploy, or cancel each one. Long branch lists load one page at a time. Skipped deployments stay out of the default view, so a monorepo is readable. You can still filter to just those.
 
 ![Active branches](/images/blog-images/september-2026/active-branches.png)
+
+For 30 minutes after a production deploy, the deployment page reminds you that you can roll back. The dialog names the deployment you're going back to.
+
+Project cards show each app's current deployment, including builds that are still running or have failed. The production card on the app overview shows the same status. Container-image apps list recent deployments under that card. The apps page has a redesigned card, a list view, and search. Filters and paging cover the full deployment history.
+
+![Project cards](/images/blog-images/september-2026/project-cards.png)
+
+App Logs and Requests live in the sidebar. On a deployment, logs and requests sit behind a more menu with rollback, promote, wake, and stop.
 
 ## Rotate a key and keep the original expiry
 
 `keys.rerollKey` now accepts `expiration: null`. The original key keeps its current expiry. You can still set a grace period if you want the old secret to stop working. The rotate dialog in the dashboard gives you the same choice.
 
-See [rerolling keys](https://www.unkey.com/docs/api-management/keys/rerolling-keys).
+`keys.verifyKey` now takes an optional `keyspaces` list. If the key isn't in one of those keyspaces, the result is not found. Use it when one root key can verify several keyspaces but a given endpoint should only accept some of them. When the key is found, the result includes its keyspace id.
+
+See [rerolling keys](https://www.unkey.com/docs/api-management/keys/rerolling-keys) and [verifying keys](https://www.unkey.com/docs/api-management/keys/verifying-keys).
 
 ![Rotate a key and keep the original](/images/blog-images/september-2026/rotate-key.png)
 
-## Policies can match the client IP
+## A root key can't grant more than it has
 
-Gateway policies can now match the client IP against `in` or `notIn` lists of addresses and CIDR ranges. Use a firewall policy to block a range, or to allow only the ranges you list. The gateway reads the connection address, so a caller can't swap in a different one.
+`rootKeys.createKey` lets an admin or another root key create a root key. The new key can't have more permissions than the caller. If the caller has an expiration, the new key needs one too, and it can't outlive the caller.
 
-See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
+Root keys and roles can use a project-scoped permission catalog, so access can stop at one project instead of the whole workspace. Project-scoped root keys can call more of the API: projects, apps, deployments, APIs, GitHub installs, analytics queries, and portals. The dashboard shows the full permission set when you create or edit a root key. You can set permissions on a role, and attach them when you create one.
 
-The smaller updates and the bug fixes are in the [September 30 changelog](https://www.unkey.com/changelog/2026-09-30).
+See [root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions).
+
+Key tables show the prefix and the last four characters. The root keys table shows when each key was last used, with a small usage chart. If a key was used in the last seven days, we ask you to confirm before deleting it.
+
+## Policies can match the caller, the route, and the cost
+
+Gateway policies can match the client IP against `in` or `notIn` lists of addresses and CIDR ranges. Use a firewall policy to block a range, or to allow only the ranges you list. The gateway reads the connection address, so a caller can't swap in a different one.
+
+A key auth policy can override credit cost, so an expensive route can cost more than a cheap one without a second key. A ratelimit policy can use a compound identifier, so you can limit "this user on this route" without a second limiter. Read and write on gateway policies are separate permissions. You can grant list access without granting updates.
+
+See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall) and [gateway policies](https://www.unkey.com/docs/platform/gateway/policies/overview).
+
+## The portal shows that user's own verifications
+
+A portal session can request `analytics:read` along with `keys:read`. The keys page then shows that user's own verification counts over time, broken down by outcome. The session only sees its own keyspaces.
+
+New portal ids start with `prt_`, and exchange codes start with `pec_`. Unknown links show a not-found page. We removed preview mode, so creating a session no longer accepts it and the portal no longer shows a preview banner.
+
+See [what portal users can do](https://www.unkey.com/docs/api-management/portal/end-user-experience).
+
+## One plans screen
+
+Upgrades and paywalls now open one plans screen for both Compute and API, and you get a confirmation after you buy. Your first API plan takes a single checkout.
+
+![Plans](/images/blog-images/september-2026/plans.png)
+
+## The CLI and the API cover the same work
+
+`unkey api` can create, get, update, and delete the resources you were clicking through: projects, apps, deployments, gateway policies, analytics, domains, GitHub installs, role permissions, and portals. It can list domains without an environment filter.
+
+You can install the GitHub app and connect repos through the API. One GitHub account or organization can connect to more than one workspace. Each workspace authorizes the connection separately.
+
+See the [CLI](https://www.unkey.com/docs/cli/overview).
+
+Account settings live on their own route, and team and account settings match the rest of the dashboard. API names are no longer forced into slugs. Role names you create in the dashboard are valid in OpenAPI. The top bar is more compact, and tips with buttons or links open as a card you can read and click.
+
+The smaller fixes are in the [September 4 changelog](https://www.unkey.com/changelog/2026-09-04) and the [September 30 changelog](https://www.unkey.com/changelog/2026-09-30).
 
 Ship APIs, not infrastructure.
