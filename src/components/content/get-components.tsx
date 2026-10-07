@@ -139,17 +139,21 @@ export const getComponents = (options: IGetComponentsOptions) => {
     img: (props: ImgHTMLAttributes<HTMLImageElement>) => {
       if (!props.src) return null;
 
+      const src = String(props.src);
       const width = props?.width ? Number(props.width) : contentWidth;
       const height = props?.height ? Number(props.height) : 400;
+      // September 2026 shots are lossless 2x PNGs. Skip AVIF/WebP re-encoding.
+      const unoptimized = src.includes('/images/changelog/2026-09-30/');
 
       return (
         <Image
           className="w-full rounded-lg"
-          src={String(props.src)}
+          src={src}
           width={width}
           height={height}
           sizes={`(max-width: 768px) 100vw, ${width}px`}
           quality={100}
+          unoptimized={unoptimized}
           alt={props?.alt || ''}
         />
       );
