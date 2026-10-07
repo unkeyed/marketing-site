@@ -8,13 +8,13 @@ tags: ['product:blue']
 
 ### Compute spend, by day and by project
 
-The usage page shows where Compute spend moved during the month. A stacked daily chart splits cost by project, and hovering a day ranks that day's projects. Today's bar stays pale while the day is still filling in. Open a project for spend by resource and a per-app table. Every cell is a cost, and the quantity behind it is on hover.
+The usage page now shows where your Compute spend went during the month. A stacked daily chart splits cost by project. Hover a day and you'll see that day's projects ranked. Today's bar stays pale until the day is over. Open a project to see spend by resource and a table for each app. Every cell is a cost, and you can hover to see the quantity behind it.
 
 ![Daily Compute spend by project](/images/changelog/2026-09-30/usage-spend.png)
 
 ### Log drains
 
-You can forward one stream of workspace events to an HTTPS endpoint or an Axiom dataset: audit logs, key verifications, gateway requests, runtime logs, or rate limits. Filter a drain by event type, keyspace, source, status class, severity, namespace, or pass and block results. HTTP drains send JSON, NDJSON, or Splunk HEC, including CrowdStrike NG-SIEM. The settings page shows how many drains you are using against your workspace limit. Workspaces start with a limit of zero. [Contact support](mailto:support@unkey.com) if you want that limit raised.
+You can now send one stream of workspace events to an HTTPS endpoint or an Axiom dataset. Pick from audit logs, key verifications, gateway requests, runtime logs, or rate limits. You can filter a drain by event type, keyspace, source, status class, severity, namespace, or pass and block results. HTTP drains send JSON, NDJSON, or Splunk HEC, and that includes CrowdStrike NG-SIEM. The settings page shows how many drains you're using against your workspace limit. Every workspace starts at zero, so [contact support](mailto:support@unkey.com) and we'll raise it for you.
 
 See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains).
 
@@ -22,13 +22,13 @@ See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains).
 
 ### Run the gateway locally
 
-You can run the Unkey gateway on your own machine. Routes and policies come from a config file, keys are verified against Unkey, and rate limits apply in memory for that local process. Put it in front of a service on localhost and you get the same checks you use in production.
+You can now run the Unkey gateway on your own machine. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
 
 See [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
 
 ### A clearer deployments list, and active branches
 
-Deployment rows are a single line. The live production release has a filled Production pill. Older production releases and previews use an outline. Deploys from the CLI, the API, or the dashboard show where they came from. On a Git-connected app, the overview lists active preview branches, newest first, with stop, wake, redeploy, and cancel. Long branch lists load a page at a time.
+Each deployment is now a single row. The live production release gets a filled Production pill, and older production releases and previews get an outline. Deploys from the CLI, the API, or the dashboard show where they came from. On a Git-connected app, the overview lists your active preview branches, newest first. From there you can stop, wake, redeploy, or cancel each one. Long branch lists load one page at a time.
 
 ![Deployment rows](/images/changelog/2026-09-30/deployments.png)
 
@@ -36,7 +36,7 @@ Deployment rows are a single line. The live production release has a filled Prod
 
 ### Rotate a key and keep the original
 
-`keys.rerollKey` accepts `expiration: null`. The original key keeps its current expiry, and you can still set a grace period when you want the old secret to stop. The rotate dialog in the dashboard offers the same choice.
+`keys.rerollKey` now accepts `expiration: null`. The original key keeps its current expiry. You can still set a grace period if you want the old secret to stop working. The rotate dialog in the dashboard gives you the same choice.
 
 See [rerolling keys](https://www.unkey.com/docs/api-management/keys/rerolling-keys).
 
@@ -44,29 +44,29 @@ See [rerolling keys](https://www.unkey.com/docs/api-management/keys/rerolling-ke
 
 ### Match gateway policies on client IP
 
-Gateway policies can match the client IP with `in` or `notIn` lists of addresses and CIDR ranges. A firewall policy can block a range, or allow only the ranges you list. The gateway uses the connection address, so a caller cannot substitute a different one.
+Gateway policies can now match the client IP against `in` or `notIn` lists of addresses and CIDR ranges. Use a firewall policy to block a range, or to allow only the ranges you list. The gateway reads the connection address, so a caller can't swap in a different one.
 
 See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
 
 ### Create root keys through the API
 
-`rootKeys.createKey` creates a root key from an admin or from another root key. The new key's permissions cannot exceed the caller's. If the caller expires, the new key needs an expiration too, and it cannot last longer than the caller.
+`rootKeys.createKey` lets an admin or another root key create a root key. The new key can't have more permissions than the caller. If the caller has an expiration, the new key needs one too, and it can't outlive the caller.
 
 ### Verify keys against specific keyspaces
 
-`keys.verifyKey` takes an optional `keyspaces` list. The key must belong to one of those keyspaces, or the result is not found. Use it when one root key can verify several keyspaces and a single endpoint should accept only some of them. Results include the keyspace id when the key is found.
+`keys.verifyKey` now takes an optional `keyspaces` list. If the key isn't in one of those keyspaces, the result is not found. Reach for it when one root key can verify several keyspaces but a given endpoint should only accept some of them. When the key is found, the result includes its keyspace id.
 
 See [verifying keys](https://www.unkey.com/docs/api-management/keys/verifying-keys).
 
 ### Usage charts in the customer portal
 
-A portal session can request `analytics:read` along with `keys:read`. The keys page then shows that user's own verification counts over time, broken down by outcome. The session only sees its own keyspaces.
+A portal session can now request `analytics:read` along with `keys:read`. The keys page then shows that user's own verification counts over time, broken down by outcome. The session only sees its own keyspaces.
 
 See [what portal users can do](https://www.unkey.com/docs/api-management/portal/end-user-experience).
 
 ### One plans screen
 
-Upgrades and paywalls open a single plans screen for Compute and API, and a confirmation follows the purchase. A first API plan is one checkout.
+Upgrades and paywalls now open one plans screen for both Compute and API, and you get a confirmation after you buy. Your first API plan takes a single checkout.
 
 ![Plans](/images/changelog/2026-09-30/plans.png)
 
@@ -74,13 +74,13 @@ Upgrades and paywalls open a single plans screen for Compute and API, and a conf
 
 ### Projects and apps
 
-Project cards show each app's current deployment, including a build that is still running or has failed. The app overview shows the same status on the production card. Container-image apps list recent deployments under that card. The apps page has a redesigned card, a list view, and search.
+Project cards show each app's current deployment, including builds that are still running or have failed. The production card on the app overview shows the same status. Container-image apps list recent deployments under that card. The apps page has a redesigned card, a list view, and search.
 
 ![Project cards](/images/changelog/2026-09-30/project-cards.png)
 
 ### Root keys and API keys
 
-The root keys table shows when a key was last used, with a small usage chart. API key and root key tables show the prefix and the last four characters. Deleting a key used in the last seven days asks you to confirm, including bulk deletes and root keys, because it may still be live.
+The root keys table shows when each key was last used, with a small usage chart. API key and root key tables show the prefix and the last four characters. If a key was used in the last seven days, we ask you to confirm before deleting it, since it may still be live. That includes bulk deletes and root keys.
 
 ![Root key usage](/images/changelog/2026-09-30/root-keys.png)
 
@@ -90,73 +90,73 @@ The root keys table shows when a key was last used, with a small usage chart. AP
 
 ### Rollback
 
-For 30 minutes after a production deploy, the deployment page reminds you that you can roll back. The dialog names the deployment you are returning to.
+For 30 minutes after a production deploy, the deployment page reminds you that you can roll back. The dialog names the deployment you're going back to.
 
 ### Deployments
 
-Skipped deployments stay out of the default view, so a monorepo stays readable. You can filter to skipped deployments on their own, separate from cancelled ones. Filters and paging cover the full history.
+Skipped deployments are hidden from the default view, which keeps monorepos readable. You can filter to just skipped deployments, separate from cancelled ones. Filters and paging cover your full history.
 
 ### Domains
 
-You can list custom domains for the workspace, a project, or an app. The dashboard loads a project's domains in one request.
+You can list custom domains for a workspace, a project, or an app. The dashboard loads a project's domains in one request.
 
 ### GitHub
 
-A GitHub account or organization can connect to more than one workspace. Each workspace authorizes the connection on its own.
+You can connect one GitHub account or organization to more than one workspace. Each workspace authorizes the connection separately.
 
 ![GitHub connection](/images/changelog/2026-09-30/github-install.png)
 
 ### Project-scoped permissions
 
-Project-scoped root keys can call more of the API: projects, apps, deployments, APIs, GitHub installs, analytics queries, and portals. Access for those operations can stop at one project.
+Project-scoped root keys can call more of the API: projects, apps, deployments, APIs, GitHub installs, analytics queries, and portals. You can limit access for those operations to a single project.
 
 See [root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions).
 
 ### CLI
 
-`unkey api` can create, get, update, and delete portals, and list domains without an environment filter.
+`unkey api` can create, get, update, and delete portals. It can also list domains without an environment filter.
 
 ### Portal
 
-New portal ids use the `prt_` prefix, and exchange codes use `pec_`. Unknown links show a not-found page. Preview mode is removed. Creating a session no longer accepts it, and the portal no longer shows a preview banner.
+New portal ids start with `prt_`, and exchange codes start with `pec_`. Unknown links show a not-found page. We removed preview mode, so creating a session no longer accepts it and the portal no longer shows a preview banner.
 
 ### Navigation
 
-The top bar is tighter. Tips that include buttons or links open as a card you can read and use.
+The top bar is more compact. Tips with buttons or links now open as a card you can read and click.
 
 ### Team and account
 
-Team and account settings follow the same visual style as the rest of the dashboard.
+Team and account settings now match the look of the rest of the dashboard.
 
 ## Bug fixes
 
-- Deployment filters include the live production release when it is older than the newest deployments
-- The last-7-days deployment filter returns the deployments in that window
+- Deployment filters now include the live production release even when it's older than the newest deployments
+- The last-7-days deployment filter now returns the deployments from that window
 - Promote and rollback update the live deployment badge without a reload
-- Opening a request row loads its details, including a row that just arrived, and gateway rows open gateway details
+- Opening a request row loads its details, including rows that just arrived, and gateway rows open gateway details
 - The request log label reads User Agent again
 - Invites no longer offer a viewer role
-- The workspace switcher lists only workspaces that exist in this environment
-- Deleted projects, apps, and environments are labeled on the usage page
+- The workspace switcher only lists workspaces that exist in the current environment
+- The usage page labels deleted projects, apps, and environments
 - Creating a project without a Compute plan returns a clear error
 - Gateway key authentication accepts a keyspace owned by the workspace
 - The audit log still lists events when the total count is slow to load
 - The gateway policies page loads once environments have resolved
 - App, deployment, and log pages load for project-scoped root keys
-- A deployment is ready only when every region has a running instance
-- A deploy that retries after a partial save completes
-- Egress is counted again after a deployment is recreated, including after a memory limit
-- Setting a rate-limit override that was deleted brings that override back
-- Preview URLs for long branch names resolve, and branches that differ only in the trimmed portion stay distinct
-- Creating a role and attaching it to keys in the same step succeeds
-- Saving a key with an external ID that already exists stays responsive when many of those requests arrive together
+- A deployment is only marked ready when every region has a running instance
+- A deploy that retries after a partial save now completes
+- Egress is counted again after a deployment is recreated, including after hitting a memory limit
+- Setting a rate-limit override that was deleted brings it back
+- Preview URLs for long branch names resolve, and branches that differ only in the trimmed part stay distinct
+- Creating a role and attaching it to keys in the same step works
+- Saving a key with an external ID that already exists stays responsive when many of those requests arrive at once
 - The CLI no longer prints root keys or other environment values in help text or errors
-- Disconnecting a repository asks for confirmation and names the repository
-- Audit events sent through a log drain include the timestamp once
-- Reversing a chart's start and end time no longer breaks the chart
-- A brief interruption in analytics no longer blanks deployment charts
-- Deployment status updates complete when many instances report at once
-- Relative times keep ticking, and the same timestamp reads the same way on every screen
-- Tips that contain copy buttons, badges, or links are readable again
+- Disconnecting a repository asks you to confirm and names the repository
+- Audit events sent through a log drain include the timestamp only once
+- Swapping a chart's start and end time no longer breaks the chart
+- A brief analytics interruption no longer blanks deployment charts
+- Deployment status updates finish when many instances report at once
+- Relative times keep updating, and the same timestamp reads the same on every screen
+- Tips with copy buttons, badges, or links are readable again
 - Dashboard requests keep their session
-- Signed-out pages render, and a plan downgrade finishes removing members the plan no longer includes
+- Signed-out pages render, and a plan downgrade finishes removing members the plan no longer covers
