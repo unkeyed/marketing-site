@@ -15,7 +15,7 @@ That's September.
 
 A stacked daily chart splits Compute cost by project. Hover a day and you'll see that day's projects ranked. Today's bar stays pale until the day is over.
 
-Open a project and you get spend by resource, and a table for each app. Every cell is a cost. Hover it and you see the quantity behind it.
+Open a project and you get spend by resource and a table for each app. Every cell is a cost. Hover it and you see the quantity behind it.
 
 ![Daily Compute spend by project](/images/blog-images/september-2026/usage-spend.png)
 
@@ -31,13 +31,13 @@ See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains).
 
 ## The gateway runs on your machine
 
-You can run the Unkey gateway on your own machine. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
+Same gateway, now on localhost. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
 
 See [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
 
 ## One row per deployment, and a list of live branches
 
-Each deployment is now a single row. The live production release gets a filled Production pill, and older production releases and previews get an outline. Deploys from the CLI, the API, or the dashboard show where they came from.
+Each deployment is one row now. The live production release gets a filled Production pill, and older production releases and previews get an outline. Deploys from the CLI, the API, or the dashboard show where they came from.
 
 ![Deployment rows](/images/blog-images/september-2026/deployments.png)
 
@@ -60,3 +60,5 @@ Gateway policies can now match the client IP against `in` or `notIn` lists of ad
 See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
 
 The smaller updates and the bug fixes are in the [September 30 changelog](https://www.unkey.com/changelog/2026-09-30).
+
+Ship APIs, not infrastructure.
