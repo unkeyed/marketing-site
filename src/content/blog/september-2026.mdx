@@ -45,29 +45,33 @@ The new-app flow accepts a container image as a source, not only a GitHub repo. 
 
 Same gateway, now on localhost. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
 
-An environment can be marked as production. Production is no longer implied by the name. You can create, get, list, delete, and verify custom domains through the API, and attach a domain and check DNS the same way you already do from the dashboard. The dashboard can list those domains for a workspace, a project, or an app.
-
-The dashboard suggests root directories and watch paths, and those paths are checked before a deploy starts. If a deploy fails because you hit a quota, it sends you to the Limits page. A successful deploy gets a short celebration, and the source is click to copy.
-
 See [deploying a pre-built image](https://www.unkey.com/docs/build-and-deploy/cli) and [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
+
+## Production is a setting, not a name
+
+You can mark an environment as production. Production is no longer implied by the name.
+
+Custom domains moved into the API too. You can create, get, list, delete, and verify them, and attach a domain and check DNS the same way you already do from the dashboard. The dashboard can list those domains for a workspace, a project, or an app.
+
+The deploy flow does more of the checking up front. The dashboard suggests root directories and watch paths, and those paths are checked before a deploy starts. If a deploy fails because you hit a quota, it sends you to the Limits page. A successful deploy gets a short celebration, and the source is click to copy.
 
 ## One row per deployment, and a list of live branches
 
-Each deployment is one row now. The live production release gets a filled Production pill, and older production releases and previews get an outline. Deploys from the CLI, the API, or the dashboard show where they came from.
+Each deployment is one row now. The live production release gets a filled Production pill, and older production releases and previews get an outline. Deploys from the CLI, the API, or the dashboard show where they came from. Skipped deployments stay out of the default view, so a monorepo is readable, and you can still filter to just those. Filters and paging cover the full deployment history.
 
 ![Deployment rows](/images/blog-images/september-2026/deployments.png)
 
-On a Git-connected app, the overview lists your active preview branches, newest first. From there you can stop, wake, redeploy, or cancel each one. Long branch lists load one page at a time. Skipped deployments stay out of the default view, so a monorepo is readable. You can still filter to just those.
+On a Git-connected app, the overview lists your active preview branches, newest first. From there you can stop, wake, redeploy, or cancel each one. Long branch lists load one page at a time.
 
 ![Active branches](/images/blog-images/september-2026/active-branches.png)
 
 For 30 minutes after a production deploy, the deployment page reminds you that you can roll back. The dialog names the deployment you're going back to.
 
-Project cards show each app's current deployment, including builds that are still running or have failed. The production card on the app overview shows the same status. Container-image apps list recent deployments under that card. The apps page has a redesigned card, a list view, and search. Filters and paging cover the full deployment history.
+You can also see deployment status without opening anything. Project cards show each app's current deployment, including builds that are still running or have failed. The production card on the app overview shows the same status, and container-image apps list recent deployments under that card. The apps page has a redesigned card, a list view, and search.
 
 ![Project cards](/images/blog-images/september-2026/project-cards.png)
 
-App Logs and Requests live in the sidebar. On a deployment, logs and requests sit behind a more menu with rollback, promote, wake, and stop.
+Navigation moved around a little. App Logs and Requests live in the sidebar. On a deployment, logs and requests sit behind a more menu with rollback, promote, wake, and stop.
 
 ## Rotate a key and keep the original expiry
 
@@ -93,6 +97,8 @@ Key tables show the prefix and the last four characters. The root keys table sho
 
 Gateway policies can match the client IP against `in` or `notIn` lists of addresses and CIDR ranges. Use a firewall policy to block a range, or to allow only the ranges you list. The gateway reads the connection address, so a caller can't swap in a different one.
 
+![Firewall policy matching a client IP range](/images/blog-images/september-2026/firewall-policy.png)
+
 A key auth policy can override credit cost, so an expensive route can cost more than a cheap one without a second key. A ratelimit policy can use a compound identifier, so you can limit "this user on this route" without a second limiter. Read and write on gateway policies are separate permissions. You can grant list access without granting updates.
 
 See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall) and [gateway policies](https://www.unkey.com/docs/platform/gateway/policies/overview).
@@ -115,9 +121,11 @@ Upgrades and paywalls now open one plans screen for both Compute and API, and yo
 
 `unkey api` can create, get, update, and delete the resources you were clicking through: projects, apps, deployments, gateway policies, analytics, domains, GitHub installs, role permissions, and portals. It can list domains without an environment filter.
 
-You can install the GitHub app and connect repos through the API. One GitHub account or organization can connect to more than one workspace. Each workspace authorizes the connection separately.
+GitHub works the same way. You can install the GitHub app and connect repos through the API. One GitHub account or organization can connect to more than one workspace, and each workspace authorizes the connection separately.
 
 See the [CLI](https://www.unkey.com/docs/cli/overview).
+
+## The small stuff
 
 Account settings live on their own route, and team and account settings match the rest of the dashboard. API names are no longer forced into slugs. Role names you create in the dashboard are valid in OpenAPI. The top bar is more compact, and tips with buttons or links open as a card you can read and click.
 
