@@ -23,17 +23,28 @@ test('TC-E2E-010: AI bot request to homepage is served unchanged', async ({ requ
 test('TC-E2E-011: AI bot request to docs gets the same status as a browser', async ({
   request,
 }) => {
-  // /docs is rewritten to Mintlify; only compare status, not body.
-  const normal = await request.get('/docs/introduction', {
-    headers: { 'User-Agent': BROWSER_UA },
-    maxRedirects: 0,
-  });
-  const bot = await request.get('/docs/introduction', {
-    headers: { 'User-Agent': BOT_UA },
-    maxRedirects: 0,
-  });
+  // /docs is rewritten to Mintlify. The canonical URL is 200 for browsers and
+  // AI bots, so a split here would mean this app treated them differently.
+  // Moved paths such as /docs/introduction are not that check: Mintlify answers
+  // HTML clients with a permanent 308 to the new URL, and answers agents it
+  // negotiates to markdown (OAI-SearchBot, PerplexityBot) with a temporary 307
+  // to the .md twin. 307 is the correct negotiation status — a 308 would cache
+  // that markdown redirect as a permanent move.
+  const userAgents = [BROWSER_UA, 'GPTBot/1.2', 'ClaudeBot/1.0', 'PerplexityBot/1.0', BOT_UA];
 
-  expect(bot.status()).toBe(normal.status());
+  const responses = await Promise.all(
+    userAgents.map(async (userAgent) => {
+      const response = await request.get('/docs', {
+        headers: { 'User-Agent': userAgent },
+        maxRedirects: 0,
+      });
+      return { userAgent, status: response.status() };
+    }),
+  );
+
+  for (const { userAgent, status } of responses) {
+    expect(status, userAgent).toBe(200);
+  }
 });
 
 test('TC-E2E-012: AI-referred request to homepage returns 200', async ({ request }) => {
