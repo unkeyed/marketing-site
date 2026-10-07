@@ -143,7 +143,9 @@ export const getComponents = (options: IGetComponentsOptions) => {
       const width = props?.width ? Number(props.width) : contentWidth;
       const height = props?.height ? Number(props.height) : 400;
       // September 2026 shots are lossless 2x PNGs. Skip AVIF/WebP re-encoding.
-      const unoptimized = src.includes('/images/changelog/2026-09-30/');
+      const unoptimized =
+        src.includes('/images/changelog/2026-09-30/') ||
+        src.includes('/images/blog-images/september-2026/');
 
       return (
         <Image
