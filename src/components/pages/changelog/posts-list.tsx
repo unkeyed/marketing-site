@@ -3,7 +3,6 @@ import Link from 'next/link';
 import type { IChangelogPost } from '@/lib/changelog/posts';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
-import Heading from '@/components/content/heading';
 import Content from '@/components/pages/content';
 
 import Date from '../date';
@@ -103,13 +102,17 @@ function PostsList({ posts, currentPage, hasNewer, hasOlder, className }: PostsL
                   ))}
                 </div>
               )}
-              <Heading
-                tag="h1"
+              <h2
                 id={slug}
-                className="font-display text-2xl leading-[1.25] font-normal text-foreground md:text-3xl"
+                className="w-fit scroll-mt-[calc(var(--sticky-header-height)+2rem)] font-display text-2xl leading-[1.25] font-normal text-pretty text-foreground md:text-3xl"
               >
-                {title}
-              </Heading>
+                <Link
+                  className="transition-colors duration-200 hover:text-gray-80"
+                  href={`/changelog/${slug}`}
+                >
+                  {title}
+                </Link>
+              </h2>
               <Content className="prose-clear-first-child mt-4" content={content} />
             </div>
           </article>

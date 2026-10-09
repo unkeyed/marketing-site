@@ -1,5 +1,37 @@
 import type { NextConfig } from 'next';
 
+const siteUrl = (process.env.NEXT_PUBLIC_DEFAULT_SITE_URL ?? 'http://localhost:3000').replace(
+  /\/$/,
+  '',
+);
+
+// Markdown twins of HTML pages. Each `.md` URL is rewritten to a prerendered route handler
+// under `/api`. Keep in sync with `MARKDOWN_PAGES` / `MARKDOWN_SECTIONS` in `src/proxy.ts`.
+const markdownRoutes = [
+  // Per-item markdown sources
+  { page: '/blog/:slug', markdown: '/blog/:slug.md', api: '/api/blog/:slug' },
+  {
+    page: '/case-studies/:slug',
+    markdown: '/case-studies/:slug.md',
+    api: '/api/case-studies/:slug',
+  },
+  { page: '/glossary/:slug', markdown: '/glossary/:slug.md', api: '/api/glossary/:slug' },
+  { page: '/changelog/:slug', markdown: '/changelog/:slug.md', api: '/api/changelog/:slug' },
+  // Index / listing markdown
+  { page: '/blog', markdown: '/blog.md', api: '/api/blog' },
+  { page: '/case-studies', markdown: '/case-studies.md', api: '/api/case-studies' },
+  { page: '/glossary', markdown: '/glossary.md', api: '/api/glossary' },
+  { page: '/changelog', markdown: '/changelog.md', api: '/api/changelog' },
+  // Static / standalone pages
+  { page: '/', markdown: '/index.md', api: '/api/home' },
+  { page: '/pricing', markdown: '/pricing.md', api: '/api/pricing' },
+  { page: '/about', markdown: '/about.md', api: '/api/about' },
+  { page: '/startups', markdown: '/startups.md', api: '/api/startups' },
+  { page: '/yc', markdown: '/yc.md', api: '/api/yc' },
+  { page: '/policies/terms', markdown: '/policies/terms.md', api: '/api/policies/terms' },
+  { page: '/policies/privacy', markdown: '/policies/privacy.md', api: '/api/policies/privacy' },
+];
+
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
@@ -46,6 +78,17 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Route handlers are internal rewrite targets, never pages to index. Headers match the
+      // requested path, so this only affects direct `/api/*` hits, not the `.md` URLs.
+      {
+        source: '/api/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+      // Point search engines at the HTML page so the markdown twin never competes with it.
+      ...markdownRoutes.map(({ page, markdown }) => ({
+        source: markdown,
+        headers: [{ key: 'Link', value: `<${siteUrl}${page}>; rel="canonical"` }],
+      })),
       {
         source: '/images/:all*',
         headers: [
@@ -83,69 +126,7 @@ const nextConfig: NextConfig = {
           source: '/llms.txt',
           destination: '/api/llms',
         },
-        // Per-item markdown sources
-        {
-          source: '/blog/:slug.md',
-          destination: '/api/blog/:slug',
-        },
-        {
-          source: '/case-studies/:slug.md',
-          destination: '/api/case-studies/:slug',
-        },
-        {
-          source: '/glossary/:slug.md',
-          destination: '/api/glossary/:slug',
-        },
-        {
-          source: '/changelog/:slug.md',
-          destination: '/api/changelog/:slug',
-        },
-        // Index / listing markdown
-        {
-          source: '/blog.md',
-          destination: '/api/blog',
-        },
-        {
-          source: '/case-studies.md',
-          destination: '/api/case-studies',
-        },
-        {
-          source: '/glossary.md',
-          destination: '/api/glossary',
-        },
-        {
-          source: '/changelog.md',
-          destination: '/api/changelog',
-        },
-        // Static / standalone pages
-        {
-          source: '/index.md',
-          destination: '/api/home',
-        },
-        {
-          source: '/pricing.md',
-          destination: '/api/pricing',
-        },
-        {
-          source: '/about.md',
-          destination: '/api/about',
-        },
-        {
-          source: '/startups.md',
-          destination: '/api/startups',
-        },
-        {
-          source: '/yc.md',
-          destination: '/api/yc',
-        },
-        {
-          source: '/policies/terms.md',
-          destination: '/api/policies/terms',
-        },
-        {
-          source: '/policies/privacy.md',
-          destination: '/api/policies/privacy',
-        },
+        ...markdownRoutes.map(({ markdown, api }) => ({ source: markdown, destination: api })),
       ],
       afterFiles: [
         {
