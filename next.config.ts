@@ -34,14 +34,7 @@ const markdownRoutes = [
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: [
-      'lucide-react',
-      'date-fns',
-      'three',
-      '@react-three/drei',
-      'motion',
-      'shiki',
-    ],
+    optimizePackageImports: ['lucide-react', 'three', '@react-three/drei', 'motion', 'shiki'],
   },
   outputFileTracingExcludes: {
     '*': [
