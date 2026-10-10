@@ -11,6 +11,12 @@ import { visit } from 'unist-util-visit';
 import { joinPath, slash } from './utils';
 
 const EXTERNAL_URL_REGEX = /^https?:\/\//;
+// Literal folder so image reads are traced to `public/` only.
+const PUBLIC_DIR = path.join(process.cwd(), 'public');
+
+function publicFile(src: string): string {
+  return path.join(process.cwd(), 'public', src.replace(/^\/+/, ''));
+}
 
 export interface RemarkImageOptions {
   /**
@@ -49,7 +55,7 @@ export interface RemarkImageOptions {
 export function remarkImage({
   external = true,
   useImport = true,
-  publicDir = path.join(/*turbopackIgnore: true*/ process.cwd(), 'public'),
+  publicDir = PUBLIC_DIR,
 }: RemarkImageOptions = {}): Transformer<Root, Root> {
   return async (tree, file) => {
     const importsToInject: { variableName: string; importPath: string }[] = [];
@@ -57,7 +63,7 @@ export function remarkImage({
 
     function getImportPath(src: string): string {
       if (!src.startsWith('/')) return src;
-      const to = path.join(publicDir, src);
+      const to = publicFile(src);
 
       if (file.dirname) {
         const relative = slash(path.relative(file.dirname, to));
@@ -197,7 +203,9 @@ async function getImageSize(src: string, dir: string): Promise<ISizeCalculationR
     base.pathname = joinPath(base.pathname, src);
     url = base.toString();
   } else {
-    return imageSizeFromFile(isRelative ? path.join(dir, src) : src);
+    // Site images are served from `public/`. Callers pass that directory
+    // (the default). A custom filesystem `publicDir` is not used.
+    return imageSizeFromFile(isRelative ? publicFile(src) : src);
   }
 
   const res = await fetch(url);
