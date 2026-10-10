@@ -3,19 +3,12 @@ import path from 'path';
 
 import { ReactElement } from 'react';
 import config from '@/configs/website-config';
-import { globSync } from 'glob';
 
 import { ISeoFields } from '@/types/common';
 import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/markdown';
 import { getExcerpt, getFormattedDate, getTimeToRead } from '@/lib/utils';
 
 export const POSTS_PER_PAGE = 20;
-
-const CHANGELOG_DIR_PATH = path.join(
-  /*turbopackIgnore: true*/ process.cwd(),
-  config.changelog.contentDir,
-);
-const CHANGELOG_FILE_EXTENSIONS = ['.md', '.mdx'] as const;
 
 export interface IChangelogTag {
   label: string;
@@ -102,19 +95,39 @@ export interface IChangelogPost extends Omit<IChangelogPostMetadata, 'publishedA
 }
 
 /**
- * Reusable function to get slugs (relative path without extension)
+ * Slug → file path for every changelog markdown file under the fixed content
+ * directory. `.md` wins over `.mdx` when both exist, matching the old
+ * extension probe. Reading the directory (instead of `existsSync` on a
+ * slug-built path) keeps the trace inside this folder.
  */
-function getSlugsByPath(baseDir: string, globPattern: string, ignore: string[] = []): string[] {
-  const files = globSync(globPattern, {
-    cwd: baseDir,
-    ignore: ['**/CONTRIBUTING.md', ...ignore],
-    absolute: true,
-  });
+function readChangelogFiles(): Map<string, string> {
+  const map = new Map<string, string>();
+  let entries: string[];
+  try {
+    entries = fs
+      .readdirSync(path.join(process.cwd(), 'src', 'content', 'changelog'), {
+        encoding: 'utf8',
+        recursive: true,
+      })
+      .map((entry) => entry.toString().replace(/\\/g, '/'));
+  } catch {
+    return map;
+  }
 
-  return files.map((filePath: string) => {
-    const relativePath = path.relative(baseDir, filePath);
-    return relativePath.replace(/\.(md|mdx)$/, '');
+  const files = entries.filter((rel) => {
+    if (path.basename(rel) === 'CONTRIBUTING.md') return false;
+    return rel.endsWith('.md') || rel.endsWith('.mdx');
   });
+  // Insert `.md` first so it is kept when a slug also has `.mdx`.
+  files.sort((a, b) => Number(a.endsWith('.mdx')) - Number(b.endsWith('.mdx')));
+
+  for (const rel of files) {
+    const slug = rel.replace(/\.(md|mdx)$/, '');
+    if (map.has(slug)) continue;
+    map.set(slug, path.join(process.cwd(), 'src', 'content', 'changelog', rel));
+  }
+
+  return map;
 }
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}/;
@@ -149,14 +162,7 @@ export function resolvePublishedDate(value: unknown, slug: string): string {
 }
 
 function resolveChangelogFilePath(slug: string): string | null {
-  for (const ext of CHANGELOG_FILE_EXTENSIONS) {
-    const candidatePath = path.join(CHANGELOG_DIR_PATH, `${slug}${ext}`);
-    if (fs.existsSync(candidatePath)) {
-      return candidatePath;
-    }
-  }
-
-  return null;
+  return readChangelogFiles().get(slug) ?? null;
 }
 
 async function getChangelogPostBySlug(
@@ -216,7 +222,7 @@ async function getChangelogPostBySlug(
 async function getAllChangelogPosts(opts?: IGetChangelogPostsOptions): Promise<IChangelogPost[]> {
   const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 
-  const slugs = getSlugsByPath(CHANGELOG_DIR_PATH, '**/*.{md,mdx}');
+  const slugs = [...readChangelogFiles().keys()];
 
   const posts = await Promise.all(slugs.map((slug) => getChangelogPostBySlug(slug, opts)));
 
