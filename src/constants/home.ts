@@ -13,7 +13,7 @@ import portalKeysImage from '@/assets/images/home/portal/keys.png';
 import portalZeroImage from '@/assets/images/home/portal/zero.png';
 import { APP_URL, GITHUB_URL, SIGN_UP_URL } from '@/configs/website-config';
 import { buildDeployTechnologyLogos, portfolioLogos } from '@/constants/logos';
-import { Alignment, Fit } from '@rive-app/react-canvas';
+import type { Alignment, Fit } from '@rive-app/react-canvas';
 
 export const homeHeaderLinks = {
   social: [
@@ -58,8 +58,8 @@ export const homeContentData = {
           medium: '/rive/home/JetBrainsMono-Medium.ttf',
         },
       },
-      alignment: Alignment.Center,
-      fit: Fit.Cover,
+      alignment: 'center' as Alignment,
+      fit: 'cover' as Fit,
     },
     cards: [
       {
@@ -154,7 +154,7 @@ export const homeContentData = {
       'Protect and control traffic at the edge. Offload access control and rate limiting to global gateways.',
     riveDefaults: {
       autoBind: true,
-      alignment: Alignment.BottomCenter,
+      alignment: 'bottomCenter' as Alignment,
     },
     cards: [
       {
@@ -185,8 +185,8 @@ export const homeContentData = {
         rive: {
           src: '/rive/home/gateway/global-platform.riv',
           fonts: { urls: { regular: '/rive/home/JetBrainsMono-Regular.ttf' } },
-          fit: Fit.Cover,
-          alignment: Alignment.TopCenter,
+          fit: 'cover' as Fit,
+          alignment: 'topCenter' as Alignment,
         },
         textWidthClass: 'max-w-90',
         gridClassName:
@@ -252,8 +252,8 @@ export const homeContentData = {
     buttonHref: 'https://unkey.com/docs/build-and-deploy/regions',
     riveDefaults: {
       src: '/rive/home/scale/icons.riv',
-      fit: Fit.Cover,
-      alignment: Alignment.Center,
+      fit: 'cover' as Fit,
+      alignment: 'center' as Alignment,
     },
     features: [
       {
@@ -291,7 +291,7 @@ export const homeContentData = {
     subheading: 'Every request is logged. Every decision is visible.',
     riveDefaults: {
       src: '/rive/home/observe/observe.riv',
-      alignment: Alignment.BottomCenter,
+      alignment: 'bottomCenter' as Alignment,
     },
     mobileImage: observeDashImage.src,
     buttonLabel: 'Read the docs',
