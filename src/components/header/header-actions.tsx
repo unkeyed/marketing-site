@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { homeHeaderLinks } from '@/constants/home';
+import { homeHeaderLinks } from '@/constants/home-header';
 
 import { useTrack } from '@/hooks/use-tracking';
 import { Link } from '@/components/ui/link';

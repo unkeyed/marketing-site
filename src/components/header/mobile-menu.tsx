@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { homeHeaderLinks } from '@/constants/home';
+import { homeHeaderLinks } from '@/constants/home-header';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
