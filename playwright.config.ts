@@ -34,7 +34,13 @@ export default defineConfig({
           process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? 'pnpm dev --hostname 127.0.0.1 --port 3100',
         url: baseURL,
         // Empty values win over `.env`, so e2e runs never POST to the real ai-visibility ingest.
-        env: { AI_VIS_INGEST_URL: '', AI_VIS_INGEST_SECRET: '' },
+        env: {
+          AI_VIS_INGEST_URL: '',
+          AI_VIS_INGEST_SECRET: '',
+          // Existing tests expect the current hero. Variant tests opt into B
+          // with the homepage-hero-variant cookie, and bot UAs still get B.
+          HOMEPAGE_HERO_E2E_DEFAULT: 'a',
+        },
         reuseExistingServer: false,
         timeout: 120_000,
       }
