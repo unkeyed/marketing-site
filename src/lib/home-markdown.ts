@@ -5,7 +5,7 @@ import { toAbsoluteSiteUrl } from '@/lib/site-url';
 export function renderHomeMarkdown(heroCopy: {
   title: string;
   description: string;
-  intro: string;
+  intro?: string;
 }) {
   const { hero, controlPlane, buildDeploy, gateway, production, scale, observe, portal, cta } =
     homeContentData;
@@ -18,8 +18,7 @@ export function renderHomeMarkdown(heroCopy: {
     '',
     `> ${heroCopy.description}`,
     '',
-    heroCopy.intro,
-    '',
+    ...(heroCopy.intro ? [heroCopy.intro, ''] : []),
     `Source: ${toAbsoluteSiteUrl('/')}`,
     `Start for free: ${hero.primaryCta.href}`,
     `Docs: ${toAbsoluteSiteUrl('/docs')}`,
