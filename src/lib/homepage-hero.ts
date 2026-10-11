@@ -34,7 +34,6 @@ export function readForcedHomepageHeroVariant(): HomepageHeroVariant | null {
 }
 
 function readE2eDefaultVariant(): HomepageHeroVariant | null {
-  if (process.env.NODE_ENV === 'production') return null;
   const value = process.env.HOMEPAGE_HERO_E2E_DEFAULT?.trim().toLowerCase();
   if (value === 'a' || value === 'b') return value;
   return null;
@@ -59,14 +58,17 @@ export function decideHomepageHeroVariant(input: {
 
   if (isCrawlerUserAgent(input.userAgent)) return 'b';
 
-  // Plain cookie override is for local/dev and Playwright. Production visitors
-  // stick via the httpOnly visitor id. Toolbar overrides are applied by the
-  // Flags SDK before `decide` runs.
-  if (process.env.NODE_ENV !== 'production') {
-    if (input.previewCookie === 'a' || input.previewCookie === 'b') return input.previewCookie;
+  // The preview cookie lets Playwright pin a variant. CI serves the site with
+  // `next start` (NODE_ENV=production), so the cookie is also honored when
+  // HOMEPAGE_HERO_E2E_DEFAULT is set. Real production does not set that variable,
+  // and visitors stick via the httpOnly visitor id. Toolbar overrides are
+  // applied by the Flags SDK before `decide` runs.
+  const e2eDefault = readE2eDefaultVariant();
+  const allowPreviewCookie = process.env.NODE_ENV !== 'production' || e2eDefault !== null;
+  if (allowPreviewCookie && (input.previewCookie === 'a' || input.previewCookie === 'b')) {
+    return input.previewCookie;
   }
 
-  const e2eDefault = readE2eDefaultVariant();
   if (e2eDefault) return e2eDefault;
 
   return bucketVisitor(input.visitorId || VISITOR_ID_FALLBACK);
