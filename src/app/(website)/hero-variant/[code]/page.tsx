@@ -45,11 +45,7 @@ export default async function HomePage({ params }: { params: Promise<{ code: str
       <FlagValues values={{ 'homepage-hero': variant }} />
       <HeroExperimentAnalytics variant={variant} />
       {variant === 'b' ? (
-        <Hero
-          {...hero}
-          title={homepageHeroVariantB.heading}
-          description={homepageHeroVariantB.subhead}
-        />
+        <Hero {...hero} description={homepageHeroVariantB.subhead} />
       ) : (
         <Hero {...hero} />
       )}
