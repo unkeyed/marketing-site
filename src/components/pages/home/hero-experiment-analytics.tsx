@@ -14,7 +14,13 @@ function pathnameOf(href: string): string {
   }
 }
 
-export function HeroExperimentAnalytics({ variant }: { variant: HomepageHeroVariant }) {
+export function HeroExperimentAnalytics({
+  variant,
+  founderCallHref,
+}: {
+  variant: HomepageHeroVariant;
+  founderCallHref: string;
+}) {
   const track = useTrack();
 
   useEffect(() => {
@@ -35,6 +41,11 @@ export function HeroExperimentAnalytics({ variant }: { variant: HomepageHeroVari
         return;
       }
 
+      if (href === founderCallHref && heroSection?.contains(anchor)) {
+        track('founder_call_click', { location: 'homepage-hero', variant }, flags);
+        return;
+      }
+
       const pathname = pathnameOf(href);
       if (pathname === '/pricing' || pathname.startsWith('/pricing/')) {
         track('pricing_click', { location: 'homepage', variant }, flags);
@@ -48,7 +59,7 @@ export function HeroExperimentAnalytics({ variant }: { variant: HomepageHeroVari
 
     document.addEventListener('click', onClick);
     return () => document.removeEventListener('click', onClick);
-  }, [track, variant]);
+  }, [founderCallHref, track, variant]);
 
   return null;
 }

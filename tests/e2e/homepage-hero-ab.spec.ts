@@ -5,6 +5,9 @@ const CONTROL_SUBHEAD =
   'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.';
 const VARIANT_B_SUBHEAD =
   'Unkey unifies your infrastructure. Deploy APIs instantly, protect them with keys and rate limits, and understand usage in one place.';
+const GITHUB_HREF = 'https://github.com/unkeyed/unkey';
+const FOUNDER_LABEL = 'Talk to the founder';
+const FOUNDER_HREF = 'https://unkey.cal.com/james/sales';
 
 function decodeHtml(value: string): string {
   return value
@@ -29,6 +32,10 @@ test('TC-E2E-013: homepage hero variant A keeps the current copy', async ({ page
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(HERO_HEADING);
   await expect(page.getByText(CONTROL_SUBHEAD)).toBeVisible();
   await expect(page.getByText(VARIANT_B_SUBHEAD)).toHaveCount(0);
+  const github = page.locator('main > section').getByRole('link', { name: 'View on GitHub' });
+  await expect(github).toBeVisible();
+  await expect(github).toHaveAttribute('href', GITHUB_HREF);
+  await expect(page.getByRole('link', { name: FOUNDER_LABEL })).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'a');
 });
 
@@ -46,6 +53,14 @@ test('TC-E2E-014: homepage hero variant B changes only the subhead', async ({ pa
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(HERO_HEADING);
   await expect(page.getByText(VARIANT_B_SUBHEAD)).toBeVisible();
   await expect(page.getByText(CONTROL_SUBHEAD)).toHaveCount(0);
+  const founder = page.locator('main > section').getByRole('link', { name: FOUNDER_LABEL });
+  await expect(founder).toBeVisible();
+  await expect(founder).toHaveAttribute('href', FOUNDER_HREF);
+  await expect(founder).toHaveAttribute('target', '_blank');
+  await expect(founder).toHaveAttribute('rel', 'noopener');
+  await expect(
+    page.locator('main > section').getByRole('link', { name: 'View on GitHub' }),
+  ).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'b');
 
   await page.reload();
@@ -73,6 +88,8 @@ test('TC-E2E-015: crawler user agents get variant B in the HTML', async ({ reque
     expect(response.headers()['x-homepage-hero'], userAgent).toBe('b');
     expect(body, userAgent).toContain('data-hero-variant="b"');
     expect(body, userAgent).toContain(VARIANT_B_SUBHEAD);
+    expect(body, userAgent).toContain(FOUNDER_HREF);
+    expect(body, userAgent).toContain(FOUNDER_LABEL);
     expect(body, userAgent).not.toContain(CONTROL_SUBHEAD);
   }
 });
