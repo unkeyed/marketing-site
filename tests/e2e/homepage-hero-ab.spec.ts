@@ -6,7 +6,7 @@ const CONTROL_SUBHEAD =
 const VARIANT_B_SUBHEAD =
   'Unkey unifies your infrastructure. Deploy APIs instantly, protect them with keys and rate limits, and understand usage in one place.';
 const GITHUB_HREF = 'https://github.com/unkeyed/unkey';
-const FOUNDER_LABEL = 'Talk to the founder';
+const FOUNDER_LABEL = 'Get a demo';
 const FOUNDER_HREF = 'https://unkey.cal.com/james/sales';
 
 function decodeHtml(value: string): string {
