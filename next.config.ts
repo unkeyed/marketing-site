@@ -1,5 +1,19 @@
 import type { NextConfig } from 'next';
 
+// Local and CI builds sign precomputed flag codes with this value. Production and
+// Preview on Vercel must set FLAGS_SECRET (32 bytes, base64url) instead. Changing
+// the secret requires a rebuild: the static variant URLs are signed with it.
+const DEV_FLAGS_SECRET = 'NMceQol2euQCm9-6ONvsRIUECEDv3mwVlnARdpPQulk';
+
+if (!process.env.FLAGS_SECRET) {
+  if (process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview') {
+    throw new Error(
+      'FLAGS_SECRET is required on Vercel. Generate one with `node -e "console.log(crypto.randomBytes(32).toString(\'base64url\'))"` and set a different value for Production and Preview.',
+    );
+  }
+  process.env.FLAGS_SECRET = DEV_FLAGS_SECRET;
+}
+
 const siteUrl = (process.env.NEXT_PUBLIC_DEFAULT_SITE_URL ?? 'http://localhost:3000').replace(
   /\/$/,
   '',
@@ -24,6 +38,7 @@ const markdownRoutes = [
   { page: '/changelog', markdown: '/changelog.md', api: '/api/changelog' },
   // Static / standalone pages
   { page: '/', markdown: '/index.md', api: '/api/home' },
+  { page: '/', markdown: '/index-b.md', api: '/api/home-variant-b' },
   { page: '/pricing', markdown: '/pricing.md', api: '/api/pricing' },
   { page: '/about', markdown: '/about.md', api: '/api/about' },
   { page: '/startups', markdown: '/startups.md', api: '/api/startups' },
@@ -75,6 +90,16 @@ const nextConfig: NextConfig = {
       // requested path, so this only affects direct `/api/*` hits, not the `.md` URLs.
       {
         source: '/api/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+      // Direct hits on a precomputed hero URL. Rewrites of `/` match the request
+      // path, so the public homepage does not inherit this header.
+      {
+        source: '/hero-variant/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+      {
+        source: '/index-b.md',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
       },
       // Point search engines at the HTML page so the markdown twin never competes with it.

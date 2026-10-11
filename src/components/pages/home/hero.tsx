@@ -8,6 +8,7 @@ import Logos from '@/components/pages/logos';
 interface IHeroProps {
   title: string;
   description: string;
+  paragraph?: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
   poster: { src: string; width: number; height: number };
@@ -24,6 +25,7 @@ interface IHeroProps {
 export default function Hero({
   title,
   description,
+  paragraph,
   primaryCta,
   secondaryCta,
   poster,
@@ -76,9 +78,20 @@ export default function Hero({
           </h1>
 
           <div className="mt-4 flex flex-col gap-7 md:mt-5 md:flex-row md:items-end md:justify-between md:gap-5">
-            <p className="max-w-80 text-sm leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60 sm:text-base md:max-w-93.75 lg:max-w-132.75">
-              {description}
-            </p>
+            {paragraph ? (
+              <div className="flex max-w-80 flex-col gap-3 md:max-w-93.75 lg:max-w-132.75">
+                <p className="text-sm leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60 sm:text-base">
+                  {description}
+                </p>
+                <p className="text-sm leading-snug font-normal tracking-[-0.01em] text-gray-60 sm:text-base">
+                  {paragraph}
+                </p>
+              </div>
+            ) : (
+              <p className="max-w-80 text-sm leading-snug font-normal tracking-[-0.01em] whitespace-pre-wrap text-gray-60 sm:text-base md:max-w-93.75 lg:max-w-132.75">
+                {description}
+              </p>
+            )}
             <div className="mt-1 flex w-full shrink-0 flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap md:mt-0">
               <Link href={primaryCta.href} variant="primary">
                 {primaryCta.label}
