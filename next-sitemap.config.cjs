@@ -74,7 +74,14 @@ module.exports = {
   siteUrl: process.env.NEXT_PUBLIC_DEFAULT_SITE_URL || 'https://www.unkey.com',
   generateRobotsTxt: true,
   // Route handlers back the `.md` twins via rewrites; they are not pages to index.
-  exclude: ['/api/*'],
+  exclude: ['/api/*', '/hero-variant/*'],
+  additionalPaths: async (config) => [await config.transform(config, '/')],
+  robotsTxtOptions: {
+    policies: [
+      { userAgent: '*', allow: '/' },
+      { userAgent: '*', disallow: '/hero-variant/' },
+    ],
+  },
   // The default stamps every URL with the build time, which tells crawlers the whole site
   // changed on every deploy. Use real content dates, and omit lastmod where there is none.
   autoLastmod: false,

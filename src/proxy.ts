@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { track } from '@vercel/analytics/server';
 
+import { homepageMarkdownPath } from '@/lib/homepage-hero';
+import { rewriteHomepage } from '@/lib/homepage-hero-rewrite';
+
 /**
  * This proxy (Next.js's successor to `middleware`) does two things for the
  * plain-markdown surface of the site (`/*.md` pages and `/llms.txt`):
@@ -218,7 +221,20 @@ export function proxy(request: NextRequest, event: NextFetchEvent) {
   const agent = detectAgent(request.headers.get('user-agent') ?? '');
 
   // 1. Direct hits on the markdown surface — observe only.
+  // Homepage markdown follows the hero experiment: crawlers (and a forced B
+  // kill switch) read the static B twin. Everyone else keeps the current file.
   if (pathname === '/llms.txt' || pathname.endsWith('.md')) {
+    if (pathname === '/index.md' || pathname === '/index-b.md') {
+      const target = homepageMarkdownPath(request.headers.get('user-agent'));
+      if (target !== pathname) {
+        trackMarkdownRead(event, request, { path: pathname, surface: 'markdown', agent });
+        const redirect = NextResponse.redirect(new URL(target, request.url), 307);
+        redirect.headers.set('Vary', 'User-Agent');
+        redirect.headers.set('x-middleware-cache', 'no-cache');
+        return redirect;
+      }
+    }
+
     trackMarkdownRead(event, request, {
       path: pathname,
       surface: pathname === '/llms.txt' ? 'llms' : 'markdown',
@@ -229,18 +245,29 @@ export function proxy(request: NextRequest, event: NextFetchEvent) {
 
   // 2. Content negotiation: HTML page requested with `Accept: text/markdown`.
   if (prefersMarkdown(request.headers.get('accept'))) {
-    const markdownPath = toMarkdownPath(pathname);
+    const markdownPath =
+      pathname === '/'
+        ? homepageMarkdownPath(request.headers.get('user-agent'))
+        : toMarkdownPath(pathname);
     if (markdownPath) {
       trackMarkdownRead(event, request, { path: pathname, surface: 'negotiated', agent });
       const redirect = NextResponse.redirect(new URL(markdownPath, request.url), 307);
       // Signal shared caches that this redirect depends on the Accept header, so
-      // a browser (which never sends text/markdown) is never served it.
-      redirect.headers.set('Vary', 'Accept');
+      // a browser (which never sends text/markdown) is never served it. The
+      // homepage target also depends on the user agent.
+      redirect.headers.set('Vary', pathname === '/' ? 'Accept, User-Agent' : 'Accept');
+      if (pathname === '/') {
+        redirect.headers.set('x-middleware-cache', 'no-cache');
+      }
       return redirect;
     }
   }
 
-  // 3. Everything else: normal HTML, untouched — zero change for human traffic.
+  // 3. Homepage hero experiment. Other HTML routes stay untouched.
+  if (pathname === '/') {
+    return rewriteHomepage(request);
+  }
+
   return NextResponse.next();
 }
 
