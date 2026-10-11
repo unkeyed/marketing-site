@@ -15,7 +15,7 @@ export const homepageHeroVariantB = {
 } as const;
 
 // Edit this one line to rename variant B's secondary hero button.
-export const HOMEPAGE_HERO_B_SECONDARY_LABEL = 'Talk to the founder';
+export const HOMEPAGE_HERO_B_SECONDARY_LABEL = 'Get a demo';
 
 export const HOMEPAGE_HERO_B_SECONDARY_HREF = 'https://unkey.cal.com/james/sales';
 
