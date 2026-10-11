@@ -45,7 +45,14 @@ test('TC-E2E-003: responsive navigation exposes resource links', async ({ page }
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('hidden');
   }
 
-  await header.getByRole('button', { name: 'Resources', exact: true }).click();
+  const resources = header.getByRole('button', { name: 'Resources', exact: true });
+  if (isMobile) {
+    await resources.click();
+  } else {
+    // Hover opens this menu. Playwright's click hovers first, and if that hover
+    // already opened the menu the click toggles it closed.
+    await resources.hover();
+  }
   await expect(header.getByRole('link', { name: /Blog/ })).toBeVisible();
   await expect(header.getByRole('link', { name: /Case studies/ })).toBeVisible();
 
