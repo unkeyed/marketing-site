@@ -1,16 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-const CONTROL_HEADING = 'The Developer Platform for Modern APIs';
+const HERO_HEADING = 'The Developer Platform for Modern APIs';
 const CONTROL_SUBHEAD =
   'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.';
-
-const VARIANT_B = {
-  heading: 'Infrastructure for APIs',
-  subhead: 'Deploy from GitHub, protect with API keys and rate limits, and see every request.',
-} as const;
-
-const REMOVED_PARAGRAPH =
-  "Hosting, API keys, rate limiting, and analytics live in one platform. Keys and rate limits are checked at the edge, and you don't run a gateway or a monitoring stack yourself.";
+const VARIANT_B_SUBHEAD =
+  'Unkey unifies your infrastructure. Deploy APIs instantly, protect them with keys and rate limits, and understand usage in one place.';
 
 function decodeHtml(value: string): string {
   return value
@@ -19,17 +13,6 @@ function decodeHtml(value: string): string {
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');
-}
-
-function headingText(html: string): string | null {
-  const match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  if (!match) return null;
-  return decodeHtml(
-    match[1]
-      .replace(/<[^>]+>/g, '')
-      .replace(/\s+/g, ' ')
-      .trim(),
-  );
 }
 
 test('TC-E2E-013: homepage hero variant A keeps the current copy', async ({ page, baseURL }) => {
@@ -43,14 +26,13 @@ test('TC-E2E-013: homepage hero variant A keeps the current copy', async ({ page
 
   expect(response?.ok()).toBeTruthy();
   expect(response?.headers()['x-homepage-hero']).toBe('a');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(CONTROL_HEADING);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(HERO_HEADING);
   await expect(page.getByText(CONTROL_SUBHEAD)).toBeVisible();
-  await expect(page.getByText(VARIANT_B.heading)).toHaveCount(0);
-  await expect(page.getByText(REMOVED_PARAGRAPH)).toHaveCount(0);
+  await expect(page.getByText(VARIANT_B_SUBHEAD)).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'a');
 });
 
-test('TC-E2E-014: homepage hero variant B shows the new copy', async ({ page, baseURL }) => {
+test('TC-E2E-014: homepage hero variant B changes only the subhead', async ({ page, baseURL }) => {
   await page
     .context()
     .addCookies([
@@ -61,14 +43,14 @@ test('TC-E2E-014: homepage hero variant B shows the new copy', async ({ page, ba
 
   expect(response?.ok()).toBeTruthy();
   expect(response?.headers()['x-homepage-hero']).toBe('b');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(VARIANT_B.heading);
-  await expect(page.getByText(VARIANT_B.subhead)).toBeVisible();
-  await expect(page.getByText(REMOVED_PARAGRAPH)).toHaveCount(0);
-  await expect(page.getByRole('heading', { level: 1, name: CONTROL_HEADING })).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(HERO_HEADING);
+  await expect(page.getByText(VARIANT_B_SUBHEAD)).toBeVisible();
+  await expect(page.getByText(CONTROL_SUBHEAD)).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'b');
 
   await page.reload();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(VARIANT_B.heading);
+  await expect(page.getByText(VARIANT_B_SUBHEAD)).toBeVisible();
+  await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'b');
 });
 
 test('TC-E2E-015: crawler user agents get variant B in the HTML', async ({ request }) => {
@@ -85,15 +67,13 @@ test('TC-E2E-015: crawler user agents get variant B in the HTML', async ({ reque
 
   for (const userAgent of userAgents) {
     const response = await request.get('/', { headers: { 'User-Agent': userAgent } });
-    const html = await response.text();
+    const body = decodeHtml(await response.text());
 
     expect(response.status(), userAgent).toBe(200);
     expect(response.headers()['x-homepage-hero'], userAgent).toBe('b');
-    const body = decodeHtml(html);
-    expect(headingText(html), userAgent).toBe(VARIANT_B.heading);
-    expect(body, userAgent).toContain(VARIANT_B.subhead);
-    expect(body, userAgent).not.toContain(REMOVED_PARAGRAPH);
-    expect(html, userAgent).toContain('data-hero-variant="b"');
+    expect(body, userAgent).toContain('data-hero-variant="b"');
+    expect(body, userAgent).toContain(VARIANT_B_SUBHEAD);
+    expect(body, userAgent).not.toContain(CONTROL_SUBHEAD);
   }
 });
 
@@ -102,8 +82,8 @@ test('TC-E2E-016: crawler markdown uses the variant B heading and subhead', asyn
   const body = await response.text();
 
   expect(response.status()).toBe(200);
-  expect(body.startsWith(`# ${VARIANT_B.heading}\n`)).toBeTruthy();
-  expect(body).toContain(`> ${VARIANT_B.subhead}`);
-  expect(body).not.toContain(REMOVED_PARAGRAPH);
+  expect(body.startsWith(`# ${HERO_HEADING}\n`)).toBeTruthy();
+  expect(body).toContain(`> ${VARIANT_B_SUBHEAD}`);
+  expect(body).not.toContain(CONTROL_SUBHEAD);
   expect(body).not.toContain('Unkey unifies API deployment');
 });

@@ -12,7 +12,7 @@ import {
 export const homepageHeroFlag = flag<HomepageHeroVariant>({
   key: HOMEPAGE_HERO_FLAG_KEY,
   description:
-    'Homepage hero copy. A is the current hero. B is the new heading and subhead. Crawlers get B while the test is running.',
+    'Homepage hero copy. A is the current hero. B changes only the subhead. Crawlers get B while the test is running.',
   options: [
     { label: 'Control', value: 'a' },
     { label: 'New hero copy', value: 'b' },

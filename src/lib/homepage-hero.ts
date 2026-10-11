@@ -8,10 +8,10 @@ export const HOMEPAGE_HERO_FLAG_KEY = 'homepage-hero';
 
 export type HomepageHeroVariant = 'a' | 'b';
 
-// Variant B only. Variant A keeps the copy that already lives in `homeContentData`.
+// Subhead only. Variant B keeps the live hero heading from `homeContentData`.
 export const homepageHeroVariantB = {
-  heading: 'Infrastructure for APIs',
-  subhead: 'Deploy from GitHub, protect with API keys and rate limits, and see every request.',
+  subhead:
+    'Unkey unifies your infrastructure. Deploy APIs instantly, protect them with keys and rate limits, and understand usage in one place.',
 } as const;
 
 const VISITOR_ID_FALLBACK = 'anonymous';
