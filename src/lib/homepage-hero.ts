@@ -14,6 +14,11 @@ export const homepageHeroVariantB = {
     'Unkey unifies your infrastructure. Deploy APIs instantly, protect them with keys and rate limits, and understand usage in one place.',
 } as const;
 
+// Edit this one line to rename variant B's secondary hero button.
+export const HOMEPAGE_HERO_B_SECONDARY_LABEL = 'Talk to the founder';
+
+export const HOMEPAGE_HERO_B_SECONDARY_HREF = 'https://unkey.cal.com/james/sales';
+
 const VISITOR_ID_FALLBACK = 'anonymous';
 
 /**

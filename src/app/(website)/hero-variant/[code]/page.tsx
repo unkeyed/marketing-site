@@ -5,7 +5,11 @@ import { generatePermutations } from 'flags/next';
 import { FlagValues } from 'flags/react';
 
 import { getMetadata } from '@/lib/get-metadata';
-import { homepageHeroVariantB } from '@/lib/homepage-hero';
+import {
+  HOMEPAGE_HERO_B_SECONDARY_HREF,
+  HOMEPAGE_HERO_B_SECONDARY_LABEL,
+  homepageHeroVariantB,
+} from '@/lib/homepage-hero';
 import BuildDeploy from '@/components/pages/home/build-deploy';
 import ControlPlane from '@/components/pages/home/control-plane';
 import Cta from '@/components/pages/home/cta';
@@ -43,9 +47,18 @@ export default async function HomePage({ params }: { params: Promise<{ code: str
       data-hero-variant={variant}
     >
       <FlagValues values={{ 'homepage-hero': variant }} />
-      <HeroExperimentAnalytics variant={variant} />
+      <HeroExperimentAnalytics variant={variant} founderCallHref={HOMEPAGE_HERO_B_SECONDARY_HREF} />
       {variant === 'b' ? (
-        <Hero {...hero} description={homepageHeroVariantB.subhead} />
+        <Hero
+          {...hero}
+          description={homepageHeroVariantB.subhead}
+          secondaryCta={{
+            label: HOMEPAGE_HERO_B_SECONDARY_LABEL,
+            href: HOMEPAGE_HERO_B_SECONDARY_HREF,
+            target: '_blank',
+            rel: 'noopener',
+          }}
+        />
       ) : (
         <Hero {...hero} />
       )}
