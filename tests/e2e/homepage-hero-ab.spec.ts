@@ -5,12 +5,12 @@ const CONTROL_SUBHEAD =
   'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.';
 
 const VARIANT_B = {
-  heading: "Deploy your API, protect it, and see who's using it",
-  subhead:
-    'Unkey is infrastructure for APIs. Push your code from GitHub, decide who can call it, and see every request.',
-  paragraph:
-    "Hosting, API keys, rate limiting, and analytics live in one platform. Keys and rate limits are checked at the edge, and you don't run a gateway or a monitoring stack yourself.",
+  heading: 'Infrastructure for APIs',
+  subhead: 'Deploy from GitHub, protect with API keys and rate limits, and see every request.',
 } as const;
+
+const REMOVED_PARAGRAPH =
+  "Hosting, API keys, rate limiting, and analytics live in one platform. Keys and rate limits are checked at the edge, and you don't run a gateway or a monitoring stack yourself.";
 
 function decodeHtml(value: string): string {
   return value
@@ -46,7 +46,7 @@ test('TC-E2E-013: homepage hero variant A keeps the current copy', async ({ page
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(CONTROL_HEADING);
   await expect(page.getByText(CONTROL_SUBHEAD)).toBeVisible();
   await expect(page.getByText(VARIANT_B.heading)).toHaveCount(0);
-  await expect(page.getByText(VARIANT_B.paragraph)).toHaveCount(0);
+  await expect(page.getByText(REMOVED_PARAGRAPH)).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'a');
 });
 
@@ -63,7 +63,7 @@ test('TC-E2E-014: homepage hero variant B shows the new copy', async ({ page, ba
   expect(response?.headers()['x-homepage-hero']).toBe('b');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(VARIANT_B.heading);
   await expect(page.getByText(VARIANT_B.subhead)).toBeVisible();
-  await expect(page.getByText(VARIANT_B.paragraph)).toBeVisible();
+  await expect(page.getByText(REMOVED_PARAGRAPH)).toHaveCount(0);
   await expect(page.getByRole('heading', { level: 1, name: CONTROL_HEADING })).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'b');
 
@@ -92,7 +92,18 @@ test('TC-E2E-015: crawler user agents get variant B in the HTML', async ({ reque
     const body = decodeHtml(html);
     expect(headingText(html), userAgent).toBe(VARIANT_B.heading);
     expect(body, userAgent).toContain(VARIANT_B.subhead);
-    expect(body, userAgent).toContain(VARIANT_B.paragraph);
+    expect(body, userAgent).not.toContain(REMOVED_PARAGRAPH);
     expect(html, userAgent).toContain('data-hero-variant="b"');
   }
+});
+
+test('TC-E2E-016: crawler markdown uses the variant B heading and subhead', async ({ request }) => {
+  const response = await request.get('/index.md', { headers: { 'User-Agent': 'GPTBot/1.2' } });
+  const body = await response.text();
+
+  expect(response.status()).toBe(200);
+  expect(body.startsWith(`# ${VARIANT_B.heading}\n`)).toBeTruthy();
+  expect(body).toContain(`> ${VARIANT_B.subhead}`);
+  expect(body).not.toContain(REMOVED_PARAGRAPH);
+  expect(body).not.toContain('Unkey unifies API deployment');
 });

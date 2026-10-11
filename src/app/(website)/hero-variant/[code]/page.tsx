@@ -49,7 +49,6 @@ export default async function HomePage({ params }: { params: Promise<{ code: str
           {...hero}
           title={homepageHeroVariantB.heading}
           description={homepageHeroVariantB.subhead}
-          paragraph={homepageHeroVariantB.paragraph}
         />
       ) : (
         <Hero {...hero} />

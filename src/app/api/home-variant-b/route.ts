@@ -8,7 +8,6 @@ export function GET() {
     renderHomeMarkdown({
       title: homepageHeroVariantB.heading,
       description: homepageHeroVariantB.subhead,
-      intro: homepageHeroVariantB.paragraph,
     }),
   );
 }

@@ -10,11 +10,8 @@ export type HomepageHeroVariant = 'a' | 'b';
 
 // Variant B only. Variant A keeps the copy that already lives in `homeContentData`.
 export const homepageHeroVariantB = {
-  heading: "Deploy your API, protect it, and see who's using it",
-  subhead:
-    'Unkey is infrastructure for APIs. Push your code from GitHub, decide who can call it, and see every request.',
-  paragraph:
-    "Hosting, API keys, rate limiting, and analytics live in one platform. Keys and rate limits are checked at the edge, and you don't run a gateway or a monitoring stack yourself.",
+  heading: 'Infrastructure for APIs',
+  subhead: 'Deploy from GitHub, protect with API keys and rate limits, and see every request.',
 } as const;
 
 const VISITOR_ID_FALLBACK = 'anonymous';
