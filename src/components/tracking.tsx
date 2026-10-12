@@ -1,18 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useConsentManager } from '@c15t/nextjs';
 import { Analytics } from '@vercel/analytics/next';
+import { useConsent } from 'c15t/next';
 
 export function Tracking() {
   const [isMounted, setIsMounted] = useState(false);
-  const { has } = useConsentManager();
+  const hasMarketing = useConsent('marketing');
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted || !has('marketing')) {
+  if (!isMounted || !hasMarketing) {
     return null;
   }
 

@@ -3,7 +3,9 @@ import type { ReactNode } from 'react';
 import '@/styles/globals.css';
 
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { ConsentTheme } from 'c15t/next';
 
+import { consentTheme } from '@/lib/consent-theme';
 import { ConsentProvider } from '@/components/consent-provider';
 import { ConsentBanner } from '@/components/cookie-banner/consent-banner';
 import { Tracking } from '@/components/tracking';
@@ -43,6 +45,7 @@ export default function RootLayout({
       <body
         className={`bg-background ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
+        <ConsentTheme colorScheme="dark" theme={consentTheme} />
         <ConsentProvider>
           {children}
           <Tracking />

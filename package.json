@@ -23,7 +23,6 @@
   },
   "packageManager": "pnpm@11.1.2",
   "dependencies": {
-    "@c15t/nextjs": "2.1.0",
     "@hookform/resolvers": "5.2.2",
     "@number-flow/react": "0.6.0",
     "@radix-ui/react-accordion": "1.2.12",
@@ -44,6 +43,7 @@
     "@tailwindcss/postcss": "4.3.0",
     "@team-plain/typescript-sdk": "5.12.1",
     "@vercel/analytics": "2.0.1",
+    "c15t": "3.0.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "copy-to-clipboard": "4.0.2",

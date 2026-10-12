@@ -1,0 +1,52 @@
+import { defineTheme } from 'c15t/next';
+
+const brandColors = {
+  surface: 'var(--color-popover)',
+  surfaceHover: 'var(--color-popover)',
+  border: 'var(--color-border)',
+  borderHover: 'var(--color-border)',
+  text: 'var(--color-foreground)',
+  textMuted: 'var(--color-muted-foreground)',
+  primary: 'var(--color-foreground)',
+  primaryHover: 'var(--color-gray-90)',
+  textOnPrimary: 'var(--color-background)',
+  overlay: 'hsla(0, 0%, 0%, 0.5)',
+  switchTrack: 'var(--color-gray-30)',
+  switchTrackActive: 'var(--color-foreground)',
+  switchThumb: 'var(--color-foreground)',
+} as const;
+
+const consentButtonClassName =
+  'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-none border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground px-5 text-sm font-medium sm:min-w-28 sm:flex-none';
+
+/**
+ * Brand tokens, action styles, and slot classes for the consent UI.
+ * `ConsentTheme` renders the tokens. The provider still reads
+ * `consentActions` and `slots` from this same object.
+ */
+export const consentTheme = {
+  ...defineTheme({
+    radius: { sm: '0', md: '0', lg: '0', full: '0' },
+    colors: brandColors,
+    dark: brandColors,
+  }),
+  consentActions: {
+    accept: { variant: 'neutral', mode: 'stroke' },
+    reject: { variant: 'neutral', mode: 'stroke' },
+    customize: { variant: 'neutral', mode: 'ghost' },
+  },
+  slots: {
+    consentBannerCard: { className: 'rounded-none bg-popover' },
+    consentBannerFooter: {
+      className: 'bg-transparent border-none shadow-none',
+    },
+    consentBannerDescription: { className: 'text-sm text-muted-foreground' },
+    consentBannerTag: { className: 'hidden' },
+    consentDialogCard: { className: 'rounded-none bg-popover' },
+    consentDialogTag: { className: 'hidden' },
+    consentWidgetAccordion: { className: 'rounded-none' },
+    consentWidgetTag: { className: 'hidden' },
+    buttonPrimary: { className: consentButtonClassName, noStyle: true },
+    buttonSecondary: { className: consentButtonClassName, noStyle: true },
+  },
+} as const;
