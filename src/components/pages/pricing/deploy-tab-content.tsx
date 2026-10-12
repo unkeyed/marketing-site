@@ -3,6 +3,7 @@ import NextLink from 'next/link';
 import enterpriseBackgroundImage from '@/assets/images/pricing/enterprise-bg.jpg';
 import {
   computeIntroOffer,
+  computePlanIncludes,
   deployPricingPlans,
   enterpriseData,
   tableFeatures,
@@ -72,7 +73,9 @@ export default function DeployTabContent() {
     <>
       <Hero
         plans={deployPricingPlans}
+        title="Compute plans"
         notice={computeIntroOffer.notice}
+        planIncludes={computePlanIncludes}
         bottomContent={<EnterpriseContent enterpriseData={enterpriseData} />}
       />
       <ComparisonTable plans={deployPricingPlans} featureCategories={tableFeatures} />

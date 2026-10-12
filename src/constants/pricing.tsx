@@ -16,7 +16,7 @@ export const pricingContentData = {
   tabs: [
     {
       value: 'deploy',
-      label: 'unkey deploy',
+      label: 'Compute plans',
     },
     {
       value: 'api-management',
@@ -103,12 +103,18 @@ export const computeIntroOffer = {
     'Get $5 of compute on us as a $5 credit off your first month. The offer ends at the end of the year, on December 31, 2026.',
 };
 
+export const computePlanIncludes = [
+  'Git push to deploy',
+  'Preview deploy per PR',
+  'Instant rollback',
+];
+
 export const deployPricingPlans: IPricingPlan[] = [
   {
     id: 'starter',
     name: 'Starter',
     // lucideIcon: "gem",
-    description: 'Ship small production workloads with simple usage-based billing.',
+    description: 'For hobby projects and testing ideas',
     monthlyPrice: 5,
     annualPrice: 5,
     currency: 'USD',
@@ -123,7 +129,11 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 2 vCPU / 2 GB per Instance',
+          label: 'No team members',
+          lucideIcon: 'check',
+        },
+        {
+          label: 'Up to 2 vCPU / 2 GiB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -132,6 +142,10 @@ export const deployPricingPlans: IPricingPlan[] = [
         },
         {
           label: '1 custom domain',
+          lucideIcon: 'check',
+        },
+        {
+          label: 'Auto scale up to 4 instances per region',
           lucideIcon: 'check',
         },
         {
@@ -145,7 +159,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       ],
     },
     link: {
-      label: 'Get started',
+      label: 'Choose Starter',
       href: APP_URL,
     },
   },
@@ -153,7 +167,7 @@ export const deployPricingPlans: IPricingPlan[] = [
     id: 'pro',
     name: 'Pro',
     // lucideIcon: "gem",
-    description: 'Run production APIs with more compute and headroom.',
+    description: 'For growing apps in production',
     monthlyPrice: 25,
     annualPrice: 25,
     currency: 'USD',
@@ -169,7 +183,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 4 vCPU / 8 GB per Instance',
+          label: 'Up to 8 vCPU / 8 GiB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -178,6 +192,10 @@ export const deployPricingPlans: IPricingPlan[] = [
         },
         {
           label: 'Unlimited custom domains',
+          lucideIcon: 'check',
+        },
+        {
+          label: 'Auto scale up to 8 instances per region',
           lucideIcon: 'check',
         },
         {
@@ -191,7 +209,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       ],
     },
     link: {
-      label: 'Get started',
+      label: 'Choose Pro',
       href: APP_URL,
     },
   },
@@ -199,7 +217,7 @@ export const deployPricingPlans: IPricingPlan[] = [
     id: 'business',
     name: 'Business',
     // lucideIcon: "gem",
-    description: 'For higher workloads and growing teams at global scale.',
+    description: 'For teams scaling with confidence',
     currency: 'USD',
     // labelBeforePrice: "For pricing",
     monthlyPrice: 50,
@@ -215,7 +233,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       title: 'What’s included',
       items: [
         {
-          label: 'Up to 16 vCPU / 32 GB per Instance',
+          label: 'Up to 16 vCPU / 32 GiB per Instance',
           lucideIcon: 'check',
         },
         {
@@ -226,7 +244,10 @@ export const deployPricingPlans: IPricingPlan[] = [
           label: 'Unlimited custom domains',
           lucideIcon: 'check',
         },
-
+        {
+          label: 'Auto scale up to 16 instances per region',
+          lucideIcon: 'check',
+        },
         {
           label: 'Includes $50/mo usage credits',
           lucideIcon: 'check',
@@ -238,7 +259,7 @@ export const deployPricingPlans: IPricingPlan[] = [
       ],
     },
     link: {
-      label: 'Get started',
+      label: 'Choose Business',
       href: APP_URL,
     },
   },
@@ -441,13 +462,13 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Max vCPU per Instance',
         plans: [
-          { planId: 'starter', value: '1' },
-          { planId: 'pro', value: '4' },
+          { planId: 'starter', value: '2' },
+          { planId: 'pro', value: '8' },
           { planId: 'business', value: '16' },
         ],
       },
       {
-        name: 'Max RAM (GB) per Instance',
+        name: 'Max RAM (GiB) per Instance',
         plans: [
           { planId: 'starter', value: '2' },
           { planId: 'pro', value: '8' },
@@ -481,9 +502,17 @@ export const tableFeatures: IPricingTableFeatures[] = [
       {
         name: 'Team members',
         plans: [
-          { planId: 'starter', value: '1' },
+          { planId: 'starter', value: 'No team members' },
           { planId: 'pro', value: 'Unlimited' },
           { planId: 'business', value: 'Unlimited' },
+        ],
+      },
+      {
+        name: 'Auto scale per region',
+        plans: [
+          { planId: 'starter', value: 'Up to 4 instances' },
+          { planId: 'pro', value: 'Up to 8 instances' },
+          { planId: 'business', value: 'Up to 16 instances' },
         ],
       },
       {
