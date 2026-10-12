@@ -1,36 +1,20 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { ConsentManagerProvider } from '@c15t/nextjs';
+import { ConsentProvider as C15tConsentProvider } from 'c15t/next';
+import { hosted, offline } from 'c15t/react';
+
+import { consentTheme } from '@/lib/consent-theme';
 
 const isHostedMode = process.env.NEXT_PUBLIC_C15T_MODE === 'hosted';
 
-const consentButtonClassName =
-  'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-none border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground px-5 text-sm font-medium sm:min-w-28 sm:flex-none';
-
-const brandColors = {
-  surface: 'var(--color-popover)',
-  surfaceHover: 'var(--color-popover)',
-  border: 'var(--color-border)',
-  borderHover: 'var(--color-border)',
-  text: 'var(--color-foreground)',
-  textMuted: 'var(--color-muted-foreground)',
-  primary: 'var(--color-foreground)',
-  primaryHover: 'var(--color-gray-90)',
-  textOnPrimary: 'var(--color-background)',
-  overlay: 'hsla(0, 0%, 0%, 0.5)',
-  switchTrack: 'var(--color-gray-30)',
-  switchTrackActive: 'var(--color-foreground)',
-  switchThumb: 'var(--color-foreground)',
-} as const;
-
 export function ConsentProvider({ children }: { children: ReactNode }) {
   return (
-    <ConsentManagerProvider
+    <C15tConsentProvider
       options={{
-        ...(isHostedMode
-          ? { mode: 'hosted', backendURL: 'https://production-unkey.inth.app/' }
-          : { mode: 'offline' }),
+        mode: isHostedMode
+          ? hosted({ backendURL: 'https://production-unkey.inth.app/' })
+          : offline(),
         networkBlocker: {
           rules: [
             { domain: 'unpkg.com', category: 'necessary' },
@@ -39,33 +23,10 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
         },
         colorScheme: 'dark',
         consentCategories: ['necessary', 'marketing'],
-        theme: {
-          radius: { sm: '0', md: '0', lg: '0', full: '0' },
-          colors: brandColors,
-          dark: brandColors,
-          consentActions: {
-            accept: { variant: 'neutral', mode: 'stroke' },
-            reject: { variant: 'neutral', mode: 'stroke' },
-            customize: { variant: 'neutral', mode: 'ghost' },
-          },
-          slots: {
-            consentBannerCard: { className: 'rounded-none bg-popover' },
-            consentBannerFooter: {
-              className: 'bg-transparent border-none shadow-none',
-            },
-            consentBannerDescription: { className: 'text-sm text-muted-foreground' },
-            consentBannerTag: { className: 'hidden' },
-            consentDialogCard: { className: 'rounded-none bg-popover' },
-            consentDialogTag: { className: 'hidden' },
-            consentWidgetAccordion: { className: 'rounded-none' },
-            consentWidgetTag: { className: 'hidden' },
-            buttonPrimary: { className: consentButtonClassName, noStyle: true },
-            buttonSecondary: { className: consentButtonClassName, noStyle: true },
-          },
-        },
+        theme: consentTheme,
       }}
     >
       {children}
-    </ConsentManagerProvider>
+    </C15tConsentProvider>
   );
 }

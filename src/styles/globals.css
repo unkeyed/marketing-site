@@ -1,13 +1,12 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
-@plugin "../../tailwind.plugins.mjs";
+@plugin '@tailwindcss/typography';
+@plugin '../../tailwind.plugins.mjs';
 
 @import 'tw-animate-css';
 
 @import './typography.css';
 @import './shiki.css';
 @import './video.css';
-@import '@c15t/nextjs/styles.css';
 
 @font-face {
   font-family: 'articulat-cf-fallback';
