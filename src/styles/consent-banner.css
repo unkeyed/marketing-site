@@ -1,0 +1,111 @@
+/*
+  Slim full-width bar in normal flow under the scrolling page.
+  Unlayered so these rules win over c15t's component layer.
+*/
+[data-testid='consent-banner-root'] {
+  position: relative;
+  inset: auto;
+  flex: none;
+  width: 100%;
+}
+
+.consent-bar {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--color-gray-20);
+  border-radius: 0;
+  background: var(--color-gray-8);
+  padding: 0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom));
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  box-shadow: none;
+}
+
+.consent-bar__text {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  padding: 0;
+}
+
+.consent-bar__title {
+  color: var(--color-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25rem;
+}
+
+.consent-bar__description {
+  color: var(--color-gray-60);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.25rem;
+}
+
+.consent-bar [data-testid='consent-banner-footer'] {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: stretch;
+  gap: 0.5rem;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.consent-bar [data-testid='consent-banner-footer'] button[data-action] {
+  width: auto;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.consent-bar [data-testid='consent-banner-footer'] button[data-action='accept'] {
+  border-color: var(--color-foreground);
+  background: var(--color-foreground);
+  color: var(--color-background);
+}
+
+.consent-bar [data-testid='consent-banner-footer'] button[data-action='accept']:hover {
+  background: var(--color-gray-90);
+}
+
+@media (min-width: 768px) {
+  .consent-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.625rem 2rem calc(0.625rem + env(safe-area-inset-bottom));
+  }
+
+  .consent-bar__text {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.5rem;
+  }
+
+  .consent-bar [data-testid='consent-banner-footer'] {
+    width: auto;
+    flex: none;
+    justify-content: flex-end;
+  }
+
+  .consent-bar [data-testid='consent-banner-footer'] button[data-action] {
+    flex: none;
+  }
+}

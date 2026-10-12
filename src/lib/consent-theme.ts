@@ -17,7 +17,10 @@ const brandColors = {
 } as const;
 
 const consentButtonClassName =
-  'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-none border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground px-5 text-sm font-medium sm:min-w-28 sm:flex-none';
+  'inline-flex h-9 shrink-0 items-center justify-center border border-foreground bg-transparent px-3 text-sm font-medium tracking-tight whitespace-nowrap text-foreground hover:bg-gray-12 sm:px-4';
+
+const acceptButtonClassName =
+  'inline-flex h-9 shrink-0 items-center justify-center border border-foreground bg-foreground px-3 text-sm font-medium tracking-tight whitespace-nowrap text-background hover:bg-gray-90 sm:px-4';
 
 /**
  * Brand tokens, action styles, and slot classes for the consent UI.
@@ -33,20 +36,15 @@ export const consentTheme = {
   consentActions: {
     accept: { variant: 'neutral', mode: 'stroke' },
     reject: { variant: 'neutral', mode: 'stroke' },
-    customize: { variant: 'neutral', mode: 'ghost' },
+    customize: { variant: 'neutral', mode: 'stroke' },
   },
   slots: {
-    consentBannerCard: { className: 'rounded-none bg-popover' },
-    consentBannerFooter: {
-      className: 'bg-transparent border-none shadow-none',
-    },
-    consentBannerDescription: { className: 'text-sm text-muted-foreground' },
     consentBannerTag: { className: 'hidden' },
     consentDialogCard: { className: 'rounded-none bg-popover' },
     consentDialogTag: { className: 'hidden' },
     consentWidgetAccordion: { className: 'rounded-none' },
     consentWidgetTag: { className: 'hidden' },
-    buttonPrimary: { className: consentButtonClassName, noStyle: true },
+    buttonPrimary: { className: acceptButtonClassName, noStyle: true },
     buttonSecondary: { className: consentButtonClassName, noStyle: true },
   },
 } as const;
