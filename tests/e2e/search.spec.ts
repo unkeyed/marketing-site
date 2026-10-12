@@ -1,7 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+import { rejectConsentBanner } from './reject-consent-banner';
+
 test('TC-E2E-008: blog search opens a matching article', async ({ page }) => {
   await page.goto('/blog');
+  await rejectConsentBanner(page);
 
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await page.getByRole('textbox', { name: 'What are you searching for?' }).fill('ratelimit');
@@ -18,6 +21,7 @@ test('TC-E2E-008: blog search opens a matching article', async ({ page }) => {
 
 test('TC-E2E-009: glossary search opens a matching term', async ({ page }) => {
   await page.goto('/glossary');
+  await rejectConsentBanner(page);
 
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await page.getByRole('textbox', { name: 'What are you searching for?' }).fill('webhook');
