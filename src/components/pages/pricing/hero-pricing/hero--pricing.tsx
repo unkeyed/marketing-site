@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
 import pricingLinesImage from '@/assets/images/pricing/lines.png';
+import { Check } from 'lucide-react';
 
 import { type ILogo } from '@/types/common';
 import { IPricingPlan } from '@/types/pricing';
@@ -22,13 +23,32 @@ interface IHeroProps {
   };
   bottomContent?: React.ReactNode;
   notice?: string;
+  title?: string;
+  planIncludes?: string[];
 }
 
-function Hero({ className, plans, logos, cta, bottomContent, notice }: IHeroProps) {
+function Hero({
+  className,
+  plans,
+  logos,
+  cta,
+  bottomContent,
+  notice,
+  title,
+  planIncludes,
+}: IHeroProps) {
   return (
     <section className={cn('mt-8', className)}>
       <div className={cn('mx-auto w-full')}>
-        <h2 className="sr-only">Pricing plans</h2>
+        <h2
+          className={
+            title
+              ? 'mb-3 text-2xl leading-snug font-medium tracking-tight text-foreground'
+              : 'sr-only'
+          }
+        >
+          {title ?? 'Pricing plans'}
+        </h2>
         {notice ? (
           <p className="mb-6 text-base leading-snug tracking-tight text-pretty text-foreground">
             {notice}
@@ -48,6 +68,24 @@ function Hero({ className, plans, logos, cta, bottomContent, notice }: IHeroProp
             ))}
           </ul>
         )}
+        {planIncludes && planIncludes.length > 0 ? (
+          <div className="flex flex-col gap-y-3 border-x border-b border-border px-6 py-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2 md:px-8">
+            <p className="text-sm leading-tight tracking-tight text-muted-foreground">
+              Every plan includes
+            </p>
+            <ul className="flex flex-col gap-y-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
+              {planIncludes.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-2 text-sm leading-tight tracking-tight text-foreground/80"
+                >
+                  <Check className="size-3.5 shrink-0" aria-hidden />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {logos && <Logos className="mt-16 items-center lg:mt-20" logos={logos} />}
 
         {cta && cta.title && cta.description && cta.buttonText && cta.buttonUrl && (

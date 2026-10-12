@@ -54,7 +54,7 @@ function buildDeployPlansTable(): string {
     formatPrice(plan),
     findPlanValue('Included usage', plan.id),
     findPlanValue('Max vCPU per Instance', plan.id),
-    `${findPlanValue('Max RAM (GB) per Instance', plan.id)} GB`,
+    `${findPlanValue('Max RAM (GiB) per Instance', plan.id)} GiB`,
     findPlanValue('Custom domains', plan.id),
   ]);
   rows.push(['Enterprise', 'Custom', 'Custom', 'Custom', 'Custom', 'Custom']);
