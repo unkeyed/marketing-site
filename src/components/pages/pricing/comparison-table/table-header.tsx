@@ -6,8 +6,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 import DiscountBadge from '../hero-pricing/discount-badge';
+import IntroOfferBadge from '../hero-pricing/intro-offer-badge';
 import PriceNumber from '../hero-pricing/price-number';
-import { getPriceInfo } from '../utils';
+import { formatUsdAmount, getPriceInfo } from '../utils';
 
 interface TableHeaderProps {
   plan?: IPricingPlan;
@@ -59,8 +60,16 @@ const TableHeader = memo(function TableHeader({
             />
           )}
         </div>
-        <div className="mt-1 mb-3 lg:mt-0 xl:mt-1">
-          {priceType === 'number' ? (
+        <div className="mt-1 mb-3 flex flex-col items-start gap-2 lg:mt-0 xl:mt-1">
+          {priceType === 'number' && plan?.introOffer ? (
+            <p className="text-base leading-snug tracking-tight text-muted-foreground md:text-[0.8125rem] md:leading-snug xl:text-base xl:leading-snug">
+              <span className="font-medium text-foreground">
+                {formatUsdAmount(plan.introOffer.firstMonthPrice)}
+              </span>{' '}
+              then {formatUsdAmount(price)}/mo
+            </p>
+          ) : null}
+          {priceType === 'number' && !plan?.introOffer ? (
             <PriceNumber
               className="lg:text-[13px] xl:text-base part-[left]:text-muted-foreground part-[left]:lg:text-[13px] part-[left]:xl:text-base part-[number]:text-muted-foreground part-[number]:lg:text-[13px] part-[number]:xl:text-base part-[suffix]:text-muted-foreground part-[suffix]:lg:text-[13px] part-[suffix]:xl:text-base"
               value={price}
@@ -69,11 +78,13 @@ const TableHeader = memo(function TableHeader({
               prefix={`Starts at `}
               animated={false}
             />
-          ) : (
+          ) : null}
+          {priceType !== 'number' ? (
             <p className="text-base leading-snug tracking-tight text-muted-foreground md:text-[0.8125rem] md:leading-snug xl:text-base xl:leading-snug">
               {priceDisplay}
             </p>
-          )}
+          ) : null}
+          {plan?.introOffer ? <IntroOfferBadge label={plan.introOffer.badge} /> : null}
         </div>
         {plan && link && (
           <Button

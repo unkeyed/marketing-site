@@ -17,9 +17,10 @@ import {
 } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { getPriceInfo } from '../utils';
+import { formatUsdAmount, getPriceInfo } from '../utils';
 import DiscountBadge from './discount-badge';
 import DynamicIcon from './dynamic-icon';
+import IntroOfferBadge from './intro-offer-badge';
 import PriceNumber from './price-number';
 
 const DEFAULT_VISIBLE_FEATURES = 7;
@@ -153,7 +154,19 @@ function PricingCard({
                 {labelBeforePrice}
               </span>
             )}
-            {priceType === 'number' && (
+            {priceType === 'number' && plan.introOffer && (
+              <span className="flex flex-wrap items-baseline gap-x-2.5">
+                <PriceNumber
+                  className="font-display text-5xl leading-[1.25] font-[500] tracking-tight [font-variation-settings:'wght'_500]"
+                  value={plan.introOffer.firstMonthPrice}
+                  currency={currency}
+                />
+                <span className="text-lg leading-none tracking-tight text-muted-foreground">
+                  then {formatUsdAmount(price)}/mo
+                </span>
+              </span>
+            )}
+            {priceType === 'number' && !plan.introOffer && (
               <PriceNumber
                 className="font-display text-5xl leading-[1.25] font-[500] tracking-tight [font-variation-settings:'wght'_500] part-[suffix]:font-sans part-[suffix]:text-2xl part-[suffix]:font-normal part-[suffix]:[font-variation-settings:'wght'_400]"
                 value={price}
@@ -188,16 +201,21 @@ function PricingCard({
         </div>
       </div>
 
-      <Button
+      <div
         className={cn(
-          'h-11 w-full rounded-none text-base leading-none',
+          'flex flex-col items-start gap-3',
           showDescriptionAfterButton ? 'row-start-3 mt-5' : 'row-start-4 mt-5',
         )}
-        variant="secondary"
-        asChild
       >
-        <Link href={link.href}>{link.label}</Link>
-      </Button>
+        <Button
+          className="h-11 w-full rounded-none text-base leading-none"
+          variant="secondary"
+          asChild
+        >
+          <Link href={link.href}>{link.label}</Link>
+        </Button>
+        {plan.introOffer ? <IntroOfferBadge label={plan.introOffer.badge} /> : null}
+      </div>
 
       {features.items.length > 0 && (
         <div

@@ -37,6 +37,11 @@ export interface IPricingPlanTier {
   featureOverrides?: Record<string, string>;
 }
 
+export interface IPricingIntroOffer {
+  firstMonthPrice: number;
+  badge: string;
+}
+
 // Base interface for pricing plans
 interface IPricingPlanBase extends Partial<ILucideIcon> {
   id: string;
@@ -46,6 +51,7 @@ interface IPricingPlanBase extends Partial<ILucideIcon> {
   labelBeforePrice?: string;
   isMostPopular?: boolean;
   priceTiers?: IPricingPlanTier[];
+  introOffer?: IPricingIntroOffer;
   features: {
     title?: string;
     items: IPricingPlanFeature[];

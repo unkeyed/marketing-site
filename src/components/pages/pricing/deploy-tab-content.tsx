@@ -1,7 +1,12 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
 import enterpriseBackgroundImage from '@/assets/images/pricing/enterprise-bg.jpg';
-import { deployPricingPlans, enterpriseData, tableFeatures } from '@/constants/pricing';
+import {
+  computeIntroOffer,
+  deployPricingPlans,
+  enterpriseData,
+  tableFeatures,
+} from '@/constants/pricing';
 import { Check } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -67,6 +72,7 @@ export default function DeployTabContent() {
     <>
       <Hero
         plans={deployPricingPlans}
+        notice={computeIntroOffer.notice}
         bottomContent={<EnterpriseContent enterpriseData={enterpriseData} />}
       />
       <ComparisonTable plans={deployPricingPlans} featureCategories={tableFeatures} />
