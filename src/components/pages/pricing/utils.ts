@@ -14,6 +14,14 @@ export const priceNumberFormat = {
   },
 };
 
+export function formatUsdAmount(value: number): string {
+  return new Intl.NumberFormat(priceNumberFormat.locales, {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 /**
  * Get price display value based on price type and period
  *

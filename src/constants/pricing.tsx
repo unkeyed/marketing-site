@@ -97,6 +97,12 @@ export const pricingContentData = {
   },
 };
 
+export const computeIntroOffer = {
+  badge: '$5 off your first month',
+  notice:
+    'Get $5 of compute on us as a $5 credit off your first month. The offer ends at the end of the year, on December 31, 2026.',
+};
+
 export const deployPricingPlans: IPricingPlan[] = [
   {
     id: 'starter',
@@ -109,6 +115,10 @@ export const deployPricingPlans: IPricingPlan[] = [
     priceMonthlyLabel: ' / mo',
     priceAnnualLabel: ' / mo',
     priceType: 'number',
+    introOffer: {
+      firstMonthPrice: 0,
+      badge: computeIntroOffer.badge,
+    },
     features: {
       title: 'What’s included',
       items: [
@@ -150,6 +160,10 @@ export const deployPricingPlans: IPricingPlan[] = [
     priceMonthlyLabel: ' / mo',
     priceAnnualLabel: ' / mo',
     priceType: 'number',
+    introOffer: {
+      firstMonthPrice: 20,
+      badge: computeIntroOffer.badge,
+    },
     isMostPopular: true,
     features: {
       title: 'What’s included',
@@ -193,6 +207,10 @@ export const deployPricingPlans: IPricingPlan[] = [
     priceMonthlyLabel: ' / mo',
     priceAnnualLabel: ' / mo',
     priceType: 'number',
+    introOffer: {
+      firstMonthPrice: 45,
+      badge: computeIntroOffer.badge,
+    },
     features: {
       title: 'What’s included',
       items: [

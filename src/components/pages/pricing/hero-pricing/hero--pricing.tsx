@@ -21,13 +21,19 @@ interface IHeroProps {
     buttonUrl: string;
   };
   bottomContent?: React.ReactNode;
+  notice?: string;
 }
 
-function Hero({ className, plans, logos, cta, bottomContent }: IHeroProps) {
+function Hero({ className, plans, logos, cta, bottomContent, notice }: IHeroProps) {
   return (
     <section className={cn('mt-8', className)}>
       <div className={cn('mx-auto w-full')}>
         <h2 className="sr-only">Pricing plans</h2>
+        {notice ? (
+          <p className="mb-6 text-base leading-snug tracking-tight text-pretty text-foreground">
+            {notice}
+          </p>
+        ) : null}
         {plans.length > 0 && (
           <ul
             className={cn(
