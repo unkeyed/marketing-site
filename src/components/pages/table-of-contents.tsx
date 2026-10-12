@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react
 import { useThrottleCallback } from '@react-hook/throttle';
 
 import { ITableOfContentsItem } from '@/types/common';
+import { contentTop, pageScrollTo, subscribePageScroll } from '@/lib/page-scroll';
 import { cn } from '@/lib/utils';
 
 interface ITableOfContentsProps {
@@ -70,10 +71,10 @@ function useActiveAnchor(items: readonly ITableOfContentsItem[], throttleMs = 10
 
   useEffect(() => {
     calcActive();
-    window.addEventListener('scroll', throttled);
+    const unsubscribe = subscribePageScroll(throttled);
     window.addEventListener('resize', throttled);
     return () => {
-      window.removeEventListener('scroll', throttled);
+      unsubscribe();
       window.removeEventListener('resize', throttled);
     };
   }, [throttled, calcActive]);
@@ -96,10 +97,10 @@ function TableOfContents({ className, title = 'Table of contents', items }: ITab
       }
 
       const topOffset = getAnchorTopOffset();
-      const targetTop = window.scrollY + target.getBoundingClientRect().top - topOffset;
+      const targetTop = contentTop(target) - topOffset;
 
       setActiveAnchor(id);
-      window.scrollTo({
+      pageScrollTo({
         top: Math.max(targetTop, 0),
         behavior: shouldReduceMotion ? 'auto' : 'smooth',
       });

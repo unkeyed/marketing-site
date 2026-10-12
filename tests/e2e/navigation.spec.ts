@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-import { rejectConsentBanner } from './reject-consent-banner';
-
 const APP_URL = 'https://app.unkey.com/';
 const SIGN_UP_URL = 'https://app.unkey.com/auth/sign-up';
 
@@ -37,7 +35,6 @@ test('TC-E2E-002: primary conversion links preserve their destinations', async (
 
 test('TC-E2E-003: responsive navigation exposes resource links', async ({ page }, testInfo) => {
   await page.goto('/');
-  await rejectConsentBanner(page);
 
   const header = page.getByRole('banner');
   const isMobile = testInfo.project.name === 'mobile-chromium';

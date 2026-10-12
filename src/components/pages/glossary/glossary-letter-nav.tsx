@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import type { MouseEvent } from 'react';
 
+import { contentTop, pageScrollTo } from '@/lib/page-scroll';
 import { cn } from '@/lib/utils';
 
 interface IGlossaryLetterNavProps {
@@ -40,9 +41,9 @@ function handleLetterClick(event: MouseEvent<HTMLAnchorElement>, letter: string)
   const stickyControlsHeight = stickyControls?.getBoundingClientRect().height ?? 0;
   const safeGap = 12;
   const topOffset = stickyHeaderOffset + stickyControlsHeight + safeGap;
-  const targetTop = window.scrollY + target.getBoundingClientRect().top - topOffset;
+  const targetTop = contentTop(target) - topOffset;
 
-  window.scrollTo({
+  pageScrollTo({
     top: Math.max(targetTop, 0),
     behavior: shouldReduceMotion ? 'auto' : 'smooth',
   });
@@ -88,7 +89,7 @@ function GlossaryLetterNav({ availableLetters, activeLetter }: IGlossaryLetterNa
     <nav
       ref={navRef}
       aria-label="Glossary letters"
-      className="scrollbar-none -mx-5 w-auto overflow-x-auto px-5 py-1 md:-mx-8 md:px-8 lg:mx-0 lg:min-w-0 lg:flex-1 lg:overflow-visible lg:px-0"
+      className="-mx-5 w-auto scrollbar-none overflow-x-auto px-5 py-1 md:-mx-8 md:px-8 lg:mx-0 lg:min-w-0 lg:flex-1 lg:overflow-visible lg:px-0"
     >
       <ul className="flex min-w-max items-center lg:w-full lg:min-w-0 lg:justify-between xl:justify-start">
         {alphabet.map((letter) => {

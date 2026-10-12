@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
+import { subscribePageScroll } from '@/lib/page-scroll';
 import { cn, isExternalLink } from '@/lib/utils';
 
 import {
@@ -76,11 +77,11 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
     };
 
     window.addEventListener('touchmove', handleTouchScroll, { passive: true });
-    window.addEventListener('scroll', handleTouchScroll, { passive: true });
+    const unsubscribe = subscribePageScroll(handleTouchScroll);
 
     return () => {
       window.removeEventListener('touchmove', handleTouchScroll);
-      window.removeEventListener('scroll', handleTouchScroll);
+      unsubscribe();
     };
   }, [openedByTouch, openDropdown, closeDropdown]);
 

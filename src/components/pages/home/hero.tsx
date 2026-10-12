@@ -32,7 +32,7 @@ export default function Hero({
 }: IHeroProps) {
   return (
     <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
-      <div className="relative h-136 w-full overflow-hidden sm:h-150 md:h-[min(47rem,100svh)] lg:h-[min(51rem,100svh)] xl:h-[min(71rem,100svh)]">
+      <div className="relative h-[max(34rem,calc(100svh-var(--consent-banner-offset,0px)))] w-full overflow-hidden sm:h-[max(37.5rem,calc(100svh-var(--consent-banner-offset,0px)))] md:h-[min(47rem,calc(100svh-var(--consent-banner-offset,0px)))] lg:h-[min(51rem,calc(100svh-var(--consent-banner-offset,0px)))] xl:h-[min(71rem,calc(100svh-var(--consent-banner-offset,0px)))]">
         <Image
           src={poster.src}
           alt=""

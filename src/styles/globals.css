@@ -27,6 +27,7 @@
   /* Custom project variables */
   --sticky-header-height: 3.375rem;
   --footer-safe-area-spacing: 0rem;
+  --consent-banner-offset: 0px;
 }
 
 @theme inline {

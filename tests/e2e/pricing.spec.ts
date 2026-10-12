@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-import { rejectConsentBanner } from './reject-consent-banner';
-
 test('TC-E2E-004: usage calculator updates the monthly estimate', async ({ page }) => {
   await page.goto('/pricing');
 
@@ -17,8 +15,6 @@ test('TC-E2E-004: usage calculator updates the monthly estimate', async ({ page 
 
 test('TC-E2E-005: API management request tier updates its included usage', async ({ page }) => {
   await page.goto('/pricing');
-
-  await rejectConsentBanner(page);
 
   await page.getByRole('tab', { name: 'Api management' }).click();
 

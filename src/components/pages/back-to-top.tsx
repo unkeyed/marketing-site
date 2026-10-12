@@ -5,6 +5,7 @@ import { CircleArrowUp } from 'lucide-react';
 import { AnimatePresence, domAnimation, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 
+import { pageScrollTo, pageScrollTop, subscribePageScroll } from '@/lib/page-scroll';
 import { cn } from '@/lib/utils';
 
 interface IScrollToTopProps {
@@ -18,19 +19,17 @@ function BackToTop({ className, withSeparator = false, label = 'Back to top' }: 
 
   useEffect(() => {
     const handleScroll = () => {
-      setVisible(window.scrollY > window.innerHeight);
+      setVisible(pageScrollTop() > window.innerHeight);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    const unsubscribe = subscribePageScroll(handleScroll);
     handleScroll();
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return unsubscribe;
   }, []);
 
   const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    pageScrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (

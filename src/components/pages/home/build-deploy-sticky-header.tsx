@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { subscribePageScroll } from '@/lib/page-scroll';
 import { cn } from '@/lib/utils';
 import { type IBuildDeployTab } from '@/components/pages/home/build-deploy.types';
 
@@ -70,11 +71,11 @@ export default function BuildDeployStickyHeader({
     };
 
     update();
-    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    const unsubscribe = subscribePageScroll(onScrollOrResize);
     window.addEventListener('resize', onScrollOrResize);
 
     return () => {
-      window.removeEventListener('scroll', onScrollOrResize);
+      unsubscribe();
       window.removeEventListener('resize', onScrollOrResize);
       if (raf) window.cancelAnimationFrame(raf);
     };
@@ -202,7 +203,7 @@ export default function BuildDeployStickyHeader({
 
         <div
           ref={tabsScrollerRef}
-          className="-mx-5 hidden h-[3.75rem] overflow-x-auto border-b border-gray-20 [scrollbar-width:none] md:-mx-8 md:block md:h-16 xl:mx-0 [&::-webkit-scrollbar]:hidden"
+          className="-mx-5 hidden h-[3.75rem] [scrollbar-width:none] overflow-x-auto border-b border-gray-20 md:-mx-8 md:block md:h-16 xl:mx-0 [&::-webkit-scrollbar]:hidden"
         >
           <nav aria-label="Build and deploy steps" className="h-full">
             <ul className="grid h-full min-w-165 grid-cols-5 md:w-full md:min-w-0">

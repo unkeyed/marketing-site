@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { IBlogSearchItem } from '@/types/blog';
+import { contentTop, pageScrollTop, subscribePageScroll } from '@/lib/page-scroll';
 import { cn } from '@/lib/utils';
 import SearchBar from '@/components/ui/search-bar';
 import GlossaryLetterNav from '@/components/pages/glossary/glossary-letter-nav';
@@ -57,11 +58,11 @@ function GlossaryStickyControls({
     }
 
     updateStickyState();
-    window.addEventListener('scroll', updateStickyState, { passive: true });
+    const unsubscribe = subscribePageScroll(updateStickyState);
     window.addEventListener('resize', updateStickyState);
 
     return () => {
-      window.removeEventListener('scroll', updateStickyState);
+      unsubscribe();
       window.removeEventListener('resize', updateStickyState);
     };
   }, []);
@@ -98,12 +99,12 @@ function GlossaryStickyControls({
       const stickyHeaderOffset = getStickyHeaderOffsetInPx();
       const stickyControlsHeight = stickyRef.current?.getBoundingClientRect().height ?? 0;
       const safeGap = 12;
-      const offsetLineY = window.scrollY + stickyHeaderOffset + stickyControlsHeight + safeGap;
+      const offsetLineY = pageScrollTop() + stickyHeaderOffset + stickyControlsHeight + safeGap;
 
       let nextActiveLetter = sections[0].letter;
 
       for (const section of sections) {
-        const sectionTop = window.scrollY + section.element.getBoundingClientRect().top;
+        const sectionTop = contentTop(section.element);
         if (sectionTop <= offsetLineY + 1) {
           nextActiveLetter = section.letter;
           continue;
@@ -126,14 +127,14 @@ function GlossaryStickyControls({
     }
 
     updateActiveLetterByPosition();
-    window.addEventListener('scroll', scheduleUpdateActiveLetterByPosition, { passive: true });
+    const unsubscribe = subscribePageScroll(scheduleUpdateActiveLetterByPosition);
     window.addEventListener('resize', scheduleUpdateActiveLetterByPosition);
 
     return () => {
       if (rafId !== null) {
         window.cancelAnimationFrame(rafId);
       }
-      window.removeEventListener('scroll', scheduleUpdateActiveLetterByPosition);
+      unsubscribe();
       window.removeEventListener('resize', scheduleUpdateActiveLetterByPosition);
     };
   }, [availableLetters]);
