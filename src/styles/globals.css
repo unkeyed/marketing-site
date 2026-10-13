@@ -27,7 +27,14 @@
   /* Custom project variables */
   --sticky-header-height: 3.375rem;
   --footer-safe-area-spacing: 0rem;
-  --consent-banner-offset: 0px;
+  /* Stable from the first paint. The bar overlays this band; the value does not change when it shows or hides. */
+  --consent-banner-clearance: calc(11.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  :root {
+    --consent-banner-clearance: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 @theme inline {

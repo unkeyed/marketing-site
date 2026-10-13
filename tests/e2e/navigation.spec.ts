@@ -35,6 +35,9 @@ test('TC-E2E-002: primary conversion links preserve their destinations', async (
 
 test('TC-E2E-003: responsive navigation exposes resource links', async ({ page }, testInfo) => {
   await page.goto('/');
+  // The bar mounts after hydration. Opening the menu before that lets the mount
+  // close a hover menu that Playwright will not reopen.
+  await page.getByTestId('consent-banner-root').waitFor();
 
   const header = page.getByRole('banner');
   const isMobile = testInfo.project.name === 'mobile-chromium';

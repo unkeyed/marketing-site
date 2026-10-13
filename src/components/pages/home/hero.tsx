@@ -32,7 +32,7 @@ export default function Hero({
 }: IHeroProps) {
   return (
     <section className="relative z-0 -mt-13.5 w-full border-b border-gray-20">
-      <div className="relative h-[max(34rem,calc(100svh-var(--consent-banner-offset,0px)))] w-full overflow-hidden sm:h-[max(37.5rem,calc(100svh-var(--consent-banner-offset,0px)))] md:h-[min(47rem,calc(100svh-var(--consent-banner-offset,0px)))] lg:h-[min(51rem,calc(100svh-var(--consent-banner-offset,0px)))] xl:h-[min(71rem,calc(100svh-var(--consent-banner-offset,0px)))]">
+      <div className="relative h-[max(34rem,100svh)] w-full overflow-hidden sm:h-[max(37.5rem,100svh)] md:h-[min(47rem,100svh)] lg:h-[min(51rem,100svh)] xl:h-[min(71rem,100svh)]">
         <Image
           src={poster.src}
           alt=""
@@ -70,7 +70,7 @@ export default function Hero({
           aria-hidden="true"
         />
 
-        <div className="relative z-10 container flex h-full flex-col justify-end pb-8 md:pb-12 lg:pb-14 xl:pb-16">
+        <div className="relative z-10 container flex h-full flex-col justify-end pb-[max(2rem,var(--consent-banner-clearance))] md:pb-[max(3rem,var(--consent-banner-clearance))] lg:pb-[max(3.5rem,var(--consent-banner-clearance))] xl:pb-[max(4rem,var(--consent-banner-clearance))]">
           <h1 className="max-w-70 font-display text-4xl leading-[1.125] font-normal whitespace-pre-wrap text-white sm:max-w-126 sm:text-5xl md:max-w-120 md:text-[2.625rem] lg:max-w-140 lg:text-[3.25rem] xl:max-w-176 xl:text-[4rem]">
             {title}
           </h1>

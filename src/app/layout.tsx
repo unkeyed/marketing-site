@@ -8,7 +8,6 @@ import { ConsentTheme } from 'c15t/next';
 import { consentTheme } from '@/lib/consent-theme';
 import { ConsentProvider } from '@/components/consent-provider';
 import { ConsentBanner } from '@/components/cookie-banner/consent-banner';
-import { ConsentBannerOffset } from '@/components/cookie-banner/consent-banner-offset';
 import { Tracking } from '@/components/tracking';
 
 const inter = Inter({
@@ -48,12 +47,14 @@ export default function RootLayout({
       >
         <ConsentTheme colorScheme="dark" theme={consentTheme} />
         <ConsentProvider>
-          <div id="page-scroll" className="min-h-0 flex-1 overflow-y-auto">
+          <div
+            id="page-scroll"
+            className="min-h-0 flex-1 overflow-y-auto pb-[var(--consent-banner-clearance)]"
+          >
             {children}
           </div>
           <Tracking />
           <ConsentBanner />
-          <ConsentBannerOffset />
         </ConsentProvider>
       </body>
     </html>
