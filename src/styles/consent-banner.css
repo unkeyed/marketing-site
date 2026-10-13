@@ -1,12 +1,50 @@
 /*
-  Slim full-width bar in normal flow under the scrolling page.
+  Slim full-width bar over the bottom of the viewport.
+  It stays out of flow, so showing or hiding it does not resize the page.
   Unlayered so these rules win over c15t's component layer.
 */
-[data-testid='consent-banner-root'] {
-  position: relative;
-  inset: auto;
-  flex: none;
+.consent-banner-root {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
   width: 100%;
+  pointer-events: none;
+  transform: translateY(0);
+  opacity: 1;
+  animation: consent-bar-in 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  transition:
+    transform 240ms cubic-bezier(0.4, 0, 1, 1),
+    opacity 240ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+.consent-banner-root > * {
+  pointer-events: auto;
+}
+
+.consent-banner-root[data-closing='true'] {
+  animation: none;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes consent-bar-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consent-banner-root {
+    animation: none;
+    transition: none;
+  }
 }
 
 .consent-bar {
