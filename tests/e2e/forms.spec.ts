@@ -88,3 +88,30 @@ test('TC-E2E-008: All Things Open giveaway validates the entry', async ({ page }
   await description.fill('A short note.');
   await expect(page.getByText('13/500', { exact: true })).toBeVisible();
 });
+
+test('TC-E2E-017: All Things Open rules link opens the official rules', async ({ page }) => {
+  await page.goto('/all-things-open');
+
+  const rulesLink = page.getByRole('link', { name: 'official rules', exact: true });
+  await expect(rulesLink).toHaveAttribute('href', '/all-things-open/rules');
+  await rulesLink.click();
+
+  await expect(page).toHaveURL(/\/all-things-open\/rules$/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'All Things Open Giveaway: Official Rules' }),
+  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'privacy policy', exact: true })).toHaveAttribute(
+    'href',
+    '/policies/privacy',
+  );
+  await expect(page.getByRole('link', { name: 'support@unkey.com', exact: true })).toHaveAttribute(
+    'href',
+    'mailto:support@unkey.com',
+  );
+  await expect(
+    page.getByRole('link', { name: 'unkey.com/all-things-open', exact: true }),
+  ).toHaveAttribute('href', '/all-things-open');
+
+  const privacy = await page.request.get('/policies/privacy');
+  expect(privacy.ok()).toBeTruthy();
+});

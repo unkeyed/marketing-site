@@ -44,6 +44,11 @@ const markdownRoutes = [
   { page: '/startups', markdown: '/startups.md', api: '/api/startups' },
   { page: '/yc', markdown: '/yc.md', api: '/api/yc' },
   { page: '/all-things-open', markdown: '/all-things-open.md', api: '/api/all-things-open' },
+  {
+    page: '/all-things-open/rules',
+    markdown: '/all-things-open/rules.md',
+    api: '/api/all-things-open/rules',
+  },
   { page: '/policies/terms', markdown: '/policies/terms.md', api: '/api/policies/terms' },
   { page: '/policies/privacy', markdown: '/policies/privacy.md', api: '/api/policies/privacy' },
 ];

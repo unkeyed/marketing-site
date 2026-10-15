@@ -29,6 +29,11 @@ const criticalRoutes = [
     heading: 'Win a Switch 2 or a NuPhy keyboard',
   },
   {
+    name: 'All Things Open giveaway rules',
+    path: '/all-things-open/rules',
+    heading: 'All Things Open Giveaway: Official Rules',
+  },
+  {
     name: 'blog',
     path: '/blog',
     heading: 'How to ship, protect, and scale modern APIs',

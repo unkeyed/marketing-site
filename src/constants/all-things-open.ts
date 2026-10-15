@@ -22,12 +22,12 @@ export const allThingsOpenContentData = {
     {
       icon: Keyboard,
       title: '5x NuPhy Air75 V3',
-      description: 'Five low-profile keyboards.',
+      description: 'Five NuPhy Air75 V3 keyboards.',
     },
     {
       icon: Keyboard,
       title: '5x NuPhy Kick75',
-      description: 'Five Kick75 keyboards.',
+      description: 'Five NuPhy Kick75 keyboards.',
     },
   ] satisfies IProgramBenefit[],
 };

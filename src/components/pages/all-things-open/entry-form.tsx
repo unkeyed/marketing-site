@@ -224,13 +224,9 @@ export function GiveawayEntryForm() {
 
             <p className="text-sm leading-normal text-muted-foreground">
               By entering, you agree to the{' '}
-              {/* TODO: James has not written the official rules yet. Replace href="#" with the rules URL. */}
               <a
-                href="#"
+                href="/all-things-open/rules"
                 className="text-foreground underline decoration-gray-40 decoration-dashed decoration-[1px] underline-offset-[0.26em] transition-colors duration-300 hover:decoration-gray-70"
-                onClick={(event) => {
-                  event.preventDefault();
-                }}
               >
                 official rules
               </a>
