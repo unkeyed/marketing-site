@@ -55,6 +55,12 @@ Credits and support for startups and current YC batch companies.
 - [Startups Program (Markdown)](https://www.unkey.com/startups.md) · [HTML](https://www.unkey.com/startups)
 - [Y Combinator Program (Markdown)](https://www.unkey.com/yc.md) · [HTML](https://www.unkey.com/yc)
 
+## Giveaway
+
+All Things Open giveaway. Deploy a project to Unkey Compute, then submit it.
+
+- [All Things Open giveaway (Markdown)](https://www.unkey.com/all-things-open.md) · [HTML](https://www.unkey.com/all-things-open)
+
 ## Blog
 
 Articles on API development, security, observability, and product updates. The index enumerates every post; append `.md` to any post URL to receive the raw markdown source.

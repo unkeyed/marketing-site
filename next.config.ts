@@ -43,6 +43,7 @@ const markdownRoutes = [
   { page: '/about', markdown: '/about.md', api: '/api/about' },
   { page: '/startups', markdown: '/startups.md', api: '/api/startups' },
   { page: '/yc', markdown: '/yc.md', api: '/api/yc' },
+  { page: '/all-things-open', markdown: '/all-things-open.md', api: '/api/all-things-open' },
   { page: '/policies/terms', markdown: '/policies/terms.md', api: '/api/policies/terms' },
   { page: '/policies/privacy', markdown: '/policies/privacy.md', api: '/api/policies/privacy' },
 ];

@@ -24,6 +24,11 @@ const criticalRoutes = [
     heading: '$1,000 in credits every month for current YC batch',
   },
   {
+    name: 'All Things Open giveaway',
+    path: '/all-things-open',
+    heading: 'Win a Switch 2 or a NuPhy keyboard',
+  },
+  {
     name: 'blog',
     path: '/blog',
     heading: 'How to ship, protect, and scale modern APIs',
