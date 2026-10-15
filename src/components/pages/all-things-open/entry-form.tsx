@@ -98,7 +98,7 @@ export function GiveawayEntryForm() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-8 flex flex-col gap-y-7"
+            className="mt-8 flex flex-col gap-y-10"
             noValidate
           >
             <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
