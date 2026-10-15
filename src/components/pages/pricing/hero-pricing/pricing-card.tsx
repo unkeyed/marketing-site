@@ -169,6 +169,9 @@ function PricingCard({
             {priceType === 'number' && !plan.introOffer && (
               <PriceNumber
                 className="font-display text-5xl leading-[1.25] font-[500] tracking-tight [font-variation-settings:'wght'_500] part-[suffix]:font-sans part-[suffix]:text-2xl part-[suffix]:font-normal part-[suffix]:[font-variation-settings:'wght'_400]"
+                // number-flow's shadow :host sets line-height: 1, which beats the
+                // utility when this price is server-rendered in the hidden tab.
+                style={{ lineHeight: 1.25 }}
                 value={price}
                 currency={currency}
                 suffix={` ${period}`}
