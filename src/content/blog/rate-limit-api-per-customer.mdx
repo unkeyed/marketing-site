@@ -1,12 +1,13 @@
 ---
 date: 2026-10-13
 title: 'How to rate limit an API per customer or per API key'
-description: "How to give each customer one shared rate limit across all their API keys, with exceptions per key."
+description: 'How to give each customer one shared rate limit across all their API keys, with exceptions per key.'
 image: '/images/blog-images/rate-limit-api-per-customer/shared-budget-429.png'
 author: james
 isDraft: true
 tags: ['tutorials']
 ---
+
 :::note EDITOR NOTE
 
 EDITOR NOTE (remove before publishing): rewrite of /blog/introducing-ratelimiting. Either publish at that URL with the updated date, or publish at /blog/rate-limit-api-per-customer and 301 the old URL. Add links to this post from /blog/ratelimiting-public, /blog/ratelimiting-otp and /blog/ratelimit-trpc-routes. See VERIFICATION.md for what ran and what is UNVERIFIED.
@@ -21,19 +22,19 @@ What fixes it is deciding what you count. A limit per customer and a limit per k
 
 A **key limit** counts each API key separately. If a customer has three keys and each one is allowed 100 requests per minute, that customer can send 300 requests a minute in total. That's what you want when a key does its own job, like a partner integration that syncs data in bulk.
 
-A **customer limit** counts every key the customer holds toward the same number. With three keys and a limit of 100 requests per minute, all three keys share those requests. In Unkey the customer is called an *identity*. You create it with your own ID for that customer in `externalId` (your Stripe customer ID works well), attach the limit to it, and every key you create with the same `externalId` counts against it.
+A **customer limit** counts every key the customer holds toward the same number. With three keys and a limit of 100 requests per minute, all three keys share those requests. In Unkey the customer is called an _identity_. You create it with your own ID for that customer in `externalId` (your Stripe customer ID works well), attach the limit to it, and every key you create with the same `externalId` counts against it.
 
 You can use both at once. When a key and its identity each have a limit with the same name, the key's own limit applies to that key. That lets everyone at Acme share 1,000 requests a minute while the partner sync key gets 5,000 of its own.
 
 ## Which algorithm to use
 
-| Algorithm | How it counts | Trade-off |
-|---|---|---|
-| Fixed window | Counter per clock window, reset at the boundary | Simple, but allows up to twice the limit across a boundary |
-| Sliding window | Weighs the previous window into the current count | Smooths the boundary burst, still cheap to store |
-| Token bucket | Tokens refill at a steady rate, each request spends one | Allows controlled bursts, needs refill state per caller |
+| Algorithm      | How it counts                                           | Trade-off                                                  |
+| -------------- | ------------------------------------------------------- | ---------------------------------------------------------- |
+| Fixed window   | Counter per clock window, reset at the boundary         | Simple, but allows up to twice the limit across a boundary |
+| Sliding window | Weighs the previous window into the current count       | Smooths the boundary burst, still cheap to store           |
+| Token bucket   | Tokens refill at a steady rate, each request spends one | Allows controlled bursts, needs refill state per caller    |
 
-Unkey uses a sliding window for key and identity limits. The rate limit policy on the Compute gateway, covered near the end, counts over a fixed window instead. We keep counters in several regions, and [How rate limiting works](https://www.unkey.com/docs/api-management/ratelimiting/how-it-works) explains how. In practice the counts are a close estimate rather than an exact number, and they get more accurate across regions when the window is a minute or longer. If you need an exact monthly total, put credits on the key, because credits are counted exactly.
+Unkey uses a sliding window for key and identity limits. The rate limit policy on the Compute gateway, covered near the end, counts over a fixed window instead. We keep counters in several regions, and [How rate limiting works](https://www.unkey.com/docs/api-management/ratelimiting/how-it-works) explains how. In practice `remaining` is a close estimate. When one region sees most of an identifier's traffic, enforcement is tight. When traffic is split across regions, a short burst can get through in more than one region before the counts catch up. If you need an exact total, put credits on the key, because credits are counted exactly.
 
 You don't need to run Redis for any of this, since we keep the counters for you.
 
@@ -55,7 +56,7 @@ curl -X POST https://api.unkey.com/v2/apis.createApi \
 ```
 
 ```json
-{"data":{"apiId":"api_KDmiuuyC4"},"meta":{"requestId":"req_dVhtr8WrC"}}
+{ "data": { "apiId": "api_KDmiuuyC4" }, "meta": { "requestId": "req_dVhtr8WrC" } }
 ```
 
 Save the `apiId` from the response as `UNKEY_API_ID`.
@@ -78,7 +79,7 @@ curl -X POST https://api.unkey.com/v2/identities.createIdentity \
 ```
 
 ```json
-{"data":{"identityId":"id_nLpkSl2sI"},"meta":{"requestId":"req_HBYqv6Nsx"}}
+{ "data": { "identityId": "id_nLpkSl2sI" }, "meta": { "requestId": "req_HBYqv6Nsx" } }
 ```
 
 `duration` is the length of the window in milliseconds. With `autoApply: true`, every verification of every key this customer owns checks the limit, and your code never has to mention it by name. You have to send `autoApply`, because the API returns a 400 if it's missing.
@@ -95,22 +96,22 @@ Install the SDK with `npm install @unkey/api` and create one client you can impo
 
 ```ts
 // unkey.ts
-import { Unkey } from "@unkey/api";
+import { Unkey } from '@unkey/api';
 
-export const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY ?? "" });
+export const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY ?? '' });
 ```
 
 Any key you create with the same `externalId` is linked to that identity. In this example the customer gets one key for production and one for staging.
 
 ```ts
 // create-keys.ts
-import { unkey } from "./unkey";
+import { unkey } from './unkey';
 
-for (const name of ["production", "staging"]) {
+for (const name of ['production', 'staging']) {
   const created = await unkey.keys.createKey({
-    apiId: process.env.UNKEY_API_ID ?? "",
-    prefix: "sk_live",
-    externalId: "cus_acme",
+    apiId: process.env.UNKEY_API_ID ?? '',
+    prefix: 'sk_live',
+    externalId: 'cus_acme',
     name,
   });
   // created.data.key is shown once. Hand it to the customer, store only the keyId.
@@ -129,35 +130,36 @@ Your handler calls `keys.verifyKey` on every request. That single call checks th
 
 ```ts
 // server.ts
-import { serve } from "@hono/node-server";
-import { unkey } from "./unkey";
+import { serve } from '@hono/node-server';
+
+import { unkey } from './unkey';
 
 export async function handler(request: Request): Promise<Response> {
-  const header = request.headers.get("authorization") ?? "";
-  const key = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : header;
-  if (!key) return new Response("Missing API key", { status: 401 });
+  const header = request.headers.get('authorization') ?? '';
+  const key = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : header;
+  if (!key) return new Response('Missing API key', { status: 401 });
 
   const { data } = await unkey.keys.verifyKey({ key });
 
   // Report the shared "requests" budget on every response, allowed or not.
   const headers = new Headers();
-  const rl = data.ratelimits?.find((r) => r.name === "requests");
+  const rl = data.ratelimits?.find((r) => r.name === 'requests');
   if (rl) {
-    headers.set("X-RateLimit-Limit", String(rl.limit));
-    headers.set("X-RateLimit-Remaining", String(rl.remaining));
-    headers.set("X-RateLimit-Reset", String(Math.ceil(rl.reset / 1000))); // Unix seconds
+    headers.set('X-RateLimit-Limit', String(rl.limit));
+    headers.set('X-RateLimit-Remaining', String(rl.remaining));
+    headers.set('X-RateLimit-Reset', String(Math.ceil(rl.reset / 1000))); // Unix seconds
   }
 
-  if (data.code === "RATE_LIMITED") {
+  if (data.code === 'RATE_LIMITED') {
     const resetMs = data.ratelimits?.find((r) => r.exceeded)?.reset ?? Date.now();
-    headers.set("Retry-After", String(Math.max(1, Math.ceil((resetMs - Date.now()) / 1000))));
-    return new Response("Too many requests\n", { status: 429, headers });
+    headers.set('Retry-After', String(Math.max(1, Math.ceil((resetMs - Date.now()) / 1000))));
+    return new Response('Too many requests\n', { status: 429, headers });
   }
-  if (data.code === "USAGE_EXCEEDED") {
-    return new Response("Monthly quota exceeded\n", { status: 429, headers });
+  if (data.code === 'USAGE_EXCEEDED') {
+    return new Response('Monthly quota exceeded\n', { status: 429, headers });
   }
   if (!data.valid) {
-    return new Response("Unauthorized\n", { status: 401, headers });
+    return new Response('Unauthorized\n', { status: 401, headers });
   }
 
   return new Response(`hello ${data.identity?.externalId}\n`, { headers });
@@ -166,7 +168,7 @@ export async function handler(request: Request): Promise<Response> {
 serve({ fetch: handler, port: 8787 });
 ```
 
-`reset` comes back in Unix milliseconds. The handler turns it into seconds for `X-RateLimit-Reset` so it matches what the Compute gateway sends. `Retry-After` is in whole seconds and never lower than 1, which is what RFC 6585 expects. `USAGE_EXCEEDED` is a different check from the rate limit. It means the customer has used up their monthly quota of credits.
+`reset` comes back in Unix milliseconds. The handler turns it into seconds for `X-RateLimit-Reset` so it matches what the Compute gateway sends. `Retry-After` here is whole seconds and never lower than 1. RFC 6585 defines the 429 status and that header. `USAGE_EXCEEDED` is a different check from the rate limit. It means the customer has used up their monthly quota of credits.
 
 We tested this with both of Acme's keys. The production key made 60 requests and the staging key made 40. The next request from the staging key was rejected, even though that key had only been used 40 times, because every key Acme holds counts toward the same limit.
 
@@ -195,13 +197,33 @@ curl -X POST https://api.unkey.com/v2/identities.updateIdentity \
 The `identity` field accepts either your `externalId` or Unkey's `identityId`. The response shows the identity as it is after the change.
 
 ```json
-{"data":{"externalId":"blog-draft-cus_acme","id":"id_nLpkSl2sI","meta":{"plan":"pro"},
- "ratelimits":[{"autoApply":true,"duration":60000,"id":"rl_LfQHGHlLy","limit":1000,"name":"requests"},
-               {"autoApply":false,"duration":3600000,"id":"rl_SL54UjdTK","limit":5,"name":"exports"}]},
- "meta":{"requestId":"req_H2oVBQWJn"}}
+{
+  "data": {
+    "externalId": "blog-draft-cus_acme",
+    "id": "id_nLpkSl2sI",
+    "meta": { "plan": "pro" },
+    "ratelimits": [
+      {
+        "autoApply": true,
+        "duration": 60000,
+        "id": "rl_LfQHGHlLy",
+        "limit": 1000,
+        "name": "requests"
+      },
+      {
+        "autoApply": false,
+        "duration": 3600000,
+        "id": "rl_SL54UjdTK",
+        "limit": 5,
+        "name": "exports"
+      }
+    ]
+  },
+  "meta": { "requestId": "req_H2oVBQWJn" }
+}
 ```
 
-You don't touch the handler and you don't deploy anything. Every key Acme holds picks up the new numbers on its own. The docs say that takes about 10 seconds, and in our test verifications showed the new 1,000 limit within a couple of seconds. One verification did catch us out. It named the brand new `exports` limit right after the update and got a 412 from a node that hadn't seen the change yet. If a change adds a limit that your code will ask for by name, update the identity first and ship the code that uses it afterwards.
+You don't touch the handler and you don't deploy anything. Every key Acme holds picks up the new numbers on its own. The API docs say a rate limit change can take up to 30 seconds to reach every region. In our test, verifications showed the new 1,000 limit within a couple of seconds. One verification did catch us out. It named the brand new `exports` limit right after the update and got a 412 from a node that hadn't seen the change yet. If a change adds a limit that your code will ask for by name, update the identity first and ship the code that uses it afterwards.
 
 If you call this from your billing webhook when a subscription is created, updated or cancelled, nobody on your team has to change plan limits by hand again.
 
@@ -254,11 +276,11 @@ Sign-up, login and password reset happen before anyone has an API key. For those
 
 ```ts
 // ip-limit.ts
-import { unkey } from "./unkey";
+import { unkey } from './unkey';
 
 export async function limitByIp(ip: string): Promise<Response | null> {
   const { data } = await unkey.ratelimit.limit({
-    namespace: "signup",
+    namespace: 'signup',
     identifier: ip,
     limit: 5,
     duration: 60_000,
@@ -266,7 +288,10 @@ export async function limitByIp(ip: string): Promise<Response | null> {
   if (data.success) return null; // under the limit, carry on
 
   const retryAfter = Math.max(1, Math.ceil((data.reset - Date.now()) / 1000));
-  return new Response("Too many requests", { status: 429, headers: { "Retry-After": String(retryAfter) } });
+  return new Response('Too many requests', {
+    status: 429,
+    headers: { 'Retry-After': String(retryAfter) },
+  });
 }
 ```
 
@@ -292,9 +317,9 @@ curl -X POST https://api.unkey.com/v2/ratelimit.setOverride \
   -d '{ "namespace": "api.requests", "identifier": "cus_acme", "limit": 1000, "duration": 60000 }'
 ```
 
-The code still sends `limit: 100`, but `cus_acme` now gets 1,000, and the response includes the override so you can tell it applied.
+The code still sends `limit: 100`, but `cus_acme` now gets 1,000, and the response includes the override so you can tell it applied. The screenshot is the test namespace `blog-draft.api.requests` and the identifier `blog-draft-cus_acme`. The samples above use `api.requests` and `cus_acme`.
 
-![ratelimit.limit returns limit 1000 and an overrideId for the overridden identifier, and limit 100 for another identifier.](/images/blog-images/rate-limit-api-per-customer/override.png)
+![ratelimit.limit returns limit 1000 and an overrideId for the overridden identifier, and limit 100 for another identifier in the same call.](/images/blog-images/rate-limit-api-per-customer/override.png)
 
 Sometimes one action has to pass several limits, for example one per user and one per organization. `ratelimit.multiLimit` checks up to 100 of them in a single call and only counts them if every one passes.
 
@@ -353,13 +378,15 @@ A few notes on how the gateway relates to the earlier steps.
 - The gateway sends `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (in Unix seconds) on its responses, plus `Retry-After` on a 429.
 - If rate limiting itself fails at the gateway, the request gets a 500 instead of going through (UNVERIFIED, from the docs). That's fail-closed, the opposite of `keys.verifyKey`. Pick the path whose failure mode you can live with.
 
-![The Policies page for a Compute app with the Key Auth policy first and the Rate Limit policy second](/images/blog-images/rate-limit-api-per-customer/deploy-policies.png)
+![The Policies page on the test Compute app, with Require a key (Key Auth) first and 5 per minute per caller (Rate Limit) second, both on Production and off for Preview](/images/blog-images/rate-limit-api-per-customer/deploy-policies.png)
+
+_The sample above uses 100 per minute. This test app used 5 per minute so the 429 was easy to hit._
 
 This is the sixth request in one minute against our test app, which had a limit of 5 per minute.
 
 ```
 $ curl -i -H "Authorization: Bearer $DEMO_KEY" https://blog-draft-deploy-api-grok-bot.unkey.app/v1/hello
-HTTP/2 429 
+HTTP/2 429
 content-type: application/json
 date: Tue, 13 Oct 2026 22:02:04 GMT
 retry-after: 56
@@ -400,13 +427,18 @@ Clients should wait for the number of seconds in `Retry-After`. A well-behaved c
 
 ```ts
 // client.ts
-export async function fetchWithRetry(url: string, init: RequestInit = {}, maxRetries = 3): Promise<Response> {
+export async function fetchWithRetry(
+  url: string,
+  init: RequestInit = {},
+  maxRetries = 3,
+): Promise<Response> {
   for (let attempt = 0; ; attempt++) {
     const res = await fetch(url, init);
     if (res.status !== 429 || attempt >= maxRetries) return res;
 
-    const retryAfter = Number(res.headers.get("Retry-After"));
-    const baseMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 2 ** attempt * 1000;
+    const retryAfter = Number(res.headers.get('Retry-After'));
+    const baseMs =
+      Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 2 ** attempt * 1000;
     const jitterMs = Math.random() * 250; // spread out clients that were limited together
     await new Promise((resolve) => setTimeout(resolve, baseMs + jitterMs));
   }
@@ -425,21 +457,22 @@ Every verification and every `ratelimit.limit` call ends up in analytics, and th
 
 :::note UNVERIFIED
 
-UNVERIFIED: dashboard navigation labels below; confirm against the live dashboard when capturing screenshots
+UNVERIFIED: a keyspace Logs page, and a Ratelimit index that lists every namespace with its traffic. The screenshots below are the identity request list and one namespace's Overrides page.
 
 :::
 
-- A keyspace's **Logs** and analytics show the outcome of each verification per key, including `RATE_LIMITED`.
-- Each identity has a page with its limits and the keys linked to it.
-- **Ratelimit** lists every namespace with its traffic and overrides.
+- The identity page lists each request as Valid or Ratelimited, with the key id and the region.
+- **Edit ratelimit** on that identity holds the named limits. The screenshot we had cut off the `requests` limit, refill interval, and Auto Apply checkbox, so it is not included.
+- Filtering **Outcome is RATE_LIMITED** leaves the rejected requests.
+- A namespace's **Overrides** page lists identifiers that have a different limit.
 
-![The identity page for blog-draft-cus_acme showing its requests and the keys that made them](/images/blog-images/rate-limit-api-per-customer/rl-identity.png)
+![The identity page for blog-draft-cus_acme listing requests, with Valid and Ratelimited rows and the key id on each row](/images/blog-images/rate-limit-api-per-customer/rl-identity.png)
 
-![The Edit ratelimit dialog for the identity with the exports and requests limits](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit.png)
+{/* RETAKE: rl-identity-ratelimit.png: Edit ratelimit dialog for identity blog-draft-cus_acme (id_nLpkSl2sI) with both limits fully visible. Dashboard: Identities > blog-draft-cus_acme > Edit ratelimit. Must show exports at limit 5, refill 1 hour, Auto Apply off, and requests at limit 1000, refill 1 minute, Auto Apply on. */}
 
-![Identity requests filtered to the RATE_LIMITED outcome](/images/blog-images/rate-limit-api-per-customer/rl-ratelimited-logs.png)
+![Identity requests for blog-draft-cus_acme filtered to Outcome is RATE_LIMITED](/images/blog-images/rate-limit-api-per-customer/rl-ratelimited-logs.png)
 
-![The overrides page for the blog-draft.api.requests namespace with one override for blog-draft-cus_acme](/images/blog-images/rate-limit-api-per-customer/rl-namespace-override.png)
+![The Overrides page for namespace blog-draft.api.requests with one override for blog-draft-cus_acme at 1K per 1 minute](/images/blog-images/rate-limit-api-per-customer/rl-namespace-override.png)
 
 Pick your limits from this data rather than from a table in a blog post. Look at what your paying customers actually send at their busiest, set the default plan limit comfortably above that, and then watch who runs into it. A customer who gets rate limited every day is either abusing the free tier or ready for a bigger plan, and you want to talk to them in both cases.
 
