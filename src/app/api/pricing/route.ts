@@ -1,5 +1,6 @@
 import {
   apiManagementPricingPlans,
+  computeIntroOffer,
   deployPricingPlans,
   enterpriseData,
   tableFeatures,
@@ -38,6 +39,17 @@ function findPlanValue(featureName: string, planId: string): string {
     if (cell) return formatCell(cell.value);
   }
   return '—';
+}
+
+function buildComputeIntroOffer(): string {
+  const lines = deployPricingPlans.flatMap((plan) => {
+    if (!plan.introOffer || plan.priceType !== 'number') return [];
+    return [
+      `- **${plan.name}** — ${formatUsd(plan.introOffer.firstMonthPrice)} then ${formatUsd(plan.monthlyPrice)}/mo`,
+    ];
+  });
+
+  return [`### ${computeIntroOffer.badge}`, '', computeIntroOffer.notice, '', ...lines].join('\n');
 }
 
 function buildDeployPlansTable(): string {
@@ -174,6 +186,8 @@ function buildBody(): string {
     '## Unkey Deploy',
     '',
     'Deploy your code as containers across AWS regions. Deploy is a paid product — start on Starter at $5/mo. All plans include monthly usage credits that offset usage-based charges; beyond the included credits, you pay for average actual vCPU seconds and memory GB-seconds (not the ceilings you configured), allocated disk GB-seconds, egress GB, and active keys. Unused credits do not roll over.',
+    '',
+    buildComputeIntroOffer(),
     '',
     '### Plans',
     '',
