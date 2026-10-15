@@ -49,8 +49,6 @@ curl -X POST https://api.unkey.com/v2/apis.createApi \
 
 Hold on to the `apiId`, because you need it every time you create a key.
 
-![The blog-draft-keyauth keyspace overview with request counts and its keys](/images/blog-images/api-key-authentication/auth-keyspace-overview.png)
-
 ## Step 2: Issue a key when a customer signs up
 
 Start by installing the SDKs.
@@ -97,11 +95,16 @@ A quick note on each field in that call.
 
 The plaintext key is in `created.data.key`, and you only get to see it this once. According to the docs, "Unkey keeps only a hash, plus an encrypted copy if you asked for a recoverable key." DIY guides spend most of their length on hashing, the storage schema and constant-time comparison, and you don't have to write any of that. Show the key to the user, store the `keyId`, and keep the response out of your logs.
 
-![The Create key dialog on the General Setup step with prefix, external ID and bytes](/images/blog-images/api-key-authentication/auth-create-key-dialog.png)
+![The Create key dialog on General Setup, with prefix blog, external ID empty, and bytes set to 16](/images/blog-images/api-key-authentication/auth-create-key-dialog.png)
 
-![The Ratelimit step of the Create key dialog with limit and refill interval](/images/blog-images/api-key-authentication/auth-create-key-dialog-ratelimit.png)
+_The API example above uses prefix `sk_live` and `externalId` `user_123`. This screenshot is the empty form with prefix `blog`._
 
-![The Metadata step of the Create key dialog with a JSON editor](/images/blog-images/api-key-authentication/auth-create-key-dialog-metadata.png)
+{/* RETAKE: auth-create-key-dialog-ratelimit.png: Create key dialog, Ratelimit step, on keyspace blog-draft-keyauth. Dashboard: Keyspaces > blog-draft-keyauth > Create key > Ratelimit. Must show the Ratelimit toggle on, name requests, limit 5, refill interval 1 minute, and Auto Apply checked. */}
+
+![The Metadata step of the Create key dialog, with a JSON editor containing a user id, role admin, and a permissions array](/images/blog-images/api-key-authentication/auth-create-key-dialog-metadata.png)
+
+_The JSON in this screenshot is a sample user object. The `createKey` call above sends `meta: { plan: "free" }`._
+
 ![The Key Created dialog showing the masked key secret with a copy button](/images/blog-images/api-key-authentication/auth-copy-key.png)
 
 ## Step 3: Check the key on every request
@@ -175,9 +178,9 @@ That code has a few spots that are easy to get wrong.
 
 **Always set `handleInvalidKey`.** The middleware only stops a request by itself when the key is *missing*. When a key fails verification, it calls `handleInvalidKey` if you gave it one. If you didn't, it stores the failed result and calls `next()`. We ran the middleware without it and sent a made-up key.
 
-![Without handleInvalidKey, a request with an unknown key gets 200 and the route's data, with valid false in context](/images/blog-images/api-key-authentication/04-hono-without-handleinvalidkey.png)
+![Without handleInvalidKey, an unknown key gets HTTP 200 and a body of items secret with valid false](/images/blog-images/api-key-authentication/04-hono-without-handleinvalidkey.png)
 
-The route ran and handed back its data while `valid: false` sat in context. You need to either set `handleInvalidKey` or check `c.get("unkey").data.valid` in every handler.
+That run used a small route on port 3002 that printed the check. The response was HTTP 200 and `{"items":["secret"],"valid":false}`. The handler printed above returns `items: []` and does not echo `valid`. You need to either set `handleInvalidKey` or check `c.get("unkey").data.valid` in every handler.
 
 **`onError` doesn't catch everything.** According to the Hono guide, it only runs for unexpected responses. A rejected root key, throttling, a 500 or a network failure gets thrown instead, which is why the code above also has `app.onError`. Decide now whether an Unkey outage should fail closed with a 503, the way this code does, or fail open.
 
@@ -307,7 +310,9 @@ curl -X POST https://api.unkey.com/v2/keys.rerollKey \
 
 As with `createKey`, you only see the new key once. It came with the old key's identity, metadata, permissions and rate limit, and our first request with it returned `"owner":"user_123","plan":"free"` with 4 of 5 requests remaining. The old key kept working too, and `keys.getKey` showed its `expires` had moved to 24 hours later, rounded to the minute.
 
-![Disabling one key, then rerolling another: the old key keeps working and now expires 24 hours later](/images/blog-images/api-key-authentication/06-disable-and-reroll.png)
+![Disable returns 401 DISABLED, then a reroll: the old key is rate limited and its expires moves to about 24 hours later, and the new key returns 200 with remaining 4](/images/blog-images/api-key-authentication/06-disable-and-reroll.png)
+
+_The 429 lines are the old key already at its limit. The new key's first 200 shows 4 of 5 remaining. `keys.getKey` on the old key shows `expires` about 24 hours later, rounded to the minute._
 
 The [rerolling docs](https://unkey.com/docs/api-management/keys/rerolling-keys) also cover a few edge cases worth knowing.
 
@@ -316,7 +321,7 @@ The [rerolling docs](https://unkey.com/docs/api-management/keys/rerolling-keys) 
 - The grace period applies even when the old key was due to expire sooner, so a reroll can make a key live longer.
 - Analytics by `keyId` start from zero for the new key, while analytics by identity carry on.
 
-In the dashboard, you'll find this as **Rotate key** in the key's actions menu, with grace periods from "revoke immediately" up to 24 hours.
+In the dashboard, this is **Rotate key** in the key's actions menu. The grace period menu is revoke immediately, 15 minutes, 1 hour, 6 hours, 24 hours, or Do not expire original key. The dialog in the screenshot is a different key, `blog-draft-throwaway`, with 24 hours selected.
 
 ![The Rotate key dialog with the grace period dropdown open and 24 hours selected](/images/blog-images/api-key-authentication/auth-rotate-dialog.png)
 
@@ -342,6 +347,16 @@ Once it's deleted, verification returns `NOT_FOUND`. `deleteKey` also takes an o
 
 **During an incident**, don't promise anyone an instant cutoff. According to the docs, a change to a key (disable, delete, new expiry, new permissions) "takes about 10 seconds to reach verification, and a few verifications just after that can still see the old state." We saw that happen. Right after the delete, one direct verification still reported the key as `DISABLED` before it switched to `NOT_FOUND`. Plan your runbook around a little more than 10 seconds.
 
+## Where the keys show up in the dashboard
+
+The keyspace page after these steps lists each key with valid and invalid counts. In this run the invalid reasons on the keys were insufficient permissions, rate limited, and disabled.
+
+![The blog-draft-keyauth keyspace Requests page with five keys and valid and invalid counts](/images/blog-images/api-key-authentication/auth-keyspace-overview.png)
+
+A single key's page lists each verification as Valid or Ratelimited. This one is `key_auD1h0pde`, the key that was rerolled above.
+
+![The key page for key_auD1h0pde with Valid and Ratelimited rows](/images/blog-images/api-key-authentication/auth-key-verifications.png)
+
 ## Let customers manage their own keys
 
 The last item on the list is a page where customers manage their own keys. We have a hosted developer portal for this. You create a short-lived session for a signed-in user and redirect them to it. The SDK's types say scopes decide what the user sees, with `keys:read` and `keys:reroll` for the keys tab and `analytics:read` for their own usage. A user only ever sees their own keys and verifications.
@@ -357,8 +372,6 @@ curl -X POST https://api.unkey.com/v2/portal.createSession \
 # data.url is where you redirect the user; its exchange code is single-use and valid for 15 minutes
 ```
 
-
-![A key detail page showing verifications over time with Valid and Ratelimited outcomes](/images/blog-images/api-key-authentication/auth-key-verifications.png)
 
 ## Document it in your OpenAPI spec
 
