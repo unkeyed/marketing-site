@@ -46,6 +46,7 @@ function PriceNumber({
   animated = true,
   format,
   locales,
+  style,
   ...props
 }: PriceNumberProps) {
   return (
@@ -53,7 +54,7 @@ function PriceNumber({
       willChange
       value={value}
       className={cn('text-foreground part-[suffix]:text-muted-foreground', className)}
-      style={noMaskStyle}
+      style={{ ...noMaskStyle, ...style }}
       locales={locales ?? priceNumberFormat.locales}
       format={
         format ?? {
