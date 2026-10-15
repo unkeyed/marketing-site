@@ -1,4 +1,21 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+import { GIVEAWAY_NOW_COOKIE } from '../../src/lib/giveaway-window';
+
+const GIVEAWAY_BEFORE = '2026-10-18T15:00:00.000Z';
+const GIVEAWAY_OPEN = '2026-10-21T16:00:00.000Z';
+const GIVEAWAY_CLOSED = '2026-10-24T04:00:00.000Z';
+
+async function setGiveawayClock(page: Page, iso: string) {
+  await page.context().addCookies([
+    {
+      name: GIVEAWAY_NOW_COOKIE,
+      value: iso,
+      domain: '127.0.0.1',
+      path: '/',
+    },
+  ]);
+}
 
 const applicationForms = [
   {
@@ -50,6 +67,7 @@ for (const application of applicationForms) {
 }
 
 test('TC-E2E-008: All Things Open giveaway validates the entry', async ({ page }) => {
+  await setGiveawayClock(page, GIVEAWAY_OPEN);
   await page.goto('/all-things-open');
 
   await page.getByRole('button', { name: 'Submit', exact: true }).click();
@@ -90,6 +108,7 @@ test('TC-E2E-008: All Things Open giveaway validates the entry', async ({ page }
 });
 
 test('TC-E2E-017: All Things Open rules link opens the official rules', async ({ page }) => {
+  await setGiveawayClock(page, GIVEAWAY_OPEN);
   await page.goto('/all-things-open');
 
   const rulesLink = page.getByRole('link', { name: 'official rules', exact: true });
@@ -114,4 +133,42 @@ test('TC-E2E-017: All Things Open rules link opens the official rules', async ({
 
   const privacy = await page.request.get('/policies/privacy');
   expect(privacy.ok()).toBeTruthy();
+});
+
+test('TC-E2E-018: giveaway entry window shows before, open, and closed', async ({ page }) => {
+  await setGiveawayClock(page, GIVEAWAY_BEFORE);
+  await page.goto('/all-things-open');
+  await expect(page.getByText('Entries open Oct 19 at 12:00am ET.', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Submit', exact: true })).toHaveCount(0);
+  const beforePost = await page.request.post('/api/all-things-open', { data: {} });
+  expect(beforePost.status()).toBe(403);
+  await expect(beforePost.json()).resolves.toMatchObject({
+    status: 'error',
+    errors: ['Entries open Oct 19 at 12:00am ET.'],
+  });
+
+  await setGiveawayClock(page, GIVEAWAY_OPEN);
+  await page.goto('/all-things-open');
+  await expect(page.getByRole('button', { name: 'Submit', exact: true })).toBeVisible();
+  await expect(
+    page.getByText(
+      'Entries open Monday, October 19, 2026 at 12:00am ET and close Friday, October 23, 2026 at 11:59pm ET.',
+    ),
+  ).toBeVisible();
+  const openPost = await page.request.post('/api/all-things-open', { data: {} });
+  expect(openPost.status()).toBe(400);
+  const openBody = (await openPost.json()) as { errors?: string[] };
+  expect(openBody.errors?.join(' ')).not.toContain('Entries closed');
+  expect(openBody.errors?.join(' ')).not.toContain('Entries open Oct 19');
+
+  await setGiveawayClock(page, GIVEAWAY_CLOSED);
+  await page.goto('/all-things-open');
+  await expect(page.getByText('Entries closed', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Submit', exact: true })).toHaveCount(0);
+  const closedPost = await page.request.post('/api/all-things-open', { data: {} });
+  expect(closedPost.status()).toBe(403);
+  await expect(closedPost.json()).resolves.toMatchObject({
+    status: 'error',
+    errors: ['Entries closed'],
+  });
 });

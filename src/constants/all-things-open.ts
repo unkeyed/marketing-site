@@ -1,6 +1,7 @@
 import { createElement, Fragment } from 'react';
 import { Gamepad2, Keyboard } from 'lucide-react';
 
+import { GIVEAWAY_WINDOW_COPY } from '@/lib/giveaway-window';
 import type { IProgramBenefit } from '@/components/pages/program/program-section';
 
 export const allThingsOpenContentData = {
@@ -12,7 +13,7 @@ export const allThingsOpenContentData = {
     createElement('mark', null, 'Switch 2'),
     '\nor a NuPhy keyboard',
   ),
-  description: 'Deploy a project to Unkey Compute, then submit it with the form.',
+  description: `Deploy a project to Unkey Compute, then submit it with the form. ${GIVEAWAY_WINDOW_COPY}`,
   benefits: [
     {
       icon: Gamepad2,

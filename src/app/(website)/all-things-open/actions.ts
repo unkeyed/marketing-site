@@ -1,5 +1,13 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
+import {
+  getGiveawayWindowState,
+  GIVEAWAY_NOW_COOKIE,
+  giveawayWindowError,
+  resolveGiveawayNow,
+} from '@/lib/giveaway-window';
 import { submitToPlain, type PlainSubmissionResult } from '@/lib/plain';
 
 import {
@@ -10,6 +18,13 @@ import {
 } from './schema';
 
 export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmissionResult> {
+  const jar = await cookies();
+  const now = resolveGiveawayNow(jar.get(GIVEAWAY_NOW_COOKIE)?.value);
+  const windowError = giveawayWindowError(getGiveawayWindowState(now));
+  if (windowError) {
+    return { status: 'error', errors: [windowError] };
+  }
+
   const parsed = giveawaySubmissionSchema.safeParse(payload);
   if (!parsed.success) {
     const errors = [...new Set(parsed.error.issues.map((issue) => issue.message))];

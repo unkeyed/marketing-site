@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
+import { giveawayWindowError, type TGiveawayWindowState } from '@/lib/giveaway-window';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,7 +43,45 @@ function RequiredMark() {
   );
 }
 
-export function GiveawayEntryForm() {
+const rulesLinkClassName =
+  'text-foreground underline decoration-gray-40 decoration-dashed decoration-[1px] underline-offset-[0.26em] transition-colors duration-300 hover:decoration-gray-70';
+
+function OfficialRulesLink() {
+  return (
+    <p className="text-sm leading-normal text-muted-foreground">
+      By entering, you agree to the{' '}
+      <a href="/all-things-open/rules" className={rulesLinkClassName}>
+        official rules
+      </a>
+      .
+    </p>
+  );
+}
+
+function GiveawayWindowNotice({ state }: { state: Exclude<TGiveawayWindowState, 'open'> }) {
+  return (
+    <div
+      className="rounded-lg border border-border bg-panel p-6 md:p-8"
+      data-giveaway-window={state}
+    >
+      <h2 className="font-display text-3xl leading-tight text-foreground">Submit your project</h2>
+      <p className="mt-2 min-h-12 text-base text-foreground">{giveawayWindowError(state)}</p>
+      <div className="mt-6">
+        <OfficialRulesLink />
+      </div>
+    </div>
+  );
+}
+
+export function GiveawayEntryForm({ windowState }: { windowState: TGiveawayWindowState }) {
+  if (windowState !== 'open') {
+    return <GiveawayWindowNotice state={windowState} />;
+  }
+
+  return <GiveawayOpenForm />;
+}
+
+function GiveawayOpenForm() {
   const [isPending, startTransition] = useTransition();
   const [serverErrors, setServerErrors] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
@@ -88,7 +127,10 @@ export function GiveawayEntryForm() {
   };
 
   return (
-    <div className="relative rounded-lg border border-border bg-panel p-6 md:p-8">
+    <div
+      className="relative rounded-lg border border-border bg-panel p-6 md:p-8"
+      data-giveaway-window="open"
+    >
       <div className={submitted ? 'invisible' : undefined} inert={submitted || undefined}>
         <h2 className="font-display text-3xl leading-tight text-foreground">Submit your project</h2>
         <p className="mt-2 text-base text-muted-foreground">
@@ -222,16 +264,7 @@ export function GiveawayEntryForm() {
               )}
             />
 
-            <p className="text-sm leading-normal text-muted-foreground">
-              By entering, you agree to the{' '}
-              <a
-                href="/all-things-open/rules"
-                className="text-foreground underline decoration-gray-40 decoration-dashed decoration-[1px] underline-offset-[0.26em] transition-colors duration-300 hover:decoration-gray-70"
-              >
-                official rules
-              </a>
-              .
-            </p>
+            <OfficialRulesLink />
 
             {/* Reserved so an error or the success handoff does not push the button. */}
             <div className="min-h-16" aria-live="polite">
