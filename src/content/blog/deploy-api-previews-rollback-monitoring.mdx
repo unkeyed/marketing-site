@@ -11,7 +11,7 @@ tags: ['tutorials']
 
 To ship a public API you usually end up stitching four pieces together. You need somewhere to host it, a preview for each pull request, auth and rate limiting in front of it, and logs for when something breaks. On top of that you need a plan for rolling back on the day a release goes bad.
 
-This post does all of it on Unkey. We deploy your API with Compute, issue and check keys with API Management, and record every request your app serves. I ran every command below against a real workspace, and the output is exactly what came back, with keys redacted.
+This post does all of it on Unkey, on one path: connect a GitHub repository and let pushes deploy. Compute runs the app, API Management issues and checks keys, and Unkey records every request the app serves. The dashboard steps below were run on a test repository. Command output that is shown was copied from that workspace, with keys redacted.
 
 ## What you'll have at the end
 
@@ -57,9 +57,7 @@ $ curl -s localhost:8080/v1/hello -H 'X-Unkey-Principal: {"version":"v1","subjec
 {"hello":"acme","deployment":"local"}
 ```
 
-Unkey injects `UNKEY_DEPLOYMENT_ID` into every instance, which helps during a rollback because you can see which deployment answered.
-
-For the real runs I deployed a public echo server (`ealen/echo-server`) instead. It prints every header and variable it receives, so you can see the gateway's principal header and which deployment answered.
+Unkey injects `UNKEY_DEPLOYMENT_ID` into every instance, which helps during a rollback because you can see which deployment answered. The dashboard screenshots later in this post are a different repository, Demo-for-deploy, built from GitHub with no Dockerfile. They are not this Hono file.
 
 ## Step 1: Connect the repository and deploy
 
@@ -67,78 +65,60 @@ For the real runs I deployed a public echo server (`ealen/echo-server`) instead.
 
 1. Open **Projects** and choose **Create project**, then enter a **Project Name**. The **Slug** is generated from the name, and it's what the API and CLI use. The new project opens on an empty Apps list.
 2. Choose **Create app**, set an **App Name** and **Slug**, and pick **Import from GitHub**. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access. After that, pick the repository under **Select a repository**.
-3. Review **Configure deployment**. The defaults work for most repositories, with root directory `.`, the Dockerfile auto-detected (or pick your own), no watch paths, and auto deploy on for production and preview. For a monorepo, point the root directory at the service and add watch paths like `services/api/**` so pushes that don't touch it are `skipped`.
+3. Review **Configure deployment**. In the screenshot the root directory is `.`, Dockerfile is **Automatic (no Dockerfile)**, the build command is **Auto-detected**, and watch paths are **All files**, which deploys on every push. Compute on that screen is Singapore, 1/4 vCPU, 256 MiB, and 1 instance. For a monorepo, point the root directory at the service and add watch paths like `services/api/**` so pushes that don't touch it are `skipped`. Auto deploy for production and preview is on by default. This crop does not show those toggles.
 4. If you need environment variables, add them here, scoped per environment. Sensitive ones are write-only.
 5. Choose **Deploy**.
 
-![The Deploy your app step inside a project, asking for an app Name and Slug](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-create-app.png)
-
-_The first step of creating an app only asks for a name and a slug._
-
 ![The Create New Project dialog with a project name and slug](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-create-project.png)
+
+{/* RETAKE: deploy-create-app.png: Deploy your app name and slug step inside the GitHub project blog-draft-gh, after Create project. Dashboard: Projects > blog-draft-gh > Create app. Must show the Name and Slug fields and the blog-draft-gh breadcrumb. Must not be the blog-draft-deploy project. */}
 
 ![The Deploy your app step with Import from GitHub and Use a container image options](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-import.png)
 
+_Pick Import from GitHub. The other card on this screen is a container image, and this post does not use it._
+
 ![The Select a repository step listing GitHub repositories with a branch picker for each](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-repo-picker.png)
 
-![The Configure deployment step for Demo-for-deploy with root directory, Dockerfile, build command, watch paths, compute and environment variables](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure.png)
+![The Configure deployment step for Demo-for-deploy with root directory, Automatic (no Dockerfile), an auto-detected build command, watch paths set to All files, and compute set to Singapore with 1/4 vCPU, 256 MiB, and 1 instance](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure.png)
 
-The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**) and `finalizing` until it reaches `ready`, and it streams the build log while it's `building`. By default it runs on port 8080 with 0.25 vCPU and 256 MiB of memory, as one replica in one region. You can change those under **App Settings**.
+{/* RETAKE: gh-configure.png: the full Configure deployment step for Demo-for-deploy, including the auto deploy toggles for production and preview. Dashboard: create-app wizard, Configure deployment. Must still show root directory, Dockerfile Automatic (no Dockerfile), build command, watch paths, compute, and environment variables. */}
 
-![A deployment page at Ready showing the current deployment, its source image, resources, region and domains](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-ready.png)
+The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**) and `finalizing` until it reaches `ready`, and it streams the build log while it's `building`. A new app starts at port 8080 with 0.25 vCPU and 256 MiB. The deployment in the next two screenshots, titled **Update .env** on `main` at commit `1b7551e`, is running in four regions with one instance each. That is a later setting than the single Singapore instance on the configure screen.
 
-_This deployment is ready. It came from a published image, so there were no build steps or build log to show._
+![A GitHub deployment titled Update .env, status Deploying, with Deployment Queued and Building Image complete and the build log open](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-building.png)
 
-![A deployment from GitHub just after the build finished, with Deployment Queued and Building Image complete and the build log open while the status reads Deploying](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-building.png)
+_Source is the `main` branch at `1b7551e`, triggered from the dashboard. The build log is a Railpack Go build, not a container image we published ourselves._
 
-_We captured this right after the image build finished, while the deployment was still in Deploying, so the earlier steps and the live build log aren't shown._
+![The same GitHub deployment at Ready, with domains open and one instance in each of four regions](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-ready.png)
 
-![The same GitHub deployment at Ready with its domains and instances in four regions](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-ready.png)
-
-> We ran the dashboard part of this flow on a test repository: connecting GitHub, picking the repository, the Configure deployment step, and a build from source to Ready. UNVERIFIED: the GitHub check and PR comment, which come from the docs.
+> We ran this dashboard flow on the test repository: connecting GitHub, picking the repository, the Configure deployment step, and a build from that repository through to Ready. The fork authorization check is UNVERIFIED, below. We did not screenshot GitHub itself because the repository is private.
 
 ### From the API or CLI
 
-Every endpoint is a `POST` to `https://api.unkey.com/v2/{service}.{procedure}` with a root key in `Authorization: Bearer`. Start by creating the project.
-
-```
-$ curl -s -X POST https://api.unkey.com/v2/projects.createProject \
-  -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
-  -d '{"name":"blog-draft-payments","slug":"blog-draft-payments"}'
-{"data":{"id":"proj_VuYAqnGfO"},"meta":{"requestId":"req_LouXFD59b"}}
-```
-
-For a GitHub repository, install the GitHub App with `github.installApp`, which returns a URL for you to open, and then create the app with `git.repository`.
+The dashboard is the path this post ran. The same GitHub flow exists as `POST` calls to `https://api.unkey.com/v2/{service}.{procedure}` with a root key in `Authorization: Bearer`. These are the documented calls. We did not run them for this draft.
 
 ```bash
 # UNVERIFIED: not run for this draft (we connected GitHub through the dashboard instead)
-unkey api apps create-app --project=payments --name='Payments API' --slug=api \
-  --git='{"repository":"acme/payments","defaultBranch":"main"}'
+curl -X POST https://api.unkey.com/v2/github.installApp \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
+  -d '{}'
+
+curl -X POST https://api.unkey.com/v2/apps.createApp \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
+  -d '{"project":"blog-draft-gh","name":"api","slug":"api","git":{"repository":"OWNER/Demo-for-deploy"}}'
+
+curl -X POST https://api.unkey.com/v2/deployments.createDeployment \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
+  -d '{"project":"blog-draft-gh","app":"api","environment":"production","git":{}}'
 ```
 
-If you already build images in CI, you can create the app from an image instead. That's the path I ran.
+`github.installApp` returns a URL to open. `createDeployment` returns right away, so you poll `deployments.getDeployment` until the status is `ready`, `failed`, `skipped`, `superseded`, `stopped`, or `cancelled`.
 
-```
-$ unkey api apps create-app --project=blog-draft-payments --name="Payments API" --slug=api \
-    --oci='{"image":"ealen/echo-server:0.9.2"}'
+{/* RETAKE: 01-deploy-ready.png: terminal of a production deployment created from the GitHub app blog-draft-gh (git source, not an OCI image). Must show get-deployment reaching ready and the unkey.app domains for that deployment. Must not show ealen/echo-server or index.docker.io. */}
 
-$ unkey api deployments create-deployment --project=blog-draft-payments --app=api \
-    --environment=production --oci='{"image":"ealen/echo-server:0.9.2"}' --output json
-{
-  "meta": { "requestId": "req_95uq5YVND" },
-  "data": { "deploymentId": "d_GjCkWjVim" }
-}
-```
+The live domain on the Ready screenshot is `blog-draft-gh-api-grok-bot.unkey.app`, which is `<project>-<app>-<workspace>.unkey.app`. The same menu also lists an environment domain, a branch domain, a commit domain, and a domain pinned to the deployment id.
 
-`create-deployment` returns right away, so you poll `get-deployment` until the status is `ready`, `failed`, `skipped`, `superseded`, `stopped` or `cancelled`.
-
-![Terminal: create a production deployment, poll it to ready, and read its domains](/images/blog-images/deploy-api-previews-rollback-monitoring/01-deploy-ready.png)
-
-The live production domain always follows the pattern `<project>-<app>-<workspace>.unkey.app`. You also get one domain for the environment and one pinned to the exact deployment (`...-d-gjckwjvim-...`), which is handy for testing a specific build.
-
-A workspace runs one deployment at a time, from build through rollout, and the rest wait in `pending`. Production deployments jump the queue, so a hot fix never sits behind PR builds.
-
-Behind the scenes the CLI calls `POST /v3/deployments.createDeployment` with an `oci` source. The older `/v2/deployments.createDeployment` still accepts `image.dockerImage`, but it's deprecated.
+A workspace runs one deployment at a time, from build through rollout, and the rest wait in `pending`. Production deployments jump ahead of preview deployments, so a hot fix does not sit behind pull request builds. A deployment that waits an hour fails instead of waiting longer.
 
 ## Step 2: Every branch and pull request gets a preview
 
@@ -146,9 +126,9 @@ Once the repository is connected, you don't set anything else up for previews. A
 
 Fork PRs work differently, because a fork's code would run with your preview variables, including database URLs, third-party API keys and anything else you put there. For an API that's a real risk, so a fork PR never builds on its own. It waits in `awaiting_approval` behind a failing **Unkey Deploy Authorization** check in GitHub ("Awaiting authorization from a project member") until a project member approves it in the dashboard. Pushes from people with write access skip this step.
 
-We tested this with a pull request on a private test repository. Unkey built the preview from the PR's branch, created a GitHub Deployment for it, and posted the comment below on the PR.
+We opened a pull request on the private test repository. The preview deployment in the screenshots below is that pull request: branch `blog-draft-preview`, commit `44393cd`, triggered by GitHub. The comment Unkey posted on the pull request used the same deployment id (`d_lxYgnWPeW`). We are not publishing a GitHub screenshot. The "Learn more" link in that comment points at `https://www.unkey.com/docs/deployments`, which returned 404 when checked on 2026-10-15. The current page is [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github).
 
-> **The latest updates on your projects.** Learn more about [Unkey Deploy](https://www.unkey.com/docs/deployments)
+> **The latest updates on your projects.** Learn more about Unkey Deploy
 >
 > | Name                              | Status | Preview                                                               | Inspect                                                                                   | Updated (UTC)        |
 > | :-------------------------------- | :----- | :-------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :------------------- |
@@ -164,9 +144,7 @@ Because the repository is private, the screenshots below are from the Unkey dash
 
 Give the preview environment its own values, like a test database, test-mode payment keys, and maybe a separate keyspace so preview keys can't call production.
 
-I created a preview by hand to see what happens to it over its lifetime. It got its own domains, and `availableActions` lists what you can do with it.
-
-![Terminal: preview deployment created, serving, stopped (503 deployment_offline) and woken again](/images/blog-images/deploy-api-previews-rollback-monitoring/02-preview.png)
+{/* RETAKE: 02-preview.png: stop and wake of the GitHub preview deployment d_lxYgnWPeW on blog-draft-gh. Dashboard or terminal. Must show the preview environment, a 503 with err:frontline:capacity:deployment_offline after stop, and the preview domain answering again after Wake deployment. Must not show blog-draft-payments or a container image. */}
 
 Previews clean up after themselves, and the docs list when each one stops automatically.
 
@@ -176,11 +154,11 @@ Previews clean up after themselves, and the docs list when each one stops automa
 | Preview deployment gets no requests                               | That deployment                               | After 1 hour idle |
 | You stop it (**Stop deployment** or `deployments.stopDeployment`) | That deployment                               | Right away        |
 
-A stopped preview answers `503` with `err:frontline:capacity:deployment_offline`, and you wake it with **Wake deployment** or `deployments.startDeployment`. Mine reported `ready` about three seconds after the start call, and the preview domain returned `200` about eight seconds after that. That comes from a single measurement, so don't treat it as a guarantee. The first request after stopping also got a `504 request_timeout` before the documented `503` showed up.
+A stopped preview answers `503` with `err:frontline:capacity:deployment_offline`, and you wake it with **Wake deployment** or `deployments.startDeployment`. It goes through `deploying` and back to `ready`. You can't start one while the workspace is suspended by its Compute spend budget.
 
 ## Step 3: Require an API key and add a rate limit at the gateway
 
-Every Compute app sits behind our gateway, and that's where policies run. You start by getting a keyspace and a key from API Management.
+Every Compute app sits behind the gateway, and that's where policies run. You start by getting a keyspace and a key from API Management. The keyspace name in this output is `blog-draft-payments`. That is the API Management keyspace, not the GitHub project `blog-draft-gh`.
 
 ```
 $ unkey api apis create-api --name=blog-draft-payments --output json
@@ -213,14 +191,15 @@ You'll find both IDs on the keyspace's **Settings** page, and from the API, `key
 {"data":{"code":"VALID","enabled":true,"identity":{"externalId":"blog-draft-acme","id":"id_niCA4IOmB"},"keyId":"key_Kpa8xHhc1","keyspaceId":"ks_tllKF8lmh","meta":{"plan":"pro"},"name":"blog-draft acme laptop","valid":true}, ...}
 ```
 
-Now set the policies for production. They run from top to bottom, and a per-caller rate limit has to come after the key check, or every request counts as `unknown`. I used 5 requests per minute so it's easy to hit. In production you'd set something more like 100.
+Set the policies on the GitHub app's production environment. They run from top to bottom, and a per-caller rate limit has to come after the key check, or every request counts as `unknown`. The body below is the shape to send. Use a small limit while you are testing it, and something like 100 per minute in production. The root key needs `environment.*.set_policies`. In the dashboard you add them with **Policies > Add Policy > Key Auth** and then **Rate Limit**.
 
-```
-$ curl -s -X POST https://api.unkey.com/v2/gateway.setPolicies \
+```bash
+# UNVERIFIED: not re-run against the GitHub app blog-draft-gh
+curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "project": "blog-draft-payments",
+    "project": "blog-draft-gh",
     "app": "api",
     "environment": "production",
     "policies": [
@@ -230,44 +209,22 @@ $ curl -s -X POST https://api.unkey.com/v2/gateway.setPolicies \
         "ratelimit": { "limit": 5, "windowMs": 60000,
                        "identifiers": [{ "authenticatedSubject": {} }] } }
     ]
-  }' | jq
-{
-  "data": {},
-  "meta": { "requestId": "req_JvarCEnO2" }
-}
+  }'
 ```
 
-The root key needs `environment.*.set_policies`. In the dashboard you add them with **Policies > Add Policy > Key Auth** and then **Rate Limit**.
+**Policies apply to the next deployment.** A deployment keeps the image, variables, and policies it was created with, so save the policies and then redeploy. **Redeploy** is on the deployment page in the screenshots above.
 
-**Policies only apply to the next deployment.** A deployment keeps the image, variables and policies it was created with, so after I saved, the live one still answered requests that had no key.
+Once that deployment is live, a request with no key gets `401` `missing_credentials`, a wrong key gets `401` `invalid_key`, and a request over the window gets `429` `rate_limited` with `Retry-After`. Responses the policy applies to also send `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` (Unix seconds).
 
-```
-$ curl -s -o /dev/null -w "%{http_code}\n" https://blog-draft-payments-api-grok-bot.unkey.app/v1/hello
-200
-```
-
-You need to redeploy, either with **Redeploy** in the dashboard or from the existing deployment.
-
-```
-$ unkey api deployments create-deployment --project=blog-draft-payments --app=api \
-    --environment=production --deployment='{"deploymentId":"d_GjCkWjVim"}' --output json
-{
-  "meta": { "requestId": "req_fMCrhFQlt" },
-  "data": { "deploymentId": "d_oeD1HeGSE" }
-}
-```
-
-Once the new deployment is live, a request with no key gets `401 missing_credentials`, a wrong key gets `401 invalid_key`, and the sixth request in the window gets `429` with `Retry-After`. Every limited route also sends back `X-RateLimit-*` headers.
-
-![Terminal: 401 without a key, 401 with a bad key, then 200s counting down to a 429 with Retry-After](/images/blog-images/deploy-api-previews-rollback-monitoring/03-key-auth-ratelimit.png)
+{/* RETAKE: 03-key-auth-ratelimit.png: curl against the GitHub production domain blog-draft-gh-api-grok-bot.unkey.app showing 401 missing_credentials with no key, 401 invalid_key with a bad key, then 200s counting down to 429 with Retry-After and X-RateLimit headers. Must not show blog-draft-payments. */}
 
 Rejected requests never reach your code. Requests that pass arrive with an `X-Unkey-Principal` header describing the caller, so your app never has to call Unkey itself.
 
-![Terminal: the X-Unkey-Principal JSON the app received for a verified key](/images/blog-images/deploy-api-previews-rollback-monitoring/04-principal.png)
+{/* RETAKE: 04-principal.png: the X-Unkey-Principal JSON returned by the GitHub app blog-draft-gh for a verified key, including subject, identity.externalId, and source.key.keyId. Must not show a container-image deployment id. */}
 
 `subject` is the identity's `externalId`, or the key ID if the key has no identity. `authenticatedSubject` counts requests by that value, so all of a customer's keys share the same rate limit. The gateway strips any `X-Unkey-*` header a client sends, and Compute deployments can only be reached through the gateway, so you can trust the header inside Compute. Anywhere else, someone can forge it.
 
-Preview has its own list of policies. I only set production's, so my preview stayed open to anyone. If your previews shouldn't be public, set policies for them too, or use **All Environments** in the dashboard.
+Preview has its own list of policies. If your previews shouldn't be public, set policies for them too, or use **All Environments** in the dashboard.
 
 ## Step 4: Watch requests, logs and metrics
 
@@ -275,16 +232,18 @@ You don't install anything, and Unkey records all of the following for you.
 
 - **Request logs** have one row per request that reached your app, with method, host, path, status, region, deployment, instance, and latency split into `gateway_latency` and `instance_latency`. You'll find them under **Requests**.
 - **Runtime logs** are stdout and stderr from every instance, with the severity parsed out, under **Logs**.
-- **Metrics** cover requests per second, latency percentiles, CPU, memory, disk and network per deployment, and a **Network** view shows regions and instances.
+- **Metrics** on the deployment page include requests per second, latency, CPU, and memory. The docs also list disk, network, instance count, and instance events. The **Network** view shows regions and instances.
 - **Build logs** show each build step and its output.
 
 ![The project Requests view filtered to the api app with one request's deployment details open](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-requests.png)
 
 ![The deployment Network view with instances in four regions](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-network.png)
 
-![RPS, latency, CPU and memory charts under the deployment's network map](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-metrics.png)
+![RPS, latency p50, CPU, and memory charts under the four-region network map for the GitHub deployment Update .env](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-metrics.png)
 
-If you plan to alert on the request log, know that **requests rejected by a policy aren't in it**. The 401s and 429s above never reached the app. Gateway key checks do show up in API Management's verification analytics, next to your own `keys.verifyKey` calls.
+_This crop shows RPS, latency, CPU, and memory. It does not show disk or network charts._
+
+If you plan to alert on the request log, know that **requests rejected by a policy aren't in it**. Gateway key checks do show up in API Management's verification analytics, next to your own `keys.verifyKey` calls.
 
 You can query the request log with SQL through the analytics API, using `gateway_requests_v1`. This example from the docs finds the paths with the most 5xx responses in the last 24 hours.
 
@@ -296,7 +255,7 @@ curl -X POST https://api.unkey.com/v2/analytics.getGatewayRequests \
   -d '{"query":"SELECT path, count() AS total FROM gateway_requests_v1 WHERE response_status >= 500 AND time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 24 HOUR) GROUP BY path ORDER BY total DESC LIMIT 10"}'
 ```
 
-The root key needs the wildcard `project.*.read_gateway_requests`, because a permission for a single project won't work. Queries can reach back 3 days on Starter, 7 on Pro and 14 on Business, but rows are only kept for 7 days, so you get whichever is shorter. Runtime logs live in `runtime_logs_v1`, and you read them with `analytics.getRuntimeLogs`.
+The root key needs the wildcard `project.*.read_gateway_requests`, because a permission for a single project won't work. The query range is the plan's log retention: 3 days on Compute Starter, 7 on Pro, and 14 on Business. A filter that starts earlier fails with `query_range_exceeds_retention`. Runtime logs live in `runtime_logs_v1`, and you read them with `analytics.getRuntimeLogs` (`project.*.read_runtime_logs`).
 
 When I called the analytics API I got `412` with `err:unkey:data:analytics_not_configured`, even though the Requests, Network and metrics views in the dashboard all worked. The docs say there's no dashboard setting for API access, so you have to ask support to turn it on.
 
@@ -304,23 +263,11 @@ If you want to keep logs longer or use your own tools, a log drain forwards one 
 
 ## Step 5: Roll back a bad deploy
 
-Say the release you just shipped is bad. Start by listing production deployments, where `availableActions` shows which ones you can roll back to.
+Say the release you just shipped is bad. List production deployments and read `availableActions` for `rollback`. You can roll back with **Rollback** in the dashboard, with `POST /v2/deployments.rollbackDeployment` and `{"deploymentId":"d_..."}`, or with `unkey api deployments rollback-deployment`. The root key needs `environment.*.rollback_deployment`. `deploymentId` is the deployment you roll back to.
 
-```
-$ unkey api deployments list-deployments --project=blog-draft-payments --app=api --environment=production --output json \
-  | jq -r ".data[] | [.id, .status, (.isCurrent|tostring), (.availableActions|join(\",\"))] | @tsv"
-d_bZ03J0OgK	ready	true
-d_oeD1HeGSE	ready	false	promote,rollback
-d_GjCkWjVim	ready	false	promote,rollback
-```
+{/* RETAKE: 05-rollback.png: CLI rollback of the GitHub app blog-draft-gh, with a poller showing the live domain move from the current deployment to an earlier GitHub deployment. Must show branch or commit, not a container image. Must not show blog-draft-payments. */}
 
-You can roll back with **Rollback** in the dashboard, with `POST /v2/deployments.rollbackDeployment` and `{"deploymentId":"d_..."}`, or with the CLI. The root key needs `environment.*.rollback_deployment`. I used the CLI, with a loop hitting production every half second so you can see which deployment answered.
-
-![Terminal: CLI rollback with a poller showing the live domain switch from d_bZ03J0OgK to d_oeD1HeGSE](/images/blog-images/deploy-api-previews-rollback-monitoring/05-rollback.png)
-
-The command returns as soon as the rollback is accepted. The target served its first request about 4.3 seconds later, and a second rollback switched over in about 4.4 seconds. That was two runs from one laptop in one region, so don't read it as a benchmark.
-
-![The Instant rollback dialog showing the current deployment and the previous deployment it will switch to](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-rollback-dialog.png)
+{/* RETAKE: deploy-rollback-dialog.png: Instant rollback dialog on the GitHub deployment Update .env (or a later GitHub production deployment of blog-draft-gh). Dashboard: that deployment's page. Must show the current deployment and the previous one as GitHub commits or commit messages, not ealen/echo-server. Do not treat any "deploys pause" line in the dialog as confirmed. */}
 
 There are limits on which deployments you can roll back to.
 
@@ -330,23 +277,15 @@ There are limits on which deployments you can roll back to.
 
 ## What happens to traffic during a rollback
 
-Nothing restarts during a rollback. The target is already running, so the domains (live, environment and any verified custom domains) move to it in one step. The old deployment keeps serving until the move reaches every region, which the docs say happens "within a few seconds". In the poller that was roughly the first three seconds. Normal deploys overlap in the same way, and after a new deployment reported `ready`, the first request still went to the previous one.
-
-The target keeps the policies it was created with, so if you've changed key auth or rate limits since then, those roll back too.
+Nothing restarts during a rollback. The target is already running, so the domains (live, environment, and any verified custom domains) move to it in one step. The old deployment keeps serving until the move reaches every region. The docs say that takes a few seconds, so a few requests can still hit the old deployment right after. The target keeps the policies it was created with, so if you've changed key auth or rate limits since then, those roll back too.
 
 ## Getting back to normal after a rollback
 
-After a rollback, the app is marked as rolled back.
+After a rollback, `apps.getApp` reports `isRolledBack: true`.
 
-```
-$ unkey api apps get-app --project=blog-draft-payments --app=api --output json | jq ".data | {slug, isRolledBack}"
-{
-  "slug": "api",
-  "isRolledBack": true
-}
-```
+To end that state, promote the deployment you rolled back to. The docs call that a confirm rollback: traffic stays where it is. You can also promote a newer deployment that has the fix, with **Promote** or `deployments.promoteDeployment`. The deployment it replaces stops after 30 minutes.
 
-According to the docs, while the app is rolled back, new production deployments still build and reach `ready`, but they don't go live. That way a push in the middle of an incident can't undo your rollback. To end it, you can promote the deployment you rolled back to, which is called a "confirm rollback". Traffic stays where it is, and new pushes start going live again. You can also promote a newer deployment that has the fix, using **Promote** or `deployments.promoteDeployment`. The deployment it replaces stops after 30 minutes.
+What a new production push does while `isRolledBack` is true is not settled. The editor note is the evidence we have, and it was not a GitHub push.
 
 > **EDITOR NOTE (publish blocker, remove before publishing):** in the test workspace this did not hold. Twice, with `isRolledBack: true`, a new production deployment created with `unkey api deployments create-deployment` reached `ready` and both production domains moved to it, while `list-deployments` still reported the rolled-back deployment as `isCurrent: true`. A subsequent "confirm rollback" promote cleared `isRolledBack` but left traffic on the new deployment. Promoting the newer deployment explicitly brought the API state and traffic back in line. Not tested with a GitHub push. Logs: runs/30 to runs/37 in this folder. Needs a fix or a docs change before this section ships. See VERIFICATION.md.
 
@@ -387,7 +326,7 @@ Every plan includes git push to deploy, a preview for each pull request and inst
 
 Once you're past the included credit, you pay for the vCPU and memory you actually use on average, as opposed to the ceiling you configured. You also pay for allocated ephemeral disk, egress, and active keys verified through a Compute key auth policy. The rates are $0.000006944 per vCPU-second, $0.000003472 per GB-second of memory, $0.00000006 per GB-second of disk, $0.05 per GB of egress, and $0.002 per active key per month. To give you a sense of scale, the default instance (0.25 vCPU, 256 MiB) running flat out for a 30-day month comes to about $4.50 of CPU and $2.25 of memory at those rates, before the included credit. An idle API costs less than that.
 
-If you want a hard cap on the bill, set a monthly budget under **Settings > Billing**. Admins get an email at 50, 75 and 100 percent of it. If you turn on **Stop workloads at the budget**, every deployment stops at 100 percent, and the gateway answers `402 spend_limit_reached` until you raise or remove the budget or the next month starts. Nothing gets deleted, and your deployments come back without a redeploy.
+If you want a hard cap on the bill, set a monthly budget under **Settings > Billing**. Admins get an email at 50, 75 and 100 percent of it. If you turn on **Stop workloads at the budget**, every deployment stops at 100 percent, and the gateway answers `402` `spend_limit_reached`. Removing the budget, turning that option off, or waiting for the next month brings the live deployment back without a redeploy. Raising the budget resumes compute once spend has been under the new budget for two checks in a row. Nothing gets deleted.
 
 ## Further reading
 
