@@ -145,7 +145,7 @@ export const getComponents = (options: IGetComponentsOptions) => {
       // Lossless 2x PNG screenshots. Skip AVIF/WebP re-encoding.
       const unoptimized =
         src.includes('/images/changelog/2026-09-30/') ||
-        src.includes('/images/changelog/2026-10-10/') ||
+        src.includes('/images/changelog/2026-10-') ||
         src.includes('/images/blog-images/september-2026/');
 
       return (
