@@ -4,6 +4,7 @@ import config from '@/configs/website-config';
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 
 // Pass `title` → "{title} | Unkey". Pass `tagline` (hero pages) → "Unkey | {tagline}".
+// Pass `absoluteTitle` to render `title` verbatim, with no site suffix.
 type Metadata = {
   title?: string;
   tagline?: string;
@@ -12,6 +13,7 @@ type Metadata = {
   imagePath?: string;
   type?: string;
   noIndex?: boolean;
+  absoluteTitle?: boolean;
 };
 
 export function getMetadata({
@@ -22,14 +24,19 @@ export function getMetadata({
   imagePath = config.defaultSocialImage,
   type = 'website',
   noIndex = false,
+  absoluteTitle = false,
 }: Metadata) {
   const canonicalUrl = toAbsoluteSiteUrl(pathname);
   const imageUrl = imagePath.startsWith('http') ? imagePath : toAbsoluteSiteUrl(imagePath);
   const siteName = `${config.projectName.slice(0, 1).toUpperCase()}${config.projectName.slice(1)}`;
-  const fullTitle = tagline ? `${siteName} | ${tagline}` : `${title} | ${siteName}`;
+  const fullTitle = absoluteTitle
+    ? (title ?? '')
+    : tagline
+      ? `${siteName} | ${tagline}`
+      : `${title} | ${siteName}`;
 
   return {
-    title: fullTitle,
+    title: absoluteTitle ? { absolute: fullTitle } : fullTitle,
     description,
     alternates: {
       canonical: canonicalUrl,

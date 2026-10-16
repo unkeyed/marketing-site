@@ -23,7 +23,10 @@ import {
 import { toAbsoluteSiteUrl } from '@/lib/site-url';
 import { getExcerpt } from '@/lib/utils';
 
-const GLOSSARY_DIR_PATH = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src/content/glossary');
+const GLOSSARY_DIR_PATH = path.join(
+  /*turbopackIgnore: true*/ process.cwd(),
+  'src/content/glossary',
+);
 const GLOSSARY_SEARCH_SUGGESTIONS_LIMIT = 8;
 const GLOSSARY_SEARCH_CONTENT_MAX_LENGTH = 3000;
 
@@ -90,6 +93,8 @@ function getGlossaryDataBySlug(slug: string): IGlossaryTermData | null {
     const description = (
       data.description || getExcerpt({ content: plainContent, length: 180 })
     ).trim();
+    const seoTitle = (data.seo?.title || title).trim();
+    const seoDescription = (data.seo?.description || description).trim();
     const tldr = (data.takeaways?.tldr || description).trim();
     const takeaways: IGlossaryTakeaways = {
       tldr,
@@ -123,8 +128,8 @@ function getGlossaryDataBySlug(slug: string): IGlossaryTermData | null {
       content,
       pathname: `/glossary/${glossaryEntry.resolvedSlug}`,
       seo: {
-        title,
-        description,
+        title: seoTitle,
+        description: seoDescription,
         socialImage: toAbsoluteSiteUrl(`/api/og?template=blog&title=${encodeURIComponent(term)}`),
         noIndex: false,
       },

@@ -8,9 +8,11 @@ import FaqSection from '@/components/pages/pricing/faq/faq';
 import PricingMainContent from '@/components/pages/pricing/pricing-main-content';
 
 const pricingMetadata = getMetadata({
-  title: 'Pricing',
-  description: 'Pricing for Unkey Deploy and Api Management',
+  title: 'Unkey Pricing: Free to Start, Usage-Based Plans',
+  description:
+    'Start for free and pay as you grow, with usage-based pricing for Unkey Deploy and API keys.',
   pathname: '/pricing',
+  absoluteTitle: true,
 });
 
 export const metadata: Metadata = {
