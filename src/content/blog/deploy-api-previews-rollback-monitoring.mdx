@@ -64,16 +64,16 @@ Unkey injects `UNKEY_DEPLOYMENT_ID` into every instance, so you can see which de
 ### From the dashboard (GitHub)
 
 1. Open **Projects** and choose **Create project**, then enter a **Project Name**. The **Slug** is generated from the name, and it's what the API and CLI use. The new project opens on an empty Apps list.
-2. Choose **Create app**. The wizard opens on **Deploy a new app** and asks where the code comes from. Choose **Github repository**. This step has no name or slug fields. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access. Then pick the repository.
+2. Choose **Create app**. The wizard opens on **Deploy a new app** and asks where the code comes from. Choose **GitHub repository**. This step has no name or slug fields. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access. Then pick the repository.
 3. Open **App settings > Environments**. Production and preview each have compute, domains, branch tracking, and auto-deploy. In these screenshots both environments run one instance at 1/4 vCPU and 256 MiB in Oregon, Singapore, Frankfurt, and N. Virginia. Production follows `main`. Preview follows every unassigned branch, and each branch gets its own URL. Auto-deploy is on for both.
 4. Build settings are on a different screen. The docs cover a root directory, a Dockerfile, watch paths such as `services/api/**`, and environment variables scoped per environment. Sensitive variables are write-only. These screenshots do not show those fields.
 5. Choose **Deploy**.
 
 ![The Create New Project dialog with a project name and slug](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-create-project.png)
 
-![Deploy a new app inside project blog-draft-gh, asking whether the code comes from a Github repository](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-create-app.png)
+![Deploy a new app inside project blog-draft-gh, asking whether the code comes from a GitHub repository](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-create-app.png)
 
-_Choose Github repository. This screen does not ask for a name or a slug._
+_Choose GitHub repository. This screen does not ask for a name or a slug._
 
 ![The Select a repository step listing GitHub repositories with a branch picker for each](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-repo-picker.png)
 
@@ -81,7 +81,7 @@ _Choose Github repository. This screen does not ask for a name or a slug._
 
 ![Preview environment settings for blog-draft-gh: the same four regions, the preview domain, all unassigned branches, and auto-deploy on](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure-2.png)
 
-The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**) and `finalizing` until it reaches `ready`, and it streams the build log while it's `building`. A new app starts at port 8080 with 0.25 vCPU and 256 MiB. The deployment in the next two screenshots, `d_YuQfHrT0L`, titled **Update .env** on `main` at commit `1b7551e`, is running in those four regions with one instance each.
+The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**) and `finalizing` until it reaches `ready`, and it streams the build log while it's `building`. A new app starts at port 8080 with 0.25 vCPU and 256 MiB. The deployment in the next two screenshots, `d_YuQfHrT0l`, titled **Update .env** on `main` at commit `1b7551e`, is running in those four regions with one instance each.
 
 ![A GitHub deployment titled Update .env, status Deploying, with Deployment Queued and Building Image complete and the build log open](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-building.png)
 
@@ -112,9 +112,9 @@ curl -X POST https://api.unkey.com/v2/deployments.createDeployment \
 
 `github.installApp` returns a URL to open. `createDeployment` returns right away, so you poll `deployments.getDeployment` until the status is `ready`, `failed`, `skipped`, `superseded`, `stopped`, or `cancelled`.
 
-![getDeployment for d_YuQfHrT0L, the current production deployment of blog-draft-gh from git branch main, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-rollback-monitoring/01-deploy-ready.png)
+![getDeployment for d_YuQfHrT0l, the current production deployment of blog-draft-gh from git branch main, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-rollback-monitoring/01-deploy-ready.png)
 
-The current production deployment is `d_YuQfHrT0L`. `getDeployment` shows `git.branch` `main`, commit message `Update .env`, and status `ready`. Its live domain is `blog-draft-gh-blog-draft-gh-grok-bot.unkey.app`, which is `<project>-<app>-<workspace>.unkey.app` for project `blog-draft-gh`, app `blog-draft-gh`, and workspace `grok-bot`. The same response also lists the production environment domain, the `main` branch domain, the commit domain, and a domain pinned to `d_YuQfHrT0L`.
+The current production deployment is `d_YuQfHrT0l`. `getDeployment` shows `git.branch` `main`, commit message `Update .env`, and status `ready`. Its live domain is `blog-draft-gh-blog-draft-gh-grok-bot.unkey.app`, which is `<project>-<app>-<workspace>.unkey.app` for project `blog-draft-gh`, app `blog-draft-gh`, and workspace `grok-bot`. The same response also lists the production environment domain, the `main` branch domain, the commit domain, and a domain pinned to `d_YuQfHrT0l`.
 
 A workspace runs one deployment at a time, from build until it is live, and the rest wait in `pending`. Production deployments jump ahead of preview deployments, so a hot fix does not sit behind pull request builds. A deployment that waits an hour fails instead of waiting longer.
 
