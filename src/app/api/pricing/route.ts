@@ -49,7 +49,15 @@ function buildComputeIntroOffer(): string {
     ];
   });
 
-  return [`### ${computeIntroOffer.badge}`, '', computeIntroOffer.notice, '', ...lines].join('\n');
+  return [
+    `### ${computeIntroOffer.badge}`,
+    '',
+    computeIntroOffer.notice,
+    '',
+    computeIntroOffer.starterCarryoverNote,
+    '',
+    ...lines,
+  ].join('\n');
 }
 
 function buildDeployPlansTable(): string {
