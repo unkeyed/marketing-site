@@ -101,6 +101,7 @@ export const computeIntroOffer = {
   badge: '$5 off your first month',
   notice:
     'Get $5 of compute on us as a $5 credit off your first month. The offer ends at the end of the year, on December 31, 2026.',
+  starterCarryoverNote: 'On Starter, any credit left over carries over to your next bill.',
 };
 
 export const computePlanIncludes = [

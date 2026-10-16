@@ -75,6 +75,7 @@ export default function DeployTabContent() {
         plans={deployPricingPlans}
         title="Compute plans"
         notice={computeIntroOffer.notice}
+        noticeNote={computeIntroOffer.starterCarryoverNote}
         planIncludes={computePlanIncludes}
         bottomContent={<EnterpriseContent enterpriseData={enterpriseData} />}
       />
