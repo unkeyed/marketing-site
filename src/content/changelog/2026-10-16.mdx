@@ -16,9 +16,11 @@ Everything you need to configure is on one page, and we tell you what's left bef
 
 ### App settings, environments, and domains
 
-App settings now has a rail on the left with General, Build, Runtime, Environments, and Advanced. Every environment gets its own page now. The page opens with a Compute card that draws each region with its size, instances, CPU, memory, and disk, and clicking Configure opens the editor in a panel. Further down you'll see the environment's domains. If a repository is connected, you'll also see the tracked branch and its Auto-deploy switch. Sizes run from XS to 4XL, and any size above your plan shows a lock with the plan you'd need to use it.
+App settings is easier to find your way around. Settings are split into a few clear sections, and each environment now has its own page, so you can see how production is set up without digging.
 
-Domains also moved to their own page in each app, with custom and platform domains in one searchable list. Expand a custom domain to check its DNS records and retry verification without leaving the page.
+That page shows where your app runs and how big it is, the domains pointing at it, and which branch deploys to it. If your plan doesn't include a size, we tell you which plan does instead of letting you pick it and fail later.
+
+Domains have their own page in each app too, with every domain in one list you can search.
 
 ![App settings rail](/images/changelog/2026-10-16/app-settings.png)
 
@@ -26,13 +28,17 @@ Domains also moved to their own page in each app, with custom and platform domai
 
 ### Add environment variables in bulk
 
-You no longer have to add variables one at a time. Add environment variable now opens a table where you can enter as many as you need in one go. You can paste a `.env` blob into a key cell, drop a `.env` file on the table, or click Import .env. Pick one environment or All environments, and mark any row as sensitive. If one of your keys already exists, we save nothing and point you to the row that clashes. Once saved, each variable gets its own row with an environment label, and clicking a row lets you edit or rename it. Renaming now changes the key in place, so a failed save can no longer leave you with both the old and new key.
+You no longer have to add variables one at a time. Paste the contents of a `.env` file or import the file itself, choose which environments it applies to, and save them all at once.
+
+If a key already exists, we save nothing and show you which one clashes, so you never end up with half an import.
 
 ![Add environment variables](/images/changelog/2026-10-16/env-vars-add.png)
 
 ### A new policies page
 
-You now add and edit a policy in the same panel, and that panel is built around an If / Then rule card. You can write conditions on path, method, header, query parameter, and client IP. If regex isn't your thing, regex conditions come with a Generate regex helper. You choose whether a policy applies to all environments, production, or preview, and you can switch it on or off per environment from the edit panel. Policies run top to bottom, so you can drag rows to put them in the order you want. If you're unsure how that order plays out, open How policies work in the page header. It explains the order and what each kind of policy rejects. Header and query parameter conditions can also match when the value is absent now, in both the dashboard and the API.
+Policies are simpler to write and easier to trust. Each one reads as a plain rule: if a request matches these conditions, do this. You can match on the path, method, headers, query parameters, or client IP, and a header or query parameter can now match when it's missing.
+
+You decide which environments a policy runs in and can turn it off in one without touching the others. Policies run top to bottom, so you can drag them into the order you want, and the page explains how that order plays out.
 
 See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
 
