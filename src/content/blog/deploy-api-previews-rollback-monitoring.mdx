@@ -64,26 +64,24 @@ Unkey injects `UNKEY_DEPLOYMENT_ID` into every instance, so you can see which de
 ### From the dashboard (GitHub)
 
 1. Open **Projects** and choose **Create project**, then enter a **Project Name**. The **Slug** is generated from the name, and it's what the API and CLI use. The new project opens on an empty Apps list.
-2. Choose **Create app**, set an **App Name** and **Slug**, and pick **Import from GitHub**. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access. After that, pick the repository under **Select a repository**.
-3. Review **Configure deployment**. In the screenshot the root directory is `.`, Dockerfile is **Automatic (no Dockerfile)**, the build command is **Auto-detected**, and watch paths are **All files**, which deploys on every push. Compute on that screen is Singapore, 1/4 vCPU, 256 MiB, and 1 instance. For a monorepo, point the root directory at the service and add watch paths like `services/api/**` so pushes that don't touch it are `skipped`. Auto deploy for production and preview is on by default. This crop does not show those toggles.
-4. If you need environment variables, add them here, scoped per environment. Sensitive ones are write-only.
+2. Choose **Create app**. The wizard opens on **Deploy a new app** and asks where the code comes from. Choose **Github repository**. This step has no name or slug fields. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access. Then pick the repository.
+3. Open **App settings > Environments**. Production and preview each have compute, domains, branch tracking, and auto-deploy. In these screenshots both environments run one instance at 1/4 vCPU and 256 MiB in Oregon, Singapore, Frankfurt, and N. Virginia. Production follows `main`. Preview follows every unassigned branch, and each branch gets its own URL. Auto-deploy is on for both.
+4. Build settings are on a different screen. The docs cover a root directory, a Dockerfile, watch paths such as `services/api/**`, and environment variables scoped per environment. Sensitive variables are write-only. These screenshots do not show those fields.
 5. Choose **Deploy**.
 
 ![The Create New Project dialog with a project name and slug](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-create-project.png)
 
-{/* RETAKE: deploy-create-app.png: Deploy your app name and slug step inside the GitHub project blog-draft-gh, after Create project. Dashboard: Projects > blog-draft-gh > Create app. Must show the Name and Slug fields and the blog-draft-gh breadcrumb. Must not be the blog-draft-deploy project. */}
+![Deploy a new app inside project blog-draft-gh, asking whether the code comes from a Github repository](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-create-app.png)
 
-![The Deploy your app step with Import from GitHub and Use a container image options](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-import.png)
-
-_Pick Import from GitHub. The other card on this screen is a container image, and this post does not use it._
+_Choose Github repository. This screen does not ask for a name or a slug._
 
 ![The Select a repository step listing GitHub repositories with a branch picker for each](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-repo-picker.png)
 
-![The Configure deployment step for Demo-for-deploy with root directory, Automatic (no Dockerfile), an auto-detected build command, watch paths set to All files, and compute set to Singapore with 1/4 vCPU, 256 MiB, and 1 instance](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure.png)
+![Production environment settings for blog-draft-gh: four regions at 1/4 vCPU and 256 MiB, the live and production domains, branch main, and auto-deploy on](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure.png)
 
-{/* RETAKE: gh-configure.png: the full Configure deployment step for Demo-for-deploy, including the auto deploy toggles for production and preview. Dashboard: create-app wizard, Configure deployment. Must still show root directory, Dockerfile Automatic (no Dockerfile), build command, watch paths, compute, and environment variables. */}
+![Preview environment settings for blog-draft-gh: the same four regions, the preview domain, all unassigned branches, and auto-deploy on](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure-2.png)
 
-The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**) and `finalizing` until it reaches `ready`, and it streams the build log while it's `building`. A new app starts at port 8080 with 0.25 vCPU and 256 MiB. The deployment in the next two screenshots, titled **Update .env** on `main` at commit `1b7551e`, is running in four regions with one instance each. That is a later setting than the single Singapore instance on the configure screen.
+The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**) and `finalizing` until it reaches `ready`, and it streams the build log while it's `building`. A new app starts at port 8080 with 0.25 vCPU and 256 MiB. The deployment in the next two screenshots, `d_YuQfHrT0L`, titled **Update .env** on `main` at commit `1b7551e`, is running in those four regions with one instance each.
 
 ![A GitHub deployment titled Update .env, status Deploying, with Deployment Queued and Building Image complete and the build log open](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-building.png)
 
@@ -114,9 +112,9 @@ curl -X POST https://api.unkey.com/v2/deployments.createDeployment \
 
 `github.installApp` returns a URL to open. `createDeployment` returns right away, so you poll `deployments.getDeployment` until the status is `ready`, `failed`, `skipped`, `superseded`, `stopped`, or `cancelled`.
 
-{/* RETAKE: 01-deploy-ready.png: terminal of production deployment d_ekxtubvNM for app blog-draft-gh in project blog-draft-gh (git source, not an OCI image). Must show get-deployment reaching ready and domain blog-draft-gh-blog-draft-gh-grok-bot.unkey.app. Must not show ealen/echo-server or index.docker.io. */}
+![getDeployment for d_YuQfHrT0L, the current production deployment of blog-draft-gh from git branch main, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-rollback-monitoring/01-deploy-ready.png)
 
-The current production deployment is `d_ekxtubvNM`. Its live domain is `blog-draft-gh-blog-draft-gh-grok-bot.unkey.app`, which is `<project>-<app>-<workspace>.unkey.app` for project `blog-draft-gh`, app `blog-draft-gh`, and workspace `grok-bot`. The same menu also lists an environment domain, a branch domain, a commit domain, and a domain pinned to the deployment id.
+The current production deployment is `d_YuQfHrT0L`. `getDeployment` shows `git.branch` `main`, commit message `Update .env`, and status `ready`. Its live domain is `blog-draft-gh-blog-draft-gh-grok-bot.unkey.app`, which is `<project>-<app>-<workspace>.unkey.app` for project `blog-draft-gh`, app `blog-draft-gh`, and workspace `grok-bot`. The same response also lists the production environment domain, the `main` branch domain, the commit domain, and a domain pinned to `d_YuQfHrT0L`.
 
 A workspace runs one deployment at a time, from build until it is live, and the rest wait in `pending`. Production deployments jump ahead of preview deployments, so a hot fix does not sit behind pull request builds. A deployment that waits an hour fails instead of waiting longer.
 
@@ -126,15 +124,15 @@ Once the repository is connected, you don't set anything else up for previews. A
 
 Fork PRs work differently, because a fork's code would run with your preview variables, including database URLs, third-party API keys and anything else you put there. For an API that's a real risk, so a fork PR never builds on its own. It waits in `awaiting_approval` behind a failing **Unkey Deploy Authorization** check in GitHub ("Awaiting authorization from a project member") until a project member approves it in the dashboard. Pushes from people with write access skip this step.
 
-We opened a pull request on the private test repository. The preview deployment in the screenshots below is that pull request: branch `blog-draft-preview`, commit `44393cd`, triggered by GitHub. The comment Unkey posted on the pull request used deployment id `d_PREVIEW_TBD`. We are not publishing a GitHub screenshot. The "Learn more" link in that comment points at `https://www.unkey.com/docs/deployments`, which returned 404 when checked on 2026-10-15. The current page is [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github).
+We opened a pull request on the private test repository. Unkey posts one comment on the pull request with a Visit Preview link. We are not publishing a GitHub screenshot. The "Learn more" link in that comment points at `https://www.unkey.com/docs/deployments`, which returned 404 when checked on 2026-10-15. The current page is [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github).
 
-{/* RETAKE: 02-preview */}
+The preview we stopped and woke is `d_EtXuRW8FI` on branch `blog-draft-preview`. Its branch domain is `blog-draft-gh-blog-draft-gh-git-blog-draft-preview-grok-bot.unkey.app`. Its environment domain is `blog-draft-gh-blog-draft-gh-preview-grok-bot.unkey.app`.
 
 > **The latest updates on your projects.** Learn more about Unkey Deploy
 >
-> | Name                                        | Status | Preview                                                                         | Inspect                                                                                    | Updated (UTC)        |
-> | :------------------------------------------ | :----- | :------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------- | :------------------- |
-> | **blog-draft-gh / blog-draft-gh** (preview) | Ready  | [Visit Preview](https://blog-draft-gh-blog-draft-gh-preview-grok-bot.unkey.app) | [Inspect](https://app.unkey.com/grok-bot/projects/blog-draft-gh/deployments/d_PREVIEW_TBD) | Oct 13, 2026 11:27pm |
+> | Name                                        | Status | Preview                                                                                        | Inspect                                                                                  | Updated (UTC)        |
+> | :------------------------------------------ | :----- | :--------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- | :------------------- |
+> | **blog-draft-gh / blog-draft-gh** (preview) | Ready  | [Visit Preview](https://blog-draft-gh-blog-draft-gh-git-blog-draft-preview-grok-bot.unkey.app) | [Inspect](https://app.unkey.com/grok-bot/projects/blog-draft-gh/deployments/d_EtXuRW8FI) | Oct 13, 2026 11:27pm |
 
 Because the repository is private, the screenshots below are from the Unkey dashboard instead of GitHub.
 
@@ -146,7 +144,9 @@ Because the repository is private, the screenshots below are from the Unkey dash
 
 Give the preview environment its own values, like a test database, test-mode payment keys, and maybe a separate keyspace so preview keys can't call production.
 
-{/* RETAKE: 02-preview.png: stop and wake of preview deployment d_PREVIEW_TBD for app blog-draft-gh in project blog-draft-gh. Dashboard or terminal. Must show the preview environment, a 503 with err:frontline:capacity:deployment_offline after stop, and the preview domain answering again after Wake deployment. Must not show blog-draft-payments or a container image. */}
+![Stop and wake preview deployment d_EtXuRW8FI on branch blog-draft-preview: 200, then 503 deployment_offline, then 200 again on the branch domain](/images/blog-images/deploy-api-previews-rollback-monitoring/02-preview.png)
+
+After `startDeployment` reported `ready`, the branch domain still returned `503` `deployment_offline` for about 30 seconds. Wait for that short delay before you treat the preview as up.
 
 Previews clean up after themselves, and the docs list when each one stops automatically.
 
@@ -214,15 +214,26 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
   }'
 ```
 
-**Policies apply to the next deployment.** A deployment keeps the image, variables, and policies it was created with, so save the policies and then redeploy. **Redeploy** is on the deployment page in the screenshots above.
+**Policies apply to the next deployment.** A deployment keeps the image, variables, and policies it was created with, so save the policies and then redeploy. **Redeploy** is on the deployment page. After that redeploy, the new policies take a moment to reach every domain.
 
 Once that deployment is live, a request with no key gets `401` `missing_credentials`, a wrong key gets `401` `invalid_key`, and a request over the window gets `429` `rate_limited` with `Retry-After`. Responses the policy applies to also send `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` (Unix seconds).
 
-{/* RETAKE: 03-key-auth-ratelimit.png: curl against production deployment d_ekxtubvNM at blog-draft-gh-blog-draft-gh-grok-bot.unkey.app showing 401 missing_credentials with no key, 401 invalid_key with a bad key, then 200s counting down to 429 with Retry-After and X-RateLimit headers. Must not show blog-draft-payments. */}
+![Production domain blog-draft-gh-blog-draft-gh-grok-bot.unkey.app: 401 with no key, 401 with a bad key, five 404s as the rate limit counts down, then 429](/images/blog-images/deploy-api-previews-rollback-monitoring/03-key-auth-ratelimit.png)
 
-Rejected requests never reach your code. Requests that pass arrive with an `X-Unkey-Principal` header describing the caller, so your app never has to call Unkey itself.
+_Those `404` responses are `page not found` from the demo app, which has no `/` route. The gateway had already accepted the key, so the rate limit headers still count down. The sixth request is `429`._
 
-{/* RETAKE: 04-principal.png: the X-Unkey-Principal JSON returned by the GitHub app blog-draft-gh for a verified key, including subject, identity.externalId, and source.key.keyId. Must not show a container-image deployment id. */}
+Rejected requests never reach your code. Requests that pass arrive with an `X-Unkey-Principal` header describing the caller, so your app never has to call Unkey itself. The demo app's `/whoami` route returns that header as JSON.
+
+```js
+app.get('/whoami', (c) => {
+  const raw = c.req.header('x-unkey-principal');
+  return c.json({ principal: raw ? JSON.parse(raw) : null });
+});
+```
+
+The next screenshot is `/whoami` on a redeploy of the `blog-draft-preview` preview, deployment `d_Y6XryMPBd`. `subject` is `blog-draft-cus_acme`.
+
+![X-Unkey-Principal JSON from /whoami on preview deployment d_Y6XryMPBd, with subject blog-draft-cus_acme and key key_7hc6QQmU6](/images/blog-images/deploy-api-previews-rollback-monitoring/04-principal.png)
 
 `subject` is the identity's `externalId`, or the key ID if the key has no identity. `authenticatedSubject` counts requests by that value, so all of a customer's keys share the same rate limit. The gateway strips any `X-Unkey-*` header a client sends, and Compute deployments can only be reached through the gateway, so you can trust the header inside Compute. Anywhere else, someone can forge it.
 
