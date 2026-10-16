@@ -60,6 +60,23 @@ function collectLastmods() {
 
 const lastmods = collectLastmods();
 
+// Docs are rewritten onto this host at `/docs` and are absent from the marketing sitemap.
+const DOCS_SITEMAP_PATH = '/docs/sitemap.xml';
+
+// Place the docs sitemap on the line after the marketing sitemap next-sitemap already emits.
+function appendDocsSitemap(robotsTxt, siteUrl) {
+  const line = `Sitemap: ${new URL(DOCS_SITEMAP_PATH, siteUrl).href}\n`;
+  if (robotsTxt.includes(line)) {
+    return robotsTxt;
+  }
+
+  const source = robotsTxt.includes('# Sitemaps\n')
+    ? robotsTxt
+    : `${robotsTxt.trimEnd()}\n\n# Sitemaps\n`;
+  const updated = source.replace(/(# Sitemaps\n(?:Sitemap: .+\n)*)/, `$1${line}`);
+  return updated.includes(line) ? updated : `${source.trimEnd()}\n${line}`;
+}
+
 // Changelog entries pulled from GitHub at build time have no local file, but their slug
 // starts with the publish date.
 function resolveLastmod(pagePath) {
@@ -77,10 +94,10 @@ module.exports = {
   exclude: ['/api/*', '/hero-variant/*'],
   additionalPaths: async (config) => [await config.transform(config, '/')],
   robotsTxtOptions: {
-    policies: [
-      { userAgent: '*', allow: '/' },
-      { userAgent: '*', disallow: '/hero-variant/' },
-    ],
+    // next-sitemap writes one User-agent block per policy object. A single `*`
+    // group keeps Allow and Disallow together instead of duplicating the group.
+    policies: [{ userAgent: '*', allow: '/', disallow: '/hero-variant/' }],
+    transformRobotsTxt: async (config, robotsTxt) => appendDocsSitemap(robotsTxt, config.siteUrl),
   },
   // The default stamps every URL with the build time, which tells crawlers the whole site
   // changed on every deploy. Use real content dates, and omit lastmod where there is none.
