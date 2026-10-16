@@ -1,0 +1,89 @@
+---
+title: Guided new-app flow, rebuilt app settings, and a new policies page
+date: 2026-10-16
+tags: ['product:blue']
+---
+
+## New features
+
+### A guided flow for new apps
+
+We replaced the long new-app wizard with a short run of cards. You pick a GitHub repository or a container image, and then you land on one configure page with Build, Compute, Environment variables, Runtime, and Advanced, with Deploy at the bottom. You can go Back and forward as often as you like and nothing you typed gets lost. Deploy stays disabled until everything is saved, and the note under the button tells you what's still missing. The Size list only shows the sizes your plan includes, so you won't get bounced to checkout halfway through setting up an app. If you try to leave with unsaved changes, we ask before you go. If you haven't touched the form, we just let you leave.
+
+![New app flow](/images/changelog/2026-10-16/new-app-flow.png)
+
+### App settings, environments, and domains
+
+App settings now has a rail on the left with General, Build, Runtime, Environments, and Advanced. Every environment gets its own page now. The page opens with a Compute card that draws each region with its size, instances, CPU, memory, and disk, and clicking Configure opens the editor in a panel. Further down you'll see the environment's domains. If a repository is connected, you'll also see the tracked branch and its Auto-deploy switch. Sizes run from XS to 4XL, and any size above your plan shows a lock with the plan you'd need to use it.
+
+Domains also moved to their own page in each app, with custom and platform domains in one searchable list. Expand a custom domain to check its DNS records and retry verification without leaving the page.
+
+![App settings rail](/images/changelog/2026-10-16/app-settings.png)
+
+![Environment page](/images/changelog/2026-10-16/environment-page.png)
+
+### Add environment variables in bulk
+
+You no longer have to add variables one at a time. Add environment variable now opens a table where you can enter as many as you need in one go. You can paste a `.env` blob into a key cell, drop a `.env` file on the table, or click Import .env. Pick one environment or All environments, and mark any row as sensitive. If one of your keys already exists, we save nothing and point you to the row that clashes. Once saved, each variable gets its own row with an environment label, and clicking a row lets you edit or rename it. Renaming now changes the key in place, so a failed save can no longer leave you with both the old and new key.
+
+![Add environment variables](/images/changelog/2026-10-16/env-vars-add.png)
+
+### A new policies page
+
+You now add and edit a policy in the same panel, and that panel is built around an If / Then rule card. You can write conditions on path, method, header, query parameter, and client IP. If regex isn't your thing, regex conditions come with a Generate regex helper. You choose whether a policy applies to all environments, production, or preview, and you can switch it on or off per environment from the edit panel. Policies run top to bottom, so you can drag rows to put them in the order you want. If you're unsure how that order plays out, open How policies work in the page header. It explains the order and what each kind of policy rejects. Header and query parameter conditions can also match when the value is absent now, in both the dashboard and the API.
+
+See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
+
+![Policy panel](/images/changelog/2026-10-16/policy-panel.png)
+
+## Updates
+
+### Root keys
+
+Each permission group in the root key builder has checkboxes to grant read or write across the whole group in one click. Environments are grouped under their app, production first, and the closed picker shows a count.
+
+![Root key group toggles](/images/changelog/2026-10-16/root-key-groups.png)
+
+![Environments grouped by app](/images/changelog/2026-10-16/root-key-groups-env-scope.png)
+
+### Logs filters
+
+Every logs filter now has a search box at the top, so typing "blocked" or "5xx" finds the right option. The audit log filter groups its events by resource with a select-all per group, and you can search events, users, root keys, and buckets.
+
+![Audit log filter search](/images/changelog/2026-10-16/audit-log-filter.png)
+
+### Usage and plans
+
+The API usage card shows the billing period dates and how many days until it resets. It also has an Upgrade button, which turns primary once you pass 90% of your quota. New Compute customers get a one-time $5 credit when they add a card, and the plan picker shows what your first invoice will be.
+
+![API usage card](/images/changelog/2026-10-16/usage-card.png)
+
+### Ratelimit namespaces API
+
+You can now create, list, rename, and delete ratelimit namespaces through the API. Deleting a namespace also removes its overrides.
+
+### Keys
+
+Key lists in the dashboard load much faster in large keyspaces. They now page with Previous and Next, and they no longer show a total count.
+
+### Response headers
+
+API responses no longer include timing headers by default. If you still want them, send `X-Unkey-Debug: 1`.
+
+### GitHub deployments
+
+Deployment links on GitHub now open the correct app, and each deployment reports a status on its commit.
+
+## Bug fixes
+
+- Log and list tables show their rows in Safari again
+- Full-width pages fill the window, with no empty strip on the right or gap under tables
+- The Requests chart tooltip on the API overview is no longer cut off
+- The audit log page no longer times out in busy workspaces
+- The repository list loads when one of your GitHub installations was removed
+- Creating an app with a name that's already taken returns a clear error instead of a server error
+- A gateway policy that names a ratelimit the key doesn't have now returns a 422 instead of a server error
+- A denied key lookup no longer reveals resource IDs or whether the key exists
+- Team members and identities show an error with Retry when they fail to load
+- Selected and hovered items in dialogs are now easier to tell apart
+- The last few calls the dashboard makes for you no longer show up in your API request logs
