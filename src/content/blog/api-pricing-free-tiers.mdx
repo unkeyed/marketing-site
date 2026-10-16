@@ -59,7 +59,7 @@ API Management gives you keys, rate limits, identities and analytics for an API 
 
 I care most about the fact that only valid requests count. If a verification fails because the key is wrong, or because the customer is over their rate limit, you don't pay for it. So if someone hammers your API with a revoked key, none of that traffic eats into your quota.
 
-You're billed for key verifications and for standalone rate limit calls. When you go past your quota, we move you up a tier and send you an email.
+You're billed for key verifications and for standalone rate limit calls. When you go past your quota, we send you an email, and you upgrade your plan yourself. We never move you to a different tier automatically.
 
 A rate limit attached to a key is checked as part of the verification and doesn't add a second operation. A standalone rate limit call is billed as its own operation.
 
