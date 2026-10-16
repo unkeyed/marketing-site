@@ -457,18 +457,18 @@ Every verification and every `ratelimit.limit` call ends up in analytics, and th
 
 :::note UNVERIFIED
 
-UNVERIFIED: a keyspace Logs page, and a Ratelimit index that lists every namespace with its traffic. The screenshots below are the identity request list and one namespace's Overrides page.
+UNVERIFIED: a keyspace Logs page, and a Ratelimit index that lists every namespace with its traffic. The screenshots below are the identity request list, the Edit ratelimit dialog, and one namespace's Overrides page.
 
 :::
 
 - The identity page lists each request as Valid or Ratelimited, with the key id and the region.
-- **Edit ratelimit** on that identity holds the named limits. The screenshot we had cut off the `requests` limit, refill interval, and Auto Apply checkbox, so it is not included.
+- **Edit ratelimit** on that identity holds the named limits.
 - Filtering **Outcome is RATE_LIMITED** leaves the rejected requests.
 - A namespace's **Overrides** page lists identifiers that have a different limit.
 
 ![The identity page for blog-draft-cus_acme listing requests, with Valid and Ratelimited rows and the key id on each row](/images/blog-images/rate-limit-api-per-customer/rl-identity.png)
 
-{/* RETAKE: rl-identity-ratelimit.png: Edit ratelimit dialog for identity blog-draft-cus_acme (id_nLpkSl2sI) with both limits fully visible. Dashboard: Identities > blog-draft-cus_acme > Edit ratelimit. Must show exports at limit 5, refill 1 hour, Auto Apply off, and requests at limit 1000, refill 1 minute, Auto Apply on. */}
+![Edit ratelimit for blog-draft-cus_acme: exports is 5 per hour with Auto Apply off, and requests is 1000 per minute with Auto Apply on](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit.png)
 
 ![Identity requests for blog-draft-cus_acme filtered to Outcome is RATE_LIMITED](/images/blog-images/rate-limit-api-per-customer/rl-ratelimited-logs.png)
 
