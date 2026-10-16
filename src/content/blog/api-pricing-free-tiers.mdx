@@ -1,0 +1,164 @@
+---
+date: 2026-10-16
+title: 'API platform and API gateway pricing: free tiers and what you pay as traffic grows'
+description: 'What your API will cost on Unkey, Zuplo, Kong, AWS and Cloudflare as traffic grows.'
+author: james
+isDraft: true
+tags: ['marketing']
+---
+
+This post covers pricing for an API you build and sell to your own customers, not the price of calling an AI model.
+
+Every pricing page says "free tier". Before launching an API, I wanted to know what I'd pay at launch, at a million requests a month, and at ten million, and which part of the bill would grow first.
+
+So I priced it out using only the numbers each vendor publishes. I run Unkey, so keep that in mind as you read. Prices were checked on October 16, 2026, and every source is linked at the end.
+
+## What you're paying for
+
+A gateway is one line on the bill. An API that customers pay for usually needs four things:
+
+- **Somewhere to run.** A server, a container, or a serverless function.
+- **API keys.** You need to issue, verify, revoke and expire them.
+- **Rate limits.** Ideally per customer, so a customer with five keys doesn't get five times the limit.
+- **Logs and analytics.** You want enough to answer "who is hitting us, and who got a 429?"
+
+Some products cover all four and some cover one, so when you compare prices, compare what you'd have to add on top.
+
+## Free tiers
+
+| Product              | What's free                              | Limit                                             | Next step up                               |
+| -------------------- | ---------------------------------------- | ------------------------------------------------- | ------------------------------------------ |
+| Unkey API Management | Keys, rate limits, identities, analytics | 150K valid requests/mo, 1,000 keys, 1-day logs    | Pro from $25/mo                            |
+| Unkey Compute        | No free plan                             |                                                   | Starter at $5/mo with $5 of usage included |
+| Zuplo                | Gateway, keys, analytics                 | 100K requests/mo                                  | Builder at $25/mo                          |
+| Kong Konnect         | 30-day trial only                        |                                                   | Plus from $25/mo plus usage                |
+| AWS API Gateway      | REST and HTTP API calls                  | 1M calls each per month, new customers, 12 months | Per-request pricing                        |
+| Cloudflare Workers   | Hosting                                  | 100,000 requests per day                          | Paid plan from $5/mo                       |
+
+Unkey API Management, Zuplo and Cloudflare Workers have free tiers that don't expire. AWS's free tier ends after 12 months and only applies to new accounts, and Kong Konnect gives you a trial rather than a free tier.
+
+## Unkey
+
+Unkey sells two products, and you can use either one on its own or both together.
+
+### API Management
+
+API Management gives you keys, rate limits, identities and analytics for an API you host wherever you like.
+
+| Tier       | Price/mo | Valid requests/mo | API keys | Log retention |
+| ---------- | -------- | ----------------- | -------- | ------------- |
+| Free       | $0       | 150K              | 1,000    | 1 day         |
+| Pro        | $25      | 250K              | 1M       | 7 days        |
+| Pro        | $50      | 500K              | 1M       | 7 days        |
+| Pro        | $75      | 1M                | 1M       | 7 days        |
+| Pro        | $100     | 2M                | 1M       | 7 days        |
+| Pro        | $250     | 10M               | 1M       | 7 days        |
+| Pro        | $500     | 50M               | 1M       | 7 days        |
+| Pro        | $1,000   | 100M              | 1M       | 7 days        |
+| Enterprise | Custom   | Custom            | Custom   | Custom        |
+
+I care most about the fact that only valid requests count. If a verification fails because the key is wrong, or because the customer is over their rate limit, you don't pay for it. So if someone hammers your API with a revoked key, none of that traffic eats into your quota.
+
+You're billed for key verifications and for standalone rate limit calls. When you go past your quota, we move you up a tier and send you an email.
+
+A rate limit attached to a key is checked as part of the verification and doesn't add a second operation. A standalone rate limit call is billed as its own operation.
+
+### Compute
+
+Compute runs your API for you and puts the gateway in front of it.
+
+| Plan     | Price/mo | Included usage | Per instance     | Custom domains | Replicas per region | Log retention |
+| -------- | -------- | -------------- | ---------------- | -------------- | ------------------- | ------------- |
+| Starter  | $5       | $5             | 2 vCPU / 2 GiB   | 1              | 4                   | 3 days        |
+| Pro      | $25      | $25            | 8 vCPU / 8 GiB   | Unlimited      | 8                   | 7 days        |
+| Business | $50      | $50            | 16 vCPU / 32 GiB | Unlimited      | 16                  | 14 days       |
+
+Each plan's included usage is a credit that pays for compute, storage, egress and active keys. It resets every billing cycle and doesn't roll over, and once it's used up you pay these unit rates:
+
+- vCPU: $0.000006944 per second
+- Memory: $0.000003472 per GB per second
+- Disk: $0.00000006 per GB per second
+- Egress: $0.05 per GB
+- Active key: $0.002 per month
+
+Until December 31, 2026, your first month on each plan is $5 cheaper. It's a launch offer, so I wouldn't plan around it.
+
+## Zuplo
+
+- **Free:** $0, 100K requests a month, no credit card.
+- **Builder:** $25/mo with 100K requests included, then $100 per 100K. Custom domains are $25/mo extra for up to 2. The pricing page says Builder caps at 2 developer seats and 1M requests a month, and isn't a team plan.
+- **Enterprise:** from $1,000/mo on an annual contract.
+
+Zuplo is a gateway, so you still host the API somewhere else.
+
+## Kong Konnect
+
+- **Plus:** from $25/month plus usage, billed monthly, with a 30-day free trial.
+- API gateway traffic on Plus includes 1 million requests a month, then $200 for each additional million, up to 10 million a month.
+- Control planes are priced separately, with serverless at $25/month each, hybrid at $200/month each, and Dedicated Cloud Gateway at $500/month each plus $0.15 per GB.
+
+Kong Gateway's open source edition is free if you run it yourself, but then you're paying for the servers and for your own time.
+
+## AWS API Gateway
+
+From AWS's price list for US East (N. Virginia):
+
+- **HTTP APIs:** $1.00 per million for the first 300 million requests, then $0.90 per million.
+- **REST APIs:** $3.50 per million for the first 333 million, then $2.80 per million for the next 667 million.
+- **Free tier:** one million REST calls and one million HTTP API calls a month, for new customers, for 12 months. New customers since July 15, 2025 also get up to $200 in Free Tier credits.
+
+Per request, AWS is the cheapest option in this post. API Gateway doesn't run your code, though, so Lambda or ECS shows up as a separate bill, and you'll be setting up keys and usage plans yourself. Data transfer is billed on top.
+
+## Cloudflare Workers
+
+- **Free:** 100,000 requests per day, 10 ms of CPU per invocation.
+- **Paid:** $5/month minimum, with 10 million requests a month included, then $0.30 per million, plus 30 million CPU ms included, then $0.02 per million CPU ms.
+
+Paying $5 for 10 million requests is very good value for hosting, but Workers doesn't issue per-customer API keys for you. Cloudflare's [API Shield](https://developers.cloudflare.com/api-shield/security/jwt-validation/) can validate tokens, but you bring the issuer, so you'd still have to build or buy something that issues keys.
+
+## What you pay at 100K, 1M and 10M a month
+
+**Gateway or key layer only (host the API elsewhere):**
+
+| Volume/mo | Unkey API Management | Zuplo                   | Kong Konnect Plus       | AWS HTTP API |
+| --------- | -------------------- | ----------------------- | ----------------------- | ------------ |
+| 100K      | $0 (Free)            | $0 (Free)               | $25                     | $0.10        |
+| 1M        | $75                  | $925 ($25 + 9 x $100)   | $25                     | $1.00        |
+| 10M       | $250                 | Enterprise, from $1,000 | $1,825 ($25 + 9 x $200) | $10.00       |
+
+For Unkey, a request here means one key verification with its rate limit attached, which bills as one operation. Standalone rate limit calls count separately. For the others it means requests. AWS figures ignore the free tier, which would make the first two rows $0 for a new account in year one. Zuplo's custom domain fee and Kong's control plane fee are not included.
+
+**Adding hosting on Unkey Compute (Starter):**
+
+Say you run one small instance averaging 0.25 vCPU for a 30-day month (2,592,000 seconds). CPU comes to 0.25 x 2,592,000 x $0.000006944, which is about $4.50 and fits inside the $5 credit. Memory is billed on top at $0.000003472 per GB per second, and the credit absorbs part of it. Disk and egress are left out because they vary too much. If 100 active keys go through the gateway, that adds $0.20.
+
+Memory is billed on memory actually used, in GiB, with no rounding up. The memory size you configure is only a cap, so an idle instance costs less than one running flat out.
+
+**Hosting on Cloudflare Workers Paid:** $5 covers all three traffic levels on requests alone, before CPU time.
+
+These numbers shift if you verify lots of distinct keys through Compute, push a lot of egress, need more than 10M requests on Kong Plus, or need more than two seats on Zuplo Builder.
+
+## What makes a bill unpredictable
+
+- **Overage steps.** Paying $100 per 100K on Zuplo Builder or $200 per million on Kong Plus adds up fast.
+- **Plan caps.** Builder stops at 1M requests and Kong Plus at 10M. Past those, you're talking to sales.
+- **What counts as a request.** If a vendor bills blocked and invalid requests, an abusive client can run up your bill. Unkey doesn't bill them.
+- **Separate bills.** A cheap gateway still leaves you watching a hosting bill and a logging bill next to it.
+- **Credits that expire.** AWS's free tier and credits run out after 12 months.
+
+## Keeping the bill in check on Unkey
+
+- Set a monthly spend budget for Compute. Admins get an email at 50, 75 and 100 percent, and they can choose to stop compute at 100 percent.
+- Put rate limits on keys or identities, since requests the limit rejects aren't billed.
+- Preview deployments cost the same as production, so delete the ones you don't need.
+- You're billed for average CPU and memory use, not the size you configured.
+
+## Sources
+
+All checked on October 16, 2026:
+
+- Unkey: https://www.unkey.com/pricing, https://unkey.com/docs/platform/billing/limits, https://unkey.com/docs/platform/billing/usage, https://unkey.com/docs/compute/get-started/plans
+- Zuplo: https://zuplo.com/pricing
+- Kong: https://konghq.com/pricing
+- AWS: https://aws.amazon.com/api-gateway/pricing/
+- Cloudflare: https://developers.cloudflare.com/workers/platform/pricing/, https://developers.cloudflare.com/api-shield/security/jwt-validation/
