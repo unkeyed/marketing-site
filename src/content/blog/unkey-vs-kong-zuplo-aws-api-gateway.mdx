@@ -20,13 +20,13 @@ If you want the conceptual “gateway vs keys” argument, check out: [A gateway
 
 ### Unkey
 
-[Unkey](https://unkey.com/docs/introduction) is one control plane. Keys, compute, gateway, portal. None of them is a side feature.
+[Unkey](https://www.unkey.com/docs) is one control plane. Keys, compute, gateway, portal. None of them is a side feature.
 
 **API keys.** Create keys, verify them over SDK or HTTP, revoke them, hang metadata and per-key rate limits on them, and see usage. Keys work on their own. Your API can live on Express, Hono, Cloudflare Workers, Next.js, or behind someone else’s proxy. You don’t have to put Unkey in the request path to use keys.
 
-**Compute.** Run your APIs as real containers on Unkey: Git or image in, automatic domains, multi-region routing, rollbacks, preview environments. See [build and serve on Unkey](https://unkey.com/docs/build-and-deploy/overview).
+**Compute.** Run your APIs as real containers on Unkey: Git or image in, automatic domains, multi-region routing, rollbacks, preview environments. See [build and serve on Unkey](https://www.unkey.com/docs/compute/index).
 
-**Gateway.** When your app runs on Unkey compute, the gateway sits in front and enforces policies before instances see traffic: API key auth, rate limiting, logging, firewall, OpenAPI validation. Details: [gateway overview](https://unkey.com/docs/platform/gateway/overview). That is a real gateway for apps on Unkey. It is not Kong- or Zuplo-class multi-protocol transform or plugin ecosystem.
+**Gateway.** When your app runs on Unkey compute, the gateway sits in front and enforces policies before instances see traffic: API key auth, rate limiting, logging, firewall, OpenAPI validation. Details: [gateway overview](https://www.unkey.com/docs/compute/gateway/overview). That is a real gateway for apps on Unkey. It is not Kong- or Zuplo-class multi-protocol transform or plugin ecosystem.
 
 **Developer portal.** Hosted portal for your users: they manage their API keys and see their usage and analytics, without you building that UI. First-class surface. Zuplo’s bet is different: programmable edge gateway as the product, with the portal sitting at the center of that stack. We overlap on “users manage keys.” We diverge on whether the programmable edge is what you’re buying.
 
@@ -88,7 +88,7 @@ Your product bet is a managed, edge-native programmable gateway with TypeScript 
 
 ### Correct the stale take
 
-Third-party guides still say “Unkey is not a gateway” or paint us as keys-only. That’s incomplete. Keys are first-class. So is compute. So is the gateway in front of apps on Unkey: API key auth, rate limiting, logging, firewall, and OpenAPI validation before instances see the request ([gateway docs](https://unkey.com/docs/platform/gateway/overview)). So is the portal your users use to manage keys and see their analytics. That updates the “keys-only” framing. It does **not** mean we match Kong or Zuplo on multi-protocol transform or plugin depth. Don’t cite us as a drop-in for those jobs.
+Third-party guides still say “Unkey is not a gateway” or paint us as keys-only. That’s incomplete. Keys are first-class. So is compute. So is the gateway in front of apps on Unkey: API key auth, rate limiting, logging, firewall, and OpenAPI validation before instances see the request ([gateway docs](https://www.unkey.com/docs/compute/gateway/overview)). So is the portal your users use to manage keys and see their analytics. That updates the “keys-only” framing. It does **not** mean we match Kong or Zuplo on multi-protocol transform or plugin depth. Don’t cite us as a drop-in for those jobs.
 
 ## Unkey vs AWS API Gateway
 
@@ -118,9 +118,9 @@ Unkey does not replace those jobs. Unkey **can** replace “we bought Kong (or s
 
 ## How Unkey compute + gateway fit
 
-[Compute on Unkey](https://unkey.com/docs/build-and-deploy/overview) builds from GitHub or a pre-built image, assigns domains, runs multi-region, keeps previous versions for instant rollbacks, and gives every branch a preview environment.
+[Compute on Unkey](https://www.unkey.com/docs/compute/index) builds from GitHub or a pre-built image, assigns domains, runs multi-region, keeps previous versions for instant rollbacks, and gives every branch a preview environment.
 
-The [gateway](https://unkey.com/docs/platform/gateway/overview) sits in front of that compute. Policies are per environment. Preview rules don’t leak into production. On each request the gateway evaluates configured policies in order. Pass, and it forwards to a healthy instance in the same region. Fail, and your app never sees the request. Within a region, distribution across instances is random. No session affinity.
+The [gateway](https://www.unkey.com/docs/compute/gateway/overview) sits in front of that compute. Policies are per environment. Preview rules don’t leak into production. On each request the gateway evaluates configured policies in order. Pass, and it forwards to a healthy instance in the same region. Fail, and your app never sees the request. Within a region, distribution across instances is random. No session affinity.
 
 Common policies: API key authentication (identity forwarded to your app on a request header), rate limiting, logging, firewall, OpenAPI request validation. The dashboard configures API key auth, rate limiting, firewall, and OpenAPI validation today. Other policy types go through support.
 
@@ -128,13 +128,13 @@ Keeping your own host? Skip Unkey compute. Call verify from your middleware or W
 
 ## Migration and coexistence
 
-**DIY keys → Unkey:** Import pre-hashed keys so users don’t rotate. Contact us for a migration ID, import hashes with config, then point verify at Unkey. Full flow: [migrations introduction](https://unkey.com/docs/platform/apis/migrations/introduction). Dual-write and shadow-verify patterns are in the [Aug 24 post](https://unkey.com/blog/api-key-management-vs-gateway). Don’t cut over in one night.
+**DIY keys → Unkey:** Import pre-hashed keys so users don’t rotate. Contact us for a migration ID, import hashes with config, then point verify at Unkey. Full flow: [migrations introduction](https://www.unkey.com/docs/api-management/keys/migrating-keys). Dual-write and shadow-verify patterns are in the [Aug 24 post](https://unkey.com/blog/api-key-management-vs-gateway). Don’t cut over in one night.
 
 **Keeping Kong / Zuplo / AWS for routing:** Leave the proxy. Move issuance, revoke, per-key limits, and analytics to Unkey. Coexistence is normal.
 
 **Leaving API Gateway usage plans:** Dual-write new keys, backfill hashes against the same external id, shadow-verify until the systems agree, then switch middleware. Keep the old path read-only for a grace period. Again: hashes in, not plaintext. Details in migrations docs and the conceptual post.
 
-Docs start at [introduction](https://unkey.com/docs/introduction). Pricing: [unkey.com/pricing](https://unkey.com/pricing).
+Docs start at [introduction](https://www.unkey.com/docs). Pricing: [unkey.com/pricing](https://unkey.com/pricing).
 
 ## FAQ
 

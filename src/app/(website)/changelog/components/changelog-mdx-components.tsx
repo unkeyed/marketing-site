@@ -6,7 +6,7 @@ import { Check, Danger, Info, Note, Tip, Warning } from './callouts';
 
 // Rewrite relative links (e.g. /platform/instances/overview) to absolute docs URLs
 function ChangelogAnchor({ href, className, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
-  const resolvedHref = href?.startsWith('/') ? `https://unkey.com/docs${href}` : href;
+  const resolvedHref = href?.startsWith('/') ? `https://www.unkey.com/docs${href}` : href;
   return (
     <a
       {...props}
