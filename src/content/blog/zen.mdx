@@ -188,7 +188,7 @@ func WithErrorHandling(logger logging.Logger) Middleware {
             case fault.NOT_FOUND:
                 return s.JSON(http.StatusNotFound, api.NotFoundError{
                     Title:     "Not Found",
-                    Type:      "https://unkey.com/docs/errors/not_found",
+                    Type:      "https://www.unkey.com/docs/errors/not_found",
                     Detail:    fault.UserFacingMessage(err),
                     RequestId: s.requestID,
                     Status:    http.StatusNotFound,
@@ -197,7 +197,7 @@ func WithErrorHandling(logger logging.Logger) Middleware {
             case fault.BAD_REQUEST:
                 return s.JSON(http.StatusBadRequest, api.BadRequestError{
                     Title:     "Bad Request",
-                    Type:      "https://unkey.com/docs/errors/bad_request",
+                    Type:      "https://www.unkey.com/docs/errors/bad_request",
                     Detail:    fault.UserFacingMessage(err),
                     RequestId: s.requestID,
                     Status:    http.StatusBadRequest,
@@ -210,7 +210,7 @@ func WithErrorHandling(logger logging.Logger) Middleware {
             // Default to 500 Internal Server Error
             return s.JSON(http.StatusInternalServerError, api.InternalServerError{
                 Title:     "Internal Server Error",
-                Type:      "https://unkey.com/docs/errors/internal_server_error",
+                Type:      "https://www.unkey.com/docs/errors/internal_server_error",
                 Detail:    fault.UserFacingMessage(err),
                 RequestId: s.requestID,
                 Status:    http.StatusInternalServerError,
