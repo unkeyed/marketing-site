@@ -66,6 +66,8 @@ const MARKDOWN_PAGES: Record<string, string> = {
   '/about': '/about.md',
   '/startups': '/startups.md',
   '/yc': '/yc.md',
+  '/all-things-open': '/all-things-open.md',
+  '/all-things-open/rules': '/all-things-open/rules.md',
   '/blog': '/blog.md',
   '/case-studies': '/case-studies.md',
   '/glossary': '/glossary.md',
