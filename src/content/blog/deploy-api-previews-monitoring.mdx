@@ -45,13 +45,13 @@ Then pick the repository.
 
 ![The Import a GitHub repository step listing the account's repositories](/images/blog-images/deploy-api-previews-monitoring/gh-repo-picker-2x.png)
 
-3. On **Set up your app**, enter a name and pick the branch. If the app needs a secret, such as a database URL, choose **Edit** next to environment variables and add it. Mark it sensitive and it stays write-only. Use the environment dropdown to give Production and Preview separate values.
+3. On **Set up your app**, enter a name and pick the branch. If the app needs a secret, such as a database URL, choose **Edit** next to environment variables and add it. If you mark it sensitive, it stays write-only. Use the environment dropdown to give Production and Preview separate values.
 
 ![The Set up your app step: name api, branch main, automatic build, one instance in four regions](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2x.png)
 
 ![The Environment variables dialog scoped to the Preview environment](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2-2x.png)
 
-4. Choose **Deploy**. You can watch the build log stream while the image builds.
+4. Choose **Deploy**. The build log streams while the image builds.
 
 ![A deployment building from main, with the build log open](/images/blog-images/deploy-api-previews-monitoring/gh-building-2x.png)
 
@@ -59,7 +59,7 @@ Then pick the repository.
 
 ### From the API
 
-Create a project, then create an app connected to your repository. You don't need to set `defaultBranch`, because Unkey reads it from the repository.
+Create a project, then create an app connected to your repository. Unkey reads `defaultBranch` from the repository, so you don't need to set it.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/projects.createProject \
@@ -104,7 +104,7 @@ npm install -g unkey
 export UNKEY_ROOT_KEY="<your root key>"
 ```
 
-These are the same four calls in the CLI.
+Run the same four calls with the CLI.
 
 ```bash
 unkey api projects create-project --name=my-project --slug=my-project
@@ -129,7 +129,7 @@ A pull request from a fork waits for a project member to approve it, because its
 
 Give the preview environment its own values. Point it at a test database and test-mode payment keys. You can also give it a separate keyspace, so a preview key can't call production.
 
-You don't have to clean up previews yourself. Unkey stops them in the cases below.
+Unkey stops previews in these cases, so you don't have to clean them up yourself.
 
 | Trigger                                                           | What stops                                    | When              |
 | ----------------------------------------------------------------- | --------------------------------------------- | ----------------- |
@@ -161,11 +161,11 @@ curl -X POST https://api.unkey.com/v2/keys.createKey \
   -d '{"apiId":"api_xxx","name":"acme blog demo","externalId":"acme","ratelimits":[{"name":"requests","limit":5,"duration":60000,"autoApply":true}]}'
 ```
 
-That limit is 5 requests per minute, which is low enough to watch it trip. In production, start nearer 100.
+That's 5 requests per minute. It's low enough that you can watch it trip. In production, start closer to 100.
 
-`data.key` is the full key, and you only see it in this response. Unkey only stores a hash, so hand the key to the customer now.
+`data.key` is the full key, and you only see it in this response. Unkey stores just a hash, so hand the key to the customer now.
 
-Next, tell the gateway to check keys. The policy needs the keyspace id (`ks_xxx`), which is on the keyspace **Settings** page and in the `keyspaceId` field that `keys.verifyKey` returns. The root key needs `environment.*.set_policies`.
+Next, tell the gateway to check keys. The policy needs the keyspace id (`ks_xxx`). You can find it on the keyspace **Settings** page and in the `keyspaceId` field that `keys.verifyKey` returns. The root key needs `environment.*.set_policies`.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
@@ -209,7 +209,7 @@ Now call `/whoami` with the key.
 curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/whoami
 ```
 
-The response carries the caller's limit and how many requests they have left.
+The response headers show the caller's limit and how many requests they have left.
 
 ```text
 HTTP/2 200
@@ -217,7 +217,7 @@ x-ratelimit-limit: 5
 x-ratelimit-remaining: 4
 ```
 
-The body is the `X-Unkey-Principal` header the gateway added, which tells your code who is calling.
+The body is the `X-Unkey-Principal` header that the gateway added. It tells your code who is calling.
 
 ```json
 {
@@ -283,7 +283,7 @@ curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/items/2
 
 ![Logs searched for index out of range: three ERROR lines, with error: get item 2: index out of range open](/images/blog-images/deploy-api-previews-monitoring/step4-logs-500-2x.png)
 
-3. Push the fix to a branch, and Unkey builds a preview for it. Call the same path on the preview's branch domain with your key.
+3. Push the fix to a branch. Unkey builds a preview for it. Call the same path on the preview's branch domain with your key.
 
 ```bash
 curl -i -H "Authorization: Bearer $API_KEY" https://your-app-git-your-branch.unkey.app/items/2
@@ -300,9 +300,9 @@ curl -i -H "Authorization: Bearer $API_KEY" https://your-app-git-your-branch.unk
 
 ![The app's Deployments list: the Fix item lookup preview at Ready, above the current production deployment, Look up items by index](/images/blog-images/deploy-api-previews-monitoring/step4-preview-fix-2x.png)
 
-4. Merge the branch, and the push to your default branch deploys the fix to production.
+4. Merge the branch. The push to your default branch deploys the fix to production.
 
-Requests the gateway rejects, like a missing key or a rate limit, never reach your app, so they don't show up in **Requests**. You can find those key checks in API Management's verification analytics.
+The gateway rejects some requests, like ones with a missing key or ones over the rate limit. Those never reach your app, so they don't show up in **Requests**. You can find those key checks in API Management's verification analytics.
 
 To query the same data with SQL, call `analytics.getGatewayRequests`. The root key needs `project.*.read_gateway_requests`. Queries cover the last 7 days.
 
@@ -371,7 +371,7 @@ You can cap the bill with a monthly budget.
 ## Further reading
 
 - [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github) and [Production and preview](https://unkey.com/docs/compute/concepts/production-and-preview)
-- [Gateway policies](https://unkey.com/docs/compute/gateway/policies), [API key authentication policy](https://unkey.com/docs/compute/gateway/api-key-auth), [Rate limit policy](https://unkey.com/docs/compute/gateway/rate-limiting), [The principal header](https://unkey.com/docs/compute/gateway/principal)
+- [Gateway policies](https://unkey.com/docs/compute/gateway/policies), [API key authentication policy](https://unkey.com/docs/compute/gateway/api-key-auth), [The principal header](https://unkey.com/docs/compute/gateway/principal)
 - [Observability](https://unkey.com/docs/compute/observe/overview) and [Query gateway requests and runtime logs](https://unkey.com/docs/compute/observe/analytics-api)
 - [Plans](https://unkey.com/docs/platform/billing/plans) and [pricing](https://www.unkey.com/pricing)
 - Related posts: [Best serverless API hosting in 2026](https://www.unkey.com/blog/best-serverless-api-hosting-2026), [git push to deploy](https://www.unkey.com/blog/git-push), [From endpoint to API](https://www.unkey.com/blog/from-endpoint-to-api)
