@@ -93,27 +93,27 @@ A new app starts at port 8080 with 0.25 vCPU and 256 MiB. This one is running in
 
 ### From the API or CLI
 
-The same flow is a set of `POST` calls to `https://api.unkey.com/v2/{service}.{procedure}` with a root key in `Authorization: Bearer`.
+Every call is a `POST` to `https://api.unkey.com/v2/{service}.{procedure}` with a root key in `Authorization: Bearer`.
+
+`projects.createProject` creates the project. `apps.createApp` connects the repo when the body includes `"git":{"repository":"owner/repo"}`. Unkey fills in `defaultBranch` from the repository.
 
 ```bash
-curl -X POST https://api.unkey.com/v2/github.installApp \
-  -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
-  -d '{}'
-
-curl -X POST https://api.unkey.com/v2/apps.createApp \
-  -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
-  -d '{"project":"blog-draft-gh","name":"blog-draft-gh","slug":"blog-draft-gh","git":{"repository":"OWNER/REPO"}}'
-
 curl -X POST https://api.unkey.com/v2/deployments.createDeployment \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" -H "Content-Type: application/json" \
-  -d '{"project":"blog-draft-gh","app":"blog-draft-gh","environment":"production","git":{}}'
+  -d '{"project":"my-project","app":"api","environment":"production","git":{"branch":"main"}}'
 ```
 
-`github.installApp` returns a URL to open. `createDeployment` returns immediately. Poll `deployments.getDeployment` until the status is `ready`, `failed`, `skipped`, `superseded`, `stopped`, or `cancelled`.
+That returns `201` and a deployment id. Poll `deployments.getDeployment`. On a small app the status moves through `building` and `deploying` to `ready` in about 30 seconds. The app is then live at `https://<project>-<app>-<workspace>.unkey.app`.
+
+`POST /v2/deployments.createDeployment` is deprecated in favor of `POST /v3/deployments.createDeployment`. On v3, `oci.image` replaces `image.dockerImage`.
 
 ![getDeployment for a production deployment built from the main branch, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-rollback-monitoring/01-deploy-ready.png)
 
-A ready deployment includes the git branch, the commit, and the domains. The live domain is `<project>-<app>-<workspace>.unkey.app`. The response also lists an environment domain, a branch domain, a commit domain, and a domain pinned to that deployment.
+A ready deployment lists the git branch, the commit, and the domains: the live domain, an environment domain, a branch domain, a commit domain, and one pinned to that deployment.
+
+Install the CLI with `npm install -g unkey` and export `UNKEY_ROOT_KEY`. The same four calls are `unkey api projects create-project`, `unkey api apps create-app --git='{"repository":"owner/repo"}'`, `unkey api deployments create-deployment --git='{"branch":"main"}'`, and `unkey api deployments get-deployment`.
+
+If the image is already in a registry, `unkey deploy docker.io/traefik/whoami:v1.10.3 --project=my-project --app=api --env=production` deploys it. That image listens on port 80, so set the app port first with `unkey api apps update-settings --port=80`. The command prints `Deployment completed successfully` and finishes in about 9 seconds.
 
 A workspace builds one deployment at a time. The rest wait in `pending`. Production jumps ahead of preview, so a fix does not wait on pull request builds. A deployment that has waited an hour fails. Deploy it again once the queue has drained.
 
@@ -169,7 +169,7 @@ curl -X POST https://api.unkey.com/v2/keys.createKey \
 
 The gateway wants the keyspace id (`ks_...`). If you pass the API id (`api_...`) instead, the call returns 404 and says the keyspace does not exist. Both ids are on the keyspace **Settings** page. `keys.verifyKey` returns the keyspace id as `keyspaceId`.
 
-Set production policies next. They run from top to bottom. Put the rate limit after the key check, or every request counts as `unknown`. Five requests a minute is easy to trip while you are checking the setup. A production limit is more often something like 100 per minute. The root key needs `environment.*.set_policies`. In the dashboard, use **Policies > Add Policy > Key Auth**, then **Rate Limit**.
+Set the production policies next. They run from top to bottom. Put the rate limit after the key check, or every request is counted as `unknown`. Five a minute is enough to see it trip. In production, start nearer 100. The root key needs `environment.*.set_policies`. In the dashboard, use **Policies > Add Policy > Key Auth**, then **Rate Limit**.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
@@ -230,26 +230,34 @@ The deployment page charts requests per second, latency, CPU, and memory. The do
 
 Build logs are the steps and output from the image build, on the deployment page while it is building.
 
-Requests a policy rejects are absent from the request log. They never reached the app. Gateway key checks still show up in API Management's verification analytics, beside your own `keys.verifyKey` calls.
+A policy rejection never reaches the app, so it is missing from the request log. The key check still shows up in API Management's verification analytics, next to your own `keys.verifyKey` calls.
 
-You can query the request log with SQL through the analytics API. The table is `gateway_requests_v1`. This query, from the docs, finds the paths with the most 5xx responses in the last 24 hours.
+`analytics.getGatewayRequests` runs SQL against `gateway_requests_v1`. The root key needs the wildcard `project.*.read_gateway_requests`.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/analytics.getGatewayRequests \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"query":"SELECT path, count() AS total FROM gateway_requests_v1 WHERE response_status >= 500 AND time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 24 HOUR) GROUP BY path ORDER BY total DESC LIMIT 10"}'
+  -d '{"query":"SELECT path, count() AS requests, avg(total_latency) AS avg_latency FROM gateway_requests_v1 WHERE time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 1 HOUR) GROUP BY path ORDER BY requests DESC LIMIT 10"}'
 ```
 
-The root key needs the wildcard `project.*.read_gateway_requests`. A permission for a single project does not work. How far back you can query is the plan's log retention: 3 days on Starter, 7 on Pro, and 14 on Business. A filter that starts earlier fails with `query_range_exceeds_retention`. Runtime logs are in `runtime_logs_v1`, read with `analytics.getRuntimeLogs` (`project.*.read_runtime_logs`).
+A query that hits data returns `200`. Rows show up about 20 seconds after the traffic. The body is one object per path, with the count and the latency:
 
-There is no dashboard switch for that API. Ask support to turn it on for the workspace. Until then the call returns `412` `analytics_not_configured`. The Requests, Network, and metrics views in the dashboard do not depend on it.
+```json
+{
+  "data": [{ "path": "/healthz", "requests": "<count>", "avg_latency": "<ms>" }]
+}
+```
+
+Queries only cover the last 7 days. Ask for anything older and the API returns `400` `query_range_exceeds_retention`.
+
+Runtime logs are a different call, `analytics.getRuntimeLogs` on `runtime_logs_v1`. The root key needs its own runtime-logs read permission, `project.*.read_runtime_logs`. The gateway-requests permission does not cover them.
 
 To keep logs longer, or to use your own tools, a log drain forwards one stream (gateway HTTP requests, runtime logs, key verifications, rate limits, or audit logs) to an HTTPS endpoint or an Axiom dataset. Every plan starts with a log drain limit of 0. Ask support to raise it.
 
 ## How this compares with GitHub Actions plus Cloud Run, ECS or Kubernetes
 
-With the other setups you own more of the pieces. The rows link to each provider's docs.
+The other setups leave more of this to you. Each row links to that provider's docs.
 
 | Step                                 | Unkey                                                                        | GitHub Actions + Cloud Run                                                                                                                                 | GitHub Actions + ECS                                         | GitHub Actions + Kubernetes                                              |
 | ------------------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
