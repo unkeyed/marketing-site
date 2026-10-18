@@ -40,7 +40,7 @@ export const aboutContentData = {
     createElement('span', { className: 'font-medium text-foreground' }, 'James Perkins'),
     ' and ',
     createElement('span', { className: 'font-medium text-foreground' }, 'Andreas Thomas,'),
-    ' Unkey is building a fast, scalable, and straightforward API management platform.',
+    ' Unkey gives you API keys and rate limiting, and a place to deploy and run your APIs.',
   ),
   values: [
     {
@@ -76,12 +76,12 @@ export const aboutContentData = {
       {
         question: "What's your goal with Unkey?",
         answer:
-          "Our goal with Unkey is build an open source API management platform that doesn't require the burden or cost of traditional API management platforms like Kong or Azure APM. We want to embrace what developers know today, a global REST API that allows you to deploy and protect your API on the edge in under 5 minutes.",
+          'Our goal is to give you API keys, rate limiting, and a place to run your APIs, without the cost or overhead of Kong or Azure APM. We want to embrace what developers know today, a global REST API that allows you to deploy and protect your API on the edge in under 5 minutes.',
       },
       {
         question: 'What are you most proud of at Unkey?',
         answer:
-          'We are extremely happy with the culture we have built at Unkey, our team is small but powerful. Everyone in our team has input on the next feature or idea we have for Unkey, allowing us to build the best API management platform.',
+          'We are extremely happy with the culture we have built at Unkey, our team is small but powerful. Everyone on the team has a say in what we build next, which is how we build Unkey.',
       },
       {
         question: "What's been the biggest challenge?",
@@ -92,7 +92,7 @@ export const aboutContentData = {
     quote: createElement(
       Fragment,
       null,
-      `"We're James and Andreas. We founded Unkey with the vision of creating an API management platform that is both powerful and easy to use. We believe that APIs are the building blocks of the modern web, and we want to make it easier for developers to build and manage them."`,
+      `"We're James and Andreas. We founded Unkey so developers could create API keys, set rate limits, and deploy and run their APIs. We believe that APIs are the building blocks of the modern web, and we want to make it easier for developers to build and manage them."`,
     ),
     founders: [
       {
