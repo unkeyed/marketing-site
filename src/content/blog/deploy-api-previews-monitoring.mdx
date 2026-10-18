@@ -68,33 +68,33 @@ Unkey sets `UNKEY_DEPLOYMENT_ID` on every instance, so each response tells you w
 
 1. Open **Projects** and choose **Create project**, then enter a **Project Name**. Unkey generates the **Slug** from the name, and that slug is what the API and CLI use. The new project opens on an empty Apps list.
 
-![The Create New Project dialog with a project name and slug](/images/blog-images/deploy-api-previews-monitoring/gh-create-project.png)
+![The Create New Project dialog with Project Name and Slug fields](/images/blog-images/deploy-api-previews-monitoring/gh-create-project-2x.png)
 
 2. Choose **Create app**. The wizard opens on **Deploy a new app** and asks where the code comes from. Choose **GitHub repository**. This step doesn't ask for a name or a slug. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access.
 
-![Deploy a new app, with GitHub repository as the source](/images/blog-images/deploy-api-previews-monitoring/deploy-create-app.png)
+![Deploy a new app, with GitHub repository as the source](/images/blog-images/deploy-api-previews-monitoring/deploy-create-app-2x.png)
 
-Then pick the repository and branch.
+Then pick the repository. You choose the branch on the next step.
 
-![The Select a repository step listing GitHub repositories with a branch picker for each](/images/blog-images/deploy-api-previews-monitoring/gh-repo-picker.png)
+![The Import a GitHub repository step listing the account's repositories](/images/blog-images/deploy-api-previews-monitoring/gh-repo-picker-2x.png)
 
-3. Open **App settings > Environments**. Production and preview each show compute, domains, which branch they follow, and auto-deploy. In this app both environments run one instance at 1/4 vCPU and 256 MiB in Oregon, Singapore, Frankfurt, and N. Virginia. Production follows `main`. Preview follows every other branch, and each branch gets its own URL. Auto-deploy is on for both.
+3. **Set up your app** asks for a name and a branch, then shows the build, scaling, and environment variables. This one is named `api`, on `main`, with an automatic build at `./` and one instance in four regions. Environment variables start empty. Choose **Edit** there to add a key and a value. You can mark a value sensitive, and the environment dropdown chooses Production or Preview. The dialog here is set to Preview.
 
-![Production environment settings: four regions, the live and production domains, branch main, and auto-deploy on](/images/blog-images/deploy-api-previews-monitoring/gh-configure.png)
+![The Set up your app step: name api, branch main, automatic build, one instance in four regions](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2x.png)
 
-![Preview environment settings: the same four regions, the preview domain, all unassigned branches, and auto-deploy on](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2.png)
+![The Environment variables dialog scoped to the Preview environment](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2-2x.png)
 
-4. Root directory, Dockerfile, and watch paths live on the build settings screen, not on Environments. Point the root at a subdirectory for a monorepo, and add a watch path such as `services/api/**` when pushes that miss that path should be recorded as `skipped`. Environment variables are scoped per environment. If you mark a secret as sensitive, it stays write-only.
+4. The Build row is an automatic build at `./`. Point the root at a subdirectory for a monorepo, and add a watch path such as `services/api/**` when pushes that miss that path should be recorded as `skipped`. Environment variables are scoped per environment. If you mark a secret as sensitive, it stays write-only.
 
 5. Choose **Deploy**. The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**), and `finalizing` until it is `ready`. The build log streams during `building`.
 
-![A GitHub deployment while it is still deploying, with the build log open](/images/blog-images/deploy-api-previews-monitoring/gh-building.png)
+![Deployment d_RLHu3RvBU building from main, with the build log open](/images/blog-images/deploy-api-previews-monitoring/gh-building-2x.png)
 
 The deployment page shows the branch and commit it came from, and Unkey builds that commit straight from the repository.
 
-![The same deployment at Ready, with its domains and one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-ready.png)
+![The same deployment at Ready, Show URLs open, with one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-ready-2x.png)
 
-A new app starts at port 8080 with 0.25 vCPU and 256 MiB. This one is running in the four regions from the environment settings, one instance in each.
+A new app starts at port 8080 with 0.25 vCPU and 256 MiB. This one is running one instance in each of four regions.
 
 ### From the API or CLI
 
@@ -112,7 +112,7 @@ That returns `201` and a deployment id, which you poll with `deployments.getDepl
 
 `POST /v2/deployments.createDeployment` is deprecated in favor of `POST /v3/deployments.createDeployment`. On v3, `oci.image` replaces `image.dockerImage`.
 
-![getDeployment for a production deployment built from the main branch, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-monitoring/01-deploy-ready.png)
+![getDeployment for a production deployment built from the main branch, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-monitoring/01-deploy-ready-2x.png)
 
 A ready deployment lists the git branch, the commit, and its domains. You get the live domain, an environment domain, a branch domain, a commit domain, and one pinned to that deployment.
 
@@ -126,11 +126,11 @@ A workspace builds one deployment at a time, and the rest wait in `pending`. Pro
 
 Once the repository is connected, a push to the default branch deploys production. A push to any other branch creates a preview with its own branch domain. Each one shows up in GitHub as a deployment, and Unkey keeps a single pull request comment updated with a **Visit Preview** link.
 
-![The app's Deployments list with a preview deployment above the production deployment](/images/blog-images/deploy-api-previews-monitoring/gh-preview-list.png)
+![The app's Deployments list filtered to Preview, showing the Add /whoami route preview](/images/blog-images/deploy-api-previews-monitoring/gh-preview-list-2x.png)
 
 Open a preview deployment to see its branch, commit, environment, and domains.
 
-![A preview deployment page with its branch, commit, Preview environment, and domains](/images/blog-images/deploy-api-previews-monitoring/gh-preview-detail.png)
+![A preview deployment for Add /whoami route, with its branch, commit, Preview environment, and domains](/images/blog-images/deploy-api-previews-monitoring/gh-preview-detail-2x.png)
 
 Fork pull requests get extra care, because their code would run with your preview variables, including database URLs and third-party keys. A fork pull request waits in `awaiting_approval` until a project member approves it in the dashboard. GitHub shows a failing **Unkey Deploy Authorization** check ("Awaiting authorization from a project member") while it waits. Pushes from people with write access skip that check.
 
@@ -146,7 +146,7 @@ You don't have to clean up previews yourself, because Unkey stops them in these 
 
 A stopped preview answers `503` with `err:frontline:capacity:deployment_offline`. Wake it with **Wake deployment** or `deployments.startDeployment`. It goes through `deploying` and back to `ready`. You cannot start one while the workspace is suspended by its Compute spend budget.
 
-![Stopping a preview deployment, the branch domain returning 503 deployment_offline, then a 200 after it is started again](/images/blog-images/deploy-api-previews-monitoring/02-preview.png)
+![Stop and wake the preview: whoami goes 200, then 503 deployment_offline, then 200 again once it is ready](/images/blog-images/deploy-api-previews-monitoring/02-preview-2x.png)
 
 ## Step 3: Require an API key and add a rate limit at the gateway
 
@@ -198,13 +198,13 @@ A deployment keeps the image, variables, and policies it was created with. Savin
 
 With the new deployment live, a request with no key gets `401` `missing_credentials`. A bad key gets `401` `invalid_key`. Past the limit, the caller gets `429` `rate_limited` and `Retry-After`. Responses also include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` in Unix seconds.
 
-![Calls to the production domain: 401 with no key, 401 with a bad key, then 404s while the rate limit counts down, and 429 on the sixth request](/images/blog-images/deploy-api-previews-monitoring/03-key-auth-ratelimit.png)
+![Calls to the production domain: 401 with no key, 401 with a bad key, then 404s while the rate limit counts down, and 429 on the sixth request](/images/blog-images/deploy-api-previews-monitoring/03-key-auth-ratelimit-2x.png)
 
 Those `404`s are `page not found` because the calls hit `/`, and this app has no `/` route.
 
-A rejected request never reaches your code. One that gets through arrives with an `X-Unkey-Principal` header. `/whoami` returns that header as JSON.
+A rejected request never reaches your code. One that gets through arrives with an `X-Unkey-Principal` header. On the preview, `/whoami` with no key returns 401, and a valid key returns that header as JSON.
 
-![/whoami with no key returns 401, and a valid key returns the principal JSON](/images/blog-images/deploy-api-previews-monitoring/04-principal.png)
+![/whoami on the preview returns 401 with no key, and the principal JSON with a valid key](/images/blog-images/deploy-api-previews-monitoring/04-principal-2x.png)
 
 `subject` is the identity's `externalId`, or the key id when the key has no identity. `authenticatedSubject` counts by that value, so one customer's keys share a limit. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so the header inside Compute is the one Unkey set. If you run the same code somewhere else, a caller can forge it.
 
@@ -216,15 +216,17 @@ You don't install anything for this, because Unkey records the traffic for you.
 
 Open **Requests** to see the request log. It has one row for each request that reached your app, with the method, host, path, status, region, deployment, instance, and latency split into `gateway_latency` and `instance_latency`.
 
-![The project Requests view filtered to one app, with a request's deployment details open](/images/blog-images/deploy-api-previews-monitoring/gh-requests.png)
+![The project Requests view filtered to api, with GET /health 200 and its deployment details open](/images/blog-images/deploy-api-previews-monitoring/gh-requests-2x.png)
 
 Runtime logs live under **Logs**. They are stdout and stderr from every instance, with the severity parsed out.
 
-The deployment page charts requests per second, latency, CPU, and memory. The docs also list disk, network, instance count, and instance events. The **Network** view draws the regions and instances.
+The app **Overview** charts Requests/s and Errors/s. This one is Live, with 175 requests this hour, four regions, 0.25 vCPU, and 256 MiB.
 
-![The deployment Network view with one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-network.png)
+![The app Overview page with Requests/s and Errors/s, status, regions, and resources](/images/blog-images/deploy-api-previews-monitoring/gh-metrics-2x.png)
 
-![RPS, latency, CPU, and memory charts under the network map](/images/blog-images/deploy-api-previews-monitoring/gh-metrics.png)
+The deployment page has a Network map with one instance in each of four regions.
+
+![The deployment page Network map, one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-network-2x.png)
 
 Build logs show the steps and output from the image build. You see them on the deployment page while it is building.
 
