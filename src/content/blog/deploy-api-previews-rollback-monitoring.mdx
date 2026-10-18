@@ -298,7 +298,7 @@ Past the included credit, you pay for the vCPU and memory you actually use, the 
 | Egress      | $0.05 per GB             |
 | Active keys | $2 per 1,000 per month   |
 
-The default instance (0.25 vCPU, 256 MiB) running flat out all month is about $4.50 of CPU plus $2.25 of memory, so about $6.75, which the Starter credit mostly covers. An idle instance pays less for CPU, because time waiting on I/O is not billed.
+If the default instance (0.25 vCPU, 256 MiB) ran flat out all month, you'd pay about $4.50 for CPU and $2.25 for memory, so about $6.75, and the Starter credit covers most of that. Treat that as the most it could cost. A real API almost never keeps CPU and memory at 100 percent around the clock, so your bill will land well under it. We bill the CPU and memory you actually use, averaged over time, not what you configured, and CPU only counts while your code is running. Time spent waiting on I/O or sitting idle between requests isn't billed.
 
 You can cap the bill with a monthly budget.
 
