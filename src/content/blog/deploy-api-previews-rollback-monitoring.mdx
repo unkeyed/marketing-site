@@ -9,17 +9,17 @@ tags: ['tutorials']
 
 # Deploy an API with preview environments and request logs
 
-A public API needs a place to run, a preview for each pull request, a check on who is calling, and logs when something breaks. This post does that on Unkey by connecting a GitHub repository. Pushes deploy the app. Compute runs it, API Management issues and checks keys, and Unkey records each request the app serves.
+When you ship a public API, you need somewhere to run it and a preview for each pull request. You also need to check who is calling, and you want logs for the day something breaks. We'll set all of that up on Unkey by connecting a GitHub repository. Every push deploys the app, Compute runs it, and API Management issues and checks the keys. Unkey also records each request the app serves.
 
 ## What you'll have at the end
 
-You get a production URL on `unkey.app` that updates when you push to your default branch, and a preview URL for every other branch and fork pull request. The gateway checks API keys and rate limits each caller. Logs and metrics show up without an SDK.
+You get a production URL on `unkey.app` that updates when you push to your default branch, and a preview URL for every other branch and fork pull request. The gateway checks API keys and rate limits each caller, and you get logs and metrics without adding an SDK.
 
-You need a Compute plan before the first deploy. The dashboard asks you to **Choose a Compute plan**. Only a workspace admin can pick one.
+You need a Compute plan before the first deploy. The dashboard asks you to **Choose a Compute plan**, and only a workspace admin can pick one.
 
 ## The sample API
 
-Any language works if the process listens on `PORT`. Unkey sets that to the configured port, 8080 by default. This is a small Hono app.
+Any language works as long as the process listens on `PORT`, which Unkey sets to the configured port (8080 by default). I'm using a small Hono app.
 
 {/* prettier-ignore */}
 ```js
@@ -51,7 +51,7 @@ serve({ fetch: app.fetch, port });
 console.log(`listening on ${port}`);
 ```
 
-Locally, with and without a principal header:
+Run it locally once without a principal header and once with one.
 
 ```
 $ curl -s localhost:8080/v1/hello
@@ -60,17 +60,17 @@ $ curl -s localhost:8080/v1/hello -H 'X-Unkey-Principal: {"version":"v1","subjec
 {"hello":"acme","deployment":"local"}
 ```
 
-Unkey sets `UNKEY_DEPLOYMENT_ID` on every instance, so a response can name which deployment answered.
+Unkey sets `UNKEY_DEPLOYMENT_ID` on every instance, so each response tells you which deployment answered it.
 
 ## Step 1: Connect the repository and deploy
 
 ### From the dashboard
 
-1. Open **Projects** and choose **Create project**, then enter a **Project Name**. The **Slug** is generated from the name. That slug is what the API and CLI use. The new project opens on an empty Apps list.
+1. Open **Projects** and choose **Create project**, then enter a **Project Name**. Unkey generates the **Slug** from the name, and that slug is what the API and CLI use. The new project opens on an empty Apps list.
 
 ![The Create New Project dialog with a project name and slug](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-create-project.png)
 
-2. Choose **Create app**. The wizard opens on **Deploy a new app** and asks where the code comes from. Choose **GitHub repository**. This step has no name or slug fields. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access.
+2. Choose **Create app**. The wizard opens on **Deploy a new app** and asks where the code comes from. Choose **GitHub repository**. This step doesn't ask for a name or a slug. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and grant it repository access.
 
 ![Deploy a new app, with GitHub repository as the source](/images/blog-images/deploy-api-previews-rollback-monitoring/deploy-create-app.png)
 
@@ -84,13 +84,13 @@ Then pick the repository and branch.
 
 ![Preview environment settings: the same four regions, the preview domain, all unassigned branches, and auto-deploy on](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-configure-2.png)
 
-4. Root directory, Dockerfile, and watch paths live on the build settings screen, not on Environments. Point the root at a subdirectory for a monorepo, and add a watch path such as `services/api/**` when pushes that miss that path should be recorded as `skipped`. Environment variables are scoped per environment. Mark secrets sensitive and they stay write-only.
+4. Root directory, Dockerfile, and watch paths live on the build settings screen, not on Environments. Point the root at a subdirectory for a monorepo, and add a watch path such as `services/api/**` when pushes that miss that path should be recorded as `skipped`. Environment variables are scoped per environment. If you mark a secret as sensitive, it stays write-only.
 
 5. Choose **Deploy**. The deployment moves through `pending`, `starting`, `building`, `deploying`, `network` (shown as **Assigning Domains**), and `finalizing` until it is `ready`. The build log streams during `building`.
 
 ![A GitHub deployment while it is still deploying, with the build log open](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-building.png)
 
-The deployment page shows the branch and commit it came from. Unkey builds that commit from the repository.
+The deployment page shows the branch and commit it came from, and Unkey builds that commit straight from the repository.
 
 ![The same deployment at Ready, with its domains and one instance in each of four regions](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-ready.png)
 
@@ -108,19 +108,19 @@ curl -X POST https://api.unkey.com/v2/deployments.createDeployment \
   -d '{"project":"my-project","app":"api","environment":"production","git":{"branch":"main"}}'
 ```
 
-That returns `201` and a deployment id. Poll `deployments.getDeployment`. On a small app the status moves through `building` and `deploying` to `ready` in about 30 seconds. The app is then live at `https://<project>-<app>-<workspace>.unkey.app`.
+That returns `201` and a deployment id, which you poll with `deployments.getDeployment`. On a small app the status moves through `building` and `deploying` to `ready` in about 30 seconds. The app is then live at `https://<project>-<app>-<workspace>.unkey.app`.
 
 `POST /v2/deployments.createDeployment` is deprecated in favor of `POST /v3/deployments.createDeployment`. On v3, `oci.image` replaces `image.dockerImage`.
 
 ![getDeployment for a production deployment built from the main branch, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-rollback-monitoring/01-deploy-ready.png)
 
-A ready deployment lists the git branch, the commit, and the domains: the live domain, an environment domain, a branch domain, a commit domain, and one pinned to that deployment.
+A ready deployment lists the git branch, the commit, and its domains. You get the live domain, an environment domain, a branch domain, a commit domain, and one pinned to that deployment.
 
 Install the CLI with `npm install -g unkey` and export `UNKEY_ROOT_KEY`. The same four calls are `unkey api projects create-project`, `unkey api apps create-app --git='{"repository":"owner/repo"}'`, `unkey api deployments create-deployment --git='{"branch":"main"}'`, and `unkey api deployments get-deployment`.
 
 If the image is already in a registry, `unkey deploy docker.io/traefik/whoami:v1.10.3 --project=my-project --app=api --env=production` deploys it. That image listens on port 80, so set the app port first with `unkey api apps update-settings --port=80`. The command prints `Deployment completed successfully` and finishes in about 9 seconds.
 
-A workspace builds one deployment at a time. The rest wait in `pending`. Production jumps ahead of preview, so a fix does not wait on pull request builds. A deployment that has waited an hour fails. Deploy it again once the queue has drained.
+A workspace builds one deployment at a time, and the rest wait in `pending`. Production jumps ahead of preview, so a fix doesn't sit behind pull request builds. If a deployment waits an hour it fails, and you can deploy it again once the queue has drained.
 
 ## Step 2: Every branch and pull request gets a preview
 
@@ -132,11 +132,11 @@ Open a preview deployment to see its branch, commit, environment, and domains.
 
 ![A preview deployment page with its branch, commit, Preview environment, and domains](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-preview-detail.png)
 
-A fork pull request is different. Its code would run with your preview variables, including database URLs and third-party keys. It waits in `awaiting_approval` until a project member approves it in the dashboard. GitHub shows a failing **Unkey Deploy Authorization** check ("Awaiting authorization from a project member") while it waits. Pushes from people with write access skip that check.
+Fork pull requests get extra care, because their code would run with your preview variables, including database URLs and third-party keys. A fork pull request waits in `awaiting_approval` until a project member approves it in the dashboard. GitHub shows a failing **Unkey Deploy Authorization** check ("Awaiting authorization from a project member") while it waits. Pushes from people with write access skip that check.
 
-Give the preview environment its own values: a test database, test-mode payment keys, maybe a separate keyspace so preview keys cannot call production.
+Give the preview environment its own values. Point it at a test database and test-mode payment keys, and maybe a separate keyspace so preview keys cannot call production.
 
-Previews stop on their own.
+You don't have to clean up previews yourself, because Unkey stops them in these cases.
 
 | Trigger                                                           | What stops                                    | When              |
 | ----------------------------------------------------------------- | --------------------------------------------- | ----------------- |
@@ -159,7 +159,7 @@ curl -X POST https://api.unkey.com/v2/apis.createApi \
   -d '{ "name": "my-api" }'
 ```
 
-The response includes `apiId`. Save it. You need it whenever you create a key.
+The response includes `apiId`. Save it, because you need it every time you create a key.
 
 Create a key for a customer. `externalId` links the key to an identity, so that customer's keys count as one subject.
 
@@ -170,11 +170,11 @@ curl -X POST https://api.unkey.com/v2/keys.createKey \
   -d '{"apiId":"api_...","prefix":"pay","externalId":"acme","name":"acme laptop","meta":{"plan":"pro"}}'
 ```
 
-`data.key` is the full key, and this response is the only time you get it. Unkey stores a hash. Hand the key to the customer now.
+`data.key` is the full key, and this response is the only time you get it. Unkey stores a hash, so hand the key to the customer now.
 
 The gateway wants the keyspace id (`ks_...`). If you pass the API id (`api_...`) instead, the call returns 404 and says the keyspace does not exist. Both ids are on the keyspace **Settings** page. `keys.verifyKey` returns the keyspace id as `keyspaceId`.
 
-Set the production policies next. They run from top to bottom. Put the rate limit after the key check, or every request is counted as `unknown`. Five a minute is enough to see it trip. In production, start nearer 100. The root key needs `environment.*.set_policies`. In the dashboard, use **Policies > Add Policy > Key Auth**, then **Rate Limit**.
+Next, set the production policies. They run from top to bottom. Put the rate limit after the key check, or every request is counted as `unknown`. Five a minute is enough to see it trip. In production, start nearer 100. The root key needs `environment.*.set_policies`. In the dashboard, use **Policies > Add Policy > Key Auth**, then **Rate Limit**.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
@@ -194,7 +194,7 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
   }'
 ```
 
-A deployment keeps the image, variables, and policies it was created with. Saving a policy does nothing to the one that is already live. Redeploy from the deployment page. The new policies then take a moment to reach every domain.
+A deployment keeps the image, variables, and policies it was created with. Saving a policy does nothing to the one that is already live, so redeploy from the deployment page. The new policies then take a moment to reach every domain.
 
 With the new deployment live, a request with no key gets `401` `missing_credentials`. A bad key gets `401` `invalid_key`. Past the limit, the caller gets `429` `rate_limited` and `Retry-After`. Responses also include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` in Unix seconds.
 
@@ -206,19 +206,19 @@ A rejected request never reaches your code. One that gets through arrives with a
 
 ![/whoami with no key returns 401, and a valid key returns the principal JSON](/images/blog-images/deploy-api-previews-rollback-monitoring/04-principal.png)
 
-`subject` is the identity's `externalId`, or the key id when the key has no identity. `authenticatedSubject` counts by that value, so one customer's keys share a limit. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so the header inside Compute is the one Unkey set. Run the same code somewhere else and a caller can forge it.
+`subject` is the identity's `externalId`, or the key id when the key has no identity. `authenticatedSubject` counts by that value, so one customer's keys share a limit. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so the header inside Compute is the one Unkey set. If you run the same code somewhere else, a caller can forge it.
 
 Preview has its own policy list. If a preview should not be public, set policies for it too, or choose **All Environments** in the dashboard.
 
 ## Step 4: Watch requests, logs and metrics
 
-Nothing to install. Unkey records the traffic for you.
+You don't install anything for this, because Unkey records the traffic for you.
 
-Request logs have one row per request that reached your app: method, host, path, status, region, deployment, instance, and latency split into `gateway_latency` and `instance_latency`. Open **Requests**.
+Open **Requests** to see the request log. It has one row for each request that reached your app, with the method, host, path, status, region, deployment, instance, and latency split into `gateway_latency` and `instance_latency`.
 
 ![The project Requests view filtered to one app, with a request's deployment details open](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-requests.png)
 
-Runtime logs are stdout and stderr from every instance, with the severity parsed out. They live under **Logs**.
+Runtime logs live under **Logs**. They are stdout and stderr from every instance, with the severity parsed out.
 
 The deployment page charts requests per second, latency, CPU, and memory. The docs also list disk, network, instance count, and instance events. The **Network** view draws the regions and instances.
 
@@ -226,7 +226,7 @@ The deployment page charts requests per second, latency, CPU, and memory. The do
 
 ![RPS, latency, CPU, and memory charts under the network map](/images/blog-images/deploy-api-previews-rollback-monitoring/gh-metrics.png)
 
-Build logs are the steps and output from the image build, on the deployment page while it is building.
+Build logs show the steps and output from the image build. You see them on the deployment page while it is building.
 
 A policy rejection never reaches the app, so it is missing from the request log. The key check still shows up in API Management's verification analytics, next to your own `keys.verifyKey` calls.
 
@@ -239,7 +239,7 @@ curl -X POST https://api.unkey.com/v2/analytics.getGatewayRequests \
   -d '{"query":"SELECT path, count() AS requests, avg(total_latency) AS avg_latency FROM gateway_requests_v1 WHERE time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 1 HOUR) GROUP BY path ORDER BY requests DESC LIMIT 10"}'
 ```
 
-A query that hits data returns `200`. Rows show up about 20 seconds after the traffic. The body is one object per path, with the count and the latency:
+A query that hits data returns `200`, and rows show up about 20 seconds after the traffic. The body has one object per path, with its count and latency.
 
 ```json
 {
@@ -251,19 +251,19 @@ Queries only cover the last 7 days. Ask for anything older and the API returns `
 
 Runtime logs are a different call, `analytics.getRuntimeLogs` on `runtime_logs_v1`. The root key needs its own runtime-logs read permission, `project.*.read_runtime_logs`. The gateway-requests permission does not cover them.
 
-To keep logs longer, or to use your own tools, a log drain forwards one stream (gateway HTTP requests, runtime logs, key verifications, rate limits, or audit logs) to an HTTPS endpoint or an Axiom dataset. Every plan starts with a log drain limit of 0. Ask support to raise it.
+To keep logs longer, or to use your own tools, a log drain forwards one stream (gateway HTTP requests, runtime logs, key verifications, rate limits, or audit logs) to an HTTPS endpoint or an Axiom dataset. Every plan starts with a log drain limit of 0, so ask support to raise it.
 
 ## How this compares with GitHub Actions plus Cloud Run, ECS or Kubernetes
 
-The other setups leave more of this to you. Each row links to that provider's docs.
+The other setups leave more of this to you. Each provider column links to that provider's docs.
 
-| Step                                 | Unkey                                                                        | GitHub Actions + Cloud Run                                                                                                                                 | GitHub Actions + ECS                                         | GitHub Actions + Kubernetes                                              |
-| ------------------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Deploy on push                       | Connect the repo; built-in                                                   | Workflow runs `gcloud run deploy`                                                                                                                          | Workflow registers a task definition and updates the service | Workflow applies manifests or sets the image                             |
-| Preview per branch or PR             | Built-in, with a branch domain and fork approval                             | Workflow deploys a revision with `--no-traffic --tag` to get a tagged URL ([docs](https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration)) | Not covered in the linked docs; you script a service per PR  | Not covered in the linked docs; you script a namespace or release per PR |
-| Clean up previews                    | Auto-stop after 1 hour idle, or 1 minute after a newer preview on the branch | You remove tags or revisions yourself                                                                                                                      | Your workflow tears down what it created                     | Your workflow tears down what it created                                 |
-| API key auth and per-key rate limits | Gateway policies backed by API Management keys                               | A separate gateway or code in your app                                                                                                                     | A separate gateway or code in your app                       | An ingress or gateway add-on, or code in your app                        |
-| Request logs                         | Built-in, plus SQL via the analytics API                                     | Cloud Logging                                                                                                                                              | CloudWatch, if you configure it                              | Whatever logging stack you run                                           |
+| Step                                 | Unkey                                                                        | [GitHub Actions + Cloud Run](https://docs.cloud.google.com/run/docs/deploying)                                                                             | [GitHub Actions + ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/update-service-console-v2.html) | [GitHub Actions + Kubernetes](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) |
+| ------------------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Deploy on push                       | Connect the repo and it's built in                                           | Workflow runs `gcloud run deploy`                                                                                                                          | Workflow registers a task definition and updates the service                                                       | Workflow applies manifests or sets the image                                                         |
+| Preview per branch or PR             | Built-in, with a branch domain and fork approval                             | Workflow deploys a revision with `--no-traffic --tag` to get a tagged URL ([docs](https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration)) | Not covered in the linked docs. You script a service per PR                                                        | Not covered in the linked docs. You script a namespace or release per PR                             |
+| Clean up previews                    | Auto-stop after 1 hour idle, or 1 minute after a newer preview on the branch | You remove tags or revisions yourself                                                                                                                      | Your workflow tears down what it created                                                                           | Your workflow tears down what it created                                                             |
+| API key auth and per-key rate limits | Gateway policies backed by API Management keys                               | A separate gateway or code in your app                                                                                                                     | A separate gateway or code in your app                                                                             | An ingress or gateway add-on, or code in your app                                                    |
+| Request logs                         | Built-in, plus SQL via the analytics API                                     | Cloud Logging                                                                                                                                              | CloudWatch, if you configure it                                                                                    | Whatever logging stack you run                                                                       |
 
 Render's [service previews](https://render.com/docs/service-previews) are the closest built-in match for the preview row. You choose **Manual** or **Automatic** pull request previews, and Render deletes a preview when its pull request is merged or closed. Unkey also puts a gateway in front of production and previews, and the request log is queryable.
 
@@ -273,7 +273,7 @@ API Management and Compute are billed separately. You can use either one without
 
 API Management's Free tier includes 150,000 valid requests a month, 1,000 API keys, and 1 day of log retention. Invalid requests, including rate-limited calls and bad keys, do not count toward that quota. Audit logs on Free are kept for 3 days.
 
-Compute has three plans. Each one includes a monthly usage credit equal to the fee. Until December 31, 2026, the first month is discounted: Starter is $0 then $5, Pro is $20 then $25, and Business is $45 then $50. On Starter, credit left over from that first month carries to the next bill. Unused credits otherwise do not roll over.
+Compute has three plans. Each one includes a monthly usage credit equal to the fee. Until December 31, 2026, the first month is discounted. Starter costs $0 the first month and $5 after that, Pro costs $20 and then $25, and Business costs $45 and then $50. On Starter, credit left over from that first month carries to the next bill. Unused credits otherwise do not roll over.
 
 |                         | Starter       | Pro           | Business        |
 | ----------------------- | ------------- | ------------- | --------------- |
@@ -288,7 +288,7 @@ Compute has three plans. Each one includes a monthly usage credit equal to the f
 
 Every plan allows one concurrent build, git push to deploy, and a preview for each pull request. Preview usage is billed at the same rates as production.
 
-Past the included credit, you pay for the vCPU and memory you actually use, the disk you allocate, egress, and active keys checked by a Compute key auth policy. CPU is billed while your code is running. In round numbers:
+Past the included credit, you pay for the vCPU and memory you actually use, the disk you allocate, egress, and active keys checked by a Compute key auth policy. CPU is billed while your code is running. The rates below are rounded.
 
 | Meter       | Rate                     |
 | ----------- | ------------------------ |
@@ -300,7 +300,7 @@ Past the included credit, you pay for the vCPU and memory you actually use, the 
 
 The default instance (0.25 vCPU, 256 MiB) running flat out all month is about $4.50 of CPU plus $2.25 of memory, so about $6.75, which the Starter credit mostly covers. An idle instance pays less for CPU, because time waiting on I/O is not billed.
 
-A monthly budget caps the bill.
+You can cap the bill with a monthly budget.
 
 - Set it in whole dollars under **Settings > Billing**. Only a workspace admin can change it.
 - Admins get an email the first time month-to-date spend crosses 50, 75, and 100 percent.
