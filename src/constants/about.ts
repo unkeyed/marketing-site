@@ -76,12 +76,12 @@ export const aboutContentData = {
       {
         question: "What's your goal with Unkey?",
         answer:
-          'Our goal with Unkey is API keys and rate limiting, and deploying and running your APIs, without the burden or cost of Kong or Azure APM. We want to embrace what developers know today, a global REST API that allows you to deploy and protect your API on the edge in under 5 minutes.',
+          'Our goal is to give you API keys, rate limiting, and a place to run your APIs, without the cost or overhead of Kong or Azure APM. We want to embrace what developers know today, a global REST API that allows you to deploy and protect your API on the edge in under 5 minutes.',
       },
       {
         question: 'What are you most proud of at Unkey?',
         answer:
-          'We are extremely happy with the culture we have built at Unkey, our team is small but powerful. Everyone in our team has input on the next feature or idea we have for Unkey, which is how we build Unkey.',
+          'We are extremely happy with the culture we have built at Unkey, our team is small but powerful. Everyone on the team has a say in what we build next, which is how we build Unkey.',
       },
       {
         question: "What's been the biggest challenge?",
