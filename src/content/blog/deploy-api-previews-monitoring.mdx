@@ -19,48 +19,15 @@ You need a Compute plan before the first deploy. The dashboard asks you to **Cho
 
 ## The sample API
 
-Any language works as long as the process listens on `PORT`, which Unkey sets to the configured port (8080 by default). I'm using a small Hono app.
+The app is [perkinsjr/Demo-for-deploy](https://github.com/perkinsjr/Demo-for-deploy), a small Go API built with Gin. It listens on port 8080, which is the port Unkey uses by default, and serves five routes.
 
-{/* prettier-ignore */}
-```js
-// index.js
-import { Hono } from "hono";
-import { serve } from "@hono/node-server";
-
-const app = new Hono();
-
-app.get("/healthz", (c) => c.text("ok"));
-
-app.get("/v1/hello", (c) => {
-  // Set by the gateway after a key-auth policy verifies the caller.
-  const raw = c.req.header("x-unkey-principal");
-  const principal = raw ? JSON.parse(raw) : null;
-  return c.json({
-    hello: principal?.subject ?? "anonymous",
-    deployment: process.env.UNKEY_DEPLOYMENT_ID ?? "local",
-  });
-});
-
-app.get("/whoami", (c) => {
-  const raw = c.req.header("x-unkey-principal");
-  return c.json({ principal: raw ? JSON.parse(raw) : null });
-});
-
-const port = Number(process.env.PORT ?? 8080);
-serve({ fetch: app.fetch, port });
-console.log(`listening on ${port}`);
-```
-
-Run it locally once without a principal header and once with one.
-
-```
-$ curl -s localhost:8080/v1/hello
-{"hello":"anonymous","deployment":"local"}
-$ curl -s localhost:8080/v1/hello -H 'X-Unkey-Principal: {"version":"v1","subject":"acme","type":"API_KEY","source":{"key":{"keyId":"key_123","keySpaceId":"ks_123","meta":{}}}}'
-{"hello":"acme","deployment":"local"}
-```
-
-Unkey sets `UNKEY_DEPLOYMENT_ID` on every instance, so each response tells you which deployment answered it.
+| Route            | What it returns                                                 |
+| ---------------- | --------------------------------------------------------------- |
+| `GET /health`    | `{"status":"healthy"}` and a timestamp                          |
+| `GET /items`     | Every item and a count                                          |
+| `GET /items/:id` | One item, or `404` with `{"error":"Item not found"}`            |
+| `POST /items`    | The item it created                                             |
+| `GET /whoami`    | The `X-Unkey-Principal` header as JSON, or `{"principal":null}` |
 
 ## Step 1: Connect the repository and deploy
 
@@ -88,9 +55,9 @@ Then pick the repository.
 
 ![A deployment building from main, with the build log open](/images/blog-images/deploy-api-previews-monitoring/gh-building-2x.png)
 
-![The same deployment at Ready, Show URLs open, with one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-ready-2x.png)
+![The same deployment at Ready, with Show URLs open and one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-ready-2x.png)
 
-### From the API or CLI
+### From the API
 
 Create a project, then create an app connected to your repository. You don't need to set `defaultBranch`, because Unkey reads it from the repository.
 
@@ -128,11 +95,9 @@ curl -X POST https://api.unkey.com/v2/deployments.getDeployment \
 
 Once it's ready, the app is live at `https://<project>-<app>-<workspace>.unkey.app`.
 
-![getDeployment for a production deployment built from the main branch, status ready, with its unkey.app domains](/images/blog-images/deploy-api-previews-monitoring/01-deploy-ready-2x.png)
+### From the CLI
 
-The response also lists a domain for the environment, one for the branch, one for the commit, and one pinned to that exact deployment.
-
-If you'd rather use the CLI, install it and export your root key.
+Install the CLI and export your root key.
 
 ```bash
 npm install -g unkey
@@ -150,29 +115,17 @@ unkey api deployments create-deployment --project=my-project --app=api \
 unkey api deployments get-deployment --deployment-id=d_xxx
 ```
 
-If your image is already in a registry, deploy it with `unkey deploy`. For that, you create the app from an image instead of a repository. This example image listens on port 80, so set the port before you deploy.
-
-```bash
-unkey api apps create-app --project=my-project --name=whoami --slug=whoami \
-  --oci='{"image":"docker.io/traefik/whoami:v1.10.3"}'
-unkey api environments update-settings --project=my-project --app=whoami \
-  --environment=production --port=80
-unkey deploy docker.io/traefik/whoami:v1.10.3 --project=my-project --app=whoami --env=production
-```
-
-A workspace builds one deployment at a time, and the rest wait in `pending`. Production deployments jump ahead of previews, so your fix doesn't sit behind pull request builds. A deployment that waits an hour fails. Deploy it again once the queue has drained.
-
 ## Step 2: Every branch and pull request gets a preview
 
 Once the repository is connected, every push to the default branch deploys production. A push to any other branch creates a preview with its own branch domain. Each one shows up in GitHub as a deployment. Unkey also keeps one comment on the pull request updated with a **Visit Preview** link.
 
 ![The app's Deployments list filtered to Preview, showing the Add /whoami route preview](/images/blog-images/deploy-api-previews-monitoring/gh-preview-list-2x.png)
 
-Open a preview deployment to see its branch, commit, environment, and domains.
+Open a preview deployment to see its branch, commit, and environment.
 
-![A preview deployment for Add /whoami route, with its branch, commit, Preview environment, and domains](/images/blog-images/deploy-api-previews-monitoring/gh-preview-detail-2x.png)
+![A preview deployment for Add /whoami route, with its branch, commit, and Preview environment](/images/blog-images/deploy-api-previews-monitoring/gh-preview-detail-2x.png)
 
-Pull requests from forks need more care. Their code would run with your preview variables, and those include database URLs and third-party keys. So a fork pull request waits in `awaiting_approval` until a project member approves it in the dashboard. While it waits, GitHub shows a failing **Unkey Deploy Authorization** check ("Awaiting authorization from a project member"). Pushes from people with write access skip that check.
+A pull request from a fork waits for a project member to approve it, because its code would run with your preview secrets.
 
 Give the preview environment its own values. Point it at a test database and test-mode payment keys. You can also give it a separate keyspace, so a preview key can't call production.
 
@@ -184,9 +137,7 @@ You don't have to clean up previews yourself. Unkey stops them in the cases belo
 | Preview deployment gets no requests                               | That deployment                               | After 1 hour idle |
 | You stop it (**Stop deployment** or `deployments.stopDeployment`) | That deployment                               | Right away        |
 
-A stopped preview answers `503` with `err:frontline:capacity:deployment_offline`. Wake it with **Wake deployment** or `deployments.startDeployment`. You can't start one while the workspace is suspended by its Compute spend budget.
-
-![Stop and wake the preview: whoami goes 200, then 503 deployment_offline, then 200 again once it is ready](/images/blog-images/deploy-api-previews-monitoring/02-preview-2x.png)
+Wake a stopped preview with **Wake deployment** or `deployments.startDeployment`.
 
 ## Step 3: Require an API key and rate limit each customer
 
@@ -214,7 +165,7 @@ That limit is 5 requests per minute, which is low enough to watch it trip. In pr
 
 `data.key` is the full key, and you only see it in this response. Unkey only stores a hash, so hand the key to the customer now.
 
-Next, tell the gateway to check keys. The key auth policy takes the keyspace id (`ks_xxx`), not the API id. You can get it from `keys.verifyKey`, which returns it as `keyspaceId`, or from the keyspace **Settings** page. The root key needs `environment.*.set_policies`. If you'd rather click through it, use **Policies > Add Policy > Key Auth** in the dashboard.
+Next, tell the gateway to check keys. The policy needs the keyspace id (`ks_xxx`), which is on the keyspace **Settings** page and in the `keyspaceId` field that `keys.verifyKey` returns. The root key needs `environment.*.set_policies`.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
@@ -235,14 +186,13 @@ You don't need a separate rate limit policy. Once the gateway verifies the key, 
 
 Policies take effect on the next deployment, so set them before you deploy. If you change them later, redeploy to pick up the change.
 
-Call the app without a key, then with one.
+Call the app without a key.
 
 ```bash
-curl -i https://your-app.unkey.app/v1/hello
-curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/v1/hello
+curl -i https://your-app.unkey.app/items
 ```
 
-With no key, the gateway answers `401`.
+The gateway answers `401`, and the request never reaches your code.
 
 ```json
 {
@@ -253,18 +203,51 @@ With no key, the gateway answers `401`.
 }
 ```
 
-With the key, each response carries headers that show the caller's limit and how many requests they have left.
+Now call `/whoami` with the key.
+
+```bash
+curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/whoami
+```
+
+The response carries the caller's limit and how many requests they have left.
 
 ```text
+HTTP/2 200
 x-ratelimit-limit: 5
 x-ratelimit-remaining: 4
 ```
+
+The body is the `X-Unkey-Principal` header the gateway added, which tells your code who is calling.
+
+```json
+{
+  "principal": {
+    "version": "v1",
+    "subject": "acme",
+    "type": "API_KEY",
+    "identity": {
+      "externalId": "acme",
+      "meta": {}
+    },
+    "source": {
+      "key": {
+        "keyId": "key_xxx",
+        "keySpaceId": "ks_xxx",
+        "name": "acme blog demo",
+        "meta": {}
+      }
+    }
+  }
+}
+```
+
+`subject` is the identity's `externalId`, or the key id when the key has no identity. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so inside Compute you can trust that Unkey set the header. If you run the same code somewhere else, a caller can forge it, so don't trust it there.
 
 Once a caller goes over the limit, requests return `429` with a `retry-after` header that gives the wait in seconds.
 
 ```text
 HTTP/2 429
-retry-after: 42
+retry-after: 53
 x-ratelimit-limit: 5
 x-ratelimit-remaining: 0
 ```
@@ -278,39 +261,48 @@ x-ratelimit-remaining: 0
 }
 ```
 
-A rejected request never reaches your code. A request that gets through arrives with an `X-Unkey-Principal` header, which tells your code who is calling. On the preview, `/whoami` with no key returns 401. With a valid key, it returns that header as JSON.
-
-![/whoami on the preview returns 401 with no key, and the principal JSON with a valid key](/images/blog-images/deploy-api-previews-monitoring/04-principal-2x.png)
-
-`subject` is the identity's `externalId`, or the key id when the key has no identity. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so inside Compute you can trust that Unkey set the header. If you run the same code somewhere else, a caller can forge it, so don't trust it there.
-
 Preview has its own policy list, so your production policies don't cover it. If a preview shouldn't be public, set policies for it too, or choose **All Environments** in the dashboard.
 
-## Step 4: Track down an error
+## Step 4: Find and fix a bug
 
-Say a customer tells you some of their calls are failing. Unkey has already recorded the traffic, so you don't need to install anything to look into it.
-
-1. Open **Requests** for the app. One row stands out, `GET /items/999`, which returned `404`. Open it to see the deployment, branch, and commit that served it.
-
-![The Requests view for the api app, with GET /items/999 and its 404 open next to the deployment that served it](/images/blog-images/deploy-api-previews-monitoring/step4-requests-404-2x.png)
-
-2. Open **Logs** for the same app. The app logged a `404` for `GET /items/999`. That tells you the request reached your code and your code answered it.
-
-![Runtime logs for the api app, with the app's 404 log lines for GET /items/999 and GET /items/abc](/images/blog-images/deploy-api-previews-monitoring/step4-logs-404-2x.png)
-
-3. Call the same path with your own key to see what the customer saw.
+Say a change to the item lookup ships to production, and customers' `GET /items/2` calls start failing.
 
 ```bash
-curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/items/999
+curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/items/2
 ```
 
 ```json
-{ "error": "Item not found" }
+{ "error": "internal server error" }
 ```
 
-Item 999 doesn't exist. The customer is asking for the wrong item, and your API is doing its job.
+1. Open **Requests** for the project and filter **Status** to 5xx. Every failure is a `GET /items/2` that returned `500`. Open one to see the deployment, branch, and commit that served it.
 
-Requests the gateway rejects, like a missing key or a rate limit, never reach your app. That's why they don't show up in **Requests**. You can still find those key checks in API Management's verification analytics.
+![Requests filtered to 5xx: three GET /items/2 calls returned 500, with one open to show the production deployment, branch, and commit that served it](/images/blog-images/deploy-api-previews-monitoring/step4-requests-500-2x.png)
+
+2. Open **Logs** and search for `index out of range`. The app logged `error: get item 2: index out of range` on each failed call.
+
+![Logs searched for index out of range: three ERROR lines, with error: get item 2: index out of range open](/images/blog-images/deploy-api-previews-monitoring/step4-logs-500-2x.png)
+
+3. Push the fix to a branch, and Unkey builds a preview for it. Call the same path on the preview's branch domain with your key.
+
+```bash
+curl -i -H "Authorization: Bearer $API_KEY" https://your-app-git-your-branch.unkey.app/items/2
+```
+
+```json
+{
+  "id": "2",
+  "name": "Sample Item 2",
+  "description": "Another fake item for testing",
+  "created_at": "2026-10-16T14:57:30.985616522Z"
+}
+```
+
+![The app's Deployments list: the Fix item lookup preview at Ready, above the current production deployment, Look up items by index](/images/blog-images/deploy-api-previews-monitoring/step4-preview-fix-2x.png)
+
+4. Merge the branch, and the push to your default branch deploys the fix to production.
+
+Requests the gateway rejects, like a missing key or a rate limit, never reach your app, so they don't show up in **Requests**. You can find those key checks in API Management's verification analytics.
 
 To query the same data with SQL, call `analytics.getGatewayRequests`. The root key needs `project.*.read_gateway_requests`. Queries cover the last 7 days.
 
@@ -318,10 +310,8 @@ To query the same data with SQL, call `analytics.getGatewayRequests`. The root k
 curl -X POST https://api.unkey.com/v2/analytics.getGatewayRequests \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"query":"SELECT path, count() AS requests FROM gateway_requests_v1 WHERE response_status = 404 AND time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 1 HOUR) GROUP BY path ORDER BY requests DESC LIMIT 10"}'
+  -d '{"query":"SELECT path, count() AS requests FROM gateway_requests_v1 WHERE response_status >= 500 AND time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 1 HOUR) GROUP BY path ORDER BY requests DESC LIMIT 10"}'
 ```
-
-To keep logs longer, set up a log drain. It forwards one stream to an HTTPS endpoint or an Axiom dataset. Every plan starts with a log drain limit of 0, so ask support to raise it.
 
 ## How this compares with GitHub Actions plus Cloud Run, ECS or Kubernetes
 
