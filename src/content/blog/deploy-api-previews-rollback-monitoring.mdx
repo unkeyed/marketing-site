@@ -41,6 +41,11 @@ app.get("/v1/hello", (c) => {
   });
 });
 
+app.get("/whoami", (c) => {
+  const raw = c.req.header("x-unkey-principal");
+  return c.json({ principal: raw ? JSON.parse(raw) : null });
+});
+
 const port = Number(process.env.PORT ?? 8080);
 serve({ fetch: app.fetch, port });
 console.log(`listening on ${port}`);
@@ -176,8 +181,8 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "project": "blog-draft-gh",
-    "app": "blog-draft-gh",
+    "project": "my-project",
+    "app": "api",
     "environment": "production",
     "policies": [
       { "name": "Require a key", "enabled": true,
@@ -195,18 +200,11 @@ With the new deployment live, a request with no key gets `401` `missing_credenti
 
 ![Calls to the production domain: 401 with no key, 401 with a bad key, then 404s while the rate limit counts down, and 429 on the sixth request](/images/blog-images/deploy-api-previews-rollback-monitoring/03-key-auth-ratelimit.png)
 
-The `404` body is `page not found` from the demo app. It has no `/` route. The gateway had already accepted the key, which is why the rate limit headers still move. The sixth request is `429`.
+Those `404`s are `page not found` because the calls hit `/`, and this app has no `/` route.
 
-A rejected request never reaches your code. A request that passes arrives with an `X-Unkey-Principal` header, so the app does not call Unkey itself. On the demo app, `/whoami` returns that header.
+A rejected request never reaches your code. One that gets through arrives with an `X-Unkey-Principal` header. `/whoami` returns that header as JSON.
 
-```js
-app.get('/whoami', (c) => {
-  const raw = c.req.header('x-unkey-principal');
-  return c.json({ principal: raw ? JSON.parse(raw) : null });
-});
-```
-
-![/whoami on a preview deployment, returning the X-Unkey-Principal JSON for a verified key](/images/blog-images/deploy-api-previews-rollback-monitoring/04-principal.png)
+![/whoami with no key returns 401, and a valid key returns the principal JSON](/images/blog-images/deploy-api-previews-rollback-monitoring/04-principal.png)
 
 `subject` is the identity's `externalId`, or the key id when the key has no identity. `authenticatedSubject` counts by that value, so one customer's keys share a limit. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so the header inside Compute is the one Unkey set. Run the same code somewhere else and a caller can forge it.
 
@@ -290,17 +288,17 @@ Compute has three plans. Each one includes a monthly usage credit equal to the f
 
 Every plan allows one concurrent build, git push to deploy, and a preview for each pull request. Preview usage is billed at the same rates as production.
 
-Past the included credit, you pay for average actual vCPU and memory use, allocated disk, egress, and active keys verified through a Compute key auth policy. CPU time counts while your code is executing. Memory is the average the instance uses. The rates on the pricing page are per second. A 30-day month is 2,592,000 seconds, so the same rates in larger units are:
+Past the included credit, you pay for the vCPU and memory you actually use, the disk you allocate, egress, and active keys checked by a Compute key auth policy. CPU is billed while your code is running. In round numbers:
 
-| Meter       | Rate                   |
-| ----------- | ---------------------- |
-| vCPU        | $0.0249984 per hour    |
-| Memory      | $8.999424 per GB-month |
-| Disk        | $0.15552 per GB-month  |
-| Egress      | $0.05 per GB           |
-| Active keys | $2 per 1,000 per month |
+| Meter       | Rate                     |
+| ----------- | ------------------------ |
+| vCPU        | about $0.025 per hour    |
+| Memory      | about $9 per GB-month    |
+| Disk        | about $0.16 per GB-month |
+| Egress      | $0.05 per GB             |
+| Active keys | $2 per 1,000 per month   |
 
-The default instance is 0.25 vCPU and 256 MiB (0.25 GB). Flat out for those 2,592,000 seconds, CPU is `0.25 × 0.000006944 × 2592000 = $4.499712`. Memory is `0.25 × 0.000003472 × 2592000 = $2.249856`. That is $6.749568 before the included credit. An idle instance pays less CPU, because idle time waiting on I/O is not billed.
+The default instance (0.25 vCPU, 256 MiB) running flat out all month is about $4.50 of CPU plus $2.25 of memory, so about $6.75, which the Starter credit mostly covers. An idle instance pays less for CPU, because time waiting on I/O is not billed.
 
 A monthly budget caps the bill.
 
