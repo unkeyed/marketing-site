@@ -76,7 +76,7 @@ export const aboutContentData = {
       {
         question: "What's your goal with Unkey?",
         answer:
-          "Our goal with Unkey is build an open source API management platform that doesn't require the burden or cost of traditional API management platforms like Kong or Azure APM. We want to embrace what developers know today, a global REST API that allows you to deploy and protect your API on the edge in under 5 minutes.",
+          "Our goal with Unkey is to build a source-available product that doesn't require the burden or cost of traditional API management platforms like Kong or Azure APM. We want to embrace what developers know today, a global REST API that allows you to deploy and protect your API on the edge in under 5 minutes.",
       },
       {
         question: 'What are you most proud of at Unkey?',
