@@ -1,5 +1,3 @@
-import { PlainClient } from '@team-plain/typescript-sdk';
-
 export type PlainSubmissionResult =
   | { status: 'error'; errors: string[] }
   | { status: 'success'; submitted: true };
@@ -11,6 +9,138 @@ export interface IPlainSubmission {
   threadBody: string;
 }
 
+const PLAIN_GRAPHQL_URL = 'https://core-api.uk.plain.com/graphql/v1';
+
+const UPSERT_CUSTOMER_MUTATION = `
+  mutation UpsertCustomer($input: UpsertCustomerInput!) {
+    upsertCustomer(input: $input) {
+      result
+      customer { id }
+      error { message code type fields { field message type } }
+    }
+  }
+`;
+
+const CREATE_THREAD_MUTATION = `
+  mutation CreateThread($input: CreateThreadInput!) {
+    createThread(input: $input) {
+      thread { id }
+      error { message code type fields { field message type } }
+    }
+  }
+`;
+
+interface IPlainFieldError {
+  field?: string;
+  message?: string;
+  type?: string;
+}
+
+interface IPlainMutationError {
+  message?: string;
+  code?: string;
+  type?: string;
+  fields?: IPlainFieldError[];
+}
+
+interface IPlainGraphqlError {
+  message?: string;
+  extensions?: { code?: string };
+}
+
+interface IPlainPayload {
+  customer?: { id?: string | null } | null;
+  thread?: { id?: string | null } | null;
+  error?: IPlainMutationError | null;
+  result?: string | null;
+}
+
+interface IPlainBody {
+  data?: Record<string, IPlainPayload | null> | null;
+  errors?: IPlainGraphqlError[];
+}
+
+const GENERIC_PLAIN_ERROR = 'An unexpected error occurred while processing your request';
+
+function logPlainFailure(step: string, code: string, message: string) {
+  console.error('Plain submission failed', step, code, message);
+}
+
+function plainErrorText(code: string, message: string): string {
+  return `${code}: ${message}`;
+}
+
+async function plainGraphql(
+  apiKey: string,
+  step: string,
+  query: string,
+  variables: Record<string, unknown>,
+): Promise<{ ok: true; payload: IPlainPayload } | { ok: false; errors: string[] }> {
+  let response: Response;
+  try {
+    response = await fetch(PLAIN_GRAPHQL_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'fetch failed';
+    logPlainFailure(step, 'network', message);
+    return { ok: false, errors: [GENERIC_PLAIN_ERROR] };
+  }
+
+  let body: IPlainBody;
+  try {
+    body = (await response.json()) as IPlainBody;
+  } catch {
+    logPlainFailure(step, String(response.status), 'Invalid JSON from Plain');
+    return { ok: false, errors: [GENERIC_PLAIN_ERROR] };
+  }
+
+  if (!response.ok || (body.errors && body.errors.length > 0)) {
+    const graphqlErrors =
+      body.errors && body.errors.length > 0
+        ? body.errors.map((error) => ({
+            code: error.extensions?.code ?? String(response.status),
+            message: error.message ?? 'Plain request failed',
+          }))
+        : [{ code: String(response.status), message: 'Plain request failed' }];
+
+    for (const error of graphqlErrors) {
+      logPlainFailure(step, error.code, error.message);
+    }
+
+    return {
+      ok: false,
+      errors: graphqlErrors.map((error) => plainErrorText(error.code, error.message)),
+    };
+  }
+
+  const payload = body.data?.[step];
+  const mutationError = payload?.error;
+  if (mutationError) {
+    const code = mutationError.code || mutationError.type || 'mutation_error';
+    const message = mutationError.message || 'Plain mutation failed';
+    const fieldNote = mutationError.fields
+      ?.map((field) => `${field.field ?? 'field'}: ${field.message ?? ''}`)
+      .filter(Boolean)
+      .join('; ');
+    const fullMessage = fieldNote ? `${message} (${fieldNote})` : message;
+    logPlainFailure(step, code, fullMessage);
+    return { ok: false, errors: [plainErrorText(code, fullMessage)] };
+  }
+
+  if (!payload) {
+    logPlainFailure(step, 'missing_payload', 'Plain returned no mutation payload');
+    return { ok: false, errors: [GENERIC_PLAIN_ERROR] };
+  }
+
+  return { ok: true, payload };
+}
+
 export async function submitToPlain({
   email,
   fullName,
@@ -19,41 +149,51 @@ export async function submitToPlain({
 }: IPlainSubmission): Promise<PlainSubmissionResult> {
   const apiKey = process.env.PLAIN_API_KEY;
   if (!apiKey) {
+    logPlainFailure('config', 'missing_key', 'PLAIN_API_KEY is not set');
     return { status: 'error', errors: ['Invalid API configuration'] };
   }
 
-  const client = new PlainClient({ apiKey });
-
   try {
-    const upsertCustomerRes = await client.upsertCustomer({
-      identifier: { emailAddress: email },
-      onCreate: {
-        fullName,
-        email: { email, isVerified: true },
+    const upsert = await plainGraphql(apiKey, 'upsertCustomer', UPSERT_CUSTOMER_MUTATION, {
+      input: {
+        identifier: { emailAddress: email },
+        onCreate: {
+          fullName,
+          email: { email, isVerified: true },
+        },
+        onUpdate: {},
       },
-      onUpdate: {},
     });
-
-    if (upsertCustomerRes.error) {
-      return { status: 'error', errors: [upsertCustomerRes.error.message] };
+    if (!upsert.ok) {
+      return { status: 'error', errors: upsert.errors };
     }
 
-    const createThreadRes = await client.createThread({
-      customerIdentifier: { customerId: upsertCustomerRes.data.customer.id },
-      title: threadTitle,
-      components: [{ componentText: { text: threadBody } }],
-    });
+    const customerId = upsert.payload.customer?.id;
+    if (!customerId) {
+      logPlainFailure('upsertCustomer', 'missing_customer', 'Plain did not return a customer id');
+      return { status: 'error', errors: [GENERIC_PLAIN_ERROR] };
+    }
 
-    if (createThreadRes.error) {
-      return { status: 'error', errors: [createThreadRes.error.message] };
+    const created = await plainGraphql(apiKey, 'createThread', CREATE_THREAD_MUTATION, {
+      input: {
+        customerIdentifier: { customerId },
+        title: threadTitle,
+        components: [{ componentText: { text: threadBody } }],
+      },
+    });
+    if (!created.ok) {
+      return { status: 'error', errors: created.errors };
+    }
+
+    if (!created.payload.thread?.id) {
+      logPlainFailure('createThread', 'missing_thread', 'Plain did not return a thread id');
+      return { status: 'error', errors: [GENERIC_PLAIN_ERROR] };
     }
 
     return { status: 'success', submitted: true };
   } catch (error) {
-    console.error('Plain submission failed:', error);
-    return {
-      status: 'error',
-      errors: ['An unexpected error occurred while processing your request'],
-    };
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logPlainFailure('unexpected', 'unknown', message);
+    return { status: 'error', errors: [GENERIC_PLAIN_ERROR] };
   }
 }
