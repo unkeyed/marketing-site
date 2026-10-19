@@ -48,22 +48,8 @@ export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmis
     return { status: 'error', errors: [TOO_FAST_MESSAGE] };
   }
 
-  // Awaited. A floating promise would be killed when this action returns.
-  // Email runs before Plain so a missing PLAIN_API_KEY cannot skip Resend.
-  const emailed = await sendGiveawayEmails({
-    email: entry.email,
-    name: entry.name,
-    projectUrl: entry.projectUrl,
-    workspaceId: entry.workspaceId,
-    description: entry.description,
-  });
-
-  if (emailed.status !== 'success') {
-    return emailed;
-  }
-
   // Threads show up in Plain under this title. Filter on it to read entries.
-  return submitToPlain({
+  const stored = await submitToPlain({
     email: entry.email,
     fullName: entry.name,
     threadTitle: 'All Things Open giveaway',
@@ -75,4 +61,20 @@ export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmis
       `Email: ${entry.email}`,
     ].join('\n'),
   });
+
+  if (stored.status !== 'success') {
+    return stored;
+  }
+
+  // Awaited so the serverless function does not return before the sends finish.
+  // A mail failure does not undo the stored entry.
+  await sendGiveawayEmails({
+    email: entry.email,
+    name: entry.name,
+    projectUrl: entry.projectUrl,
+    workspaceId: entry.workspaceId,
+    description: entry.description,
+  });
+
+  return stored;
 }
