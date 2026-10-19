@@ -91,6 +91,16 @@ export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmis
     return stored;
   }
 
+  console.info('Giveaway entry stored', {
+    domain,
+    customerId: stored.trace.customerId,
+    upsertResult: stored.trace.upsertResult,
+    threadId: stored.trace.threadId,
+    threadStatus: stored.trace.threadStatus,
+    threadStatusDetail: stored.trace.threadStatusDetail,
+    workspaceId: stored.trace.workspaceId,
+  });
+
   // Awaited so the serverless function does not return before the sends finish.
   // A mail failure does not undo the stored entry.
   await sendGiveawayEmails({

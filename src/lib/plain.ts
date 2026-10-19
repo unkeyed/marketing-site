@@ -1,6 +1,15 @@
+export interface IPlainTrace {
+  customerId: string;
+  upsertResult: string;
+  threadId: string;
+  threadStatus: string | null;
+  threadStatusDetail: string | null;
+  workspaceId: string | null;
+}
+
 export type PlainSubmissionResult =
   | { status: 'error'; errors: string[] }
-  | { status: 'success'; submitted: true };
+  | { status: 'success'; submitted: true; trace: IPlainTrace };
 
 export interface IPlainSubmission {
   email: string;
@@ -24,9 +33,19 @@ const UPSERT_CUSTOMER_MUTATION = `
 const CREATE_THREAD_MUTATION = `
   mutation CreateThread($input: CreateThreadInput!) {
     createThread(input: $input) {
-      thread { id }
+      thread {
+        id
+        status
+        statusDetail { __typename }
+      }
       error { message code type fields { field message type } }
     }
+  }
+`;
+
+const MY_WORKSPACE_QUERY = `
+  query MyWorkspace {
+    myWorkspace { id name }
   }
 `;
 
@@ -50,9 +69,15 @@ interface IPlainGraphqlError {
 
 interface IPlainPayload {
   customer?: { id?: string | null } | null;
-  thread?: { id?: string | null } | null;
+  thread?: {
+    id?: string | null;
+    status?: string | null;
+    statusDetail?: { __typename?: string | null } | null;
+  } | null;
   error?: IPlainMutationError | null;
   result?: string | null;
+  id?: string | null;
+  name?: string | null;
 }
 
 interface IPlainBody {
@@ -185,12 +210,27 @@ export async function submitToPlain({
       return { status: 'error', errors: created.errors };
     }
 
-    if (!created.payload.thread?.id) {
+    const threadId = created.payload.thread?.id;
+    if (!threadId) {
       logPlainFailure('createThread', 'missing_thread', 'Plain did not return a thread id');
       return { status: 'error', errors: [GENERIC_PLAIN_ERROR] };
     }
 
-    return { status: 'success', submitted: true };
+    const workspace = await plainGraphql(apiKey, 'myWorkspace', MY_WORKSPACE_QUERY, {});
+    const workspaceId = workspace.ok ? (workspace.payload.id ?? null) : null;
+
+    return {
+      status: 'success',
+      submitted: true,
+      trace: {
+        customerId,
+        upsertResult: upsert.payload.result ?? 'unknown',
+        threadId,
+        threadStatus: created.payload.thread?.status ?? null,
+        threadStatusDetail: created.payload.thread?.statusDetail?.__typename ?? null,
+        workspaceId,
+      },
+    };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     logPlainFailure('unexpected', 'unknown', message);
