@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 
+import { sendGiveawayEmails } from '@/lib/giveaway-email';
 import {
   getGiveawayWindowState,
   GIVEAWAY_NOW_COOKIE,
@@ -45,6 +46,20 @@ export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmis
   const elapsed = Date.now() - entry.startedAt;
   if (entry.startedAt > Date.now() + 60_000 || elapsed < MIN_SUBMIT_MS) {
     return { status: 'error', errors: [TOO_FAST_MESSAGE] };
+  }
+
+  // Awaited. A floating promise would be killed when this action returns.
+  // Email runs before Plain so a missing PLAIN_API_KEY cannot skip Resend.
+  const emailed = await sendGiveawayEmails({
+    email: entry.email,
+    name: entry.name,
+    projectUrl: entry.projectUrl,
+    workspaceId: entry.workspaceId,
+    description: entry.description,
+  });
+
+  if (emailed.status !== 'success') {
+    return emailed;
   }
 
   // Threads show up in Plain under this title. Filter on it to read entries.
