@@ -49,6 +49,34 @@ const MY_WORKSPACE_QUERY = `
   }
 `;
 
+// Spam is a customer flag. There is no thread unspam mutation and createThread
+// has no field that skips the check. Requires customer:edit.
+const UNMARK_CUSTOMER_AS_SPAM_MUTATION = `
+  mutation UnmarkCustomerAsSpam($input: UnmarkCustomerAsSpamInput!) {
+    unmarkCustomerAsSpam(input: $input) {
+      customer { id }
+      error { message code type fields { field message type } }
+    }
+  }
+`;
+
+// Threads for a spam customer are created and then closed as ignored.
+// Requires thread:edit and thread:read.
+const MARK_THREAD_AS_TODO_MUTATION = `
+  mutation MarkThreadAsTodo($input: MarkThreadAsTodoInput!) {
+    markThreadAsTodo(input: $input) {
+      thread {
+        id
+        status
+        statusDetail { __typename }
+      }
+      error { message code type fields { field message type } }
+    }
+  }
+`;
+
+const NOT_SPAM_CODE = 'customer_is_not_marked_as_spam';
+
 interface IPlainFieldError {
   field?: string;
   message?: string;
@@ -100,7 +128,10 @@ async function plainGraphql(
   step: string,
   query: string,
   variables: Record<string, unknown>,
-): Promise<{ ok: true; payload: IPlainPayload } | { ok: false; errors: string[] }> {
+  benignErrorCodes: readonly string[] = [],
+): Promise<
+  { ok: true; payload: IPlainPayload } | { ok: false; benign: boolean; errors: string[] }
+> {
   let response: Response;
   try {
     response = await fetch(PLAIN_GRAPHQL_URL, {
@@ -114,7 +145,7 @@ async function plainGraphql(
   } catch (error) {
     const message = error instanceof Error ? error.message : 'fetch failed';
     logPlainFailure(step, 'network', message);
-    return { ok: false, errors: [GENERIC_PLAIN_ERROR] };
+    return { ok: false, benign: false, errors: [GENERIC_PLAIN_ERROR] };
   }
 
   let body: IPlainBody;
@@ -122,7 +153,7 @@ async function plainGraphql(
     body = (await response.json()) as IPlainBody;
   } catch {
     logPlainFailure(step, String(response.status), 'Invalid JSON from Plain');
-    return { ok: false, errors: [GENERIC_PLAIN_ERROR] };
+    return { ok: false, benign: false, errors: [GENERIC_PLAIN_ERROR] };
   }
 
   if (!response.ok || (body.errors && body.errors.length > 0)) {
@@ -134,12 +165,18 @@ async function plainGraphql(
           }))
         : [{ code: String(response.status), message: 'Plain request failed' }];
 
-    for (const error of graphqlErrors) {
-      logPlainFailure(step, error.code, error.message);
+    const benign = graphqlErrors.every((error) => benignErrorCodes.includes(error.code));
+    if (!benign) {
+      for (const error of graphqlErrors) {
+        if (!benignErrorCodes.includes(error.code)) {
+          logPlainFailure(step, error.code, error.message);
+        }
+      }
     }
 
     return {
       ok: false,
+      benign,
       errors: graphqlErrors.map((error) => plainErrorText(error.code, error.message)),
     };
   }
@@ -154,13 +191,16 @@ async function plainGraphql(
       .filter(Boolean)
       .join('; ');
     const fullMessage = fieldNote ? `${message} (${fieldNote})` : message;
-    logPlainFailure(step, code, fullMessage);
-    return { ok: false, errors: [plainErrorText(code, fullMessage)] };
+    const benign = benignErrorCodes.includes(code);
+    if (!benign) {
+      logPlainFailure(step, code, fullMessage);
+    }
+    return { ok: false, benign, errors: [plainErrorText(code, fullMessage)] };
   }
 
   if (!payload) {
     logPlainFailure(step, 'missing_payload', 'Plain returned no mutation payload');
-    return { ok: false, errors: [GENERIC_PLAIN_ERROR] };
+    return { ok: false, benign: false, errors: [GENERIC_PLAIN_ERROR] };
   }
 
   return { ok: true, payload };
@@ -216,6 +256,38 @@ export async function submitToPlain({
       return { status: 'error', errors: [GENERIC_PLAIN_ERROR] };
     }
 
+    let threadStatus = created.payload.thread?.status ?? null;
+    let threadStatusDetail = created.payload.thread?.statusDetail?.__typename ?? null;
+
+    // Clearing the flag does not fail the entry: the thread already exists.
+    // customer_is_not_marked_as_spam means the customer was never flagged.
+    const unmarked = await plainGraphql(
+      apiKey,
+      'unmarkCustomerAsSpam',
+      UNMARK_CUSTOMER_AS_SPAM_MUTATION,
+      { input: { customerId } },
+      [NOT_SPAM_CODE],
+    );
+
+    const wasSpam = unmarked.ok;
+    const hiddenAsIgnored =
+      threadStatus === 'DONE' || threadStatusDetail === 'ThreadStatusDetailIgnored';
+    if (wasSpam && hiddenAsIgnored) {
+      const reopened = await plainGraphql(
+        apiKey,
+        'markThreadAsTodo',
+        MARK_THREAD_AS_TODO_MUTATION,
+        {
+          input: { threadId },
+        },
+      );
+      if (reopened.ok) {
+        threadStatus = reopened.payload.thread?.status ?? threadStatus;
+        threadStatusDetail =
+          reopened.payload.thread?.statusDetail?.__typename ?? threadStatusDetail;
+      }
+    }
+
     const workspace = await plainGraphql(apiKey, 'myWorkspace', MY_WORKSPACE_QUERY, {});
     const workspaceId = workspace.ok ? (workspace.payload.id ?? null) : null;
 
@@ -226,8 +298,8 @@ export async function submitToPlain({
         customerId,
         upsertResult: upsert.payload.result ?? 'unknown',
         threadId,
-        threadStatus: created.payload.thread?.status ?? null,
-        threadStatusDetail: created.payload.thread?.statusDetail?.__typename ?? null,
+        threadStatus,
+        threadStatusDetail,
         workspaceId,
       },
     };
