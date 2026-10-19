@@ -48,6 +48,11 @@ export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmis
   }
 
   // Threads show up in Plain under this title. Filter on it to read entries.
+  const labelTypeId = process.env.PLAIN_ATO_GIVEAWAY_LABEL_TYPE_ID?.trim();
+  if (!labelTypeId) {
+    console.warn('Giveaway Plain label skipped: PLAIN_ATO_GIVEAWAY_LABEL_TYPE_ID is not set');
+  }
+
   return submitToPlain({
     email: entry.email,
     fullName: entry.name,
@@ -59,5 +64,6 @@ export async function submitGiveawayEntry(payload: unknown): Promise<PlainSubmis
       `Name: ${entry.name}`,
       `Email: ${entry.email}`,
     ].join('\n'),
+    ...(labelTypeId ? { labelTypeIds: [labelTypeId] } : {}),
   });
 }
