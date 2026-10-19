@@ -45,9 +45,20 @@ export async function submitToPlain({
       title: threadTitle,
       components: [{ componentText: { text: threadBody } }],
     };
-    const createThreadRes = await client.createThread(
-      labelTypeIds && labelTypeIds.length > 0 ? { ...threadInput, labelTypeIds } : threadInput,
+    const hasLabels = labelTypeIds !== undefined && labelTypeIds.length > 0;
+    let createThreadRes = await client.createThread(
+      hasLabels ? { ...threadInput, labelTypeIds } : threadInput,
     );
+
+    // A bad or archived label id fails the whole mutation. Save the thread anyway.
+    if (createThreadRes.error && hasLabels) {
+      const code =
+        createThreadRes.error.type === 'mutation_error'
+          ? createThreadRes.error.errorDetails.code
+          : createThreadRes.error.type;
+      console.warn('Plain createThread label failed', code);
+      createThreadRes = await client.createThread(threadInput);
+    }
 
     if (createThreadRes.error) {
       return { status: 'error', errors: [createThreadRes.error.message] };
