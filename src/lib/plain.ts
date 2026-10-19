@@ -9,6 +9,7 @@ export interface IPlainSubmission {
   fullName: string;
   threadTitle: string;
   threadBody: string;
+  labelTypeIds?: string[];
 }
 
 export async function submitToPlain({
@@ -16,6 +17,7 @@ export async function submitToPlain({
   fullName,
   threadTitle,
   threadBody,
+  labelTypeIds,
 }: IPlainSubmission): Promise<PlainSubmissionResult> {
   const apiKey = process.env.PLAIN_API_KEY;
   if (!apiKey) {
@@ -38,11 +40,14 @@ export async function submitToPlain({
       return { status: 'error', errors: [upsertCustomerRes.error.message] };
     }
 
-    const createThreadRes = await client.createThread({
+    const threadInput = {
       customerIdentifier: { customerId: upsertCustomerRes.data.customer.id },
       title: threadTitle,
       components: [{ componentText: { text: threadBody } }],
-    });
+    };
+    const createThreadRes = await client.createThread(
+      labelTypeIds && labelTypeIds.length > 0 ? { ...threadInput, labelTypeIds } : threadInput,
+    );
 
     if (createThreadRes.error) {
       return { status: 'error', errors: [createThreadRes.error.message] };
