@@ -31,6 +31,8 @@ The app is [perkinsjr/Demo-for-deploy](https://github.com/perkinsjr/Demo-for-dep
 
 ## Step 1: Connect the repository and deploy
 
+There are three ways to connect and deploy. Pick one: [the dashboard](#from-the-dashboard), [the API](#from-the-api), or [the CLI](#from-the-cli). Each one gets you the same app.
+
 ### From the dashboard
 
 1. Open **Projects**, choose **Create project**, and enter a **Project Name**. Unkey generates the **Slug** from the name. You'll use that slug whenever you call the API or the CLI.
@@ -165,28 +167,41 @@ That's 5 requests per minute. It's low enough that you can watch it trip. In pro
 
 `data.key` is the full key, and you only see it in this response. Unkey stores just a hash, so hand the key to the customer now.
 
-Next, tell the gateway to check keys. The policy needs the keyspace id (`ks_xxx`). You can find it on the keyspace **Settings** page and in the `keyspaceId` field that `keys.verifyKey` returns. The root key needs `environment.*.set_policies`.
+Next, tell the gateway to check keys. Open the app's **Policies** and choose **Add policy**.
+
+1. Give the policy a name and set **Type** to **Key Auth**. The rule reads **IF** Every request **THEN** Key Auth. Under **Keyspaces**, pick the keyspace you just created.
+
+![The Add policy form: name Require an API key, Type Key Auth, rule IF Every request THEN Key Auth, with a keyspace selected](/images/blog-images/deploy-api-previews-monitoring/policies-keyauth-form-top-2x.png)
+
+2. Set **Environment** to Production. **ON FAIL** shows what callers get back when the check fails: `401`, `403`, or `429`.
+
+![The rest of the Add policy form, with ON FAIL codes 401, 403, and 429 and Environment set to Production](/images/blog-images/deploy-api-previews-monitoring/policies-keyauth-form-2x.png)
+
+3. Choose **Add policy**.
+
+![The Policies list with Require an API key, a Key Auth policy that is on for Production](/images/blog-images/deploy-api-previews-monitoring/policies-saved-2x.png)
+
+You don't need a separate rate limit policy. Once the gateway verifies the key, it also enforces the limit you attached to that key.
+
+Policies apply on the next deployment, so redeploy production to turn this one on.
+
+Prefer the API or CLI? The same policy in one command. Both need the keyspace id (`ks_xxx`), which is on the keyspace **Settings** page.
+
+```bash
+unkey api gateway set-policies --project=my-project --app=api --environment=production \
+  --policies='[{"name":"Require an API key","enabled":true,"keyauth":{"keyspaces":["ks_xxx"]}}]'
+```
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "project": "my-project",
-    "app": "api",
-    "environment": "production",
-    "policies": [
-      { "name": "Require a key", "enabled": true,
-        "keyauth": { "keyspaces": ["ks_xxx"] } }
-    ]
-  }'
+  -d '{"project":"my-project","app":"api","environment":"production","policies":[{"name":"Require an API key","enabled":true,"keyauth":{"keyspaces":["ks_xxx"]}}]}'
 ```
 
-You don't need a separate rate limit policy. Once the gateway verifies the key, it also enforces the limit you attached to that key.
+`setPolicies` replaces the environment's whole policy list, so include every policy you want to keep. The root key needs `environment.*.set_policies`.
 
-Policies take effect on the next deployment, so set them before you deploy. If you change them later, redeploy to pick up the change.
-
-Call the app without a key.
+Once the new deployment is live, call the app without a key.
 
 ```bash
 curl -i https://your-app.unkey.app/items
