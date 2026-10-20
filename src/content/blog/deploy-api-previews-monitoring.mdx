@@ -31,7 +31,7 @@ The app is [perkinsjr/Demo-for-deploy](https://github.com/perkinsjr/Demo-for-dep
 
 ## Step 1: Connect the repository and deploy
 
-There are three ways to connect and deploy. Pick one: [the dashboard](#from-the-dashboard), [the API](#from-the-api), or [the CLI](#from-the-cli). Each one gets you the same app.
+You can connect and deploy from [the dashboard](#from-the-dashboard), [the API](#from-the-api), or [the CLI](#from-the-cli). All three get you the same app.
 
 ### From the dashboard
 
@@ -143,7 +143,7 @@ Wake a stopped preview with **Wake deployment** or `deployments.startDeployment`
 
 ## Step 3: Require an API key and rate limit each customer
 
-Every Compute app sits behind the gateway. Policies run there, so the gateway checks a request before it reaches your code. Start by creating a keyspace in API Management. In the API, a keyspace is called an API.
+Every Compute app sits behind the gateway. Policies run on the gateway, so it checks each request before the request reaches your code. Start by creating a keyspace in API Management. In the API, a keyspace is called an API.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/apis.createApi \
@@ -173,7 +173,7 @@ Next, tell the gateway to check keys. Open the app's **Policies** and choose **A
 
 ![The Add policy form: name Require an API key, Type Key Auth, rule IF Every request THEN Key Auth, with a keyspace selected](/images/blog-images/deploy-api-previews-monitoring/policies-keyauth-form-top-2x.png)
 
-2. Set **Environment** to Production. **ON FAIL** shows what callers get back when the check fails: `401`, `403`, or `429`.
+2. Set **Environment** to Production. **ON FAIL** shows what callers get back when the check fails, which is `401`, `403`, or `429`.
 
 ![The rest of the Add policy form, with ON FAIL codes 401, 403, and 429 and Environment set to Production](/images/blog-images/deploy-api-previews-monitoring/policies-keyauth-form-2x.png)
 
@@ -185,7 +185,7 @@ You don't need a separate rate limit policy. Once the gateway verifies the key, 
 
 Policies apply on the next deployment, so redeploy production to turn this one on.
 
-Prefer the API or CLI? The same policy in one command. Both need the keyspace id (`ks_xxx`), which is on the keyspace **Settings** page.
+If you'd rather use the API or CLI, you can set the same policy with one command. Both need the keyspace id (`ks_xxx`), which is on the keyspace **Settings** page.
 
 ```bash
 unkey api gateway set-policies --project=my-project --app=api --environment=production \
