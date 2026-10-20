@@ -363,7 +363,7 @@ Compute has three plans. Each one includes a monthly usage credit equal to the f
 
 Every plan allows one concurrent build, git push to deploy, and a preview for each pull request. Preview usage is billed at the same rates as production.
 
-Past the included credit, you pay for the vCPU and memory you actually use, the disk you allocate, egress, and active keys checked by a Compute key auth policy. CPU is billed while your code is running. The rates below are rounded.
+Past the included credit, you pay for the vCPU and memory your app actually uses, the disk you allocate, egress, and active keys checked by a Compute key auth policy. The rates below are rounded.
 
 | Meter       | Rate                     |
 | ----------- | ------------------------ |
@@ -373,7 +373,7 @@ Past the included credit, you pay for the vCPU and memory you actually use, the 
 | Egress      | $0.05 per GB             |
 | Active keys | $2 per 1,000 per month   |
 
-If the default instance (0.25 vCPU, 256 MiB) ran flat out all month, you'd pay about $4.50 for CPU and $2.25 for memory, so about $6.75, and the Starter credit covers most of that. Treat that as the most it could cost. A real API almost never keeps CPU and memory at 100 percent around the clock, so your bill will land well under it. We bill the CPU and memory you actually use, averaged over time, not what you configured, and CPU only counts while your code is running. Time spent waiting on I/O or sitting idle between requests isn't billed.
+If the default instance (0.25 vCPU, 256 MiB) ran flat out all month, you'd pay about $4.50 for CPU and $2.25 for memory, so about $6.75, and the Starter credit covers most of that. Treat that as the most it could cost. A real API almost never keeps CPU and memory at 100 percent around the clock, so your bill will land well under it. You pay for the CPU and memory your app actually uses, not what you configured. Memory your app holds is billed even between requests. CPU used while your app is idle or waiting on I/O is usually tiny, so it costs very little.
 
 You can cap the bill with a monthly budget.
 
