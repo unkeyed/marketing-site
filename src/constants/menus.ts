@@ -45,6 +45,7 @@ export const MENUS = {
         title: 'Company',
         items: [
           { label: 'About', href: '/about' },
+          { label: 'Careers', href: '/careers' },
           { label: 'Source Code', href: GITHUB_URL },
           { label: 'Status Page', href: 'https://status.unkey.com' },
           { label: 'Roadmap', href: 'https://feedback.unkey.com/roadmap' },
