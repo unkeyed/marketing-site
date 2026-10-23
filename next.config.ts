@@ -201,6 +201,42 @@ const nextConfig: NextConfig = {
         destination: 'https://cal.com/team/unkey',
         permanent: false,
       },
+      // Retired URLs. statusCode 308 is a permanent redirect.
+      {
+        source: '/blog/how-to-deploy-and-host-an-api',
+        destination: '/blog/git-push',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/heroku-alternatives-for-apis',
+        destination: '/blog/best-serverless-api-hosting-2026',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/deploy-a-docker-container',
+        destination: '/docs/compute/get-started/deploy-an-image',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/how-to-rate-limit-an-api',
+        destination: '/blog/introducing-ratelimiting',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/ephemeral-environments',
+        destination: '/docs/compute/concepts/production-and-preview',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-key-management',
+        destination: '/blog/api-key-management-vs-gateway',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-rate-limiting',
+        destination: '/blog/introducing-ratelimiting',
+        statusCode: 308,
+      },
     ];
   },
 };

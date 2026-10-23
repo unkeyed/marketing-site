@@ -8,7 +8,7 @@ import Hero from '@/components/pages/blog/hero--blog';
 
 export const metadata = getMetadata({
   title: 'Careers',
-  description: 'Build the developer platform for modern APIs with Unkey.',
+  description: 'Join Unkey and help developers deploy, run and secure their APIs.',
   pathname: '/careers',
 });
 
