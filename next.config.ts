@@ -202,12 +202,6 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       // Retired URLs. statusCode 308 is a permanent redirect.
-      // remove this redirect when the 'How to deploy and host an API' post (branch perkinsjr/blog-how-to-deploy-and-host-an-api) merges, or the redirect will shadow the post.
-      {
-        source: '/blog/how-to-deploy-and-host-an-api',
-        destination: '/blog/git-push',
-        statusCode: 308,
-      },
       {
         source: '/blog/heroku-alternatives-for-apis',
         destination: '/blog/best-serverless-api-hosting-2026',
