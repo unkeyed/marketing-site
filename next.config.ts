@@ -55,6 +55,7 @@ const markdownRoutes = [
 
 const nextConfig: NextConfig = {
   experimental: {
+    agentUpgrade: 'security',
     optimizePackageImports: ['lucide-react', 'three', '@react-three/drei', 'motion', 'shiki'],
   },
   outputFileTracingExcludes: {
