@@ -239,6 +239,16 @@ const nextConfig: NextConfig = {
         destination: '/blog/introducing-ratelimiting',
         statusCode: 308,
       },
+      {
+        source: '/glossary/api-load-balancing',
+        destination: '/glossary/load-balancing',
+        permanent: true,
+      },
+      {
+        source: '/blog/using-auth',
+        destination: '/blog/using-unkey-with-auth',
+        permanent: true,
+      },
     ];
   },
 };
