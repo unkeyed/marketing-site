@@ -1,88 +1,74 @@
 ---
 date: 2026-10-17
-title: 'How to Deploy and Host an API (With Keys and Limits)'
-description: 'How to deploy an API from a GitHub repository with a Dockerfile, then protect it with API keys and rate limits.'
+title: 'Deploy an API with keys and rate limits in one push'
+description: 'Push a Dockerfile. The gateway checks the key, and the key carries the rate limit.'
 author: james
 tags: ['tutorials']
 ---
 
-You have an API running on your machine. Hosting it means that process gets a public URL and TLS, so other people can call it.
+You've got an API working on localhost. Getting it onto the internet with keys and rate limits shouldn't take a weekend of glue.
 
-This guide follows one path. A GitHub repository with a Dockerfile deploys on Unkey Compute. API Management then issues a key, and a gateway policy rate limits each caller.
+Here's the path we use. Push a repo with a Dockerfile to Unkey Compute, then put a key check in front of it with API Management. The rate limit lives on the key. Your code stays the API.
 
-[Compute](https://www.unkey.com/docs/compute) builds the image, runs the container, and puts a gateway in front of every deployment. [API Management](https://www.unkey.com/docs/api-management/get-started/quickstart) is where the keys live. This post uses both on the same API.
+Compute builds the image, runs the container, and gives the deployment a URL. API Management is where the keys and the limits live. The gateway sits in front of every deployment and, with no policies, forwards the request. A key check is a policy, and it applies on the next deployment.
 
-## What API hosting means
+## Three things before you push
 
-Hosting is a process with a hostname and a certificate. On Unkey the process is a container. Compute builds it from your Dockerfile and runs it.
+1. Only a workspace admin can pick the Compute plan. If the workspace has none, the first deploy opens a dialog titled Choose a Compute plan.
+2. The process has to listen on `PORT`. We set that to the environment's port, 8080 unless you change it, and it overrides any `ENV PORT` in the image.
+3. The process has to exit on `SIGTERM`, so an instance can drain when we replace it.
 
-Every deployment sits behind the gateway. With no policies, the gateway forwards the request. A key check and a rate limit are policies, and they apply on the next deployment.
+Disk, secrets, and the rest of that contract are on [Dockerfile builds](https://www.unkey.com/docs/compute/build/dockerfile).
 
-## Can I host an API for free?
+Compute runs in four regions today: Oregon (`us-west-2`), Northern Virginia (`us-east-1`), Frankfurt (`eu-central-1`), and Singapore (`ap-southeast-1`). A new app starts with one instance in each region the workspace can use. You can change that list per environment. It accepts one to five names, even though only four exist right now, and every deployment in the environment runs in all of them.
 
-Compute is paid. You need a Compute plan before the first deploy, and the free API Management tier does not include one.
+## One root key for the curls
 
-Starter is $5 a month and includes $5 of usage. Through December 31, 2026, the first month is $0 and then $5, from a $5 credit. On Starter, credit left from that offer carries to the next bill.
+Create it under Settings > Root Keys before the curls below. We show the secret once.
 
-The [pricing page](https://www.unkey.com/pricing) lists Compute as Unkey Deploy. Host comparisons are in [Best serverless platform to host a small API in 2026](/blog/best-serverless-api-hosting-2026).
+The curls below need `api.*.create_key` and `environment.*.set_policies`. The CI deploy also needs `environment.*.create_deployment`. You can narrow each one, `api.<api_id>.create_key` or the same idea for a single environment. [Root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions) is the full catalog, including the longer resource names if you want a key that can only touch one app.
 
-## What to check before you deploy
+## Push the Dockerfile
 
-Only a workspace admin can pick the plan. If the workspace has none, the first deploy opens a dialog titled Choose a Compute plan. Caps for each plan are on [Compute plans](https://www.unkey.com/docs/compute/get-started/plans).
+The examples use a project slug of `payments`, an app slug of `api`, and a workspace named `acme`. That production URL is `payments-api-acme.unkey.app`. If your slugs differ, use those instead.
 
-The process has to listen on `PORT`. Unkey sets that variable to the environment's port, 8080 unless you change it, and that value overrides any `ENV PORT` in the image. The process has to exit on `SIGTERM` so an instance can drain when it is replaced.
+Open Projects, create `payments`, and on Deploy a new app pick the GitHub repository. Install the Unkey GitHub App if the workspace hasn't. The dashboard names the app after the repo.
 
-Writes on the container's own filesystem stay under 128 MiB. Anything larger goes on the disk at `/data`. The contract is on [Dockerfile builds](https://www.unkey.com/docs/compute/build/dockerfile).
+The branch starts as the repository's default branch. Open App settings > Build and pick the Dockerfile from the list we found in the repo, or type the path. Saving there writes it for production and preview. Connecting the repo is on [Deploy from GitHub](https://www.unkey.com/docs/compute/get-started/deploy-from-github).
 
-Environment variables belong to one environment. Production and preview can hold different values for the same key, and every value is encrypted. Mark a secret Sensitive and it becomes write-only: you can replace or delete it, and you cannot read it back.
+Choose Deploy. We build a production deployment from the head of that branch. Wait until the status is `ready`.
 
-A running deployment keeps the variables it was created with. Save, then redeploy. The rules are on [Environment variables](https://www.unkey.com/docs/compute/configure/environment-variables).
+A later push to the default branch creates the next production deployment. Once that one is `ready`, it becomes the live deployment and the production domains move to it. If the status is `failed`, the deployment page shows the error.
 
-Compute runs in `us-west-2` (Oregon), `us-east-1` (Northern Virginia), `eu-central-1` (Frankfurt), and `ap-southeast-1` (Singapore). Each environment picks from one to five of those, and the deployment runs in all of them.
+### CI deploys with one call
 
-A new app in the dashboard starts in every region available to the workspace, at 0.25 vCPU, 256 MiB, and one instance in each. Frankfurt is the only European region. See [Regions](https://www.unkey.com/docs/build-and-deploy/regions).
-
-A `ready` deployment gets `unkey.app` hostnames on its own. A custom domain is optional. Starter includes one, and Pro and Business include unlimited custom domains. Add it on Domains and publish the DNS records shown there.
-
-## Deploy from GitHub with a Dockerfile
-
-The server on this path is the container. Put a Dockerfile in the repo, connect GitHub, and push. A registry image is deployed from [Deploy a container image](https://www.unkey.com/docs/compute/get-started/deploy-an-image), and a Node API without its own Dockerfile is covered in [How to ship a Node.js API or backend](/blog/git-push).
-
-Every example below uses the project `payments` and the app `api`. The build context is the repository root unless you set a root directory.
-
-Open Projects, create `payments`, and on Deploy a new app pick GitHub repository. Install the Unkey GitHub App if the workspace has not. Click the repo, then under Build choose the Dockerfile.
-
-The branch starts as the repository's default branch. Dashboard steps are on [Deploy from GitHub](https://www.unkey.com/docs/compute/get-started/deploy-from-github). Saving Build writes the Dockerfile path to production and preview.
-
-To set production on its own, send `dockerfile` with `environments.updateSettings`. The root key goes in `Authorization: Bearer`. Field rules are on [Build settings](https://www.unkey.com/docs/compute/configure/build-settings).
+The dashboard is the path. If the deploy itself has to come from CI, it is one call, and this one is v3. Every other call below is v2.
 
 ```bash
-curl -X POST https://api.unkey.com/v2/environments.updateSettings \
+curl -X POST https://api.unkey.com/v3/deployments.createDeployment \
   -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "project": "payments",
     "app": "api",
     "environment": "production",
-    "dockerfile": "Dockerfile"
+    "git": { "branch": "main" }
   }'
 ```
 
-Choose Deploy. Unkey builds a production deployment from the head of the branch. Wait until the status is `ready`.
+`main` is the branch in this example. Pass the branch you actually want built. The call returns a deployment id and the build runs after that. Wait for `ready` the same way.
 
-In a workspace named `acme`, that app answers on `payments-api-acme.unkey.app`. A later push to the default branch creates the next production deployment. The production domains move to it once that deployment is `ready`.
+## Keys get checked before your code runs
 
-A failed build shows the error on the deployment page. [Dockerfile builds](https://www.unkey.com/docs/compute/build/dockerfile) explains the usual causes.
+Open Keyspaces (APIs) and create a keyspace. The sidebar still says APIs. Same object. The API calls it an API, as in `apis.createApi`. The gateway calls it a keyspace.
 
-## Add API keys
+Settings shows two IDs, and they are not interchangeable. `keys.createKey` wants the API ID, the one that starts with `api_`. The gateway policy wants the keyspace ID, the one that starts with `ks_`. Copy both. Mixing them up is a bad afternoon.
 
-Create the keys in API Management, then attach the keyspace to `api` with a key auth policy and redeploy. The gateway checks the key before the container sees the request.
+## Limit the caller, not the IP
 
-Open Keyspaces (APIs) and create a keyspace. Settings shows two IDs.
+A gateway rate limit that runs before the key check has no caller yet. Every anonymous request shares one counter, including people who never had a key. Put the limit on the key, and run the key check first, so the count belongs to that key.
 
-`keys.createKey` takes the API ID (`api_...`). The gateway policy takes the keyspace ID (`ks_...`). See [Keyspaces](https://www.unkey.com/docs/api-management/keyspaces/overview).
-
-Create the root key under Settings > Root Keys with `api.*.create_key`. `data.key` is shown once. This is the [quickstart](https://www.unkey.com/docs/api-management/get-started/quickstart) request.
+Five requests a minute is small on purpose, so you can watch it trip. `autoApply` means every verification counts against this limit. Leave it out and the call fails with a 400.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/keys.createKey \
@@ -90,27 +76,24 @@ curl -X POST https://api.unkey.com/v2/keys.createKey \
   -H "Content-Type: application/json" \
   -d '{
     "apiId": "api_...",
-    "name": "My first key"
+    "name": "My first key",
+    "ratelimits": [
+      { "name": "requests", "limit": 5, "duration": 60000, "autoApply": true }
+    ]
   }'
 ```
 
-On the `api` app, open Policies and add a Key Auth policy with that keyspace ID. With no location set, the gateway reads `Authorization: Bearer`.
+`duration` is the window in milliseconds, so `60000` is a minute. The key comes back once, in `data.key`. Store it. That string is the bearer token below.
 
-Save, then redeploy. The live deployment keeps the policies it was created with.
+On the `api` app, add a Key Auth policy with the `ks_` id. With no location set, the gateway reads `Authorization: Bearer`.
 
-A missing or rejected key gets `401`, `403`, or `429`, and the app does not see the request. A key that passes arrives with `X-Unkey-Principal` set, so the app can tell who called. Outcomes are on [API key authentication](https://www.unkey.com/docs/compute/gateway/api-key-auth). The header fields are on [The principal header](https://www.unkey.com/docs/compute/gateway/principal).
+Same step from the API. This call replaces the environment's whole policy list.
 
-Those same keys work if your code calls `keys.verifyKey` and the API runs somewhere else. Issuing them, and that verify call, are in [How to add API key authentication to your API without building a key system](/blog/api-key-authentication).
+:::warn Replaces the whole list
 
-## Add a rate limit
+`gateway.setPolicies` replaces the environment's whole list. If `api` already has policies, read them first and include them here, or this call removes them.
 
-A rate limit policy counts requests in a window and rejects the rest before they reach the app. In the dashboard, add a policy and set the type to Rate Limit. The form starts at 100 requests per 60 seconds per client IP.
-
-This API already requires a key, so count the caller, and place the rate limit after key auth. If it runs first, the gateway has no caller yet and those requests share one counter.
-
-The call below is the [gateway policies](https://www.unkey.com/docs/compute/gateway/policies) example, using `payments` and `api`. It requires a key, then allows 100 requests a minute for that caller. `windowMs` is the window in milliseconds.
-
-`gateway.setPolicies` replaces the environment's whole list. If `api` already has policies, read them first and include them, or this call removes them. The root key needs `environment.*.set_policies`.
+:::
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
@@ -124,71 +107,92 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
       {
         "name": "Require a key",
         "enabled": true,
-        "keyauth": { "keyspaces": ["ks_1234abcd"] }
-      },
-      {
-        "name": "100 per minute per key",
-        "enabled": true,
-        "ratelimit": {
-          "limit": 100,
-          "windowMs": 60000,
-          "identifiers": [{ "authenticatedSubject": {} }]
-        }
+        "keyauth": { "keyspaces": ["ks_..."] }
       }
     ]
   }'
 ```
 
-Redeploy after you save. Replacing the list resets the counters once the next deployment is live. Over the limit, the caller gets `429` `rate_limited` and the app does not see the request. The response headers are on [Rate limit policy](https://www.unkey.com/docs/compute/gateway/rate-limiting).
+A running deployment keeps the policies, variables, and settings it was created with. Deploy again after you save. The next deployment is the one that checks keys. That is the only extra deploy in this path.
 
-`authenticatedSubject` is the identity's external ID when the key has an identity, so that customer's keys share one counter. A key with no identity is counted by its key ID.
+## The sixth request is a 429
 
-A shared customer budget, including a different limit on one key, is [How to rate limit an API per customer or per API key](/blog/rate-limit-api-per-customer). Limits on the key itself, and `ratelimit.limit` for a route with no key, are on [Rate limiting](https://www.unkey.com/docs/api-management/ratelimiting/overview).
+No key:
 
-## Preview deployments
+```bash
+curl -sS -w "\n%{http_code}\n" https://payments-api-acme.unkey.app/
+```
 
-A push to any branch other than the default creates a preview deployment and a branch URL. A pull request from a fork stays in `awaiting_approval` until a project member approves it.
+The status is 401. The body is:
 
-A preview with no requests stops after one hour idle. Preview is billed the same as production. See [Production and preview](https://www.unkey.com/docs/compute/concepts/production-and-preview).
+```json
+{
+  "error": {
+    "code": "err:frontline:client:missing_credentials",
+    "message": "Authentication required. Please provide a valid API key."
+  }
+}
+```
 
-## Logs
+With the key, on a fresh window:
 
-The build log streams on the deployment page while the image builds.
+```bash
+curl -sS -D - -o /dev/null -w "%{http_code}\n" https://payments-api-acme.unkey.app/ \
+  -H "Authorization: Bearer $KEY"
+```
 
-Lines the process writes to stdout or stderr show up under Logs. See [Runtime logs](https://www.unkey.com/docs/compute/observe/runtime-logs).
+That is a 200. The app sees the request, and it arrives with `X-Unkey-Principal` set, so the handler can tell who called. The response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. After this first call, with no earlier traffic in the window, the limit is 5 and remaining is 4. The body is whatever your API returns.
 
-Requests that reached the app are under Requests. A request the gateway rejected is absent there, because the app never handled it. See [Request logs](https://www.unkey.com/docs/compute/observe/requests).
+That call used one of the five. Four more still pass. The next one does not.
 
-## What it costs
+```bash
+for i in 1 2 3 4 5; do
+  curl -sS -o /dev/null -w "%{http_code}\n" https://payments-api-acme.unkey.app/ \
+    -H "Authorization: Bearer $KEY"
+done
+```
 
-Figures are from the [pricing page](https://www.unkey.com/pricing), which lists Compute as Unkey Deploy. There is no trial. You choose the plan.
+```text
+200
+200
+200
+200
+429
+```
 
-A deployment that would exceed the plan's caps fails. Apps already running keep serving. Change the plan, or free capacity, and deploy again.
+The 429 includes `Retry-After`, in whole seconds, and this body:
 
-| Plan     | Price  | Included usage | Max per instance | Custom domains | Max instances per region |
-| -------- | ------ | -------------- | ---------------- | -------------- | ------------------------ |
-| Starter  | $5/mo  | $5             | 2 vCPU, 2 GiB    | 1              | 4                        |
-| Pro      | $25/mo | $25            | 8 vCPU, 8 GiB    | Unlimited      | 8                        |
-| Business | $50/mo | $50            | 16 vCPU, 32 GiB  | Unlimited      | 16                       |
+```json
+{
+  "error": {
+    "code": "err:frontline:client:rate_limited",
+    "message": "Rate limit exceeded. Please try again later."
+  }
+}
+```
 
-Through December 31, 2026, the first month is $0 then $5 on Starter, $20 then $25 on Pro, and $45 then $50 on Business. Included credit offsets compute, storage, egress, and active keys.
+Which failure is which, in the order the gateway stops:
 
-Past the credit, memory is billed on the average the instance used. CPU is billed while the code is executing. An active key is one verified at least once that month through a Key Auth policy on Deploy. Unit rates are on the pricing page.
+- No key in any location the policy checks: `401` `err:frontline:client:missing_credentials`.
+- The key does not exist, is disabled or expired, the workspace is disabled, or the key is from a keyspace the policy does not list: `401` `err:frontline:client:invalid_key`. The caller cannot tell those apart.
+- The key fails a permission query: `403` `err:frontline:client:insufficient_permissions`.
+- The key's rate limit is used up: `429` `err:frontline:client:rate_limited`.
+- The key is out of credits: `429` `err:frontline:client:usage_exceeded`.
 
-An admin can set a monthly spend budget under Settings > Billing. With the stop option on, hitting the budget suspends compute. Deployments stop, and the gateway answers `402` `spend_limit_reached`. Raising or removing the budget, or turning the stop off, brings compute back.
+The outcomes are on [API key authentication](https://www.unkey.com/docs/compute/gateway/api-key-auth).
 
-API Management is a separate bill. The free tier is $0, with 150,000 valid requests a month and 1,000 API keys. Rate-limited calls and bad keys sit outside that quota. The tier does not deploy the API.
+## Blocked requests never hit your app
 
-## FAQ
+The 401 and the 429 are answered by the gateway. Your process does not run, and those requests are not in the app's request log. That's the reason the check sits in front of the code.
 
-### Can I host an API for free?
+## What this actually costs you
 
-The free API Management tier does not run the container. Compute hosting starts on Starter, at $5 a month with $5 of included usage.
+This isn't free. Compute starts at $5 a month, and that $5 is usage credit.
 
-### What is hosting an API?
+Until December 31, 2026, your first month on Starter is free. After that it's $5. Unused promo credit rolls over.
 
-Callers reach the API on a hostname over TLS. Compute runs the container, and the gateway is in front of it.
+You pay for the CPU and memory the app actually uses, not the ceiling you configured. Memory the instance is holding is billed even between requests. Time spent waiting on I/O does not count as active CPU, and that CPU is usually tiny. Idle is not free.
 
-### How do I deploy a REST API on a server?
+The free API Management tier issues keys. It does not run the container. Pro, Business, and the API Management tiers are on the [pricing page](https://www.unkey.com/pricing).
 
-Connect the GitHub repository to the `payments` project, set the Dockerfile on `api`, and choose Deploy. Wait for `ready`, then add the key policy and the rate limit and redeploy.
+Ship APIs, not infrastructure.
