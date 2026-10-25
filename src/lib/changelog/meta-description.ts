@@ -78,7 +78,7 @@ export function trimChangelogMetaDescription(
 
   const trimmed = normalized
     .slice(0, end)
-    .replace(/[,:;]+$/g, '')
+    .replace(/[.,:;]+$/g, '')
     .trimEnd();
   if (!trimmed || trimmed.length >= normalized.length) return normalized;
   return `${trimmed}${ELLIPSIS}`;
