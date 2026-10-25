@@ -1,16 +1,14 @@
 ---
 date: 2026-10-17
-title: 'Deploy an API with keys and rate limits in one push'
+title: 'The key check belongs in front of your API'
 description: 'Push a Dockerfile. The gateway checks the key, and the key carries the rate limit.'
 author: james
 tags: ['tutorials']
 ---
 
-You've got an API working on localhost. Getting it onto the internet with keys and rate limits shouldn't take a weekend of glue.
+The hard part is not the handler. A public URL, a key check, and a rate limit should not cost a weekend of glue.
 
-Here's the path we use. Push a repo with a Dockerfile to Unkey Compute, then put a key check in front of it with API Management. The rate limit lives on the key. Your code stays the API.
-
-Compute builds the image, runs the container, and gives the deployment a URL. API Management is where the keys and the limits live. The gateway sits in front of every deployment and, with no policies, forwards the request. A key check is a policy, and it applies on the next deployment.
+We run that as one path. Push a repo with a Dockerfile to Unkey Compute. The key and its rate limit live in API Management, and the gateway enforces both before your code runs. With no policies, the gateway forwards the request. A key check is a policy, and it applies on the next deployment.
 
 ## Three things before you push
 
@@ -18,13 +16,13 @@ Compute builds the image, runs the container, and gives the deployment a URL. AP
 2. The process has to listen on `PORT`. We set that to the environment's port, 8080 unless you change it, and it overrides any `ENV PORT` in the image.
 3. The process has to exit on `SIGTERM`, so an instance can drain when we replace it.
 
-Disk, secrets, and the rest of that contract are on [Dockerfile builds](https://www.unkey.com/docs/compute/build/dockerfile).
+Disk and the rest of that contract are on [Dockerfile builds](https://www.unkey.com/docs/compute/build/dockerfile).
 
 Compute runs in four regions today: Oregon (`us-west-2`), Northern Virginia (`us-east-1`), Frankfurt (`eu-central-1`), and Singapore (`ap-southeast-1`). A new app starts with one instance in each region the workspace can use. You can change that list per environment. It accepts one to five names, even though only four exist right now, and every deployment in the environment runs in all of them.
 
 ## One root key for the curls
 
-Create it under Settings > Root Keys before the curls below. We show the secret once.
+An admin opens Root Keys in the sidebar and creates the key before the curls below. We show the secret once. If Root Keys is missing from the sidebar, the account is not an admin.
 
 The curls below need `api.*.create_key` and `environment.*.set_policies`. The CI deploy also needs `environment.*.create_deployment`. You can narrow each one, `api.<api_id>.create_key` or the same idea for a single environment. [Root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions) is the full catalog, including the longer resource names if you want a key that can only touch one app.
 
@@ -141,7 +139,7 @@ curl -sS -D - -o /dev/null -w "%{http_code}\n" https://payments-api-acme.unkey.a
   -H "Authorization: Bearer $KEY"
 ```
 
-That is a 200. The app sees the request, and it arrives with `X-Unkey-Principal` set, so the handler can tell who called. The response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. After this first call, with no earlier traffic in the window, the limit is 5 and remaining is 4. The body is whatever your API returns.
+That is a 200. The app sees the request, and it arrives with `X-Unkey-Principal` set, so the handler can tell who called. The response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Limit is the 5 you put on the key. Remaining is how many of those are left in the window. The body is whatever your API returns.
 
 That call used one of the five. Four more still pass. The next one does not.
 
@@ -181,9 +179,9 @@ Which failure is which, in the order the gateway stops:
 
 The outcomes are on [API key authentication](https://www.unkey.com/docs/compute/gateway/api-key-auth).
 
-## Blocked requests never hit your app
+## Your code doesn't run the rejected request
 
-The 401 and the 429 are answered by the gateway. Your process does not run, and those requests are not in the app's request log. That's the reason the check sits in front of the code.
+The gateway sends the 401 and the 429. Your process does not run. Those requests still show up in Unkey's request logs, so you get the full picture.
 
 ## What this actually costs you
 
@@ -191,7 +189,7 @@ This isn't free. Compute starts at $5 a month, and that $5 is usage credit.
 
 Until December 31, 2026, your first month on Starter is free. After that it's $5. Unused promo credit rolls over.
 
-You pay for the CPU and memory the app actually uses, not the ceiling you configured. Memory the instance is holding is billed even between requests. Time spent waiting on I/O does not count as active CPU, and that CPU is usually tiny. Idle is not free.
+You pay for the CPU and memory the app actually uses, not the ceiling you configured. Memory the instance is holding is billed even between requests. Time spent waiting on I/O does not count as active CPU. Idle is not free.
 
 The free API Management tier issues keys. It does not run the container. Pro, Business, and the API Management tiers are on the [pricing page](https://www.unkey.com/pricing).
 
