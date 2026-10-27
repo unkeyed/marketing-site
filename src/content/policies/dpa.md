@@ -57,7 +57,7 @@ Those business purposes are providing, securing, supporting, and billing the Ser
 
 Unkeyed will not combine Customer Personal Data with personal data it received from another customer, except where that is required to provide the Service or where Customer instructs it. Customer Personal Data is logically separated by workspace identifier.
 
-To the extent the CCPA requires it, Unkeyed understands these restrictions and will comply with them as a service provider. If Unkeyed determines that it can no longer meet its obligations under the CCPA, it will notify Customer within five business days. Customer may then take reasonable and appropriate steps to ensure that Unkeyed uses Customer Personal Data in a manner consistent with Customer's obligations under the CCPA, and to stop and remediate unauthorized use.
+To the extent the CCPA requires it, Unkeyed understands these restrictions and will comply with them as a service provider. Unkeyed will provide the same level of privacy protection as the CCPA requires. If Unkeyed determines that it can no longer meet its obligations under the CCPA, it will notify Customer within five business days. Customer may then take reasonable and appropriate steps to ensure that Unkeyed uses Customer Personal Data in a manner consistent with Customer's obligations under the CCPA, and to stop and remediate unauthorized use.
 
 ## 5. Records and audits
 
@@ -69,7 +69,7 @@ A further audit may take place at reasonable intervals where a regulator require
 
 If Customer determines that Unkeyed is processing Customer Personal Data without authorization, Customer may take reasonable and appropriate steps to stop and remediate that unauthorized processing.
 
-Where the EU SCCs apply, the audit rights in Clause 8.9 are exercised only through this Section 5.
+Where the EU SCCs apply, the audit rights in Clause 8.9 are exercised only through this Section 5. Nothing in this Section 5 limits Customer's rights under Clause 8.9 of the EU SCCs.
 
 ## 6. Subprocessors
 
@@ -107,13 +107,12 @@ For transfers under the Standard Contractual Clauses, Customer is the data expor
 
 Unkeyed will transfer Customer Personal Data onward only to subprocessors bound by the Standard Contractual Clauses or another valid transfer mechanism. That covers the read-only replicas in ap-south-1 (Mumbai) and ap-southeast-1 (Singapore), and the other replica regions named on the Subprocessors page.
 
-If Unkeyed transfers Customer Personal Data from the European Economic Area, the United Kingdom, or Switzerland to a country without an adequacy decision, it will use the safeguards in this Section 9.
+If Customer Personal Data is transferred from the European Economic Area, the United Kingdom, or Switzerland to a country without an adequacy decision, Unkeyed will use the safeguards in this Section 9.
 
 ### 9.1 Transfers from the EEA
 
 The EU SCCs are incorporated by reference and completed as follows.
 
-- Module One (controller to controller) applies to Account Data and Aggregated Telemetry, which Section 13 treats as data Unkeyed processes as a controller.
 - Module Two (controller to processor) applies when Customer is a controller and Unkeyed is a processor.
 - Module Three (processor to processor) applies when Customer is a processor and Unkeyed is a subprocessor. Customer confirms that the controller has authorized that appointment.
 - The optional docking clause in Clause 7 applies.
@@ -189,7 +188,7 @@ Disputes arising under the Standard Contractual Clauses are resolved exclusively
 
 **Nature and purpose.** Unkeyed receives, stores, organizes, retrieves, transmits, and deletes Customer Personal Data as needed to provide the Service. It secures that data, including by storing key material encrypted at rest in S3. The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep read-only replicas in the regions described on the [Subprocessors page](https://unkey.com/policies/subprocessors). Unkeyed also uses the subprocessors on that page for the purposes listed there. Customer Personal Data is logically separated by workspace identifier.
 
-**Data subjects.** Customer's end users, and other people whose personal data appears in the categories below. The names and email addresses of Customer's team members who use the dashboard are Account Data, not Customer Personal Data. Unkeyed is the controller of that Account Data.
+**Data subjects.** Customer's end users; people identified in billing contacts processed with Stripe; and people who submit support messages to Plain. The names and email addresses of Customer's team members who use the dashboard are Account Data, not Customer Personal Data. Unkeyed is the controller of that Account Data.
 
 **Categories of personal data.**
 
@@ -224,11 +223,11 @@ This annex completes Annex I and Annex III of the EU SCCs, and the corresponding
 
 ### B.2 Description of the transfer
 
-The data subjects, categories of personal data, special categories, nature and purpose, and duration are those in Annex A. Transfers occur on an ongoing basis for as long as Unkeyed provides the Service, including when read-only replicas are kept in the regions on the [Subprocessors page](https://unkey.com/policies/subprocessors). The recipients are Unkeyed and the subprocessors on that page.
+The data subjects, categories of personal data, special categories, nature and purpose, and duration are those in Annex A. The Standard Contractual Clauses modules that apply are Module Two and Module Three only, as Section 9.1 and Annex D Table 2 state. Transfers occur on an ongoing basis for as long as Unkeyed provides the Service, including when read-only replicas are kept in the regions on the [Subprocessors page](https://unkey.com/policies/subprocessors). The recipients are Unkeyed and the subprocessors on that page.
 
 ### B.3 Competent supervisory authority
 
-Where Customer is established in an EU Member State, the supervisory authority of that Member State. Where Customer is not established in the EU but has appointed an Art. 27 representative, the authority of the Member State where the representative is established. Otherwise the Irish Data Protection Commission. For the UK Addendum, the Information Commissioner's Office.
+The competent supervisory authority is determined under Clause 13 of the EU SCCs. Where Customer is established in an EU Member State, that is the supervisory authority of that Member State. Where Customer is not established in the EU but has appointed a representative under Article 27 of the GDPR, that is the authority of the Member State where the representative is established. Otherwise, the Irish Data Protection Commission acts initially under Clause 13. For the UK Addendum, the Information Commissioner's Office.
 
 ### B.4 Subprocessors
 
