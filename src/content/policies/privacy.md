@@ -55,7 +55,7 @@ We may also disclose personal data if the law requires it, or to protect the rig
 
 ## International transfers
 
-Unkeyed processes personal data primarily in the United States. AWS and PlanetScale keep read-only replicas in the regions listed on the Subprocessors page, including eu-central-1 (Frankfurt), ap-south-1 (Mumbai), ap-northeast-1 (Tokyo), us-west-2 (Oregon), and ap-southeast-1 (Singapore). Those replicas are read-only. They are not the primary copy.
+Unkeyed processes personal data primarily in the United States. AWS and PlanetScale also process in Germany, India, Japan, and Singapore, as listed on the Subprocessors page.
 
 Where personal data is transferred from the European Economic Area, the United Kingdom, or Switzerland to a country without an adequacy decision, we use the EU Standard Contractual Clauses and, for the United Kingdom, the UK Addendum, as the Data Processing Agreement describes.
 
