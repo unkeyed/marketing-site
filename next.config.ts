@@ -43,12 +43,19 @@ const markdownRoutes = [
   { page: '/about', markdown: '/about.md', api: '/api/about' },
   { page: '/startups', markdown: '/startups.md', api: '/api/startups' },
   { page: '/yc', markdown: '/yc.md', api: '/api/yc' },
+  { page: '/all-things-open', markdown: '/all-things-open.md', api: '/api/all-things-open' },
+  {
+    page: '/all-things-open/rules',
+    markdown: '/all-things-open/rules.md',
+    api: '/api/all-things-open/rules',
+  },
   { page: '/policies/terms', markdown: '/policies/terms.md', api: '/api/policies/terms' },
   { page: '/policies/privacy', markdown: '/policies/privacy.md', api: '/api/policies/privacy' },
 ];
 
 const nextConfig: NextConfig = {
   experimental: {
+    agentUpgrade: 'security',
     optimizePackageImports: ['lucide-react', 'three', '@react-three/drei', 'motion', 'shiki'],
   },
   outputFileTracingExcludes: {
@@ -204,6 +211,53 @@ const nextConfig: NextConfig = {
         source: '/meet',
         destination: 'https://cal.com/team/unkey',
         permanent: false,
+      },
+      // Retired URLs. statusCode 308 is a permanent redirect.
+      // remove this redirect when the 'How to deploy and host an API' post (branch perkinsjr/blog-how-to-deploy-and-host-an-api) merges, or the redirect will shadow the post.
+      {
+        source: '/blog/how-to-deploy-and-host-an-api',
+        destination: '/blog/git-push',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/heroku-alternatives-for-apis',
+        destination: '/blog/best-serverless-api-hosting-2026',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/deploy-a-docker-container',
+        destination: '/docs/compute/get-started/deploy-an-image',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/how-to-rate-limit-an-api',
+        destination: '/blog/introducing-ratelimiting',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/ephemeral-environments',
+        destination: '/docs/compute/concepts/production-and-preview',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-key-management',
+        destination: '/blog/api-key-management-vs-gateway',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-rate-limiting',
+        destination: '/blog/introducing-ratelimiting',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-load-balancing',
+        destination: '/glossary/load-balancing',
+        permanent: true,
+      },
+      {
+        source: '/blog/using-auth',
+        destination: '/blog/using-unkey-with-auth',
+        permanent: true,
       },
     ];
   },

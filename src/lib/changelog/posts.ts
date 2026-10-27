@@ -5,8 +5,9 @@ import { ReactElement } from 'react';
 import config from '@/configs/website-config';
 
 import { ISeoFields } from '@/types/common';
+import { resolveChangelogMetaDescription } from '@/lib/changelog/meta-description';
 import { compileMdx, readAndParseMarkdown, removeMarkdownSymbols } from '@/lib/markdown';
-import { getExcerpt, getFormattedDate, getTimeToRead } from '@/lib/utils';
+import { getFormattedDate, getTimeToRead } from '@/lib/utils';
 
 export const POSTS_PER_PAGE = 20;
 
@@ -68,6 +69,20 @@ function normalizeChangelogTag(tag: string | IChangelogTag): IChangelogTag | nul
 
   const dotColor = normalizeDotColor(tag.dotColor);
   return dotColor ? { label, dotColor } : { label };
+}
+
+interface IChangelogPostFrontmatter {
+  title: string;
+  isDraft?: boolean;
+  publishedAt?: string | Date;
+  date?: string | Date;
+  tags?: Array<string | IChangelogTag>;
+  /** Search and social description. Preferred over summary and description. */
+  metaDescription?: string;
+  /** Short summary used when metaDescription is omitted. */
+  summary?: string;
+  description?: string;
+  seo?: Partial<ISeoFields>;
 }
 
 interface IChangelogPostMetadata {
@@ -173,11 +188,21 @@ async function getChangelogPostBySlug(
     const filePath = resolveChangelogFilePath(slug);
     if (!filePath) return null;
 
-    const { data, content } = readAndParseMarkdown<IChangelogPostMetadata>(filePath);
+    const { data, content } = readAndParseMarkdown<IChangelogPostFrontmatter>(filePath);
 
     if (!data) return null;
 
-    const { title, isDraft = false, publishedAt, date, tags, seo } = data;
+    const {
+      title,
+      isDraft = false,
+      publishedAt,
+      date,
+      tags,
+      seo,
+      metaDescription,
+      summary,
+      description,
+    } = data;
     const plainContent = removeMarkdownSymbols(content);
     const normalizedTags: IChangelogTag[] = Array.isArray(tags)
       ? tags
@@ -204,7 +229,13 @@ async function getChangelogPostBySlug(
       rawContent: content.trim(),
       seo: {
         title: seo?.title ?? title,
-        description: seo?.description ?? getExcerpt({ content: plainContent, length: 160 }),
+        description: resolveChangelogMetaDescription({
+          metaDescription,
+          summary,
+          description,
+          seoDescription: seo?.description,
+          body: content,
+        }),
         socialImage: seo?.socialImage ?? config.defaultSocialImage,
         noIndex: seo?.noIndex ?? isDraft,
       },

@@ -1,7 +1,10 @@
 ---
-title: "Keep-Alive: Essential Guide to HTTP"
+title: 'Keep-Alive: Essential Guide to HTTP'
 description: Master Keep-Alive concepts to enhance API performance. Learn key mechanisms and best practices for efficient connection management. Start now.
-h1: "Keep-Alive: Understanding HTTP Connection Management"
+seo:
+  title: 'HTTP Keep-Alive: Header, Timeout and How It Works'
+  description: 'How the HTTP Keep-Alive header reuses connections, and how to pick a sensible keepalive timeout.'
+h1: 'Keep-Alive: Understanding HTTP Connection Management'
 term: Keep-Alive
 categories: []
 takeaways:
@@ -26,13 +29,13 @@ takeaways:
       value: Standardized Keep-Alive
   recommendedReading:
     - url: https://datatracker.ietf.org/doc/html/rfc6223
-      title: "RFC 6223: Keep-Alive"
+      title: 'RFC 6223: Keep-Alive'
     - url: https://en.wikipedia.org/wiki/Keepalive
       title: Keep-Alive - Wikipedia
     - url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Keep-Alive
-      title: "MDN Web Docs: Keep-Alive (HTTP)"
+      title: 'MDN Web Docs: Keep-Alive (HTTP)'
     - url: https://everything.curl.dev/usingcurl/connections/keepalive.html
-      title: "Using curl: Keep-Alive"
+      title: 'Using curl: Keep-Alive'
   definitionAndStructure:
     - key: Connection Persistence
       value: Keep-Alive
@@ -72,8 +75,8 @@ const options = {
   path: '/',
   method: 'GET',
   headers: {
-    'Connection': 'keep-alive'
-  }
+    Connection: 'keep-alive',
+  },
 };
 
 const req = request(options, (res) => {
@@ -115,7 +118,7 @@ const options = {
   hostname: 'api.example.com',
   port: 80,
   path: '/data',
-  method: 'GET'
+  method: 'GET',
 };
 
 const req = request(options, (res) => {

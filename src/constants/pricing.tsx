@@ -40,7 +40,7 @@ export const pricingContentData = {
     jumps. Usage charges cover compute, storage, egress,
     and active keys. Available on every plan.`,
     actionText: 'Read the docs',
-    actionHref: 'https://unkey.com/docs/platform/workspaces/billing',
+    actionHref: 'https://www.unkey.com/docs/platform/billing/plans',
   },
   calculator: {
     title: 'Calculator',
@@ -101,6 +101,7 @@ export const computeIntroOffer = {
   badge: '$5 off your first month',
   notice:
     'Get $5 of compute on us as a $5 credit off your first month. The offer ends at the end of the year, on December 31, 2026.',
+  starterCarryoverNote: 'On Starter, any credit left over carries over to your next bill.',
 };
 
 export const computePlanIncludes = [
@@ -584,7 +585,7 @@ export const faqItems = [
         your users to generate new ones. Existing keys keep working, and Unkey never sees the
         plaintext. See the{' '}
         <Link
-          href="https://unkey.com/docs/platform/apis/migrations/introduction"
+          href="https://www.unkey.com/docs/api-management/keys/migrating-keys"
           className="underline"
         >
           migration docs
@@ -599,7 +600,7 @@ export const faqItems = [
       <p>
         We deploy on AWS across multiple regions. You pick which regions to deploy to and traffic
         routes to the nearest healthy region automatically. See the{' '}
-        <Link href="https://unkey.com/docs/build-and-deploy/regions" className="underline">
+        <Link href="https://www.unkey.com/docs/compute/concepts/regions" className="underline">
           regions docs
         </Link>{' '}
         for the current list.

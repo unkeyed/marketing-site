@@ -75,7 +75,7 @@ The "u" in "unkey" stands for "batteries included"! _(English may not be my firs
 - **Stale-While-Revalidate**: Most 3rd party caches support setting a time-to-live, but you needed to handle SWR yourself, until now. Just configure `fresh` and `stale` times and let the cache handle the rest.
 - **Metrics Collection**: Middleware for gathering metrics to monitor and debug your cache usage.
 - **Encryption**: Middleware for automatic encryption of cache values, protecting your data at rest.
-- **Composable Design**: Mix and match [primitives](https://www.unkey.com/docs/libraries/ts/cache/overview#primitives) to build exactly what you need.
+- **Composable Design**: Mix and match [primitives](https://www.unkey.com/docs/api-management/sdks/typescript/cache) to build exactly what you need.
 
 ## Getting Started
 
@@ -185,11 +185,11 @@ There are two middlewares available out of the box:
 
   `import { withEncryption } from "@unkey/cache/middleware";`
 
-Please refer to the [documentation](https://www.unkey.com/docs/libraries/ts/cache/overview#middlewares) for more information on how to use middlewares.
+Please refer to the [documentation](https://www.unkey.com/docs/api-management/sdks/typescript/cache) for more information on how to use middlewares.
 
 ## Conclusion
 
-At launch we ship with a memory store and a Cloudflare store, but everything is built to be [easily extensible](https://www.unkey.com/docs/libraries/ts/cache/interface/store). We can add more stores and middlewares as needed, let us know what you'd want to see!
+At launch we ship with a memory store and a Cloudflare store, but everything is built to be [easily extensible](https://www.unkey.com/docs/api-management/sdks/typescript/cache). We can add more stores and middlewares as needed, let us know what you'd want to see!
 Whether you're dealing with the limitations of serverless functions or simply need a nice caching abstraction, `@unkey/cache` has you covered.
 
-As usual, everything is open source, check out our [GitHub repository](https://github.com/unkeyed/unkey/tree/main/packages/cache) and our [documentation](https://www.unkey.com/docs/libraries/ts/cache/overview) for more information. We can't wait to see what you build with it!
+As usual, everything is open source, check out our [GitHub repository](https://github.com/unkeyed/unkey/tree/main/packages/cache) and our [documentation](https://www.unkey.com/docs/api-management/sdks/typescript/cache) for more information. We can't wait to see what you build with it!

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { homeContentData } from '@/constants/home';
 import { pricingContentData } from '@/constants/pricing';
 
@@ -6,11 +7,23 @@ import Cta from '@/components/pages/home/cta';
 import FaqSection from '@/components/pages/pricing/faq/faq';
 import PricingMainContent from '@/components/pages/pricing/pricing-main-content';
 
-export const metadata = getMetadata({
-  title: 'Pricing',
-  description: 'Pricing for Unkey Deploy and Api Management',
+const pricingMetadata = getMetadata({
+  title: 'Unkey Pricing: Free to Start, Usage-Based Plans',
+  description:
+    'Start for free and pay as you grow, with usage-based pricing for Unkey Deploy and API keys.',
   pathname: '/pricing',
+  absoluteTitle: true,
 });
+
+export const metadata: Metadata = {
+  ...pricingMetadata,
+  alternates: {
+    ...pricingMetadata.alternates,
+    types: {
+      'text/markdown': '/pricing.md',
+    },
+  },
+};
 
 export default function PricingPage() {
   return (

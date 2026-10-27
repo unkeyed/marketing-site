@@ -1,5 +1,6 @@
 import {
   apiManagementPricingPlans,
+  computeIntroOffer,
   deployPricingPlans,
   enterpriseData,
   tableFeatures,
@@ -38,6 +39,25 @@ function findPlanValue(featureName: string, planId: string): string {
     if (cell) return formatCell(cell.value);
   }
   return '—';
+}
+
+function buildComputeIntroOffer(): string {
+  const lines = deployPricingPlans.flatMap((plan) => {
+    if (!plan.introOffer || plan.priceType !== 'number') return [];
+    return [
+      `- **${plan.name}** — ${formatUsd(plan.introOffer.firstMonthPrice)} then ${formatUsd(plan.monthlyPrice)}/mo`,
+    ];
+  });
+
+  return [
+    `### ${computeIntroOffer.badge}`,
+    '',
+    computeIntroOffer.notice,
+    '',
+    computeIntroOffer.starterCarryoverNote,
+    '',
+    ...lines,
+  ].join('\n');
 }
 
 function buildDeployPlansTable(): string {
@@ -175,6 +195,8 @@ function buildBody(): string {
     '',
     'Deploy your code as containers across AWS regions. Deploy is a paid product — start on Starter at $5/mo. All plans include monthly usage credits that offset usage-based charges; beyond the included credits, you pay for average actual vCPU seconds and memory GB-seconds (not the ceilings you configured), allocated disk GB-seconds, egress GB, and active keys. Unused credits do not roll over.',
     '',
+    buildComputeIntroOffer(),
+    '',
     '### Plans',
     '',
     buildDeployPlansTable(),
@@ -258,11 +280,11 @@ function buildBody(): string {
     '',
     '**Can I migrate existing API keys from another provider?**',
     '',
-    'Yes. You can import pre-hashed keys from your current system into Unkey without requiring your users to generate new ones. Existing keys keep working, and Unkey never sees the plaintext. See https://unkey.com/docs/platform/apis/migrations/introduction for the full flow.',
+    'Yes. You can import pre-hashed keys from your current system into Unkey without requiring your users to generate new ones. Existing keys keep working, and Unkey never sees the plaintext. See https://www.unkey.com/docs/api-management/keys/migrating-keys for the full flow.',
     '',
     '**Where are my workloads hosted, and can I pick regions?**',
     '',
-    'Unkey deploys on AWS across multiple regions. You pick which regions to deploy to and traffic routes to the nearest healthy region automatically. See https://unkey.com/docs/build-and-deploy/regions for the current list.',
+    'Unkey deploys on AWS across multiple regions. You pick which regions to deploy to and traffic routes to the nearest healthy region automatically. See https://www.unkey.com/docs/compute/concepts/regions for the current list.',
     '',
     '**Do you offer SOC 2 compliance?**',
     '',
