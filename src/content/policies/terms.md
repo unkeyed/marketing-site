@@ -13,7 +13,7 @@ seo:
 
 **Last revised on:** **October 27, 2026**
 
-The website located at https://unkey.com (the " **Site**") is a copyrighted work belonging to Unkeyed, Inc. (" **Company**", " **us**", " **our**", and " **we**"). Certain features of the Site may be subject to additional guidelines, terms, or rules, which will be posted on the Site in connection with such features. All such additional terms, guidelines, and rules are incorporated by reference into these Terms.
+The website located at https://unkey.com (the " **Site**") is a copyrighted work belonging to Unkeyed, Inc. ("Unkey", " **Company**", " **us**", " **our**", and " **we**"). Certain features of the Site may be subject to additional guidelines, terms, or rules, which will be posted on the Site in connection with such features. All such additional terms, guidelines, and rules are incorporated by reference into these Terms.
 
 These Terms of Use (these " **Terms**") set forth the legally binding terms and conditions that govern your use of the Site. By accessing or using the Site, you are accepting these Terms (on behalf of yourself or the entity that you represent), and you represent and warrant that you have the right, authority, and capacity to enter into these Terms (on behalf of yourself or the entity that you represent). you may not access or use the Site or accept the Terms if you are not at least 18 years old. If you do not agree with all of the provisions of these Terms, do not access and/or use the Site.
 

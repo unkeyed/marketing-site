@@ -9,11 +9,11 @@ seo:
   noIndex: false
 ---
 
-This is the list of subprocessors Unkeyed, Inc. uses to process personal data for Unkey. It is the authoritative list for the [Data Processing Agreement](https://unkey.com/policies/dpa). Some listed vendors (WorkOS, Stripe, Resend, and Plain) mainly process Account Data, for which Unkeyed is the controller.
+This is the list of subprocessors Unkeyed, Inc. ("Unkey") uses to process personal data for Unkey. It is the authoritative list for the [Data Processing Agreement](https://unkey.com/policies/dpa). Some listed vendors (WorkOS, Stripe, Resend, and Plain) mainly process Account Data, for which Unkey is the controller.
 
 Last updated: 27 October 2026.
 
-Unkeyed gives 30 days' notice before a new or replacement subprocessor processes customer personal data. Notice is given by updating this page and by email to the account administrator by default. To subscribe to those updates, email [privacy@unkey.com](mailto:privacy@unkey.com).
+Unkey gives 30 days' notice before a new or replacement subprocessor processes customer personal data. Notice is given by updating this page and by email to the account administrator by default. To subscribe to those updates, email [privacy@unkey.com](mailto:privacy@unkey.com).
 
 | Vendor                              | Purpose                                                          | Customer data                                                                                                                                    | Location                                        |
 | ----------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |

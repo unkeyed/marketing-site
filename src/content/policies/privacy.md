@@ -9,7 +9,7 @@ seo:
   noIndex: false
 ---
 
-This Privacy Policy explains how Unkeyed, Inc. ("Unkeyed", "we", "us") handles personal data when we decide the purposes of the processing. It takes effect on 27 October 2026.
+This Privacy Policy explains how Unkeyed, Inc. ("Unkey", "we", "us") handles personal data when we decide the purposes of the processing. It takes effect on 27 October 2026.
 
 Unkeyed, Inc. is at 2261 Market Street #86193, San Francisco, CA 94114. Privacy questions go to [privacy@unkey.com](mailto:privacy@unkey.com).
 
@@ -17,7 +17,7 @@ The product is Unkey, at [https://unkey.com](https://unkey.com) (the "Site" and 
 
 ## What this policy covers
 
-Unkeyed is the controller of Account Data and of personal data we collect through the Site and our own marketing and operations. Account Data is the name and email address of a customer's team members who use the dashboard or administer the account, together with the related account and authentication information described below.
+Unkey is the controller of Account Data and of personal data we collect through the Site and our own marketing and operations. Account Data is the name and email address of a customer's team members who use the dashboard or administer the account, together with the related account and authentication information described below.
 
 When a customer uses Unkey to process personal data about its own end users, that customer decides why that data is processed. The [Data Processing Agreement](https://unkey.com/policies/dpa) governs that Customer Personal Data. This Privacy Policy does not replace the DPA.
 
@@ -51,11 +51,11 @@ We use the vendors on the [Subprocessors page](https://unkey.com/policies/subpro
 
 We do not sell personal information. We do not share it for cross-context behavioral advertising.
 
-We may also disclose personal data if the law requires it, or to protect the rights, security, and safety of Unkeyed, our customers, and others.
+We may also disclose personal data if the law requires it, or to protect the rights, security, and safety of Unkey, our customers, and others.
 
 ## International transfers
 
-Unkeyed processes personal data primarily in the United States. AWS and PlanetScale also process in Germany, India, Japan, and Singapore, as listed on the Subprocessors page.
+Unkey processes personal data primarily in the United States. AWS and PlanetScale also process in Germany, India, Japan, and Singapore, as listed on the Subprocessors page.
 
 Where personal data is transferred from the European Economic Area, the United Kingdom, or Switzerland to a country without an adequacy decision, we use the EU Standard Contractual Clauses and, for the United Kingdom, the UK Addendum, as the Data Processing Agreement describes.
 
@@ -69,7 +69,7 @@ We keep Account Data for the customer relationship and for as long as we need it
 
 ## Security
 
-Unkeyed is SOC 2 Type II certified. The SOC 2 Type II report is available on written request through the [Trust Center](https://trust.inc/unkey). Data in transit is protected with TLS. Stored data is encrypted at rest. Access is limited to people who need it.
+Unkey is SOC 2 Type II certified. The SOC 2 Type II report is available on written request through the [Trust Center](https://trust.inc/unkey). Data in transit is protected with TLS. Stored data is encrypted at rest. Access is limited to people who need it.
 
 ## GDPR and UK rights
 
