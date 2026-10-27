@@ -12,6 +12,7 @@ interface LegalPageProps {
   formattedDate: string;
   content: ReactElement;
   tableOfContents: ITableOfContentsItem[];
+  dateLabel?: string;
 }
 
 function hasCalendarDate(value: string) {
@@ -24,6 +25,7 @@ export default function LegalPage({
   formattedDate,
   content,
   tableOfContents,
+  dateLabel = 'Effective date',
 }: LegalPageProps) {
   return (
     <main className="pt-10 pb-24 md:pt-16 md:pb-28 lg:pt-24 lg:pb-32 xl:pb-48">
@@ -34,7 +36,7 @@ export default function LegalPage({
               {title}
             </h1>
             <p className="mt-5 text-lg leading-normal tracking-tight text-muted-foreground">
-              Effective date:{' '}
+              {dateLabel}:{' '}
               {hasCalendarDate(updatedAt) ? (
                 <time dateTime={updatedAt}>{formattedDate}</time>
               ) : (

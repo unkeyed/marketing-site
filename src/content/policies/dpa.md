@@ -29,7 +29,7 @@ If these documents conflict, this order controls: (1) the Standard Contractual C
 
 **Standard Contractual Clauses** or **SCCs** means the clauses annexed to European Commission Implementing Decision (EU) 2021/914 of 4 June 2021 ("EU SCCs"), and, for transfers from the United Kingdom, those clauses as modified by the International Data Transfer Addendum issued by the UK Information Commissioner under section 119A of the Data Protection Act 2018 and laid before Parliament on 2 February 2022 ("UK Addendum"). Both are incorporated into this DPA by reference. Transfers under this DPA are made on that basis. Unkeyed does not participate in the EU-U.S. Data Privacy Framework, the UK Extension to the EU-U.S. Data Privacy Framework, or the Swiss-U.S. Data Privacy Framework, and those frameworks are not a transfer tool under this DPA.
 
-**Subprocessor** means a third party Unkeyed engages to process Customer Personal Data in order to provide the Service. The current subprocessors are listed in Annex B. A later subprocessor is authorized only under Section 6.
+**Subprocessor** means a third party Unkeyed engages to process Customer Personal Data in order to provide the Service. The current subprocessors are listed on the [Subprocessors page](https://unkey.com/policies/subprocessors), which is the authoritative list and is incorporated into Annex B. A later subprocessor is authorized only under Section 6.
 
 ## 2. Roles and instructions
 
@@ -37,7 +37,7 @@ For Customer Personal Data, Customer is the controller and Unkeyed is the proces
 
 Unkeyed processes Customer Personal Data only to provide the Service described in the Agreement and Annex A, and only on Customer's documented instructions, including the instructions in this DPA about international transfers. If a law that applies to Unkeyed requires processing beyond those instructions, Unkeyed will tell Customer of that requirement before processing, unless the law forbids the notice on important grounds of public interest.
 
-Customer instructs Unkeyed to process Customer Personal Data as needed to provide the Service. The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep read-only replicas in the regions listed in Annex B.
+Customer instructs Unkeyed to process Customer Personal Data as needed to provide the Service. The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep read-only replicas in the regions described on the [Subprocessors page](https://unkey.com/policies/subprocessors).
 
 Unkeyed will tell Customer if it reasonably believes an instruction violates Privacy Laws, and it may pause that instruction until Customer confirms or changes it.
 
@@ -69,13 +69,13 @@ Where the EU SCCs apply, the audit rights in Clause 8.9 are exercised only throu
 
 ## 6. Subprocessors
 
-Customer gives Unkeyed general authorization to use the subprocessors named in Annex B, and to add or replace subprocessors, to process Customer Personal Data for the purposes listed there. Unkeyed will bind each subprocessor, by written terms, to protect Customer Personal Data to a standard no lower than this DPA. If a subprocessor fails to meet those terms, Unkeyed remains responsible to Customer for that failure.
+Customer gives Unkeyed general authorization to use the subprocessors named on the [Subprocessors page](https://unkey.com/policies/subprocessors), and to add or replace subprocessors, to process Customer Personal Data for the purposes listed there. Unkeyed will bind each subprocessor, by written terms, to protect Customer Personal Data to a standard no lower than this DPA. If a subprocessor fails to meet those terms, Unkeyed remains responsible to Customer for that failure.
 
-Unkeyed will give 30 days' notice before a new or replacement subprocessor processes Customer Personal Data. Notice is given by updating this DPA or a subprocessor page, and by email to customers who subscribe to those updates.
+Unkeyed will give 30 days' notice before a new or replacement subprocessor processes Customer Personal Data. Notice is given by updating the [Subprocessors page](https://unkey.com/policies/subprocessors) and by email to customers who subscribe to those updates. A customer subscribes by emailing privacy@unkey.com.
 
 Customer may object within 14 days of that notice, on reasonable grounds relating to data protection. If the parties cannot resolve the objection, Customer may terminate the affected part of the Service and receive a prorated refund of prepaid fees for that part.
 
-Where the EU SCCs apply, Clause 9 uses Option 2 (general written authorisation). The minimum time for prior notice of a subprocessor change is 30 days, as this Section 6 states. Annex B is the agreed list.
+Where the EU SCCs apply, Clause 9 uses Option 2 (general written authorisation). The minimum time for prior notice of a subprocessor change is 30 days, as this Section 6 states. The [Subprocessors page](https://unkey.com/policies/subprocessors) is the agreed list.
 
 ## 7. Confidentiality and security
 
@@ -99,7 +99,7 @@ A notice under this section is not an admission of fault or liability.
 
 ## 9. International transfers
 
-The primary region for the Service is the United States. AWS and PlanetScale keep read-only replicas in the regions named in Annex B. Customer instructs that processing. Providing the Service therefore involves transferring Customer Personal Data to the United States and keeping read-only copies in those replica regions.
+The primary region for the Service is the United States. AWS and PlanetScale keep read-only replicas in the regions named on the [Subprocessors page](https://unkey.com/policies/subprocessors). Customer instructs that processing. Providing the Service therefore involves transferring Customer Personal Data to the United States and keeping read-only copies in those replica regions.
 
 If Unkeyed transfers Customer Personal Data from the European Economic Area, the United Kingdom, or Switzerland to a country without an adequacy decision, it will use the safeguards in this Section 9.
 
@@ -114,7 +114,7 @@ The EU SCCs are incorporated by reference and completed as follows.
 - Clause 9 uses Option 2, as Section 6 describes, with 30 days' prior notice of subprocessor changes.
 - The optional language in Clause 11 does not apply.
 - Under Clause 17, the EU SCCs are governed by the law of Ireland. Under Clause 18, disputes are resolved in the courts of Ireland.
-- Annex I of the EU SCCs is completed by Annex B of this DPA. Annex II is completed by Annex C. Annex III, the subprocessor list, is completed by Annex B.
+- Annex I of the EU SCCs is completed by Annex B of this DPA. Annex II is completed by Annex C. Annex III, the subprocessor list, is the [Subprocessors page](https://unkey.com/policies/subprocessors), which Annex B incorporates.
 - The parties are treated as having signed the EU SCCs, including the annexes, when Customer accepts this DPA under Section 14.
 
 ### 9.2 Transfers from the United Kingdom
@@ -173,7 +173,7 @@ On request, Unkeyed will provide a countersigned copy. James Perkins, CEO, signs
 
 **Duration.** For the term of the Agreement. After the Agreement ends, Customer has 30 days to export, and Unkeyed deletes Customer Personal Data within 90 days after that export period, except where a law requires a longer retention.
 
-**Nature and purpose.** Unkeyed receives, stores, organizes, retrieves, transmits, and deletes Customer Personal Data as needed to provide the Service. It secures that data, including by storing key material encrypted at rest in S3. The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep read-only replicas in the regions listed in Annex B. Unkeyed also uses the subprocessors in Annex B for the purposes listed there. Customer Personal Data is logically separated by workspace identifier.
+**Nature and purpose.** Unkeyed receives, stores, organizes, retrieves, transmits, and deletes Customer Personal Data as needed to provide the Service. It secures that data, including by storing key material encrypted at rest in S3. The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep read-only replicas in the regions described on the [Subprocessors page](https://unkey.com/policies/subprocessors). Unkeyed also uses the subprocessors on that page for the purposes listed there. Customer Personal Data is logically separated by workspace identifier.
 
 **Data subjects.**
 
@@ -210,7 +210,7 @@ This annex completes Annex I and Annex III of the EU SCCs, and the corresponding
 
 ### B.2 Description of the transfer
 
-The data subjects, categories of personal data, special categories, nature and purpose, and duration are those in Annex A. Transfers occur on an ongoing basis for as long as Unkeyed provides the Service, including when read-only replicas are kept in the regions listed below. The recipients are Unkeyed and the subprocessors in this annex.
+The data subjects, categories of personal data, special categories, nature and purpose, and duration are those in Annex A. Transfers occur on an ongoing basis for as long as Unkeyed provides the Service, including when read-only replicas are kept in the regions on the [Subprocessors page](https://unkey.com/policies/subprocessors). The recipients are Unkeyed and the subprocessors on that page.
 
 ### B.3 Competent supervisory authority
 
@@ -218,40 +218,28 @@ The exporter's competent supervisory authority, determined under Clause 13 of th
 
 ### B.4 Subprocessors
 
-| Subprocessor     | What it processes for Unkeyed                            | Location                                                                                                                                                                                                         |
-| ---------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AWS              | API and compute, Redis, and S3 storage of encrypted keys | Primary region: United States. Read-only replicas, which are not the primary copy, in eu-central-1 (Frankfurt), ap-south-1 (Mumbai), ap-northeast-1 (Tokyo), us-west-2 (Oregon), and ap-southeast-1 (Singapore). |
-| PlanetScale      | MySQL                                                    | Primary region: United States. Read-only replicas, which are not the primary copy, in eu-central-1 (Frankfurt), ap-south-1 (Mumbai), ap-northeast-1 (Tokyo), us-west-2 (Oregon), and ap-southeast-1 (Singapore). |
-| ClickHouse Cloud | Analytics                                                | United States                                                                                                                                                                                                    |
-| Grafana Cloud    | Telemetry                                                | United States                                                                                                                                                                                                    |
-| Vercel           | Hosting for the marketing website and dashboard          | United States                                                                                                                                                                                                    |
-| WorkOS           | Authentication                                           | United States                                                                                                                                                                                                    |
-| Stripe           | Billing                                                  | United States                                                                                                                                                                                                    |
-| Sentry           | Error monitoring                                         | United States                                                                                                                                                                                                    |
-| Resend           | Email                                                    | United States                                                                                                                                                                                                    |
-
-The API and compute run on AWS. Vercel hosts the marketing website and the dashboard. Every subprocessor other than AWS and PlanetScale processes in the United States only.
+The authoritative list of subprocessors, including each vendor, its purpose, the customer data it processes, and its location, is the [Subprocessors page](https://unkey.com/policies/subprocessors). That page is incorporated into this Annex B and is the list for Annex III of the EU SCCs. The API and compute run on AWS. Vercel hosts the marketing website and the dashboard. AWS and PlanetScale use the United States as the primary region and keep read-only replicas in the regions named on that page.
 
 ## Annex C. Security measures
 
 This annex completes Annex II of the EU SCCs and of the UK Addendum.
 
-| Measure                                                  | Detail                                                                                                                                                                                                                                                    |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Encryption                                               | Data in transit is protected with TLS. All stored data is encrypted at rest. Keys are encrypted at rest. Each vendor encrypts other stored data at rest by default.                                                                                       |
-| Confidentiality, integrity, availability, and resilience | The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep the read-only replicas described in Annex B. Customer Personal Data is logically separated by workspace identifier. Unkeyed is SOC 2 Type II certified. |
-| Backups                                                  | PlanetScale is backed up every 12 hours. ClickHouse is backed up every 24 hours.                                                                                                                                                                          |
-| Testing the measures                                     | A customer can request the SOC 2 Type II report through the Trust Center. Unkeyed commissions a penetration test yearly.                                                                                                                                  |
-| Identification and authorization                         | Customers sign in through WorkOS. Staff must use multi-factor authentication. Unkeyed reviews access quarterly.                                                                                                                                           |
-| Transmission                                             | TLS.                                                                                                                                                                                                                                                      |
-| Storage                                                  | Encryption at rest for all stored data, including keys. Each vendor encrypts other stored data at rest by default.                                                                                                                                        |
-| Physical security                                        | Unkeyed has no offices or data centers of its own. The infrastructure in Annex B is operated by those subprocessors. Audits under Section 5 are remote or documentary.                                                                                    |
-| Logging                                                  | Request logs that contain IP addresses are kept for 30 to 90 days. ClickHouse Cloud is used for analytics, Grafana Cloud for telemetry, and Sentry for error monitoring.                                                                                  |
-| Patches                                                  | Critical patches are applied within 7 days.                                                                                                                                                                                                               |
-| Retention                                                | Request logs that contain IP addresses are kept for 30 to 90 days. Section 12 covers export and deletion when the Agreement ends.                                                                                                                         |
-| Staff accountability                                     | Staff who can access Customer Personal Data sign confidentiality agreements, take security training yearly, and are subject to background checks where lawful.                                                                                            |
-| Portability and erasure                                  | Section 12 gives Customer 30 days after the Agreement ends to export Customer Personal Data. Unkeyed then deletes it within 90 days, except where a law requires retention. Section 11 covers help with a data-subject request.                           |
-| Subprocessors                                            | Section 6 requires written data-protection terms with each subprocessor.                                                                                                                                                                                  |
+| Measure                                                  | Detail                                                                                                                                                                                                                                                                                                               |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Encryption                                               | Data in transit is protected with TLS. All stored data is encrypted at rest. Keys are encrypted at rest. Each vendor encrypts other stored data at rest by default.                                                                                                                                                  |
+| Confidentiality, integrity, availability, and resilience | The API and compute run on AWS. The primary region is the United States. AWS and PlanetScale keep the read-only replicas described on the [Subprocessors page](https://unkey.com/policies/subprocessors). Customer Personal Data is logically separated by workspace identifier. Unkeyed is SOC 2 Type II certified. |
+| Backups                                                  | PlanetScale is backed up every 12 hours. ClickHouse is backed up every 24 hours.                                                                                                                                                                                                                                     |
+| Testing the measures                                     | A customer can request the SOC 2 Type II report through the Trust Center. Unkeyed commissions a penetration test yearly.                                                                                                                                                                                             |
+| Identification and authorization                         | Customers sign in through WorkOS. Staff must use multi-factor authentication. Unkeyed reviews access quarterly.                                                                                                                                                                                                      |
+| Transmission                                             | TLS.                                                                                                                                                                                                                                                                                                                 |
+| Storage                                                  | Encryption at rest for all stored data, including keys. Each vendor encrypts other stored data at rest by default.                                                                                                                                                                                                   |
+| Physical security                                        | Unkeyed has no offices or data centers of its own. The infrastructure on the [Subprocessors page](https://unkey.com/policies/subprocessors) is operated by those subprocessors. Audits under Section 5 are remote or documentary.                                                                                    |
+| Logging                                                  | Request logs that contain IP addresses are kept for 30 to 90 days. ClickHouse Cloud is used for analytics, Grafana Cloud for telemetry, and Sentry for error monitoring.                                                                                                                                             |
+| Patches                                                  | Critical patches are applied within 7 days.                                                                                                                                                                                                                                                                          |
+| Retention                                                | Request logs that contain IP addresses are kept for 30 to 90 days. Section 12 covers export and deletion when the Agreement ends.                                                                                                                                                                                    |
+| Staff accountability                                     | Staff who can access Customer Personal Data sign confidentiality agreements, take security training yearly, and are subject to background checks where lawful.                                                                                                                                                       |
+| Portability and erasure                                  | Section 12 gives Customer 30 days after the Agreement ends to export Customer Personal Data. Unkeyed then deletes it within 90 days, except where a law requires retention. Section 11 covers help with a data-subject request.                                                                                      |
+| Subprocessors                                            | Section 6 requires written data-protection terms with each subprocessor.                                                                                                                                                                                                                                             |
 
 ## Annex D. UK Addendum
 
@@ -272,12 +260,12 @@ The approved EU SCCs incorporated by Section 9, including the modules in Section
 
 ### Table 3. Appendix information
 
-| Appendix                                        | Where it is completed |
-| ----------------------------------------------- | --------------------- |
-| Annex 1A, list of parties                       | Annex B               |
-| Annex 1B, description of transfer               | Annex A and Annex B   |
-| Annex II, technical and organizational measures | Annex C               |
-| Annex III, list of subprocessors                | Annex B               |
+| Appendix                                        | Where it is completed                           |
+| ----------------------------------------------- | ----------------------------------------------- |
+| Annex 1A, list of parties                       | Annex B                                         |
+| Annex 1B, description of transfer               | Annex A and Annex B                             |
+| Annex II, technical and organizational measures | Annex C                                         |
+| Annex III, list of subprocessors                | The Subprocessors page, incorporated by Annex B |
 
 ### Mandatory clauses
 

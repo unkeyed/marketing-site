@@ -94,11 +94,12 @@ Clear definitions for API and platform terms. The index enumerates every term; a
 
 ## Legal
 
-Terms of service, privacy policy, and data processing agreement. Append `.md` to any of these URLs for the raw markdown source.
+Terms of service, privacy policy, data processing agreement, and subprocessors. Append `.md` to any of these URLs for the raw markdown source.
 
 - [Terms of Service (Markdown)](https://www.unkey.com/policies/terms.md) · [HTML](https://www.unkey.com/policies/terms)
 - [Privacy Policy (Markdown)](https://www.unkey.com/policies/privacy.md) · [HTML](https://www.unkey.com/policies/privacy)
 - [Data Processing Agreement (Markdown)](https://www.unkey.com/policies/dpa.md) · [HTML](https://www.unkey.com/policies/dpa)
+- [Subprocessors (Markdown)](https://www.unkey.com/policies/subprocessors.md) · [HTML](https://www.unkey.com/policies/subprocessors)
 
 ## SDKs
 
