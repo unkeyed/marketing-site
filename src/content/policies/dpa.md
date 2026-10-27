@@ -13,7 +13,7 @@ This Data Processing Agreement ("DPA") is between Unkeyed, Inc. ("Unkeyed") and 
 
 This DPA is part of the Terms of Use at [https://unkey.com/policies/terms](https://unkey.com/policies/terms) and of any order, subscription, or other written terms the parties agree for the Service (together, the "Agreement"). Unkeyed, Inc. is the contracting party and the processor under this DPA. Words defined in the Agreement keep those meanings. If this DPA uses a word that the Agreement does not define, and Privacy Laws define it, the Privacy Laws meaning applies.
 
-If these documents conflict, this order controls: (1) the Standard Contractual Clauses, where they apply and the conflict concerns a transfer they cover; (2) this DPA; (3) the Agreement; (4) the Privacy Policy at [https://unkey.com/policies/privacy](https://unkey.com/policies/privacy). Each party's aggregate liability under this DPA is limited to the fees Customer paid Unkeyed in the 12 months before the claim, except that nothing limits liability that cannot be limited by law or the Standard Contractual Clauses.
+If these documents conflict, this order controls: (1) the Standard Contractual Clauses, where they apply and the conflict concerns a transfer they cover; (2) this DPA; (3) the Agreement; (4) the Privacy Policy at [https://unkey.com/policies/privacy](https://unkey.com/policies/privacy). Each party's aggregate liability arising out of or related to this DPA is limited to the lesser of (a) the fees Customer paid Unkeyed in the 12 months before the event giving rise to the claim, and (b) US $1,000,000, except that nothing limits liability that cannot be limited under applicable law or the Standard Contractual Clauses.
 
 ## 1. Definitions
 
