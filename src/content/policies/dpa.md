@@ -267,6 +267,15 @@ The approved EU SCCs incorporated by Section 9, including the modules in Section
 | Annex II, technical and organizational measures | Annex C                                         |
 | Annex III, list of subprocessors                | The Subprocessors page, incorporated by Annex B |
 
+### Table 4. Ending this Addendum when the Approved Addendum changes
+
+Either party may end the UK Addendum if the Information Commissioner issues a revised Approved Addendum, as set out in Section 19 of the mandatory clauses. Both the importer and the exporter have that right.
+
+| Party    | May end this Addendum |
+| -------- | --------------------- |
+| Importer | Yes                   |
+| Exporter | Yes                   |
+
 ### Mandatory clauses
 
 Part 2 of the approved UK Addendum, the mandatory clauses, is incorporated by reference. Those mandatory clauses take precedence over the rest of this DPA if they conflict, as the UK Addendum requires.
