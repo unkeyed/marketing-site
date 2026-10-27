@@ -14,6 +14,10 @@ interface LegalPageProps {
   tableOfContents: ITableOfContentsItem[];
 }
 
+function hasCalendarDate(value: string) {
+  return !Number.isNaN(Date.parse(value));
+}
+
 export default function LegalPage({
   title,
   updatedAt,
@@ -30,7 +34,12 @@ export default function LegalPage({
               {title}
             </h1>
             <p className="mt-5 text-lg leading-normal tracking-tight text-muted-foreground">
-              Effective date: <time dateTime={updatedAt}>{formattedDate}</time>
+              Effective date:{' '}
+              {hasCalendarDate(updatedAt) ? (
+                <time dateTime={updatedAt}>{formattedDate}</time>
+              ) : (
+                formattedDate
+              )}
             </p>
           </header>
 

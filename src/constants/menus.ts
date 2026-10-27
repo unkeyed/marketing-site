@@ -75,6 +75,7 @@ export const MENUS = {
         items: [
           { label: 'Terms of Service', href: '/policies/terms' },
           { label: 'Privacy Policy', href: '/policies/privacy' },
+          { label: 'Data Processing Agreement', href: '/policies/dpa' },
           { label: 'Trust Center', href: 'https://trust.inc/unkey' },
         ],
       },
