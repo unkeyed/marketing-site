@@ -67,6 +67,8 @@ const STATIC_PAGES = [
 const CONTENT_PAGE_FILES = {
   '/policies/privacy': ['src/app/(website)/policies/privacy/page.tsx'],
   '/policies/terms': ['src/app/(website)/policies/terms/page.tsx'],
+  '/policies/dpa': ['src/app/(website)/policies/dpa/page.tsx'],
+  '/policies/subprocessors': ['src/app/(website)/policies/subprocessors/page.tsx'],
 };
 
 const SHALLOW_CLONE_WARNING =

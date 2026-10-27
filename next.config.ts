@@ -51,6 +51,12 @@ const markdownRoutes = [
   },
   { page: '/policies/terms', markdown: '/policies/terms.md', api: '/api/policies/terms' },
   { page: '/policies/privacy', markdown: '/policies/privacy.md', api: '/api/policies/privacy' },
+  { page: '/policies/dpa', markdown: '/policies/dpa.md', api: '/api/policies/dpa' },
+  {
+    page: '/policies/subprocessors',
+    markdown: '/policies/subprocessors.md',
+    api: '/api/policies/subprocessors',
+  },
 ];
 
 const nextConfig: NextConfig = {

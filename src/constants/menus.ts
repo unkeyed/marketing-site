@@ -39,7 +39,7 @@ export const MENUS = {
   ],
   footer: {
     description: 'Build better APIs faster',
-    copyright: '© 2026 Unkey Inc. All rights reserved.',
+    copyright: '© 2026 Unkeyed, Inc. All rights reserved.',
     main: [
       {
         title: 'Company',
@@ -75,6 +75,8 @@ export const MENUS = {
         items: [
           { label: 'Terms of Service', href: '/policies/terms' },
           { label: 'Privacy Policy', href: '/policies/privacy' },
+          { label: 'Data Processing Agreement', href: '/policies/dpa' },
+          { label: 'Subprocessors', href: '/policies/subprocessors' },
           { label: 'Trust Center', href: 'https://trust.inc/unkey' },
         ],
       },

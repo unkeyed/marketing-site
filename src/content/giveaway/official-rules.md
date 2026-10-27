@@ -1,5 +1,5 @@
 1. No purchase necessary. Buying anything won't improve your chances. Unkey Compute's free Starter plan is enough to enter.
-2. Sponsor: Unkey, Inc., 2261 Market Street #86193, San Francisco, CA 94114.
+2. Sponsor: Unkeyed, Inc. ("Unkey"), 2261 Market Street #86193, San Francisco, CA 94114.
 3. Dates: Entries open Monday, October 19, 2026 at 12:00am ET and close Friday, October 23, 2026 at 11:59pm ET. Late entries don't count.
 4. Eligibility: Open to people 18 or older (or the age of majority where they live) in places where giveaways like this are legal. Not open to Unkey employees, contractors or their immediate households, residents of countries under US embargo, or where prohibited.
 5. How to enter: Deploy a working project to Unkey Compute, then submit the form at [unkey.com/all-things-open](/all-things-open) with the live project URL, your Unkey workspace ID, a short description of what the project does, your name and your email. One entry per person and per workspace.

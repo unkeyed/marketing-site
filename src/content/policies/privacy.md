@@ -2,75 +2,107 @@
 title: 'Privacy Policy'
 slug: '/privacy'
 isDraft: false
-updatedAt: '2023-07-08T10:56:56.110Z'
+updatedAt: '2026-10-27T12:00:00.000Z'
 seo:
-  title: 'Privacy Policy | Unkey Inc.'
-  description: 'Privacy Policy - Legal information and policies'
+  title: 'Privacy Policy'
+  description: 'How Unkeyed, Inc. collects and uses personal data for Unkey and unkey.com.'
   noIndex: false
 ---
 
-Unkey Inc. (the "Company") is committed to maintaining robust privacy protections for its users. Our Privacy Policy ("Privacy Policy") is designed to help you understand how we collect, use and safeguard the information you provide to us and to assist you in making informed decisions when using our Service.
+This Privacy Policy explains how Unkeyed, Inc. ("Unkey", "we", "us") handles personal data when we decide the purposes of the processing. It takes effect on 27 October 2026.
 
-- For purposes of this Agreement, "Site" refers to the Company's website, which can be accessed at https://unkey.com
+Unkeyed, Inc. is at 2261 Market Street #86193, San Francisco, CA 94114. Privacy questions go to [privacy@unkey.com](mailto:privacy@unkey.com).
 
-- "Service" refers to the Company's services accessed via the Site.
+The product is Unkey, at [https://unkey.com](https://unkey.com) (the "Site" and the "Service").
 
-- The terms "we," "us," and "our" refer to the Company.
+## What this policy covers
 
-- "You" refers to you, as a user of our Site or our Service.
+Unkey is the controller of Account Data and of personal data we collect through the Site and our own marketing and operations. Account Data is the name and email address of a customer's team members who use the dashboard or administer the account, together with the related account and authentication information described below.
 
-By accessing our Site or our Service, you accept our Privacy Policy and Terms of Use (https://unkey.com/policies/terms), and you consent to our collection, storage, use and disclosure of your Personal Information as described in this Privacy Policy.
+When a customer uses Unkey to process personal data about its own end users, that customer decides why that data is processed. The [Data Processing Agreement](https://unkey.com/policies/dpa) governs that Customer Personal Data. This Privacy Policy does not replace the DPA.
 
-## I. INFORMATION WE COLLECT
+## What we collect
 
-We collect "Non-Personal Information" and "Personal Information." **Non-Personal Information** includes information that cannot be used to personally identify you, such as anonymous usage data, general demographic information we may collect, referring/exit pages and URLs, platform types, preferences you submit and preferences that are generated based on the data you submit and number of clicks. **Personal Information** includes your email, which you submit to us through the registration process at the Site.
+- **Account Data.** Name, email address, and authentication information for people who use the dashboard or administer an account. Authentication is provided through WorkOS.
+- **Billing.** Billing contact details and payment information, processed through Stripe.
+- **Support.** Messages people submit through site forms, including a name, email address, and a workspace ID when the form collects one. Those messages are handled in Plain.
+- **Transactional email.** Email addresses and the content of transactional messages we send through Resend.
+- **Website and service logs.** IP addresses, request logs, and similar technical data from the Site and the Service.
+- **Aggregated telemetry.** Service and usage telemetry we aggregate for operating, securing, billing, and improving Unkey.
 
-### 1. Information collected via Technology
+We do not ask for special-category data.
 
-To activate the Service you do not need to submit any Personal Information other than your email address. To use the Service thereafter, you do not need to submit further Personal Information. However, in an effort to improve the quality of the Service, we track information provided to us by your browser or by our software application when you view or use the Service, such as the website you came from (known as the "referring URL"), the type of browser you use, the device from which you connected to the Service, the time and date of access, and other information that does not personally identify you. We track this information using cookies, or small text files which include an anonymous unique identifier. Cookies are sent to a user's browser from our servers and are stored on the user's computer hard drive. Sending a cookie to a user's browser enables us to collect Non-Personal information about that user and keep a record of the user's preferences when utilizing our services, both on an individual and aggregate basis.
+## Why we use it, and the legal bases
 
-The Company may use both persistent and session cookies; persistent cookies remain on your computer after you close your session and until you delete them, while session cookies expire when you close your browser.
+| Purpose                                                                                  | Legal basis                                                                                                          |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Creating and running the account, providing the Service, and sending transactional email | Contract                                                                                                             |
+| Billing and keeping records the law requires                                             | Contract, and legal obligation where a law requires the record                                                       |
+| Support messages                                                                         | Contract, where the message is about an account, and our legitimate interest in answering the person who wrote to us |
+| Securing the Site and the Service, preventing abuse, and keeping logs                    | Legitimate interests in running a secure service                                                                     |
+| Aggregated telemetry for operating and improving the Service                             | Legitimate interests                                                                                                 |
+| Marketing analytics on the Site, only if you accept marketing cookies                    | Consent                                                                                                              |
 
-### 2. Information you provide us by registering for an account
+You can object to processing based on legitimate interests, and you can withdraw consent for marketing cookies, by emailing privacy@unkey.com. Withdrawal does not affect processing that happened before you withdrew.
 
-In addition to the information provided automatically by your browser when you visit the Site, to become a subscriber to the Service you will need to create a personal profile. You can create a profile by registering with the Service and entering your email address, and creating a user name and a password. By registering, you are authorizing us to collect, store and use your email address in accordance with this Privacy Policy.
+## Sharing
 
-### 3. Children's Privacy
+We use the vendors on the [Subprocessors page](https://unkey.com/policies/subprocessors). Some of them, including WorkOS, Stripe, Resend, and Plain, mainly process Account Data.
 
-The Site and the Service are not directed to anyone under the age of 13. The Site does not knowingly collect or solicit information from anyone under the age of 13, or allow anyone under the age of 13 to sign up for the Service. In the event that we learn that we have gathered personal information from anyone under the age of 13 without the consent of a parent or guardian, we will delete that information as soon as possible. If you believe we have collected such information, please contact us at support@unkey.com.
+We do not sell personal information. We do not share it for cross-context behavioral advertising.
 
-## II. HOW WE USE AND SHARE INFORMATION
+We may also disclose personal data if the law requires it, or to protect the rights, security, and safety of Unkey, our customers, and others.
 
-### Personal Information:
+## International transfers
 
-Except as otherwise stated in this Privacy Policy, we do not sell, trade, rent or otherwise share for marketing purposes your Personal Information with third parties without your consent. We do share Personal Information with vendors who are performing services for the Company, such as the servers for our email communications who are provided access to user's email address for purposes of sending emails from us. Those vendors use your Personal Information only at our direction and in accordance with our Privacy Policy.
+Unkey processes personal data primarily in the United States. AWS and PlanetScale also process in Germany, India, Japan, and Singapore, as listed on the Subprocessors page.
 
-In general, the Personal Information you provide to us is used to help us communicate with you. For example, we use Personal Information to contact users in response to questions, solicit feedback from users, provide technical support, and inform users about promotional offers.
+Where personal data is transferred from the European Economic Area, the United Kingdom, or Switzerland to a country without an adequacy decision, we use the EU Standard Contractual Clauses and, for the United Kingdom, the UK Addendum, as the Data Processing Agreement describes.
 
-We may share Personal Information with outside parties if we have a good-faith belief that access, use, preservation or disclosure of the information is reasonably necessary to meet any applicable legal process or enforceable governmental request; to enforce applicable Terms of Service, including investigation of potential violations; address fraud, security or technical concerns; or to protect against harm to the rights, property, or safety of our users or the public as required or permitted by law.
+## Retention
 
-### Non-Personal Information
+Request logs that contain IP addresses are kept for 30 to 90 days. PlanetScale backups run every 12 hours and are kept for 2 days. ClickHouse backups run every 24 hours and are kept for about 8 days (7.7 days).
 
-In general, we use Non-Personal Information to help us improve the Service and customize the user experience. We also aggregate Non-Personal Information in order to track trends and analyze use patterns on the Site. This Privacy Policy does not limit in any way our use or disclosure of Non-Personal Information and we reserve the right to use and disclose such Non-Personal Information to our partners, advertisers and other third parties at our discretion.
+Customer Personal Data is returned or deleted as the Data Processing Agreement describes: the customer keeps export access for 30 days after the agreement ends, and deletion follows that agreement, including expiry from backups.
 
-In the event we undergo a business transaction such as a merger, acquisition by another company, or sale of all or a portion of our assets, your Personal Information may be among the assets transferred. You acknowledge and consent that such transfers may occur and are permitted by this Privacy Policy, and that any acquirer of our assets may continue to process your Personal Information as set forth in this Privacy Policy. If our information practices change at any time in the future, we will post the policy changes to the Site so that you may opt out of the new information practices. We suggest that you check the Site periodically if you are concerned about how your information is used.
+We keep Account Data for the customer relationship and for as long as we need it for the purposes above, including records a law requires us to keep. We do not state a separate retention period for website marketing analytics.
 
-## III. HOW WE PROTECT INFORMATION
+## Security
 
-We implement security measures designed to protect your information from unauthorized access. Your account is protected by your account password and we urge you to take steps to keep your personal information safe by not disclosing your password and by logging out of your account after each use. We further protect your information from potential security breaches by implementing certain technological security measures including encryption, firewalls and secure socket layer technology. However, these measures do not guarantee that your information will not be accessed, disclosed, altered or destroyed by breach of such firewalls and secure server software. By using our Service, you acknowledge that you understand and agree to assume these risks.
+Unkey is SOC 2 Type II certified. The SOC 2 Type II report is available on written request through the [Trust Center](https://trust.inc/unkey). Data in transit is protected with TLS. Stored data is encrypted at rest. Access is limited to people who need it.
 
-## IV. YOUR RIGHTS REGARDING THE USE OF YOUR PERSONAL INFORMATION
+## GDPR and UK rights
 
-You have the right at any time to prevent us from contacting you for marketing purposes. When we send a promotional communication to a user, the user can opt out of further promotional communications by following the unsubscribe instructions provided in each promotional e-mail.
+If the GDPR or the UK GDPR applies, you can ask us to access, correct, or delete your personal data, to restrict or object to processing, and to receive data you provided in a portable format. Where we rely on consent, you can withdraw it. You can also complain to a supervisory authority. In the United Kingdom, that is the Information Commissioner's Office.
 
-## V. LINKS TO OTHER WEBSITES
+Email privacy@unkey.com to use these rights. We may need to confirm that the request comes from you.
 
-As part of the Service, we may provide links to or compatibility with other websites or applications. However, we are not responsible for the privacy practices employed by those websites or the information or content they contain. This Privacy Policy applies solely to information collected by us through the Site and the Service. Therefore, this Privacy Policy does not apply to your use of a third party website accessed by selecting a link on our Site or via our Service. To the extent that you access or use the Service through or on another website or application, then the privacy policy of that other website or application will apply to your access or use of that site or application. We encourage our users to read the privacy statements of other websites before proceeding to use them.
+## California rights
 
-## VI. CHANGES TO OUR PRIVACY POLICY
+If the California Consumer Privacy Act, as amended by the California Privacy Rights Act, applies, you can ask to know, correct, or delete personal information, and you can ask us not to discriminate against you for exercising those rights. We do not sell personal information and we do not share it for cross-context behavioral advertising.
 
-The Company reserves the right to change this policy and our Terms of Service at any time. We will notify you of significant changes to our Privacy Policy by sending a notice to the primary email address specified in your account or by placing a prominent notice on our site. Significant changes will go into effect 30 days following such notification. Non-material changes or clarifications will take effect immediately. You should periodically check the Site and this privacy page for updates.
+Categories we collect, as described above, include identifiers (such as name, email address, and IP address), commercial information (billing contact and payment information), and internet or network activity (such as request logs and support messages). We use these categories for the purposes in this policy.
 
-## VII. CONTACT US
+Email privacy@unkey.com to use these rights.
 
-If you have any questions regarding this Privacy Policy or the practices of this Site, please contact us by sending an email to support@unkey.com.
+## Cookies
+
+The Site uses these cookies and similar tools:
+
+- A first-party cookie named `homepage-hero-visitor`. It stores a random identifier so the homepage can show a consistent version of the page. It is httpOnly, lasts up to one year, and is limited to the Site.
+- A consent record for the cookie banner. The banner asks you to accept or reject marketing cookies, separately from cookies that are necessary to run the Site.
+- Vercel Analytics, which loads only after you accept marketing cookies. It receives usage events from your browser.
+
+The Site does not set advertising cookies.
+
+## Children
+
+The Site and the Service are not directed to anyone under 18. We do not knowingly collect personal data from children.
+
+## Changes
+
+We will post changes on this page. This policy takes effect on 27 October 2026.
+
+## Contact
+
+Unkeyed, Inc., 2261 Market Street #86193, San Francisco, CA 94114. Email [privacy@unkey.com](mailto:privacy@unkey.com).

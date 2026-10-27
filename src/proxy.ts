@@ -74,6 +74,8 @@ const MARKDOWN_PAGES: Record<string, string> = {
   '/changelog': '/changelog.md',
   '/policies/terms': '/policies/terms.md',
   '/policies/privacy': '/policies/privacy.md',
+  '/policies/dpa': '/policies/dpa.md',
+  '/policies/subprocessors': '/policies/subprocessors.md',
 };
 
 // Sections whose individual `/<section>/<slug>` items have a `.md` twin.
