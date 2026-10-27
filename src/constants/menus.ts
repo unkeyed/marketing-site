@@ -39,7 +39,7 @@ export const MENUS = {
   ],
   footer: {
     description: 'Build better APIs faster',
-    copyright: '© 2026 Unkey Inc. All rights reserved.',
+    copyright: '© 2026 Unkeyed, Inc. All rights reserved.',
     main: [
       {
         title: 'Company',

@@ -4,12 +4,12 @@ slug: '/privacy'
 isDraft: false
 updatedAt: '2023-07-08T10:56:56.110Z'
 seo:
-  title: 'Privacy Policy | Unkey Inc.'
+  title: 'Privacy Policy | Unkeyed, Inc.'
   description: 'Privacy Policy - Legal information and policies'
   noIndex: false
 ---
 
-Unkey Inc. (the "Company") is committed to maintaining robust privacy protections for its users. Our Privacy Policy ("Privacy Policy") is designed to help you understand how we collect, use and safeguard the information you provide to us and to assist you in making informed decisions when using our Service.
+Unkeyed, Inc. (the "Company") is committed to maintaining robust privacy protections for its users. Our Privacy Policy ("Privacy Policy") is designed to help you understand how we collect, use and safeguard the information you provide to us and to assist you in making informed decisions when using our Service.
 
 - For purposes of this Agreement, "Site" refers to the Company's website, which can be accessed at https://unkey.com
 
