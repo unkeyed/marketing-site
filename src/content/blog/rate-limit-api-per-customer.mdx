@@ -446,15 +446,16 @@ Every verification and every `ratelimit.limit` call ends up in analytics. The da
 - Filtering **Outcome is RATE_LIMITED** leaves the rejected requests.
 - Under **Ratelimit** in the sidebar, open a namespace and its **Overrides** page to see identifiers that have a different limit.
 
-![The identity page for cus_acme showing 103 requests, 102 valid and 1 invalid, with Valid and Ratelimited rows and the key id on each row](/images/blog-images/rate-limit-api-per-customer/rl-identity.png)
-
-![Edit ratelimit for cus_acme showing the exports rule at 5 per hour with Auto Apply off](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit.png)
-
-![The same Edit ratelimit dialog scrolled to the requests rule at 1000 per minute with Auto Apply on](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit-requests.png)
-
-![Identity requests for cus_acme filtered to Outcome is RATE_LIMITED, with 1 row](/images/blog-images/rate-limit-api-per-customer/rl-ratelimited-logs.png)
-
-![The Overrides page for namespace api.requests with one override for cus_acme at 1k per 1 minute](/images/blog-images/rate-limit-api-per-customer/rl-namespace-override.png)
+<Video
+  src="/images/blog-images/rate-limit-api-per-customer/rl-walkthrough.mp4"
+  poster="/images/blog-images/rate-limit-api-per-customer/rl-walkthrough-poster.png"
+  alt="Dashboard walkthrough for cus_acme: the identity page with Valid and Ratelimited rows, Edit ratelimit showing exports at 5 per hour and requests at 1000 per minute, the RATE_LIMITED filter with 2 rows, then Ratelimit namespace api.Requests Overrides with cus_acme at 1k per 1 minute"
+  width={1920}
+  height={1112}
+  autoplay
+  loop
+  muted
+/>
 
 Pick your limits from this data rather than from a table in a blog post. Look at what your paying customers actually send at their busiest. Set the default plan limit comfortably above that, then watch who runs into it. A customer who gets rate limited every day is either abusing the free tier or ready for a bigger plan. You want to talk to them in both cases.
 
