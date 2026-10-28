@@ -188,6 +188,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/blog/deploy-api-previews-rollback-monitoring',
+        destination: '/blog/deploy-api-previews-monitoring',
+        permanent: true,
+      },
+      {
+        source: '/blog/deploy-api-previews-rollback-monitoring.md',
+        destination: '/blog/deploy-api-previews-monitoring.md',
+        permanent: true,
+      },
+      {
         source: '/discord',
         destination: 'https://discord.gg/fDbezjbJbD',
         permanent: false,
