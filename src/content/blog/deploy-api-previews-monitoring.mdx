@@ -1,0 +1,391 @@
+---
+date: 2026-10-13
+title: 'Deploy an API with preview environments and request logs'
+description: 'A walkthrough of deploying an API on Unkey from GitHub, with preview environments and request logs.'
+image: '/images/blog-images/covers/deploy-api-previews-monitoring/og-1080.png'
+author: james
+isDraft: true
+tags: ['tutorials']
+---
+
+When you ship a public API, you need somewhere to run it and a preview for each pull request. You also need to check who is calling, and you want logs for the day something breaks. We'll set all of that up on Unkey by connecting a GitHub repository. Every push deploys the app, Compute runs it, and API Management issues and checks the keys. Unkey also records each request the app serves.
+
+## What you'll have at the end
+
+You get a production URL on `unkey.app` that updates when you push to your default branch, and a preview URL for every other branch and fork pull request. The gateway checks API keys and rate limits each caller, and you get logs and metrics without adding an SDK.
+
+You need a Compute plan before the first deploy. The dashboard asks you to **Choose a Compute plan**, and only a workspace admin can pick one.
+
+## The sample API
+
+The app is [perkinsjr/Demo-for-deploy](https://github.com/perkinsjr/Demo-for-deploy), a small Go API built with Gin. It listens on port 8080, which is the port Unkey uses by default, and serves five routes.
+
+| Route            | What it returns                                                 |
+| ---------------- | --------------------------------------------------------------- |
+| `GET /health`    | `{"status":"healthy"}` and a timestamp                          |
+| `GET /items`     | Every item and a count                                          |
+| `GET /items/:id` | One item, or `404` with `{"error":"Item not found"}`            |
+| `POST /items`    | The item it created                                             |
+| `GET /whoami`    | The `X-Unkey-Principal` header as JSON, or `{"principal":null}` |
+
+## Step 1: Connect the repository and deploy
+
+You can connect and deploy from [the dashboard](#from-the-dashboard), [the API](#from-the-api), or [the CLI](#from-the-cli). All three get you the same app.
+
+### From the dashboard
+
+1. Open **Projects**, choose **Create project**, and enter a **Project Name**. Unkey generates the **Slug** from the name. You'll use that slug whenever you call the API or the CLI.
+
+![The Create New Project dialog with Project Name and Slug fields](/images/blog-images/deploy-api-previews-monitoring/gh-create-project-2x.png)
+
+2. Choose **Create app**, then choose **GitHub repository** as the source. The first time you do this in a workspace, GitHub asks you to install the Unkey GitHub App and give it access to the repository.
+
+![Deploy a new app, with GitHub repository as the source](/images/blog-images/deploy-api-previews-monitoring/deploy-create-app-2x.png)
+
+Then pick the repository.
+
+![The Import a GitHub repository step listing the account's repositories](/images/blog-images/deploy-api-previews-monitoring/gh-repo-picker-2x.png)
+
+3. On **Set up your app**, enter a name and pick the branch. If the app needs a secret, such as a database URL, choose **Edit** next to environment variables and add it. If you mark it sensitive, it stays write-only. Use the environment dropdown to give Production and Preview separate values.
+
+![The Set up your app step: name api, branch main, automatic build, one instance in four regions](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2x.png)
+
+![The Environment variables dialog scoped to the Preview environment](/images/blog-images/deploy-api-previews-monitoring/gh-configure-2-2x.png)
+
+4. Choose **Deploy**. The build log streams while the image builds.
+
+![A deployment building from main, with the build log open](/images/blog-images/deploy-api-previews-monitoring/gh-building-2x.png)
+
+![The same deployment at Ready, with Show URLs open and one instance in each of four regions](/images/blog-images/deploy-api-previews-monitoring/gh-ready-2x.png)
+
+### From the API
+
+Create a project, then create an app connected to your repository. Unkey reads `defaultBranch` from the repository, so you don't need to set it.
+
+```bash
+curl -X POST https://api.unkey.com/v2/projects.createProject \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"my-project","slug":"my-project"}'
+```
+
+```bash
+curl -X POST https://api.unkey.com/v2/apps.createApp \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"project":"my-project","name":"api","slug":"api","git":{"repository":"owner/repo"}}'
+```
+
+Deploy the default branch to production.
+
+```bash
+curl -X POST https://api.unkey.com/v3/deployments.createDeployment \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"project":"my-project","app":"api","environment":"production","git":{"branch":"main"}}'
+```
+
+The call returns `201` and a `deploymentId`. Poll `deployments.getDeployment` with that id until `status` is `ready`.
+
+```bash
+curl -X POST https://api.unkey.com/v2/deployments.getDeployment \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"deploymentId":"d_xxx"}'
+```
+
+Once it's ready, the app is live at `https://<project>-<app>-<workspace>.unkey.app`.
+
+### From the CLI
+
+Install the CLI and export your root key.
+
+```bash
+npm install -g unkey
+export UNKEY_ROOT_KEY="<your root key>"
+```
+
+Run the same four calls with the CLI.
+
+```bash
+unkey api projects create-project --name=my-project --slug=my-project
+unkey api apps create-app --project=my-project --name=api --slug=api \
+  --git='{"repository":"owner/repo"}'
+unkey api deployments create-deployment --project=my-project --app=api \
+  --environment=production --git='{"branch":"main"}'
+unkey api deployments get-deployment --deployment-id=d_xxx
+```
+
+## Step 2: Every branch and pull request gets a preview
+
+Once the repository is connected, every push to the default branch deploys production. A push to any other branch creates a preview with its own branch domain. Each one shows up in GitHub as a deployment. Unkey also keeps one comment on the pull request updated with a **Visit Preview** link.
+
+![The app's Deployments list filtered to Preview, showing the Add /whoami route preview](/images/blog-images/deploy-api-previews-monitoring/gh-preview-list-2x.png)
+
+Open a preview deployment to see its branch, commit, and environment.
+
+![A preview deployment for Add /whoami route, with its branch, commit, and Preview environment](/images/blog-images/deploy-api-previews-monitoring/gh-preview-detail-2x.png)
+
+A pull request from a fork waits for a project member to approve it, because its code would run with your preview secrets.
+
+Give the preview environment its own values. Point it at a test database and test-mode payment keys. You can also give it a separate keyspace, so a preview key can't call production.
+
+Unkey stops previews in these cases, so you don't have to clean them up yourself.
+
+| Trigger                                                           | What stops                                    | When              |
+| ----------------------------------------------------------------- | --------------------------------------------- | ----------------- |
+| New preview deployment on the same branch                         | The deployment that was on that branch domain | 1 minute later    |
+| Preview deployment gets no requests                               | That deployment                               | After 1 hour idle |
+| You stop it (**Stop deployment** or `deployments.stopDeployment`) | That deployment                               | Right away        |
+
+Wake a stopped preview with **Wake deployment** or `deployments.startDeployment`.
+
+## Step 3: Require an API key and rate limit each customer
+
+Every Compute app sits behind the gateway. Policies run on the gateway, so it checks each request before the request reaches your code. Start by creating a keyspace in API Management. In the API, a keyspace is called an API.
+
+```bash
+curl -X POST https://api.unkey.com/v2/apis.createApi \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"my-api"}'
+```
+
+Save the `apiId` from the response. You need it every time you create a key.
+
+Now create a key for a customer and attach a rate limit to it. `externalId` links the key to an identity. With `autoApply` set, every request made with this key counts against the limit.
+
+```bash
+curl -X POST https://api.unkey.com/v2/keys.createKey \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"apiId":"api_xxx","name":"acme blog demo","externalId":"acme","ratelimits":[{"name":"requests","limit":5,"duration":60000,"autoApply":true}]}'
+```
+
+That's 5 requests per minute. It's low enough that you can watch it trip. In production, start closer to 100.
+
+`data.key` is the full key, and you only see it in this response. Unkey stores just a hash, so hand the key to the customer now.
+
+Next, tell the gateway to check keys. Open the app's **Policies** and choose **Add policy**.
+
+1. Give the policy a name and set **Type** to **Key Auth**. The rule reads **IF** Every request **THEN** Key Auth. Under **Keyspaces**, pick the keyspace you just created.
+
+![The Add policy form: name Require an API key, Type Key Auth, rule IF Every request THEN Key Auth, with a keyspace selected](/images/blog-images/deploy-api-previews-monitoring/policies-keyauth-form-top-2x.png)
+
+2. Set **Environment** to Production. **ON FAIL** shows what callers get back when the check fails, which is `401`, `403`, or `429`.
+
+![The rest of the Add policy form, with ON FAIL codes 401, 403, and 429 and Environment set to Production](/images/blog-images/deploy-api-previews-monitoring/policies-keyauth-form-2x.png)
+
+3. Choose **Add policy**.
+
+![The Policies list with Require an API key, a Key Auth policy that is on for Production](/images/blog-images/deploy-api-previews-monitoring/policies-saved-2x.png)
+
+You don't need a separate rate limit policy. Once the gateway verifies the key, it also enforces the limit you attached to that key.
+
+Policies apply on the next deployment, so redeploy production to turn this one on.
+
+If you'd rather use the API or CLI, you can set the same policy with one command. Both need the keyspace id (`ks_xxx`), which is on the keyspace **Settings** page.
+
+```bash
+unkey api gateway set-policies --project=my-project --app=api --environment=production \
+  --policies='[{"name":"Require an API key","enabled":true,"keyauth":{"keyspaces":["ks_xxx"]}}]'
+```
+
+```bash
+curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"project":"my-project","app":"api","environment":"production","policies":[{"name":"Require an API key","enabled":true,"keyauth":{"keyspaces":["ks_xxx"]}}]}'
+```
+
+`setPolicies` replaces the environment's whole policy list, so include every policy you want to keep. The root key needs `environment.*.set_policies`.
+
+Once the new deployment is live, call the app without a key.
+
+```bash
+curl -i https://your-app.unkey.app/items
+```
+
+The gateway answers `401`, and the request never reaches your code.
+
+```json
+{
+  "error": {
+    "code": "err:frontline:client:missing_credentials",
+    "message": "Authentication required. Please provide a valid API key."
+  }
+}
+```
+
+Now call `/whoami` with the key.
+
+```bash
+curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/whoami
+```
+
+The response headers show the caller's limit and how many requests they have left.
+
+```text
+HTTP/2 200
+x-ratelimit-limit: 5
+x-ratelimit-remaining: 4
+```
+
+The body is the `X-Unkey-Principal` header that the gateway added. It tells your code who is calling.
+
+```json
+{
+  "principal": {
+    "version": "v1",
+    "subject": "acme",
+    "type": "API_KEY",
+    "identity": {
+      "externalId": "acme",
+      "meta": {}
+    },
+    "source": {
+      "key": {
+        "keyId": "key_xxx",
+        "keySpaceId": "ks_xxx",
+        "name": "acme blog demo",
+        "meta": {}
+      }
+    }
+  }
+}
+```
+
+`subject` is the identity's `externalId`, or the key id when the key has no identity. The gateway strips any `X-Unkey-*` header the client sends. Compute deployments are only reachable through the gateway, so inside Compute you can trust that Unkey set the header. If you run the same code somewhere else, a caller can forge it, so don't trust it there.
+
+Once a caller goes over the limit, requests return `429` with a `retry-after` header that gives the wait in seconds.
+
+```text
+HTTP/2 429
+retry-after: 53
+x-ratelimit-limit: 5
+x-ratelimit-remaining: 0
+```
+
+```json
+{
+  "error": {
+    "code": "err:frontline:client:rate_limited",
+    "message": "Rate limit exceeded. Please try again later."
+  }
+}
+```
+
+Preview has its own policy list, so your production policies don't cover it. If a preview shouldn't be public, set policies for it too, or choose **All Environments** in the dashboard.
+
+## Step 4: Find and fix a bug
+
+Say a change to the item lookup ships to production, and customers' `GET /items/2` calls start failing.
+
+```bash
+curl -i -H "Authorization: Bearer $API_KEY" https://your-app.unkey.app/items/2
+```
+
+```json
+{ "error": "internal server error" }
+```
+
+1. Open **Requests** for the project and filter **Status** to 5xx. Every failure is a `GET /items/2` that returned `500`. Open one to see the deployment, branch, and commit that served it.
+
+![Requests filtered to 5xx: three GET /items/2 calls returned 500, with one open to show the production deployment, branch, and commit that served it](/images/blog-images/deploy-api-previews-monitoring/step4-requests-500-2x.png)
+
+2. Open **Logs** and search for `index out of range`. The app logged `error: get item 2: index out of range` on each failed call.
+
+![Logs searched for index out of range: three ERROR lines, with error: get item 2: index out of range open](/images/blog-images/deploy-api-previews-monitoring/step4-logs-500-2x.png)
+
+3. Push the fix to a branch. Unkey builds a preview for it. Call the same path on the preview's branch domain with your key.
+
+```bash
+curl -i -H "Authorization: Bearer $API_KEY" https://your-app-git-your-branch.unkey.app/items/2
+```
+
+```json
+{
+  "id": "2",
+  "name": "Sample Item 2",
+  "description": "Another fake item for testing",
+  "created_at": "2026-10-16T14:57:30.985616522Z"
+}
+```
+
+![The app's Deployments list: the Fix item lookup preview at Ready, above the current production deployment, Look up items by index](/images/blog-images/deploy-api-previews-monitoring/step4-preview-fix-2x.png)
+
+4. Merge the branch. The push to your default branch deploys the fix to production.
+
+The gateway rejects some requests, like ones with a missing key or ones over the rate limit. Those never reach your app, so they don't show up in **Requests**. You can find those key checks in API Management's verification analytics.
+
+To query the same data with SQL, call `analytics.getGatewayRequests`. The root key needs `project.*.read_gateway_requests`. Queries cover the last 7 days.
+
+```bash
+curl -X POST https://api.unkey.com/v2/analytics.getGatewayRequests \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"SELECT path, count() AS requests FROM gateway_requests_v1 WHERE response_status >= 500 AND time >= toUnixTimestamp64Milli(now64(3) - INTERVAL 1 HOUR) GROUP BY path ORDER BY requests DESC LIMIT 10"}'
+```
+
+## How this compares with GitHub Actions plus Cloud Run, ECS or Kubernetes
+
+The other setups leave more of this to you. Each provider column links to that provider's docs.
+
+| Step                                 | Unkey                                                                        | [GitHub Actions + Cloud Run](https://docs.cloud.google.com/run/docs/deploying)                                                                             | [GitHub Actions + ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/update-service-console-v2.html) | [GitHub Actions + Kubernetes](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) |
+| ------------------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Deploy on push                       | Connect the repo and it's built in                                           | Workflow runs `gcloud run deploy`                                                                                                                          | Workflow registers a task definition and updates the service                                                       | Workflow applies manifests or sets the image                                                         |
+| Preview per branch or PR             | Built-in, with a branch domain and fork approval                             | Workflow deploys a revision with `--no-traffic --tag` to get a tagged URL ([docs](https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration)) | Not covered in the linked docs. You script a service per PR                                                        | Not covered in the linked docs. You script a namespace or release per PR                             |
+| Clean up previews                    | Auto-stop after 1 hour idle, or 1 minute after a newer preview on the branch | You remove tags or revisions yourself                                                                                                                      | Your workflow tears down what it created                                                                           | Your workflow tears down what it created                                                             |
+| API key auth and per-key rate limits | Gateway policies backed by API Management keys                               | A separate gateway or code in your app                                                                                                                     | A separate gateway or code in your app                                                                             | An ingress or gateway add-on, or code in your app                                                    |
+| Request logs                         | Built-in, plus SQL via the analytics API                                     | Cloud Logging                                                                                                                                              | CloudWatch, if you configure it                                                                                    | Whatever logging stack you run                                                                       |
+
+Render's [service previews](https://render.com/docs/service-previews) are the closest built-in match for the preview row. You choose **Manual** or **Automatic** pull request previews, and Render deletes a preview when its pull request is merged or closed. Unkey also puts a gateway in front of production and previews, and the request log is queryable.
+
+## Cost
+
+API Management and Compute are billed separately. You can use either one without the other. Prices below are from [unkey.com/pricing](https://www.unkey.com/pricing).
+
+Compute has three plans. Each one includes a monthly usage credit equal to the fee. Until December 31, 2026, the first month is discounted. Starter costs $0 the first month and $5 after that, Pro costs $20 and then $25, and Business costs $45 and then $50. On Starter, credit left over from that first month carries to the next bill. Unused credits otherwise do not roll over.
+
+|                         | Starter       | Pro           | Business        |
+| ----------------------- | ------------- | ------------- | --------------- |
+| Monthly fee             | $5            | $25           | $50             |
+| First month             | $0            | $20           | $45             |
+| Usage credit each month | $5            | $25           | $50             |
+| Max per instance        | 2 vCPU, 2 GiB | 8 vCPU, 8 GiB | 16 vCPU, 32 GiB |
+| Instances per region    | 4             | 8             | 16              |
+| Custom domains          | 1             | Unlimited     | Unlimited       |
+| Log retention           | 3 days        | 7 days        | 14 days         |
+| Team members            | None          | Unlimited     | Unlimited       |
+
+Every plan allows one concurrent build, git push to deploy, and a preview for each pull request. Preview usage is billed at the same rates as production.
+
+Past the included credit, you pay for the vCPU and memory your app actually uses, the disk you allocate, egress, and active keys checked by a Compute key auth policy. The rates below are rounded.
+
+| Meter       | Rate                     |
+| ----------- | ------------------------ |
+| vCPU        | about $0.025 per hour    |
+| Memory      | about $9 per GB-month    |
+| Disk        | about $0.16 per GB-month |
+| Egress      | $0.05 per GB             |
+| Active keys | $2 per 1,000 per month   |
+
+If the default instance (0.25 vCPU, 256 MiB) ran flat out all month, you'd pay about $4.50 for CPU and $2.25 for memory, so about $6.75, and the Starter credit covers most of that. Treat that as the most it could cost. A real API almost never keeps CPU and memory at 100 percent around the clock, so your bill will land well under it. You pay for the CPU and memory your app actually uses, not what you configured. Memory your app holds is billed even between requests. CPU used while your app is idle or waiting on I/O is usually tiny, so it costs very little.
+
+### Spending Caps
+
+You can cap the bill with a monthly budget.
+
+- Set it in whole dollars under **Settings > Billing**. Only a workspace admin can change it.
+- Admins get an email the first time month-to-date spend crosses 50, 75, and 100 percent.
+- **Stop workloads at the budget** is off until you turn it on. At 100 percent, running deployments stop and every request gets `402` `spend_limit_reached`.
+- Remove the budget, turn the stop option off, or wait for the next month, and the live deployment comes back without a redeploy. Raising the budget resumes compute once spend has stayed under the new budget for two checks in a row.
+- Nothing is deleted.
+
+## Further reading
+
+- [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github) and [Production and preview](https://unkey.com/docs/compute/concepts/production-and-preview)
+- [Gateway policies](https://unkey.com/docs/compute/gateway/policies), [API key authentication policy](https://unkey.com/docs/compute/gateway/api-key-auth), [The principal header](https://unkey.com/docs/compute/gateway/principal)
+- [Observability](https://unkey.com/docs/compute/observe/overview) and [Query gateway requests and runtime logs](https://unkey.com/docs/compute/observe/analytics-api)
+- [Plans](https://unkey.com/docs/platform/billing/plans) and [pricing](https://www.unkey.com/pricing)
+- Related posts: [Best serverless API hosting in 2026](https://www.unkey.com/blog/best-serverless-api-hosting-2026), [git push to deploy](https://www.unkey.com/blog/git-push), [From endpoint to API](https://www.unkey.com/blog/from-endpoint-to-api)

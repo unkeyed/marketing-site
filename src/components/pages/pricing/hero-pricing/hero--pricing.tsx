@@ -23,6 +23,7 @@ interface IHeroProps {
   };
   bottomContent?: React.ReactNode;
   notice?: string;
+  noticeNote?: string;
   title?: string;
   planIncludes?: string[];
 }
@@ -34,6 +35,7 @@ function Hero({
   cta,
   bottomContent,
   notice,
+  noticeNote,
   title,
   planIncludes,
 }: IHeroProps) {
@@ -52,6 +54,12 @@ function Hero({
         {notice ? (
           <p className="mb-6 text-base leading-snug tracking-tight text-pretty text-foreground">
             {notice}
+            {noticeNote ? (
+              <>
+                <br />
+                {noticeNote}
+              </>
+            ) : null}
           </p>
         ) : null}
         {plans.length > 0 && (

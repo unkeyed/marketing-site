@@ -11,9 +11,11 @@ import TeamSection from '@/components/pages/about/team';
 import Cta from '@/components/pages/home/cta';
 
 export const metadata = getMetadata({
-  title: 'About',
-  description: 'Learn more about us.',
+  title: 'About Unkey: Our Team, Story and Careers',
+  description:
+    'Meet the team building Unkey, the developer platform for deploying and running modern APIs.',
   pathname: '/about',
+  absoluteTitle: true,
 });
 
 export default function AboutPage() {

@@ -188,7 +188,7 @@ func WithErrorHandling(logger logging.Logger) Middleware {
             case fault.NOT_FOUND:
                 return s.JSON(http.StatusNotFound, api.NotFoundError{
                     Title:     "Not Found",
-                    Type:      "https://unkey.com/docs/errors/not_found",
+                    Type:      "https://www.unkey.com/docs/errors/not_found",
                     Detail:    fault.UserFacingMessage(err),
                     RequestId: s.requestID,
                     Status:    http.StatusNotFound,
@@ -197,7 +197,7 @@ func WithErrorHandling(logger logging.Logger) Middleware {
             case fault.BAD_REQUEST:
                 return s.JSON(http.StatusBadRequest, api.BadRequestError{
                     Title:     "Bad Request",
-                    Type:      "https://unkey.com/docs/errors/bad_request",
+                    Type:      "https://www.unkey.com/docs/errors/bad_request",
                     Detail:    fault.UserFacingMessage(err),
                     RequestId: s.requestID,
                     Status:    http.StatusBadRequest,
@@ -210,7 +210,7 @@ func WithErrorHandling(logger logging.Logger) Middleware {
             // Default to 500 Internal Server Error
             return s.JSON(http.StatusInternalServerError, api.InternalServerError{
                 Title:     "Internal Server Error",
-                Type:      "https://unkey.com/docs/errors/internal_server_error",
+                Type:      "https://www.unkey.com/docs/errors/internal_server_error",
                 Detail:    fault.UserFacingMessage(err),
                 RequestId: s.requestID,
                 Status:    http.StatusInternalServerError,
@@ -470,9 +470,9 @@ func TestRatelimitEndpoint(t *testing.T) {
 
 We've built test utilities that make it easy to set up a test harness with database dependencies, register routes, and call them with typed requests and responses.
 
-## Zen is Open Source
+## Zen's code is on GitHub
 
-Zen lives in our open source mono repo, so you can explore or even use it in your own projects. The full source code is available in our GitHub repository at [github.com/unkeyed/unkey/tree/main/go/pkg/zen](https://github.com/unkeyed/unkey/tree/main/go/pkg/zen).
+Zen lives in our mono repo, so you can explore or even use it in your own projects. The full source code is available in our GitHub repository at [github.com/unkeyed/unkey/tree/main/go/pkg/zen](https://github.com/unkeyed/unkey/tree/main/go/pkg/zen).
 
 While we built Zen specifically for our needs, we recognize that other teams might face similar challenges with Go HTTP frameworks. You're welcome to:
 
