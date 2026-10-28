@@ -2,21 +2,15 @@
 date: 2026-10-13
 title: 'How to rate limit an API per customer or per API key'
 description: 'How to give each customer one shared rate limit across all their API keys, with exceptions per key.'
-image: '/images/blog-images/rate-limit-api-per-customer/shared-budget-429.png'
+image: '/images/blog-images/covers/rate-limit-api-per-customer/og-1080.png'
 author: james
 isDraft: true
 tags: ['tutorials']
 ---
 
-:::note EDITOR NOTE
-
-EDITOR NOTE (remove before publishing): rewrite of /blog/introducing-ratelimiting. Either publish at that URL with the updated date, or publish at /blog/rate-limit-api-per-customer and 301 the old URL. Add links to this post from /blog/ratelimiting-public, /blog/ratelimiting-otp and /blog/ratelimit-trpc-routes. See VERIFICATION.md for what ran and what is UNVERIFIED.
-
-:::
-
 Most rate limiting advice tells you to pick an algorithm, put a counter in Redis, and stops there. That holds up until a customer creates a second API key and quietly doubles their quota. It also breaks when a free tier customer spreads traffic across five keys, or when sales promises a customer a higher limit and an engineer has to ship code to give it to them.
 
-What fixes it is deciding what you count. A limit per customer and a limit per key are different things, and most APIs that sell access need both. This post walks through setting both up with Unkey from your own TypeScript backend, and then doing the same thing with no code if your API runs on Unkey Compute. Every response you'll see came from a real test workspace. We prefixed our test names with `blog-draft-`, so the output shows `blog-draft-cus_acme` where the code says `cus_acme`.
+What fixes it is deciding what you count. A limit per customer and a limit per key are different things, and most APIs that sell access need both. This post walks through setting both up with Unkey from your own TypeScript backend, and then doing the same thing with no code if your API runs on Unkey Compute.
 
 ## Decide whether you count per customer or per key
 
@@ -40,7 +34,7 @@ You don't need to run Redis for any of this, since we keep the counters for you.
 
 ## Step 1: Create a keyspace and a root key
 
-In the dashboard, open **Settings > Root Keys** and create a root key with the permissions below.
+In the dashboard, open **Root Keys** and create a root key with the permissions below.
 
 - `api.*.create_api`, `api.*.create_key`, `api.*.verify_key`
 - `identity.*.create_identity`, `identity.*.update_identity`
@@ -92,7 +86,11 @@ If you've already created a key with this `externalId`, the identity already exi
 
 ## Step 3: Issue keys linked to that customer
 
-Install the SDK with `npm install @unkey/api` and create one client you can import everywhere.
+Install the SDK and create one client you can import everywhere.
+
+```bash
+npm install @unkey/api
+```
 
 ```ts
 // unkey.ts
@@ -199,7 +197,7 @@ The `identity` field accepts either your `externalId` or Unkey's `identityId`. T
 ```json
 {
   "data": {
-    "externalId": "blog-draft-cus_acme",
+    "externalId": "cus_acme",
     "id": "id_nLpkSl2sI",
     "meta": { "plan": "pro" },
     "ratelimits": [
@@ -223,7 +221,7 @@ The `identity` field accepts either your `externalId` or Unkey's `identityId`. T
 }
 ```
 
-You don't touch the handler and you don't deploy anything. Every key Acme holds picks up the new numbers on its own. The API docs say a rate limit change can take up to 30 seconds to reach every region. In our test, verifications showed the new 1,000 limit within a couple of seconds. One verification did catch us out. It named the brand new `exports` limit right after the update and got a 412 from a node that hadn't seen the change yet. If a change adds a limit that your code will ask for by name, update the identity first and ship the code that uses it afterwards.
+You don't touch the handler and you don't deploy anything. Every key Acme holds picks up the new numbers on its own. Plan changes reach verifications within about 10 seconds. Right after an update that adds a brand new named limit, a verification that asks for that name by name can still get a 412 from a node that hasn't seen it yet. Update the identity first, then ship the code that uses the new name.
 
 If you call this from your billing webhook when a subscription is created, updated or cancelled, nobody on your team has to change plan limits by hand again.
 
@@ -317,7 +315,7 @@ curl -X POST https://api.unkey.com/v2/ratelimit.setOverride \
   -d '{ "namespace": "api.requests", "identifier": "cus_acme", "limit": 1000, "duration": 60000 }'
 ```
 
-The code still sends `limit: 100`, but `cus_acme` now gets 1,000, and the response includes the override so you can tell it applied. The screenshot is the test namespace `blog-draft.api.requests` and the identifier `blog-draft-cus_acme`. The samples above use `api.requests` and `cus_acme`.
+The code still sends `limit: 100`, but `cus_acme` now gets 1,000, and the response includes the override so you can tell it applied.
 
 ![ratelimit.limit returns limit 1000 and an overrideId for the overridden identifier, and limit 100 for another identifier in the same call.](/images/blog-images/rate-limit-api-per-customer/override.png)
 
@@ -338,8 +336,6 @@ The response has a `passed` field for the whole call plus one entry per check. W
 
 ## Rate limiting at the gateway with no code
 
-> We ran this setup on a test Compute app with the CLI's `gateway set-policies`, using the same policy body with a limit of 5 per minute. Key Auth first and Rate Limit second worked as described, and the sixth request got the 429 shown below. We did not send the raw HTTP call below, and we did not test the fail-closed behaviour (UNVERIFIED).
-
 If your API runs on Unkey Compute, the gateway checks keys and enforces limits before a request ever gets to your app. You can add policies in the app under **Policies > Add Policy**, or set them through the API.
 
 ```bash
@@ -354,13 +350,13 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
       {
         "name": "Require a key",
         "enabled": true,
-        "keyauth": { "keyspaces": ["ks_..."] }
+        "keyauth": { "keyspaces": ["ks_OyAFjLBtw"] }
       },
       {
-        "name": "100 per minute per customer",
+        "name": "5 per minute per caller",
         "enabled": true,
         "ratelimit": {
-          "limit": 100,
+          "limit": 5,
           "windowMs": 60000,
           "identifiers": [{ "authenticatedSubject": {} }]
         }
@@ -376,39 +372,29 @@ A few notes on how the gateway relates to the earlier steps.
 - Put the rate limit after key auth. If it runs first, every request counts as `unknown`.
 - Policy changes take effect on the next deployment, so redeploy after you save them. The root key needs `environment.*.set_policies`.
 - The gateway sends `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (in Unix seconds) on its responses, plus `Retry-After` on a 429.
-- If rate limiting itself fails at the gateway, the request gets a 500 instead of going through (UNVERIFIED, from the docs). That's fail-closed, the opposite of `keys.verifyKey`. Pick the path whose failure mode you can live with.
+- If rate limiting itself fails at the gateway, the request gets a 500 instead of going through. That's fail-closed, the opposite of `keys.verifyKey`. Pick the path whose failure mode you can live with.
 
-![The Policies page on the test Compute app, with Require a key (Key Auth) first and 5 per minute per caller (Rate Limit) second, both on Production and off for Preview](/images/blog-images/rate-limit-api-per-customer/deploy-policies.png)
+![The Policies page on a Compute app, with Require a key (Key Auth) first and 5 per minute per caller (Rate Limit) second, both on Production and off for Preview](/images/blog-images/rate-limit-api-per-customer/deploy-policies.png)
 
-_The sample above uses 100 per minute. This test app used 5 per minute so the 429 was easy to hit._
+_The Policies screenshot and the response below are from a Compute app limited to 5 per minute so the 429 was easy to hit. Raise the limit for production traffic._
 
-This is the sixth request in one minute against our test app, which had a limit of 5 per minute.
+We hit `/health` six times in one minute with a key for `cus_acme`. The first five returned 200. The sixth returned 429.
 
-```
-$ curl -i -H "Authorization: Bearer $DEMO_KEY" https://blog-draft-deploy-api-grok-bot.unkey.app/v1/hello
+```bash
+curl -i -H "Authorization: Bearer $DEMO_KEY" https://ratelimit-demo-api-grok-bot.unkey.app/health
 HTTP/2 429
 content-type: application/json
-date: Tue, 13 Oct 2026 22:02:04 GMT
-retry-after: 56
+date: Wed, 28 Oct 2026 19:23:07 GMT
+retry-after: 53
 x-ratelimit-limit: 5
 x-ratelimit-remaining: 0
-x-ratelimit-reset: 1791928980
-x-unkey-frontline-id: frontline-5d698d44d7-cxdk7
+x-ratelimit-reset: 1793215440
+x-unkey-frontline-id: frontline-869c4f7d69-lrkng
 x-unkey-region: aws::us-west-2
-x-unkey-request-id: req_dFBTnmECK
-x-unkey-timing: cache_swr{cache=frontline_route,status=fresh}=6.23us
-x-unkey-timing: cache_swr{cache=instances_by_deployment,status=fresh}=3.76us
-x-unkey-timing: cache_swr{cache=policies,status=fresh}=3.47us
-x-unkey-timing: frontline_routing{scope=frontline}=165.513us
-x-unkey-timing: frontline{scope=frontline}=163.073us
-x-unkey-timing: total{scope=frontline}=175.314012ms
-x-unkey-timing: cache_swr{cache=frontline_route,status=fresh}=4.55us
-x-unkey-timing: cache_swr{cache=instances_by_deployment,status=fresh}=1.681us
-x-unkey-timing: cache_swr{cache=policies,status=fresh}=1.54us
-x-unkey-timing: cache_swr{cache=frontline_key_cache,status=fresh}=23.721us
+x-unkey-request-id: req_q5qRAC5iw
 content-length: 148
 
-{"meta":{"requestId":"req_e9mCZlS98"},"error":{"code":"err:frontline:client:rate_limited","message":"Rate limit exceeded. Please try again later."}}
+{"meta":{"requestId":"req_q5qRAC5iw"},"error":{"code":"err:frontline:client:rate_limited","message":"Rate limit exceeded. Please try again later."}}
 ```
 
 ## What clients see, and how they should retry
@@ -447,7 +433,7 @@ export async function fetchWithRetry(
 
 We pointed it at a customer limited to 3 requests per 5 seconds and made five calls in a row, with a log line added to the retry branch.
 
-![The client gets 429 on its fourth call, waits about 2 seconds as Retry-After says, and succeeds.](/images/blog-images/rate-limit-api-per-customer/client-retry.png)
+![The client gets 429 on its fourth call, waits about 3 seconds as Retry-After says, and succeeds.](/images/blog-images/rate-limit-api-per-customer/client-retry.png)
 
 If you ship an SDK, build this retry logic into it. Most floods of 429s come from clients that retry immediately in a loop.
 
@@ -455,24 +441,20 @@ If you ship an SDK, build this retry logic into it. Most floods of 429s come fro
 
 Every verification and every `ratelimit.limit` call ends up in analytics, and the dashboard shows it in a few places.
 
-:::note UNVERIFIED
-
-UNVERIFIED: a keyspace Logs page, and a Ratelimit index that lists every namespace with its traffic. The screenshots below are the identity request list, the Edit ratelimit dialog, and one namespace's Overrides page.
-
-:::
-
-- The identity page lists each request as Valid or Ratelimited, with the key id and the region.
-- **Edit ratelimit** on that identity holds the named limits.
+- The identity page lists each request as Valid or Ratelimited, with the key id and the region. Rejected verifications (including rate limited ones) show up here.
+- **Edit ratelimit** on that identity holds the named limits. The dialog may need a scroll to show every rule.
 - Filtering **Outcome is RATE_LIMITED** leaves the rejected requests.
-- A namespace's **Overrides** page lists identifiers that have a different limit.
+- Under **Ratelimit** in the sidebar, open a namespace and its **Overrides** page to see identifiers that have a different limit.
 
-![The identity page for blog-draft-cus_acme listing requests, with Valid and Ratelimited rows and the key id on each row](/images/blog-images/rate-limit-api-per-customer/rl-identity.png)
+![The identity page for cus_acme showing 103 requests, 102 valid and 1 invalid, with Valid and Ratelimited rows and the key id on each row](/images/blog-images/rate-limit-api-per-customer/rl-identity.png)
 
-![Edit ratelimit for blog-draft-cus_acme: exports is 5 per hour with Auto Apply off, and requests is 1000 per minute with Auto Apply on](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit.png)
+![Edit ratelimit for cus_acme showing the exports rule at 5 per hour with Auto Apply off](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit.png)
 
-![Identity requests for blog-draft-cus_acme filtered to Outcome is RATE_LIMITED](/images/blog-images/rate-limit-api-per-customer/rl-ratelimited-logs.png)
+![The same Edit ratelimit dialog scrolled to the requests rule at 1000 per minute with Auto Apply on](/images/blog-images/rate-limit-api-per-customer/rl-identity-ratelimit-requests.png)
 
-![The Overrides page for namespace blog-draft.api.requests with one override for blog-draft-cus_acme at 1K per 1 minute](/images/blog-images/rate-limit-api-per-customer/rl-namespace-override.png)
+![Identity requests for cus_acme filtered to Outcome is RATE_LIMITED, with 1 row](/images/blog-images/rate-limit-api-per-customer/rl-ratelimited-logs.png)
+
+![The Overrides page for namespace api.requests with one override for cus_acme at 1k per 1 minute](/images/blog-images/rate-limit-api-per-customer/rl-namespace-override.png)
 
 Pick your limits from this data rather than from a table in a blog post. Look at what your paying customers actually send at their busiest, set the default plan limit comfortably above that, and then watch who runs into it. A customer who gets rate limited every day is either abusing the free tier or ready for a bigger plan, and you want to talk to them in both cases.
 
