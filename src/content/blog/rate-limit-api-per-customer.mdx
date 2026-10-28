@@ -10,15 +10,15 @@ tags: ['tutorials']
 
 Most rate limiting advice tells you to pick an algorithm, put a counter in Redis, and stops there. That holds up until a customer creates a second API key and quietly doubles their quota. It also breaks when a free tier customer spreads traffic across five keys, or when sales promises a customer a higher limit and an engineer has to ship code to give it to them.
 
-What fixes it is deciding what you count. A limit per customer and a limit per key are different things, and most APIs that sell access need both. This post walks through setting both up with Unkey from your own TypeScript backend, and then doing the same thing with no code if your API runs on Unkey Compute.
+What fixes it is deciding what you count. A limit per customer and a limit per key are different things, and most APIs that sell access need both. Below is how to set both up with Unkey from your own TypeScript backend, then the same thing with no code if your API runs on Unkey Compute.
 
 ## Decide whether you count per customer or per key
 
-A **key limit** counts each API key separately. If a customer has three keys and each one is allowed 100 requests per minute, that customer can send 300 requests a minute in total. That's what you want when a key does its own job, like a partner integration that syncs data in bulk.
+A **key limit** counts each API key separately. A customer with three keys at 100 requests per minute each can send 300 requests a minute in total. You want that when a key has its own job, like a partner integration that syncs data in bulk.
 
-A **customer limit** counts every key the customer holds toward the same number. With three keys and a limit of 100 requests per minute, all three keys share those requests. In Unkey the customer is called an _identity_. You create it with your own ID for that customer in `externalId` (your Stripe customer ID works well), attach the limit to it, and every key you create with the same `externalId` counts against it.
+A **customer limit** counts every key the customer holds toward the same number. With three keys and a limit of 100 requests per minute, all three keys share those requests. In Unkey the customer is called an _identity_. You create it with your own ID for that customer in `externalId` (your Stripe customer ID works well), attach the limit to it, and every key you create with the same `externalId` counts against that limit.
 
-You can use both at once. When a key and its identity each have a limit with the same name, the key's own limit applies to that key. That lets everyone at Acme share 1,000 requests a minute while the partner sync key gets 5,000 of its own.
+You can use both. When a key and its identity each have a limit with the same name, the key's own limit applies to that key. Everyone at Acme can share 1,000 requests a minute while the partner sync key gets 5,000 of its own.
 
 ## Which algorithm to use
 
@@ -28,9 +28,9 @@ You can use both at once. When a key and its identity each have a limit with the
 | Sliding window | Weighs the previous window into the current count       | Smooths the boundary burst, still cheap to store           |
 | Token bucket   | Tokens refill at a steady rate, each request spends one | Allows controlled bursts, needs refill state per caller    |
 
-Unkey uses a sliding window for key and identity limits. The rate limit policy on the Compute gateway, covered near the end, counts over a fixed window instead. We keep counters in several regions, and [How rate limiting works](https://www.unkey.com/docs/api-management/ratelimiting/how-it-works) explains how. In practice `remaining` is a close estimate. When one region sees most of an identifier's traffic, enforcement is tight. When traffic is split across regions, a short burst can get through in more than one region before the counts catch up. If you need an exact total, put credits on the key, because credits are counted exactly.
+Unkey uses a sliding window for key and identity limits. The rate limit policy on the Compute gateway, near the end, counts over a fixed window instead. We keep counters in several regions, and [How rate limiting works](https://www.unkey.com/docs/api-management/ratelimiting/how-it-works) explains how. In practice `remaining` is a close estimate. When one region sees most of an identifier's traffic, enforcement is tight. When traffic is split across regions, a short burst can get through in more than one region before the counts catch up. If you need an exact total, put credits on the key. Credits are counted exactly.
 
-You don't need to run Redis for any of this, since we keep the counters for you.
+You don't need to run Redis for any of this. We keep the counters for you.
 
 ## Step 1: Create a keyspace and a root key
 
@@ -40,7 +40,7 @@ In the dashboard, open **Root Keys** and create a root key with the permissions 
 - `identity.*.create_identity`, `identity.*.update_identity`
 - `ratelimit.*.limit`, `ratelimit.*.create_namespace`, `ratelimit.*.set_override` (you only need these for the section on limiting things that aren't keys)
 
-Store it as `UNKEY_ROOT_KEY` on your server. Next, create a keyspace to hold the keys you'll hand out. The endpoint calls a keyspace an API.
+Store it as `UNKEY_ROOT_KEY` on your server. Next, create a keyspace to hold the keys you'll hand out. The endpoint calls that keyspace an API.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/apis.createApi \
@@ -76,13 +76,13 @@ curl -X POST https://api.unkey.com/v2/identities.createIdentity \
 { "data": { "identityId": "id_nLpkSl2sI" }, "meta": { "requestId": "req_HBYqv6Nsx" } }
 ```
 
-`duration` is the length of the window in milliseconds. With `autoApply: true`, every verification of every key this customer owns checks the limit, and your code never has to mention it by name. You have to send `autoApply`, because the API returns a 400 if it's missing.
+`duration` is the length of the window in milliseconds. With `autoApply: true`, every verification of every key this customer owns checks the limit, and your code never has to mention it by name. You have to send `autoApply`. The API returns a 400 if it's missing.
 
 ```json
 {"error":{"detail":"POST request body for '/v2/identities.createIdentity' failed to validate schema","errors":[{"location":"/properties/ratelimits/items/$ref/required","message":"missing property 'autoApply'"}],"status":400, ...}}
 ```
 
-If you've already created a key with this `externalId`, the identity already exists and this call returns a 409. In that case use `identities.updateIdentity`, which Step 5 covers.
+If you've already created a key with this `externalId`, the identity already exists and this call returns a 409. Use `identities.updateIdentity` instead, which Step 5 covers.
 
 ## Step 3: Issue keys linked to that customer
 
@@ -99,7 +99,7 @@ import { Unkey } from '@unkey/api';
 export const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY ?? '' });
 ```
 
-Any key you create with the same `externalId` is linked to that identity. In this example the customer gets one key for production and one for staging.
+Any key you create with the same `externalId` links to that identity. In this example the customer gets one key for production and one for staging.
 
 ```ts
 // create-keys.ts
@@ -117,11 +117,11 @@ for (const name of ['production', 'staging']) {
 }
 ```
 
-We only store a hash of the key, so this response is the one time you'll ever see `data.key`.
+We only store a hash of the key, so this response is the only time you'll ever see `data.key`.
 
 ## Step 4: Verify the key and return 429 with headers
 
-Your handler calls `keys.verifyKey` on every request. That single call checks the key itself and every auto-applied limit on both the key and its identity. Two details in the response tend to trip people up.
+Your handler calls `keys.verifyKey` on every request. That one call checks the key itself and every auto-applied limit on both the key and its identity. Two details catch people.
 
 1. `keys.verifyKey` returns HTTP 200 for every outcome, even when the key is rate limited, so you have to read `data.valid` and `data.code`.
 2. It doesn't set any response headers. Your server sends the 429 and copies the limit numbers onto it.
@@ -166,17 +166,17 @@ export async function handler(request: Request): Promise<Response> {
 serve({ fetch: handler, port: 8787 });
 ```
 
-`reset` comes back in Unix milliseconds. The handler turns it into seconds for `X-RateLimit-Reset` so it matches what the Compute gateway sends. `Retry-After` here is whole seconds and never lower than 1. RFC 6585 defines the 429 status and that header. `USAGE_EXCEEDED` is a different check from the rate limit. It means the customer has used up their monthly quota of credits.
+`reset` comes back in Unix milliseconds. The handler turns it into seconds for `X-RateLimit-Reset` so it matches what the Compute gateway sends. `Retry-After` here is whole seconds and never lower than 1. RFC 6585 defines the 429 status and that header. `USAGE_EXCEEDED` is a different check from the rate limit. It means the customer has used up their monthly credits quota.
 
-We tested this with both of Acme's keys. The production key made 60 requests and the staging key made 40. The next request from the staging key was rejected, even though that key had only been used 40 times, because every key Acme holds counts toward the same limit.
+We tested this with both of Acme's keys. The production key made 60 requests and the staging key made 40. The next request from the staging key was rejected, even though that key had only been used 40 times. Every key Acme holds counts toward the same limit.
 
 ![Two keys for the same customer share one limit of 100 requests. The 101st request returns 429 with Retry-After and X-RateLimit headers.](/images/blog-images/rate-limit-api-per-customer/shared-budget-429.png)
 
-If the rate limit check itself can't run, the docs say verification carries on as though every limit passed, so an outage on our side never blocks a valid key. That behavior is called fail-open. It's usually what you want for a limit that protects your capacity, as opposed to one that protects security. Keep it in mind, because the gateway further down does the opposite.
+If the rate limit check itself can't run, the docs say verification carries on as though every limit passed, so an outage on our side never blocks a valid key. That's fail-open. It's usually what you want for a limit that protects capacity rather than security. Keep it in mind. The gateway further down does the opposite.
 
 ## Step 5: Change a customer's limit without a deploy
 
-When Acme upgrades, you update the identity. Sending `ratelimits` replaces the entire list, so include every limit the customer should keep. This call raises `requests` to 1,000 per minute and adds an `exports` limit that the next step uses.
+When Acme upgrades, you update the identity. Sending `ratelimits` replaces the entire list, so include every limit the customer should keep. This call raises `requests` to 1,000 per minute and adds an `exports` limit the next step uses.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/identities.updateIdentity \
@@ -192,7 +192,7 @@ curl -X POST https://api.unkey.com/v2/identities.updateIdentity \
   }'
 ```
 
-The `identity` field accepts either your `externalId` or Unkey's `identityId`. The response shows the identity as it is after the change.
+The `identity` field accepts either your `externalId` or Unkey's `identityId`. The response shows the identity after the change.
 
 ```json
 {
@@ -221,13 +221,13 @@ The `identity` field accepts either your `externalId` or Unkey's `identityId`. T
 }
 ```
 
-You don't touch the handler and you don't deploy anything. Every key Acme holds picks up the new numbers on its own. Plan changes reach verifications within about 10 seconds. Right after an update that adds a brand new named limit, a verification that asks for that name by name can still get a 412 from a node that hasn't seen it yet. Update the identity first, then ship the code that uses the new name.
+You don't touch the handler. You don't deploy anything. Every key Acme holds picks up the new numbers on its own. Plan changes reach verifications within about 10 seconds. Right after an update that adds a brand new named limit, a verification that asks for that name by name can still get a 412 from a node that hasn't seen it yet. Update the identity first, then ship the code that uses the new name.
 
-If you call this from your billing webhook when a subscription is created, updated or cancelled, nobody on your team has to change plan limits by hand again.
+If you call this from your billing webhook when a subscription is created, updated, or canceled, nobody on your team has to change plan limits by hand again.
 
 ## Step 6: Give an expensive endpoint its own limit
 
-Some endpoints cost a lot more to serve than others, and there are two ways to handle them.
+Some endpoints cost a lot more to serve than others. You have two ways to handle them.
 
 **A named limit that only applies where you ask for it.** The `exports` limit above has `autoApply: false`, so ordinary requests never check it. Your export endpoint asks for it by name when it verifies the key. You can also charge a single request more than one token with `cost`.
 
@@ -238,7 +238,7 @@ curl -X POST https://api.unkey.com/v2/keys.verifyKey \
   -d '{ "key": "sk_live_...", "ratelimits": [ { "name": "exports" }, { "name": "requests", "cost": 3 } ] }'
 ```
 
-The SDK version is `unkey.keys.verifyKey({ key, ratelimits: [{ name: "exports" }, { name: "requests", cost: 3 }] })`. The limits you list and the auto-applied ones are all checked together, and if any one of them is over, none of them gets spent. Since `exports` lives on the identity, every key the customer holds shares it too. In our test, Acme's first key used up all five exports for the hour. Acme then created another key, and that key was rate limited on its second export call while its ordinary requests kept working.
+The SDK version is `unkey.keys.verifyKey({ key, ratelimits: [{ name: "exports" }, { name: "requests", cost: 3 }] })`. The limits you list and the auto-applied ones are all checked together. If any one of them is over, none of them gets spent. Since `exports` lives on the identity, every key the customer holds shares it too. In our test, Acme's first key used up all five exports for the hour. Acme then created another key, and that key was rate limited on its second export call while its ordinary requests kept working.
 
 ```text
 ### export 2
@@ -247,9 +247,9 @@ The SDK version is `unkey.keys.verifyKey({ key, ratelimits: [{ name: "exports" }
 {"valid":true,"code":"VALID","ratelimits":[{"name":"requests","remaining":969,"exceeded":false}]}
 ```
 
-If you name a limit that doesn't exist on the key or its identity, the whole call fails with HTTP 412 `err:unkey:application:precondition_failed`, so you find out about typos right away.
+If you name a limit that doesn't exist on the key or its identity, the whole call fails with HTTP 412 `err:unkey:application:precondition_failed`. You find out about typos right away.
 
-**An exception for one key.** Give that key its own limit with the same name, and it replaces the identity's limit for that one key.
+**An exception for one key.** Give that key its own limit with the same name, and it replaces the identity's limit for that key alone.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/keys.createKey \
@@ -266,11 +266,11 @@ curl -X POST https://api.unkey.com/v2/keys.createKey \
 
 When we verified that key, `requests` came back at 5,000. Acme's other keys still showed the 1,000 they share.
 
-You can also pass `limit` and `duration` inline, inside the verification's `ratelimits` entry. An inline limit only counts against the key and never the identity. Be careful with it, because the API doesn't reject a `limit` below 1 or a `duration` below 1000. The verification silently skips every rate limit instead, including the auto-applied ones. We sent `limit: 0` and got back `{"valid":true,"code":"VALID","ratelimits":null}`. Check those numbers in your own code before you send them.
+You can also pass `limit` and `duration` inline, inside the verification's `ratelimits` entry. An inline limit only counts against the key and never the identity. Be careful with it. The API doesn't reject a `limit` below 1 or a `duration` below 1000. The verification silently skips every rate limit instead, including the auto-applied ones. We sent `limit: 0` and got back `{"valid":true,"code":"VALID","ratelimits":null}`. Check those numbers in your own code before you send them.
 
 ## Limiting things that aren't keys (IP, session, tenant)
 
-Sign-up, login and password reset happen before anyone has an API key. For those you use the standalone limiter, `ratelimit.limit`. You choose a namespace for the thing you're limiting and an identifier for who is doing it, then send the limit along with each call.
+Sign-up, login, and password reset happen before anyone has an API key. For those you use the standalone limiter, `ratelimit.limit`. You choose a namespace for the thing you're limiting and an identifier for who is doing it, then send the limit along with each call.
 
 ```ts
 // ip-limit.ts
@@ -306,7 +306,7 @@ We called it six times for the same IP.
 
 It returns HTTP 200 whether the call is allowed or not, just like `keys.verifyKey`, so check `data.success`. The first call that uses a new namespace name creates that namespace.
 
-To give one identifier a different number without changing code, set an override. We hit one snag doing this. The namespace has to exist before you can override anything in it, so call `ratelimit.limit` on it at least once first, or `ratelimit.setOverride` returns 404 `ratelimit_namespace_not_found`.
+To give one identifier a different number without changing code, set an override. We hit one snag doing this. The namespace has to exist before you can override anything in it. Call `ratelimit.limit` on it at least once first, or `ratelimit.setOverride` returns 404 `ratelimit_namespace_not_found`.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/ratelimit.setOverride \
@@ -315,7 +315,7 @@ curl -X POST https://api.unkey.com/v2/ratelimit.setOverride \
   -d '{ "namespace": "api.requests", "identifier": "cus_acme", "limit": 1000, "duration": 60000 }'
 ```
 
-The code still sends `limit: 100`, but `cus_acme` now gets 1,000, and the response includes the override so you can tell it applied.
+The code still sends `limit: 100`, but `cus_acme` now gets 1,000. The response includes the override so you can tell it applied.
 
 ![ratelimit.limit returns limit 1000 and an overrideId for the overridden identifier, and limit 100 for another identifier in the same call.](/images/blog-images/rate-limit-api-per-customer/override.png)
 
@@ -332,11 +332,11 @@ curl -X POST https://api.unkey.com/v2/ratelimit.multiLimit \
   ]'
 ```
 
-The response has a `passed` field for the whole call plus one entry per check. When we sent a `cost` bigger than the token limit allowed, `passed` came back `false`, and none of the checks were counted, including the ones that passed on their own.
+The response has a `passed` field for the whole call plus one entry per check. When we sent a `cost` bigger than the token limit allowed, `passed` came back `false`. None of the checks were counted, including the ones that passed on their own.
 
 ## Rate limiting at the gateway with no code
 
-If your API runs on Unkey Compute, the gateway checks keys and enforces limits before a request ever gets to your app. You can add policies in the app under **Policies > Add Policy**, or set them through the API.
+If your API runs on Unkey Compute, the gateway checks keys and enforces limits before a request ever gets to your app. Add policies in the app under **Policies > Add Policy**, or set them through the API.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
@@ -365,13 +365,13 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
   }'
 ```
 
-A few notes on how the gateway relates to the earlier steps.
+How the gateway lines up with the earlier steps.
 
 - The **Key Auth** policy works the same way as `keys.verifyKey`, so it already enforces the identity and key limits from Steps 2 to 6.
 - The **Rate Limit** policy adds a second limit on top. `authenticatedSubject` resolves to the identity's `externalId` when the key has one and to the key ID when it doesn't, so it counts per customer. It counts over a fixed window.
 - Put the rate limit after key auth. If it runs first, every request counts as `unknown`.
 - Policy changes take effect on the next deployment, so redeploy after you save them. The root key needs `environment.*.set_policies`.
-- The gateway sends `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (in Unix seconds) on its responses, plus `Retry-After` on a 429.
+- The gateway sends `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` (in Unix seconds) on its responses, plus `Retry-After` on a 429.
 - If rate limiting itself fails at the gateway, the request gets a 500 instead of going through. That's fail-closed, the opposite of `keys.verifyKey`. Pick the path whose failure mode you can live with.
 
 ![The Policies page on a Compute app, with Require a key (Key Auth) first and 5 per minute per caller (Rate Limit) second, both on Production and off for Preview](/images/blog-images/rate-limit-api-per-customer/deploy-policies.png)
@@ -409,7 +409,7 @@ x-ratelimit-remaining: 0
 x-ratelimit-reset: 1791919680
 ```
 
-Clients should wait for the number of seconds in `Retry-After`. A well-behaved client waits that long, adds a little random jitter so clients that were limited at the same moment don't all retry together, and gives up after a few attempts. If the header is missing, it falls back to exponential backoff.
+Clients should wait for the number of seconds in `Retry-After`. A well-behaved client waits that long, adds a little random jitter so clients limited at the same moment don't all retry together, and gives up after a few attempts. If the header is missing, it falls back to exponential backoff.
 
 ```ts
 // client.ts
@@ -439,7 +439,7 @@ If you ship an SDK, build this retry logic into it. Most floods of 429s come fro
 
 ## Where to see who is getting limited
 
-Every verification and every `ratelimit.limit` call ends up in analytics, and the dashboard shows it in a few places.
+Every verification and every `ratelimit.limit` call ends up in analytics. The dashboard shows it in a few places.
 
 - The identity page lists each request as Valid or Ratelimited, with the key id and the region. Rejected verifications (including rate limited ones) show up here.
 - **Edit ratelimit** on that identity holds the named limits. The dialog may need a scroll to show every rule.
@@ -456,7 +456,7 @@ Every verification and every `ratelimit.limit` call ends up in analytics, and th
 
 ![The Overrides page for namespace api.requests with one override for cus_acme at 1k per 1 minute](/images/blog-images/rate-limit-api-per-customer/rl-namespace-override.png)
 
-Pick your limits from this data rather than from a table in a blog post. Look at what your paying customers actually send at their busiest, set the default plan limit comfortably above that, and then watch who runs into it. A customer who gets rate limited every day is either abusing the free tier or ready for a bigger plan, and you want to talk to them in both cases.
+Pick your limits from this data rather than from a table in a blog post. Look at what your paying customers actually send at their busiest. Set the default plan limit comfortably above that, then watch who runs into it. A customer who gets rate limited every day is either abusing the free tier or ready for a bigger plan. You want to talk to them in both cases.
 
 ## Checklist
 
@@ -468,4 +468,4 @@ Pick your limits from this data rather than from a table in a blog post. Look at
 - When you call `keys.verifyKey`, return the 429 and `Retry-After` yourself. The Compute gateway sets them for you.
 - Remember that `keys.verifyKey` fails open and the gateway rate limit policy fails closed.
 
-For the reference docs, start with the [per-user rate limit cookbook](https://www.unkey.com/docs/api-management/cookbook/per-user-rate-limit) and the [key and identity limits reference](https://www.unkey.com/docs/api-management/ratelimiting/key-and-identity-limits).
+If you want the reference docs, start with the [per-user rate limit cookbook](https://www.unkey.com/docs/api-management/cookbook/per-user-rate-limit) and the [key and identity limits reference](https://www.unkey.com/docs/api-management/ratelimiting/key-and-identity-limits).
