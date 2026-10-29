@@ -12,7 +12,7 @@ function HeaderPopover({ isOpen, className, children, ...props }: IHeaderPopover
   return (
     <div
       className={cn(
-        'absolute top-full mt-1.5 w-82.5 transition-all duration-200',
+        'absolute top-full mt-1.5 w-82.5 transition-opacity duration-200',
         isOpen ? 'visible opacity-100' : 'invisible opacity-0',
         className,
       )}
