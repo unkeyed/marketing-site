@@ -32,6 +32,7 @@ function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNa
                   <NextLink
                     className="transition-colors duration-200 hover:text-white"
                     href={item.href}
+                    prefetch={isExternal ? false : undefined}
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
                   >

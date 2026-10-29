@@ -29,7 +29,7 @@ export default function PricingTabs({
     <Tabs value={value} onValueChange={setValue} className="mt-9">
       <TabsList
         className={cn(
-          'h-11.75 w-fit rounded-none border border-gray-30 bg-background p-1 text-gray-70',
+          'h-11.75 w-fit max-w-full rounded-none border border-gray-30 bg-background p-1 text-gray-70',
         )}
       >
         {tabs.map((tab) => (
@@ -37,7 +37,7 @@ export default function PricingTabs({
             key={tab.value}
             value={tab.value}
             className={cn(
-              'h-full rounded-none px-4 font-mono text-[0.875rem] tracking-[0.03em] uppercase lg:text-[0.9375rem]',
+              'h-full rounded-none px-1.5 font-mono text-[0.875rem] tracking-[0.03em] uppercase sm:px-4 lg:text-[0.9375rem]',
               'data-[state=active]:bg-white data-[state=active]:text-gray-8',
             )}
           >

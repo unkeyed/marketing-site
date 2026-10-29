@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { ShieldCheck } from 'lucide-react';
 import config from '@/configs/website-config';
 import { MENUS } from '@/constants/menus';
+import { ShieldCheck } from 'lucide-react';
 
 import Nav from './nav';
 
@@ -31,7 +31,7 @@ function Footer() {
             <p className="text-sm leading-tight font-medium -tracking-wide text-gray-80">
               {MENUS.footer.description}
             </p>
-            <p className="text-sm leading-tight font-medium -tracking-wide text-gray-40">
+            <p className="text-sm leading-tight font-medium -tracking-wide text-gray-60">
               {MENUS.footer.copyright}
             </p>
             <NextLink

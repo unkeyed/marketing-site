@@ -8,6 +8,7 @@ import {
   getTotalPagesByCategory,
 } from '@/lib/blog/posts';
 import { getMetadata } from '@/lib/get-metadata';
+import { getPaginationPage } from '@/lib/pagination';
 import Pagination from '@/components/pages/blog/pagination';
 import PostsList from '@/components/pages/blog/posts-lists--grid';
 
@@ -36,11 +37,7 @@ export async function generateStaticParams() {
 
 export default async function CategoryPagePagination({ params }: CategoryPageProps) {
   const { category, page } = await params;
-  const currentPage = parseInt(page, 10);
-
-  if (isNaN(currentPage) || currentPage < 2) {
-    notFound();
-  }
+  const currentPage = getPaginationPage(page);
 
   const posts = getPaginatedPostsByCategory(category, currentPage, {
     nonFeaturedOnly: true,
@@ -75,6 +72,7 @@ export default async function CategoryPagePagination({ params }: CategoryPagePro
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category, page } = await params;
   const categoryData = getCategoryBySlug(category);
+  const currentPage = getPaginationPage(page);
 
   if (!categoryData) {
     return {};
@@ -83,6 +81,6 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   return getMetadata({
     title: `Blog: ${categoryData.title}`,
     description: `${categoryData.title} Read the latest articles, news, and reviews on our blog`,
-    pathname: `/blog/category/${category}/page/${page}`,
+    pathname: `/blog/category/${category}/page/${currentPage}`,
   });
 }
