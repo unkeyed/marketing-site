@@ -1,0 +1,13 @@
+.title mark {
+  /* A negative left margin clips padding on wrapped fragments in WebKit. */
+  position: relative;
+  left: -0.15em;
+  margin-right: -0.15em;
+  padding-inline: 0.1em;
+  color: #000;
+  /* Keep the original painted height and half of its 0.11em bottom-padding offset on each line. */
+  background: linear-gradient(var(--color-yellow), var(--color-yellow)) center calc(50% + 0.055em) /
+    100% 0.96em no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}

@@ -14,6 +14,11 @@ const criticalRoutes = [
     heading: 'Start for free, scale as you go with predictable usage-based pricing.',
   },
   {
+    name: 'about',
+    path: '/about',
+    heading: 'Building tools for fast and scalable software',
+  },
+  {
     name: 'startups application',
     path: '/startups',
     heading: '$1,000 in credits every month for your startup',
