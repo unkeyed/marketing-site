@@ -24,7 +24,7 @@ export const aboutContentData = {
     'for ',
     createElement(
       'mark',
-      { className: '!inline !h-auto' },
+      null,
       'fast ',
       createElement('br', { className: 'hidden sm:inline xl:hidden' }),
       'and ',
