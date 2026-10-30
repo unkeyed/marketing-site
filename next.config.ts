@@ -188,6 +188,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/openapi.json',
+        destination: 'https://api.unkey.com/openapi.json',
+        permanent: true,
+      },
+      {
         source: '/blog/deploy-api-previews-rollback-monitoring',
         destination: '/blog/deploy-api-previews-monitoring',
         permanent: true,
