@@ -79,12 +79,13 @@ export default function Hero({
               {description}
             </p>
             <div className="mt-1 flex w-full shrink-0 flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap md:mt-0">
-              <Link href={primaryCta.href} variant="primary">
+              <Link href={primaryCta.href} variant="primary" className="max-[360px]:px-3.5">
                 {primaryCta.label}
               </Link>
               <Link
                 href={secondaryCta.href}
                 variant="secondary"
+                className="max-[360px]:px-3.5"
                 target={
                   secondaryCta.target ?? (isExternalLink(secondaryCta.href) ? '_blank' : undefined)
                 }

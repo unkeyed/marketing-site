@@ -26,7 +26,7 @@ function Pagination({ currentPage, pageCount, className, path = '' }: IPaginatio
     return [`gap-${page}`, page];
   });
   const pageClassName =
-    'flex size-8 items-center justify-center rounded-lg border border-transparent text-xs font-medium leading-none tracking-tight md:size-9';
+    'flex size-9 items-center justify-center rounded-[2px] border border-transparent text-xs font-medium leading-none tracking-tight';
   const previousLabel = (
     <>
       <ArrowLeft
@@ -50,11 +50,11 @@ function Pagination({ currentPage, pageCount, className, path = '' }: IPaginatio
     </>
   );
   const directionClassName =
-    'flex items-center gap-x-1.5 rounded text-sm font-semibold transition-colors duration-300';
+    'flex items-center gap-x-1.5 rounded-[2px] text-sm font-semibold transition-colors duration-300';
 
   return (
     <nav aria-label="Pagination" className={className}>
-      <ul className="flex items-center justify-center gap-x-2 md:gap-x-3 [&>li]:leading-snug">
+      <ul className="flex items-center justify-center gap-x-1 md:gap-x-3 [&>li]:leading-snug">
         <li className="mr-auto flex self-stretch md:mr-12">
           {currentPage > 1 ? (
             <Link

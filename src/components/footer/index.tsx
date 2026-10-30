@@ -31,7 +31,7 @@ function Footer() {
             <p className="text-sm leading-tight font-medium -tracking-wide text-gray-80">
               {MENUS.footer.description}
             </p>
-            <p className="text-sm leading-tight font-medium -tracking-wide text-gray-60">
+            <p className="text-sm leading-tight font-medium -tracking-wide text-gray-40">
               {MENUS.footer.copyright}
             </p>
             <NextLink

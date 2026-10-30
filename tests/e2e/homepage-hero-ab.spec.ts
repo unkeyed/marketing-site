@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const HERO_HEADING = 'The Developer Platform for Modern APIs';
 const CONTROL_SUBHEAD =
@@ -16,6 +16,23 @@ function decodeHtml(value: string): string {
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');
+}
+
+async function expectNarrowHeroActionsOnOneRow(page: Page, secondaryLabel: string) {
+  await page.setViewportSize({ width: 320, height: 833 });
+  await page.evaluate(() => document.fonts.ready);
+
+  const hero = page.locator('main > section').first();
+  const primary = await hero.getByRole('link', { name: 'Start for free' }).boundingBox();
+  const secondary = await hero.getByRole('link', { name: secondaryLabel }).boundingBox();
+
+  expect(primary).not.toBeNull();
+  expect(secondary).not.toBeNull();
+  expect(Math.abs(primary!.y - secondary!.y)).toBeLessThan(1);
+  expect(primary!.x + primary!.width).toBeLessThan(secondary!.x);
+  expect(secondary!.x + secondary!.width).toBeLessThanOrEqual(300);
+  expect(primary!.height).toBeGreaterThanOrEqual(44);
+  expect(secondary!.height).toBeGreaterThanOrEqual(44);
 }
 
 test('TC-E2E-013: homepage hero variant A keeps the current copy', async ({ page, baseURL }) => {
@@ -37,6 +54,7 @@ test('TC-E2E-013: homepage hero variant A keeps the current copy', async ({ page
   await expect(github).toHaveAttribute('href', GITHUB_HREF);
   await expect(page.getByRole('link', { name: FOUNDER_LABEL })).toHaveCount(0);
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'a');
+  await expectNarrowHeroActionsOnOneRow(page, 'View on GitHub');
 });
 
 test('TC-E2E-014: homepage hero variant B changes only the subhead', async ({ page, baseURL }) => {
@@ -66,6 +84,7 @@ test('TC-E2E-014: homepage hero variant B changes only the subhead', async ({ pa
   await page.reload();
   await expect(page.getByText(VARIANT_B_SUBHEAD)).toBeVisible();
   await expect(page.locator('main')).toHaveAttribute('data-hero-variant', 'b');
+  await expectNarrowHeroActionsOnOneRow(page, FOUNDER_LABEL);
 });
 
 test('TC-E2E-015: crawler user agents get variant B in the HTML', async ({ request }) => {

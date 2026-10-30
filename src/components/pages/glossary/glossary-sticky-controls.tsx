@@ -150,7 +150,7 @@ function GlossaryStickyControls({
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 2xl:gap-13">
         <SearchBar
-          className="!h-8 w-full justify-between rounded-sm border-gray-20 bg-gray-8 pr-[0.1875rem] pl-2 hover:bg-gray-8 md:max-w-[15rem] lg:pr-[0.3125rem] xl:w-54 xl:w-57 xl:shrink-0 [&_kbd]:h-6 [&_kbd]:rounded-sm [&_kbd]:border-gray-20 [&_kbd]:bg-gray-8 [&_kbd]:text-gray-70 [&_span]:text-gray-70"
+          className="!h-9 w-full justify-between rounded-sm border-gray-20 bg-gray-8 pr-[0.1875rem] pl-2 hover:bg-gray-8 md:!h-8 md:max-w-[15rem] lg:pr-[0.3125rem] xl:w-54 xl:w-57 xl:shrink-0 [&_kbd]:h-6 [&_kbd]:rounded-sm [&_kbd]:border-gray-20 [&_kbd]:bg-gray-8 [&_kbd]:text-gray-70 [&_span]:text-gray-70"
           placeholder="Search..."
           searchItems={searchItems}
           suggestions={suggestions}
