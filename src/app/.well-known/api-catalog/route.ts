@@ -11,7 +11,7 @@ export function GET() {
         {
           anchor: 'https://api.unkey.com',
           'service-desc': [
-            { href: 'https://api.unkey.com/openapi.yaml', type: 'application/yaml' },
+            { href: 'https://api.unkey.com/openapi.json', type: 'application/json' },
           ],
           'service-doc': [
             { href: 'https://www.unkey.com/docs/platform/api/overview', type: 'text/html' },
