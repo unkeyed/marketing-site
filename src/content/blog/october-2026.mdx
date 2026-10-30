@@ -1,0 +1,140 @@
+---
+date: 2026-10-30
+title: 'Sign in from the terminal, build the root key, watch the build'
+description: 'October shipped CLI login, a root key builder, live build logs, and a query for the requests Unkey served.'
+image: '/images/blog-images/covers/october-2026/og-1080.png'
+author: james
+tags: ['product']
+---
+
+You can sign in to the CLI from the terminal. You can build a root key and see the grant before you save. And you can query the requests the Unkey API served for your workspace.
+
+That's October.
+
+## Sign in to the CLI
+
+`unkey login` replaces pasting a root key. The CLI prints a code and a URL. You confirm the code in the dashboard, choose what the session can do, and the CLI stores a workspace session in your system keychain.
+
+Any role can approve a login. The session only gets permissions that role can grant. Active sessions live under Settings, and you can revoke one from there. CI still uses a root key.
+
+See [unkey login](https://www.unkey.com/docs/platform/cli/login) and [CLI authentication](https://www.unkey.com/docs/platform/cli/authentication).
+
+## Query the requests the Unkey API served
+
+You can list the requests Unkey served for your workspace. Filter by time, path, method, request ID, and status, and page through the results. A second endpoint counts those requests per time bucket, split by status class.
+
+Both are on the API and as CLI commands. Calls to these endpoints are not logged themselves, so reading the log does not add another row.
+
+See [list API requests](https://www.unkey.com/docs/platform/cli/logs/list-api-requests) and [API request metrics](https://www.unkey.com/docs/platform/cli/logs/get-api-request-metrics).
+
+## A builder for root keys
+
+Root keys now have a builder. Click New Root Key and a panel slides in where you name the key and add policy cards. Each card picks a scope, then the resource, then what the key can do with it. The scopes are the workspace, a project, an app, an environment, a keyspace, or a ratelimit namespace. The permission list is searchable.
+
+Click any row to reopen the panel and change a key's grants. Rotate and delete sit in the footer.
+
+![Root key builder](/images/blog-images/october-2026/root-key-builder.png)
+
+Each permission group has checkboxes to grant read or write across the whole group in one click. Environments are grouped under their app, production first, and the closed picker shows a count. Root keys moved out of Settings and now have their own spot in the sidebar.
+
+See [root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions).
+
+## Build logs as one live stream
+
+The build step table is gone. Build logs are one stream that fills in as the build prints, so a slow step no longer leaves you on a blank screen. A heading marks each new step, and the closing line says cached, done with how long it took, or why it failed. Stderr is amber. Errors are red.
+
+Jump to error lands on the failure, and Jump to latest catches you up. The view follows the end while a build runs, long steps fold, and a noisy step can't push the others out of view. The same logs are available through the API.
+
+![Build logs](/images/blog-images/october-2026/build-logs.png)
+
+Builds stop after 30 minutes instead of running forever when stuck. When a build fails for a reason we don't recognize, the message asks you to contact support with the deployment ID.
+
+## A guided flow for new apps
+
+Setting up a new app is a guided flow instead of one long wizard. Start by picking a GitHub repository or a container image, and we walk you through the rest one step at a time. Everything you configure is on one page, and we tell you what's left before you can deploy. You'll only see the options your plan includes.
+
+![New app flow](/images/blog-images/october-2026/new-app-flow.png)
+
+The account menu in that flow can add another GitHub account or organization. Builds clone private GitHub submodules when the Unkey GitHub App can access those repositories. New apps start in us-east-1 instead of every available region. You can still pick more regions later.
+
+See [adding another GitHub account](https://www.unkey.com/docs/compute/build/github#add-another-github-account-or-organization).
+
+## App settings, environments, and the production branch
+
+App settings is split into a few sections, and each environment has its own page: where the app runs, how big it is, the domains on it, and which branch deploys to it. If your plan doesn't include a size, we name the plan that does. Domains have their own searchable list in each app.
+
+Port, start command, and health check now sit on each environment with regions, size, and instances. Production and preview can differ, and each Save applies to that environment only. Min and max instances tell you when you pass your plan's limit. The page also has health check timeout, failure threshold, initial delay, and the shutdown signal an instance gets when it stops. Upstream HTTP/1.1 or HTTP/2 is a toggle.
+
+You can change the branch that deploys to production. It used to be locked in when you created the app. Changing it doesn't trigger a deploy. Your next push to the new branch goes to production.
+
+![Production branch](/images/blog-images/october-2026/production-branch.png)
+
+Create a deployment by hand and the environment follows the branch: production branch to production, anything else to preview. There's a quick pick for the branch pushed most recently, and container image deployments default to production. The list can filter by branch and time range, and each row includes the commit message, author, pull request number, what triggered it, and when it finished.
+
+## Find an environment variable across the workspace
+
+An Environment Variables page in the sidebar lists every variable in the workspace, grouped by app. Search once when you need to rotate a leaked secret or see where a key is set. Filter by environment or by whether a variable is sensitive, and click a row to open that app with the key already filtered. Values are never shown on this page.
+
+![Workspace environment variables](/images/blog-images/october-2026/workspace-env-vars.png)
+
+You can add variables in bulk. Paste a `.env` file or import the file, choose the environments, and save them together. If a key already exists, we save nothing and show you which one clashes.
+
+See [finding a variable across the workspace](https://www.unkey.com/docs/compute/configure/environment-variables#find-a-variable-across-the-workspace).
+
+## Policies you can match, scope, and reorder
+
+Each policy reads as a plain rule: if a request matches these conditions, do this. You can match on the path, method, headers, query parameters, or client IP, and a header or query parameter can match when it's missing. You choose which environments a policy runs in, and you can turn it off in one without touching the others. Policies run top to bottom. Drag them into the order you want. The page explains how that order plays out.
+
+![Policy panel](/images/blog-images/october-2026/policy-panel.png)
+
+The dashboard can add a Remote IP condition. Choose In range or Not in range, then list addresses and CIDR ranges. It's the same match the API already had, now with a form.
+
+Rejected requests show up in request logs, with the key and how verification turned out. Header and body logging applies to them too. One request ID follows a request through every region to your app and your logs, and a refused connection comes back as a 502.
+
+See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall).
+
+## Portal sessions you can end
+
+The customer portal settings have a Sessions page. One row per signed-in end user, with how many sessions they have, when the newest started, and when the last one expires. Search by external ID, open a row, and the panel lists each session. Revoke all sessions signs that user out. You can list sessions and revoke by external ID through the API. Disabling a portal signs everyone out. Before, it only stopped new sessions.
+
+See [what portal users can do](https://www.unkey.com/docs/api-management/portal/end-user-experience).
+
+## Approve or cancel a deployment
+
+Fork pull request deployments wait for a project member to approve them before they build. Approve that wait from the API or with `unkey deployments authorize`. Cancel a queued, building, or deploying run with `unkey deployments cancel`.
+
+See [authorize a deployment](https://www.unkey.com/docs/compute/cli/deployments/authorize-deployment) and [cancel a deployment](https://www.unkey.com/docs/compute/cli/deployments/cancel-deployment).
+
+Deployment links on GitHub open the correct app, and each deployment reports a status on its commit. When an instance crashes, the deployments list shows a short plain English reason instead of a raw status string. Hover for the fix and the original reason.
+
+## Limits, usage, and the billing period
+
+You can ask the API for the numbers on the Limits and Usage pages. Limits returns each cap next to current usage. Usage returns one month: API operations, Compute, and active keys, broken down by app and environment. The default is the month so far, and you can ask for a past month within the last 90 days. If the data can't be read, the request fails instead of returning zeros.
+
+On the usage page you pick a billing period, so this month and past months are one click apart. The chart spans the whole month.
+
+![Usage period selector](/images/blog-images/october-2026/usage-period.png)
+
+The API usage card shows the billing period dates and how many days until it resets. The Upgrade button turns primary once you pass 90% of your quota.
+
+## Lists, OpenAPI, and a walkthrough
+
+Keyspaces, rate limits, projects, and apps share one list pattern. Search sits on the left, a grid or list toggle on the right, and Show more appears when the list is long. Your view choice sticks per list. Key lists in large keyspaces page with Previous and Next, and they no longer show a total count.
+
+![Projects in grid view](/images/blog-images/october-2026/resource-list-views.png)
+
+The Unkey API serves its OpenAPI specification as JSON at `https://api.unkey.com/openapi.json`. The site publishes an [API catalog](https://www.unkey.com/.well-known/api-catalog) that points at that spec and at the docs.
+
+New sign-ups are asked whether they want to deploy apps or manage API keys, and they land in the right place after creating a workspace.
+
+We published a walkthrough of connecting a GitHub repository, preview environments, a key auth policy on the gateway, and request and runtime logs. See [Deploy an API with preview environments and request logs](https://www.unkey.com/blog/deploy-api-previews-monitoring). Open roles are on the [careers page](https://www.unkey.com/careers).
+
+## Smaller updates
+
+Workspace, project, API, and ratelimit namespace settings share one layout. Each row saves on its own, and Save stays gray until you change something. You can create, list, rename, and delete ratelimit namespaces through the API, and deleting one removes its overrides. You can edit a permission's name, slug, and description, and a role's name and description, the same way. A missing route returns a JSON error with a request ID. An invalid permission on a new root key names that permission and why it was rejected. Timing headers stay off unless you send `X-Unkey-Debug: 1`.
+
+`app.unkey.com/~/settings` opens that page in whichever workspace you're signed in to. Every logs filter has a search box, so typing "blocked" or "5xx" finds the option. The audit log filter groups events by resource.
+
+The smaller fixes are in the [October 10 changelog](https://www.unkey.com/changelog/2026-10-10), the [October 16 changelog](https://www.unkey.com/changelog/2026-10-16), the [October 23 changelog](https://www.unkey.com/changelog/2026-10-23), and the [October 30 changelog](https://www.unkey.com/changelog/2026-10-30).
+
+Ship APIs, not infrastructure.
