@@ -135,7 +135,7 @@ const token = signJwt({
 });
 ```
 
-Fifteen minutes is a reasonable access-token lifetime when you cannot revoke the token early. The result looks like `eyJhbGciOiJ...payload.signature`. The first two segments are the header and payload above. The third is the signature.
+Fifteen minutes is a reasonable access-token lifetime when you cannot revoke the token early. The return value is the encoded header, the encoded payload, and the signature, joined by periods.
 
 ## Verifying a JWT
 
@@ -256,7 +256,7 @@ A signed JWT stays valid until `exp`. There is no logout switch inside the signa
 - Treating the payload as private. Base64url is reversible. JSON Web Encryption (JWE) is a separate standard for hiding claims. Signing does not hide them.
 - Decoding the middle segment and skipping the signature. Anyone can write the header and payload.
 - Trusting the `alg` header. Pin `HS256`, `RS256`, or `ES256` in server code, and reject `none` and every other value.
-- Mixing up key types. Do not verify an HMAC token with a public key, and do not verify an RSA token with a shared secret.
+- Accepting a different algorithm than the one you sign with. If you issue RS256 tokens, reject HS256. A caller can otherwise switch the header to HS256 and sign with the public key, which verifiers already hold.
 - Omitting `exp`, or setting it days away on a token you cannot revoke.
 - Skipping `iss` and `aud` when more than one service accepts tokens from the same issuer.
 - Putting passwords, API secrets, or large objects in the payload.
