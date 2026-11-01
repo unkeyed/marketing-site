@@ -239,7 +239,7 @@ Also cap `limit`. A client that asks for a million rows should get the maximum y
 
 ## Error formats
 
-Use one JSON shape for every error, and use the HTTP status that matches it. Clients branch on a stable code. People read the message. The message can be edited. The code should not change once clients depend on it.
+Use one JSON shape for every error, and use the HTTP status that matches it. Clients branch on a stable identifier. People read the message. The message can be edited. The identifier should not change once clients depend on it.
 
 [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) problem details is a standard shape for this. Set `Content-Type` to `application/problem+json`.
 
