@@ -98,7 +98,7 @@ function CodeBlockWrapper({
       )}
     >
       {fileName && (
-        <div className="border-b border-border px-4 py-3.5 text-[0.8125rem] leading-none font-medium tracking-tight text-muted-foreground">
+        <div className="border-b border-border px-4 py-3.5 text-[0.8125rem] leading-snug font-medium tracking-tight break-words text-muted-foreground">
           {fileName}
         </div>
       )}

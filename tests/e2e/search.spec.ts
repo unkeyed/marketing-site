@@ -46,6 +46,9 @@ test('search keyboard navigation keeps the first and last results visible', asyn
   await page.getByRole('button', { name: 'Search', exact: true }).click();
 
   const dialog = page.getByRole('dialog', { name: 'Search', exact: true });
+  await expect(dialog).toHaveAccessibleDescription(
+    'Search the available content and choose a result to open it.',
+  );
   const input = dialog.getByRole('textbox');
   await input.fill('api');
   const results = dialog.getByRole('link');

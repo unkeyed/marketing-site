@@ -49,22 +49,29 @@ function TooltipProvider({
 
 function Tooltip({
   open: controlledOpen,
+  defaultOpen = false,
   onOpenChange: controlledOnOpenChange,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   const isCoarsePointer = useIsCoarsePointer();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
   const canToggleOnClick = isCoarsePointer && !isControlled;
 
-  const rootProps = canToggleOnClick
-    ? { open, onOpenChange: setOpen }
-    : { open: controlledOpen, onOpenChange: controlledOnOpenChange };
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!isControlled) setOpen(nextOpen);
+    controlledOnOpenChange?.(nextOpen);
+  };
 
   return (
     <TooltipProvider>
       <TooltipContext.Provider value={{ canToggleOnClick, setOpen }}>
-        <TooltipPrimitive.Root data-slot="tooltip" {...rootProps} {...props} />
+        <TooltipPrimitive.Root
+          data-slot="tooltip"
+          open={controlledOpen ?? open}
+          onOpenChange={handleOpenChange}
+          {...props}
+        />
       </TooltipContext.Provider>
     </TooltipProvider>
   );

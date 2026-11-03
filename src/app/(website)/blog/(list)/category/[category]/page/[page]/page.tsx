@@ -51,9 +51,9 @@ export default async function CategoryPagePagination({ params }: CategoryPagePro
 
   return (
     <div className="flex min-w-0 flex-col">
-      <h1 className="sr-only">
+      <h2 className="sr-only">
         Blog - {categoryData.title} - page {page}
-      </h1>
+      </h2>
       <PostsList posts={posts} />
       {totalPages > 1 && (
         <div className="mt-14 flex justify-center md:mt-20">

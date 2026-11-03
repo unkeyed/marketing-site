@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import useDebounce from '@/hooks/use-debounce';
 import { useTouchDevice } from '@/hooks/use-touch-device';
 import { Button } from '@/components/ui/button';
-import { DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 type ContentCategory =
@@ -456,6 +456,9 @@ export default function SearchDialog({
       onOpenAutoFocus={handleOpenAutoFocus}
     >
       <DialogTitle className="sr-only">Search</DialogTitle>
+      <DialogDescription className="sr-only">
+        Search the available content and choose a result to open it.
+      </DialogDescription>
       <div className="relative flex flex-col" onKeyDown={handleKeyDown}>
         <div className="relative">
           <SearchInput

@@ -139,13 +139,14 @@ function GlossaryStickyControls({
     };
   }, [availableLetters]);
 
+  // A clipped shadow paints the full-width divider without widening the scrollable content.
   return (
     <div
       id="glossary-sticky-controls"
       ref={stickyRef}
       className={cn(
-        "relative sticky top-[var(--sticky-header-height)] z-30 -mx-5 bg-background px-5 py-4 after:pointer-events-none after:absolute after:top-full after:left-1/2 after:w-screen after:-translate-x-1/2 after:border-b after:content-[''] md:-mx-8 md:px-8 md:py-4 xl:-mx-40 xl:px-40",
-        isStuck ? 'after:border-gray-20' : 'after:border-transparent',
+        "relative sticky top-[var(--sticky-header-height)] z-30 -mx-5 bg-background px-5 py-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-px after:bg-current after:[box-shadow:0_0_0_100vw_currentColor] after:content-[''] after:[clip-path:inset(0_-100vw)] md:-mx-8 md:px-8 md:py-4 xl:-mx-40 xl:px-40",
+        isStuck ? 'after:text-gray-20' : 'after:text-transparent',
       )}
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 2xl:gap-13">
