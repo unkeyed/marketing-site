@@ -1,5 +1,29 @@
 import { expect, test } from '@playwright/test';
 
+test('billing guide separates its SQL examples from the explanatory paragraph', async ({
+  page,
+}) => {
+  await page.goto('/blog/high-frequency-usage-billing');
+  const explanation = page.locator('.content p').filter({
+    hasText: 'Then we can write a second pipe that reads data from the materialized view.',
+  });
+  await expect(explanation).toHaveCount(1);
+  expect(await explanation.evaluate((element) => element.closest('.code-block'))).toBeNull();
+
+  for (const filename of [
+    'aggregate_verifications_monthly.pipe',
+    'endpoint_verifications_by_workspace.pipe',
+  ]) {
+    const block = page.locator('.code-block').filter({
+      has: page.locator(':scope > div:first-child', { hasText: filename }),
+    });
+    await expect(block).toHaveCount(1);
+    await expect(block.locator('pre')).toContainText('SELECT');
+    await expect(block.locator('pre')).not.toContainText('Then we can write');
+    await expect(block.locator('pre')).not.toContainText('```');
+  }
+});
+
 test('long code filenames fit a narrow article while code remains horizontally scrollable', async ({
   page,
 }) => {

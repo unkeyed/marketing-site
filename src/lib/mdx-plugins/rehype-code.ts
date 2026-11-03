@@ -6,13 +6,29 @@ import {
   transformerNotationHighlight,
   transformerNotationWordHighlight,
 } from '@shikijs/transformers';
-import type { Root } from 'hast';
+import type { Root, RootContent } from 'hast';
 import { bundledLanguages, type BuiltinTheme } from 'shiki';
 import type { Processor, Transformer } from 'unified';
+import { visit } from 'unist-util-visit';
 
 import { defaultThemes, getHighlighter } from '@/lib/shiki';
 
 type Meta = Record<string, unknown>;
+
+function getCodeText(node: Root | RootContent): string {
+  if (node.type === 'text') return node.value;
+  if (!('children' in node)) return '';
+
+  const text = node.children.map(getCodeText).join('');
+  if (node.type !== 'element') return text;
+
+  const classes = String(node.properties.class ?? node.properties.className ?? '').split(/[\s,]+/);
+  if (classes.includes('line') && classes.includes('diff')) {
+    if (classes.includes('add')) return `+ ${text}`;
+    if (classes.includes('remove')) return `- ${text}`;
+  }
+  return text;
+}
 
 function parseHighlightLines(meta: string): number[] {
   const highlights: number[] = [];
@@ -71,12 +87,18 @@ export const rehypeCodeDefaultOptions: RehypeCodeOptions = {
   parseMetaString(meta) {
     const map: Meta = {};
 
-    // Parse plain fileName and {highlights} syntax
-    let currentMeta = meta;
-    const filenameMatch = currentMeta.match(/^([^\s{]+)/);
-    if (filenameMatch) {
-      map.fileName = filenameMatch[1];
-      currentMeta = currentMeta.slice(filenameMatch[0].length).trim();
+    // Quoted captions may contain spaces and can appear before or after line highlights.
+    let currentMeta = meta.trim();
+    const titleMatch = currentMeta.match(/(?:^|\s)title=(?:"([^"]*)"|'([^']*)')(?=\s|$)/);
+    if (titleMatch) {
+      map.fileName = titleMatch[1] ?? titleMatch[2];
+      currentMeta = currentMeta.replace(titleMatch[0], ' ').trim();
+    } else {
+      const filenameMatch = currentMeta.match(/^([^\s{]+)/);
+      if (filenameMatch) {
+        map.fileName = filenameMatch[1];
+        currentMeta = currentMeta.slice(filenameMatch[0].length).trim();
+      }
     }
     const highlightMatch = currentMeta.match(/{([^}]+)}/);
     if (highlightMatch) {
@@ -125,7 +147,20 @@ export function rehypeCode(
     ..._options,
   };
 
-  const transformers = [...(options.transformers ?? [])];
+  const transformers: NonNullable<RehypeCodeOptions['transformers']> = [
+    ...(options.transformers ?? []),
+    {
+      name: 'rehype-code:copy-text',
+      root(node: Root) {
+        const pre = node.children.find(
+          (child) => child.type === 'element' && child.tagName === 'pre',
+        );
+        if (pre?.type === 'element') {
+          pre.properties['data-copy-code'] = getCodeText(node).trim();
+        }
+      },
+    },
+  ];
   transformers.unshift({
     name: 'rehype-code:pre-process',
     preprocess(code, { meta }) {
@@ -159,6 +194,11 @@ export function rehypeCode(
   );
 
   return async (tree, file) => {
+    visit(tree, 'element', (node) => {
+      if (node.tagName === 'pre') {
+        node.properties['data-copy-code'] = getCodeText(node).trim();
+      }
+    });
     await (
       await transformer
     )(tree, file, () => {

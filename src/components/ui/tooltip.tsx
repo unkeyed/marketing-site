@@ -6,8 +6,9 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { cn } from '@/lib/utils';
 
 interface ITooltipContextValue {
+  open: boolean;
   canToggleOnClick: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: (open: boolean) => void;
 }
 
 const TooltipContext = React.createContext<ITooltipContextValue | null>(null);
@@ -56,19 +57,23 @@ function Tooltip({
   const isCoarsePointer = useIsCoarsePointer();
   const [open, setOpen] = React.useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
+  const resolvedOpen = controlledOpen ?? open;
   const canToggleOnClick = isCoarsePointer && !isControlled;
 
   const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen === resolvedOpen) return;
     if (!isControlled) setOpen(nextOpen);
     controlledOnOpenChange?.(nextOpen);
   };
 
   return (
     <TooltipProvider>
-      <TooltipContext.Provider value={{ canToggleOnClick, setOpen }}>
+      <TooltipContext.Provider
+        value={{ open: resolvedOpen, canToggleOnClick, setOpen: handleOpenChange }}
+      >
         <TooltipPrimitive.Root
           data-slot="tooltip"
-          open={controlledOpen ?? open}
+          open={resolvedOpen}
           onOpenChange={handleOpenChange}
           {...props}
         />
@@ -79,21 +84,42 @@ function Tooltip({
 
 function TooltipTrigger({
   onClick,
+  onPointerDown,
+  onPointerCancel,
+  onKeyDown,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   const tooltipContext = React.useContext(TooltipContext);
+  const openAtPointerDown = React.useRef<boolean | null>(null);
 
   return (
     <TooltipPrimitive.Trigger
       data-slot="tooltip-trigger"
+      onPointerDown={(event) => {
+        onPointerDown?.(event);
+        // Touch focus and Radix pointer handlers can change state before the click arrives.
+        openAtPointerDown.current =
+          !event.defaultPrevented && tooltipContext?.canToggleOnClick ? tooltipContext.open : null;
+      }}
+      onPointerCancel={(event) => {
+        openAtPointerDown.current = null;
+        onPointerCancel?.(event);
+      }}
+      onKeyDown={(event) => {
+        openAtPointerDown.current = null;
+        onKeyDown?.(event);
+      }}
       onClick={(event) => {
         onClick?.(event);
 
         if (event.defaultPrevented || !tooltipContext?.canToggleOnClick) {
+          openAtPointerDown.current = null;
           return;
         }
 
-        tooltipContext.setOpen((current) => !current);
+        event.preventDefault();
+        tooltipContext.setOpen(!(openAtPointerDown.current ?? tooltipContext.open));
+        openAtPointerDown.current = null;
       }}
       {...props}
     />
