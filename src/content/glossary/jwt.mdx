@@ -1,106 +1,265 @@
 ---
-title: 'JWT API Development: Comprehensive Guide'
-description: Unlock JWT power for API development. Learn essentials, key takeaways with practical examples. Master JWT authentication.
-h1: 'JWT for API Development: Essentials & Examples'
+title: 'How to Use JWT: Free Tutorial'
+description: 'Learn how to use JWT in this free tutorial. Walk through token structure, signing, verification, step-by-step usage, and common mistakes.'
+h1: 'How to Use JWT'
 term: JWT
 categories: []
 takeaways:
-  tldr: JWT (JSON Web Tokens) are a secure and compact way of transmitting information between parties as a JSON object. They are widely used for authentication and authorization in APIs.
-  didYouKnow: JWTs are pronounced 'jot', which is a play on the English word 'jot', meaning to write something quickly.
+  tldr: A JSON Web Token (JWT) is a compact string made of a header, a payload, and a signature. Sign it on the server, send it over HTTPS, and verify the signature and claims before trusting it.
+  didYouKnow: JWT is pronounced "jot". The header and payload are only base64url encoded. They are not encrypted, so anyone who can read the token can read the claims.
   usageInAPIs:
     tags:
       - Authentication
       - Authorization
-      - Data Transmission
-    description: JWTs are used for securely transmitting information between parties as a JSON object. This is particularly useful in API authentication and authorization scenarios. They are also used for stateless session management in APIs.
+      - Bearer tokens
+    description: APIs use a JWT as a bearer credential. The issuer signs claims such as the subject and expiry. The client repeats that token on later requests, and the API verifies it without storing a session.
   bestPractices:
-    - Always send JWTs over HTTPS to prevent interception by malicious parties.
-    - Use short-lived JWTs to minimize the window of opportunity for attackers.
-    - Ensure JWTs are properly signed and encrypted to maintain data integrity and confidentiality.
+    - Send tokens only over HTTPS.
+    - Pin the signing algorithm and reject none.
+    - Set a short exp and check it on every request.
+    - Keep HMAC secrets and private keys on the server.
+    - Leave passwords and other secrets out of the payload.
   historicalContext:
     - key: Introduced
-      value: '2010'
+      value: '2015'
     - key: Origin
-      value: Web Services (JWT)
+      value: RFC 7519
     - key: Evolution
-      value: Standardized JWT
+      value: RFC 8725
   recommendedReading:
-    - url: https://datatracker.ietf.org/doc/html/rfc7519
+    - url: https://www.rfc-editor.org/rfc/rfc7519
       title: RFC 7519 - JSON Web Token (JWT)
+    - url: https://www.rfc-editor.org/rfc/rfc8725
+      title: RFC 8725 - JSON Web Token Best Current Practices
     - url: https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html
-      title: OWASP - JSON Web Token for Java Cheat Sheet
-    - url: https://en.wikipedia.org/wiki/JSON_Web_Token
-      title: Wikipedia - JSON Web Token
+      title: OWASP JSON Web Token Cheat Sheet
   definitionAndStructure:
-    - key: Definition
-      value: Secure JSON Object
-    - key: Structure
-      value: Header, Payload, Signature
-    - key: Claims
-      value: User Info, Permissions
+    - key: Header
+      value: alg, typ
+    - key: Payload
+      value: sub, exp, iss, aud
+    - key: Signature
+      value: HMAC, RSA, ECDSA
 faq:
-  - question: Is JWT good for API authentication?
-    answer: Yes, JWT (JSON Web Tokens) is an effective method for API authentication. JWT provides user-based authentication, meaning once a user is authenticated, they receive a secure token that can be used across multiple systems. This token-based approach simplifies the authentication process, as the token can be easily validated and does not require the server to maintain a session or repeatedly access a database. Moreover, JWTs are self-contained, carrying all the necessary user information, which makes them highly scalable and suitable for distributed systems.
-  - question: How to use JWT in API?
-    answer: 'To use JWT in API, follow these steps: 1. Generate a secret key. This key is used to sign the JWT, ensuring its integrity and authenticity. 2. Create a JWT using the secret key and the necessary payload, which typically includes user information and token expiration time. 3. Send the JWT to the client after successful authentication. 4. The client includes the JWT in the Authorization header of subsequent requests. 5. The server reads the JWT from the request header, decodes it, verifies the signature using the secret key, and if valid, processes the request. 6. If the JWT is expired or signature is invalid, the server responds with an appropriate error message.'
-  - question: What does JWT mean in API?
-    answer: JWT stands for JSON Web Token. In the context of APIs, JWT is a method for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed, typically using a secret key known only to the sender and receiver. JWTs are often used in API authentication and authorization workflows to ensure the client making the request is who they claim to be.
-  - question: What is JWT in regard to rest API?
-    answer: In the context of a REST API, JWT is a standard for token-based authentication. It provides a simple, secure, and scalable way to authenticate and authorize clients. JWTs are self-contained, meaning they carry all necessary information about the user, eliminating the need for the server to maintain a session or repeatedly access a database. This makes JWT particularly useful for stateless REST APIs, where each request is independent and must contain all information necessary to be understood by the server.
-updatedAt: 2025-06-16T14:36:41.000Z
+  - question: How do you use a JWT?
+    answer: Authenticate the caller, sign a small set of claims with a server-side key, and return the token. The client sends that token on later requests, usually in the Authorization header as a Bearer token. The API verifies the signature and checks exp, iss, and aud before it trusts the subject.
+  - question: What are the three parts of a JWT?
+    answer: A header, a payload, and a signature, joined by periods. The header names the signing algorithm. The payload holds the claims. The signature covers the first two parts so the recipient can detect changes.
+  - question: Is a JWT encrypted?
+    answer: No. A typical JWT is signed, not encrypted. Base64url encoding hides nothing. Anyone who obtains the token can read the claims. Use HTTPS in transit, and keep secrets out of the payload.
+  - question: How do you verify a JWT?
+    answer: Split the token into three segments, recompute the signature with the algorithm and key you expect, and compare it in constant time. Then check the expiration, not-before time, issuer, and audience. Reject the token if any check fails.
+  - question: What is a common JWT mistake?
+    answer: Trusting the alg header, or decoding the payload without checking the signature. Pin the algorithm in server code, reject none, and treat the claims as untrusted until verification succeeds.
+updatedAt: 2026-11-01T00:00:00.000Z
 slug: jwt
 ---
 
-**JSON Web Token (JWT)** is a compact, URL-safe means of representing claims to be transferred between two parties. It allows you to verify the token's authenticity and the user's identity, making it a crucial component in **JWT authentication examples** for modern web development and REST APIs.
+A JSON Web Token (JWT) is a compact, URL-safe way to carry claims between two parties. This free tutorial shows how to use a JWT for API authentication: how the three parts fit together, how to sign a token, how to verify it, and the mistakes that make tokens easy to forge.
 
-## Understanding JWT: The Basics of JSON Web Tokens
+The examples use HMAC-SHA256 (`HS256`) and Node's built-in `crypto` module so you can learn JWT without a framework. A production service should call a maintained JWT library, then apply the same checks shown here.
 
-JWTs are an open standard (RFC 7519) that define a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA, making them versatile for various **API development** scenarios.
+## Token structure
 
-## Decoding the Structure of a JWT
+A JWT is three base64url segments separated by periods: header, payload, and signature. Base64url is encoding, not encryption. Anyone who has the token can read the header and the payload. The signature is what makes those claims trustworthy.
 
-A JWT is composed of three parts: **Header**, **Payload**, and **Signature**. The header typically consists of two parts: the type of the token (JWT) and the signing algorithm being used, such as HMAC SHA256 or RSA. The payload contains the claims, which are statements about an entity (typically, the user) and additional data. The signature is used to verify that the sender of the JWT is who it claims to be and to ensure that the message wasn't altered during transmission.
+**Header.** Names the media type and the signing algorithm.
 
-## Exploring Claims in JWT: Types and Importance
-
-Claims within a JWT are attributes of the subject, which could be the user or the entity being described by the token. There are three types of claims: registered, public, and private claims. Registered claims are predefined in the JWT standard and include `iss` (issuer), `exp` (expiration time), `sub` (subject), and `aud` (audience). Public claims can be defined at will by those using JWTs, while private claims are used to share information between parties that agree on using them.
-
-## How JWT Works: A Step-by-Step Guide
-
-1. **Authentication**: The user logs in with their credentials.
-2. **Token Creation**: Upon successful authentication, the server creates a JWT with a secret key and sends it to the client.
-3. **Transmission**: The client stores this token and sends it along with every subsequent request to the server.
-4. **Verification**: The server verifies the token using the secret key and grants or denies access based on its validity.
-
-This process is essential for implementing **JWT for API development** and is often demonstrated in **JWT authentication examples**.
-
-## Encoding and Decoding JWT: Practical Examples
-
-Here’s a simple **JWT token example** using TypeScript:
-
-```typescript
-import jwt from 'jsonwebtoken';
-
-// Encoding a JWT
-const token = jwt.sign({ userId: 12345 }, 'your-256-bit-secret', { expiresIn: '1h' });
-
-// Decoding a JWT
-try {
-  const decoded = jwt.verify(token, 'your-256-bit-secret');
-  console.log(decoded);
-} catch (e) {
-  console.error('Token verification failed:', e);
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
 }
 ```
 
-This code snippet illustrates how to encode and decode a JWT, which is a fundamental skill for any developer working with **JWT for API development**.
+`HS256` means HMAC-SHA256 with a shared secret. `RS256` and `ES256` use a private key to sign and a public key to verify. Choose the algorithm in server code. Do not read `alg` from an untrusted token and then follow it.
 
-## Validating and Verifying JWT: Ensuring Security
+**Payload.** A JSON object of claims. Registered names stay short so the token stays small:
 
-Validating a JWT involves checking the token's structure and verifying its signature. The signature ensures that the token has not been altered after it was issued. It is crucial to ensure the token is valid before any sensitive action or information is accessed. This process helps prevent security issues such as token tampering and replay attacks, which are critical considerations in **JWT authentication examples**.
+- `iss` is the issuer.
+- `sub` is the subject, usually a stable user or client id.
+- `aud` is the audience this token was issued for.
+- `exp` is the expiration time, in seconds since the Unix epoch.
+- `nbf` is the time before which the token is not valid.
+- `iat` is the time the token was issued.
+- `jti` is a unique id for this token.
 
-## Conclusion
+```json
+{
+  "iss": "https://api.example.com",
+  "sub": "user_123",
+  "aud": "https://api.example.com",
+  "iat": 1730000000,
+  "exp": 1730000900
+}
+```
 
-Understanding JWT is essential for any API developer looking to implement secure authentication and information exchange. Whether you're looking for a **JWT for API development tutorial**, **JWT for API development GitHub** resources, or preparing for **JWT for API development interview questions**, mastering JWT will enhance your skills in building robust applications.
+Put only what the recipient needs. The token is sent on every request, and its contents are readable.
 
-By leveraging JWT effectively, you can ensure secure and efficient communication between clients and servers in your applications.
+**Signature.** Covers the encoded header, a period, and the encoded payload. For `HS256`, the server computes HMAC-SHA256 with its secret and appends the base64url digest. If either earlier segment changes, verification fails.
+
+## Signing a JWT
+
+Signing creates the token. Use a secret with at least 256 bits of randomness for `HS256`, and keep that secret on the server. `JWT_SECRET` in this example must be set in the environment. Do not commit a real secret.
+
+```javascript
+import { createHmac } from 'node:crypto';
+
+const secret = process.env.JWT_SECRET;
+
+function base64url(value) {
+  return Buffer.from(value).toString('base64url');
+}
+
+function signJwt(payload) {
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set');
+  }
+
+  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const body = base64url(JSON.stringify(payload));
+  const data = `${header}.${body}`;
+  const signature = createHmac('sha256', secret).update(data).digest('base64url');
+
+  return `${data}.${signature}`;
+}
+
+const now = Math.floor(Date.now() / 1000);
+
+const token = signJwt({
+  iss: 'https://api.example.com',
+  sub: 'user_123',
+  aud: 'https://api.example.com',
+  iat: now,
+  exp: now + 15 * 60,
+});
+```
+
+Fifteen minutes is a reasonable access-token lifetime when you cannot revoke the token early. The return value is the encoded header, the encoded payload, and the signature, joined by periods.
+
+## Verifying a JWT
+
+Verification is the step that makes a token safe to trust. Recompute the signature with the key and algorithm you expect, compare it, and only then read the claims.
+
+```javascript
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
+const secret = process.env.JWT_SECRET;
+
+function verifyJwt(token, expected) {
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set');
+  }
+
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error('Malformed token');
+  }
+
+  const [headerPart, bodyPart, signature] = parts;
+  const data = `${headerPart}.${bodyPart}`;
+  const expectedSignature = createHmac('sha256', secret).update(data).digest('base64url');
+  const actualBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expectedSignature);
+
+  if (
+    actualBuffer.length !== expectedBuffer.length ||
+    !timingSafeEqual(actualBuffer, expectedBuffer)
+  ) {
+    throw new Error('Invalid signature');
+  }
+
+  const header = JSON.parse(Buffer.from(headerPart, 'base64url').toString('utf8'));
+  if (header.alg !== 'HS256') {
+    throw new Error('Unexpected algorithm');
+  }
+
+  const payload = JSON.parse(Buffer.from(bodyPart, 'base64url').toString('utf8'));
+  const now = Math.floor(Date.now() / 1000);
+
+  if (typeof payload.exp !== 'number' || now >= payload.exp) {
+    throw new Error('Token expired');
+  }
+
+  if (typeof payload.nbf === 'number' && now < payload.nbf) {
+    throw new Error('Token is not active yet');
+  }
+
+  if (payload.iss !== expected.issuer || payload.aud !== expected.audience) {
+    throw new Error('Unexpected issuer or audience');
+  }
+
+  return payload;
+}
+```
+
+This example expects `aud` to be a string. The spec also allows an array of audiences. Accept the token only when your service is one of those values.
+
+`timingSafeEqual` throws when the buffer lengths differ, so compare the lengths first. A normal string comparison can leak information through timing.
+
+Call it with the issuer and audience you intended when you signed the token:
+
+```javascript
+const claims = verifyJwt(token, {
+  issuer: 'https://api.example.com',
+  audience: 'https://api.example.com',
+});
+```
+
+`claims.sub` is the caller. Use it only after `verifyJwt` returns.
+
+## How to use a JWT
+
+1. The client authenticates over HTTPS, for example with a password or another factor.
+2. The issuer builds a small set of claims, including `sub`, `iss`, `aud`, `iat`, and a short `exp`.
+3. The issuer signs those claims. Use a shared secret for `HS256` when the same service signs and verifies. Use a private key for `RS256` or `ES256` when many services verify and only the issuer should create tokens.
+4. The issuer returns the token.
+5. The client sends it on later requests in the `Authorization` header.
+6. The API verifies the signature with the pinned algorithm, then checks `exp`, `nbf`, `iss`, and `aud`.
+7. Only after those checks pass does the API treat `sub` as the caller.
+8. When the token expires, the client authenticates again, or exchanges a separate refresh credential for a new access token.
+
+```http
+POST /login HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+
+{
+  "email": "ada@example.com",
+  "password": "correct-horse-battery-staple"
+}
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyJ9.signature"
+}
+```
+
+```http
+GET /orders HTTP/1.1
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyJ9.signature
+```
+
+The password above is a placeholder. Send it only on the login request, over TLS, and do not copy it into the token.
+
+In a browser, keep the token in memory, or send it in a cookie marked `HttpOnly`, `Secure`, and `SameSite`. `localStorage` is readable by any script on the page, so one cross-site scripting bug leaks every token stored there.
+
+A signed JWT stays valid until `exp`. There is no logout switch inside the signature. Keep access tokens short, often a few minutes. If you must revoke one token early, give it a `jti` and keep a revocation list that every verifier checks.
+
+## Common mistakes
+
+- Treating the payload as private. Base64url is reversible. JSON Web Encryption (JWE) is a separate standard for hiding claims. Signing does not hide them.
+- Decoding the middle segment and skipping the signature. Anyone can write the header and payload.
+- Trusting the `alg` header. Pin `HS256`, `RS256`, or `ES256` in server code, and reject `none` and every other value.
+- Accepting a different algorithm than the one you sign with. If you issue RS256 tokens, reject HS256. A caller can otherwise switch the header to HS256 and sign with the public key, which verifiers already hold.
+- Omitting `exp`, or setting it days away on a token you cannot revoke.
+- Skipping `iss` and `aud` when more than one service accepts tokens from the same issuer.
+- Putting passwords, API secrets, or large objects in the payload.
+- Committing the HMAC secret or the private key, or shipping the secret to the client.
+- Comparing signatures with ordinary string equality.
+- Sending the token over plain HTTP, where anything on the path can copy a bearer credential.
