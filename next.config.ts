@@ -260,6 +260,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/glossary/api-load-balancing.md',
+        destination: '/glossary/load-balancing.md',
+        permanent: true,
+      },
+      {
         source: '/blog/using-auth',
         destination: '/blog/using-unkey-with-auth',
         permanent: true,

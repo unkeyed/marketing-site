@@ -2,8 +2,8 @@
 title: 'Backend For Frontend: Comprehensive Guide'
 description: Unlock Backend For Frontend (BFF) potential. Learn essentials, key takeaways from real-world implementations. Explore BFF vs API Gateway.
 seo:
-  title: 'Backend for Frontend (BFF) Pattern Explained'
-  description: 'What a BFF layer is, how the backend for frontend pattern works, and when it is worth adding one.'
+  title: 'What a BFF (Backend for Frontend) Is'
+  description: 'What a BFF layer is, when teams add one, and how it sits in front of your APIs.'
 h1: 'Backend For Frontend: Advantages & Challenges'
 term: Backend For Frontend
 categories: []
@@ -86,6 +86,8 @@ Implementing a **Backend For Frontend architecture** can introduce complexity in
 | Client Customization | High (individual per client type)        | Low (common for all clients)       | Medium (based on service needs)       |
 | Complexity           | High (due to multiple BFFs)              | Medium (centralized management)    | High (complex data handling)          |
 | Use Case             | Client-specific features and performance | General API management and routing | Composite data from multiple sources  |
+
+An API gateway in that comparison is a shared front door for many services. A [load balancer](/glossary/load-balancing) is a different layer: it spreads requests across copies of one service, often in front of the gateway or between the gateway and those copies.
 
 ## Real-World Examples of BFF Implementations
 

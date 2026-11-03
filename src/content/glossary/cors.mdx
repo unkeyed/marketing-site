@@ -55,6 +55,8 @@ slug: cors
 
 CORS is a browser mechanism that relaxes the same-origin policy, governing how web applications from one origin (domain) can interact with resources from another origin. While its configuration affects security, CORS itself does not provide protection. This glossary entry delves into the essentials of CORS, its mechanisms, implementation strategies, and how to handle CORS errors, particularly in environments like AWS API Gateway.
 
+A reverse proxy is a separate mechanism. During local development, a reverse proxy can make the browser treat the API as the same origin. In production, a [load balancer](/glossary/load-balancing) is a reverse proxy that forwards each request to one of several servers. It does not disable CORS.
+
 ## Understanding CORS in API Development
 
 CORS is crucial in **API development** because it enables controlled cross-origin requests and data sharing between web applications and servers. Modern web applications often retrieve data from various sources that may not share the same origin. CORS allows server administrators to define who can access their resources and under what conditions, effectively preventing malicious interactions between sites.

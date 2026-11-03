@@ -61,7 +61,7 @@ slug: zero-downtime-api-deployment
 
 ## Effective Strategies for Zero-Downtime Deployment
 
-1. **Blue-Green Deployment**: This strategy involves deploying the new version of the API alongside the old version. After thorough testing, traffic is routed to the new version, ensuring a smooth transition without downtime.
+1. **Blue-Green Deployment**: This strategy involves deploying the new version of the API alongside the old version. After thorough testing, a [load balancer](/glossary/load-balancing) shifts traffic to the new version, so users stay on a live API during the switch.
 2. **Canary Releases**: Gradually rolling out changes to a small subset of users before a full rollout allows developers to monitor the impact and address any issues early on. This is a key aspect of **canary deployment**.
 
 3. **Rolling Updates**: By updating instances incrementally rather than all at once, this strategy minimizes the risk of downtime and ensures that the API remains available throughout the deployment process.

@@ -73,7 +73,7 @@ Teams pick containerization when a virtual machine is too much machine for one s
 
 |                     | Container                             | Virtual machine                  |
 | ------------------- | ------------------------------------- | -------------------------------- |
-| Isolation           | Processes on a shared kernel          | A guest kernel and a full OS    |
+| Isolation           | Processes on a shared kernel          | A guest kernel and a full OS     |
 | What you copy       | An image of the app and its libraries | A disk image that includes an OS |
 | Startup             | Usually under a few seconds           | Often tens of seconds or longer  |
 | Density on one host | Many                                  | Fewer                            |
@@ -108,7 +108,7 @@ Containerization is the packaging. Orchestration is the scheduling. You can cont
 
 ## Containerization for APIs
 
-An API fits this model because the thing you want to reproduce is specific: this process, these libraries, this port. The image that passed CI is the image production runs. You scale by starting more copies. That stays simple when the process keeps state in a database or another service, not on the container's own disk.
+An API fits this model because the thing you want to reproduce is specific: this process, these libraries, this port. The image that passed CI is the image production runs. You scale by starting more copies, and a [load balancer](/glossary/load-balancing) sends each request to one of them. That stays simple when the process keeps state in a database or another service, not on the container's own disk.
 
 [Unkey Compute](https://www.unkey.com/docs/compute/get-started/deploy-an-image) runs that kind of API from a GitHub repository or from an image you already built. The process stays up and listens on a port. A gateway in front of it can check keys and apply rate limits. That is separate from how the container is built.
 
