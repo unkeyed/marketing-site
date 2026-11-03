@@ -13,7 +13,7 @@ test('TC-E2E-008: blog search opens a matching article', async ({ page }) => {
   await expect(result).toBeVisible();
   await page.getByRole('textbox', { name: 'What are you searching for?' }).press('Enter');
 
-  await expect(page).toHaveURL(/\/blog\/ratelimiting-public$/);
+  await page.waitForURL(/\/blog\/ratelimiting-public$/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'How to ratelimit public pages' }),
   ).toBeVisible();
@@ -31,7 +31,7 @@ test('TC-E2E-009: glossary search opens a matching term', async ({ page }) => {
   await expect(result).toBeVisible();
   await result.click();
 
-  await expect(page).toHaveURL(/\/glossary\/webhook$/);
+  await page.waitForURL(/\/glossary\/webhook$/);
   await expect(page.getByRole('heading', { level: 1, name: /Webhook/ })).toBeVisible();
   expect(browserErrors).toEqual([]);
 });
@@ -64,7 +64,7 @@ test('search keyboard navigation keeps the first and last results visible', asyn
   await expect(results.first()).toBeInViewport({ ratio: 1 });
   const destination = await results.first().getAttribute('href');
   await input.press('Enter');
-  await expect(page).toHaveURL((url) => url.pathname === destination);
+  await page.waitForURL((url) => url.pathname === destination);
   expect(browserErrors).toEqual([]);
 });
 

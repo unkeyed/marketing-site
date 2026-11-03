@@ -11,13 +11,17 @@ const footerDestinations = [
   { label: 'Privacy Policy', path: '/policies/privacy' },
 ];
 
-test('footer navigation preserves the page heading spacing below the sticky header', async ({
-  page,
-}) => {
-  for (const destination of footerDestinations) {
+for (const destination of footerDestinations) {
+  test(`footer ${destination.label} link preserves heading spacing below the sticky header`, async ({
+    page,
+  }) => {
     await page.goto(destination.path);
+    await page.getByTestId('consent-banner-root').waitFor();
+    await page.getByRole('button', { name: 'Reject All', exact: true }).click();
+    await page.evaluate(() => document.fonts.ready);
     const heading = page.getByRole('heading', { level: 1 });
     await expect(heading).toBeVisible();
+    const expectedHeading = await heading.innerText();
     const expectedTop = (await heading.boundingBox())!.y;
 
     await page.goto('/');
@@ -25,13 +29,15 @@ test('footer navigation preserves the page heading spacing below the sticky head
       .getByRole('contentinfo')
       .getByRole('link', { name: destination.label, exact: true })
       .click();
-    await expect(page).toHaveURL(destination.path);
+    await page.waitForURL(destination.path);
+    await expect(heading).toHaveText(expectedHeading);
+    await page.evaluate(() => document.fonts.ready);
     await expect(heading).toBeVisible();
     await expect
       .poll(async () => Math.abs((await heading.boundingBox())!.y - expectedTop))
       .toBeLessThan(1);
-  }
-});
+  });
+}
 
 test('a footer link to the current page returns to the top', async ({ page }) => {
   await page.goto('/about');

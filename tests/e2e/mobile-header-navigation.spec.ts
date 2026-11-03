@@ -15,36 +15,39 @@ async function navigateFromMobileHeader(page: Page, destination: (typeof destina
     await header.getByRole('button', { name: 'Resources', exact: true }).click();
   }
   await header.locator(`a[href="${destination.path}"]:visible`).click();
-  await expect(page).toHaveURL(destination.path);
+  await page.waitForURL(destination.path);
   await expect(header.getByRole('button', { name: 'Open menu' })).toBeVisible();
   await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('');
 }
 
-test('mobile header navigation preserves heading spacing below the sticky header', async ({
-  page,
-  isMobile,
-}) => {
-  test.skip(!isMobile, 'The desktop header uses its own navigation.');
-  await page.goto('/about');
-  await page.getByTestId('consent-banner-root').waitFor();
-  await page.getByRole('button', { name: 'Reject All', exact: true }).click();
+for (const destination of destinations) {
+  test(`mobile header ${destination.label} link preserves heading spacing below the sticky header`, async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'The desktop header uses its own navigation.');
+    await page.goto('/about');
+    await page.getByTestId('consent-banner-root').waitFor();
+    await page.getByRole('button', { name: 'Reject All', exact: true }).click();
 
-  for (const destination of destinations) {
     await page.goto(destination.path);
     await page.evaluate(() => document.fonts.ready);
     const heading = page.getByRole('heading', { level: 1 });
     await expect(heading).toBeVisible();
+    const expectedHeading = await heading.innerText();
     const expectedTop = (await heading.boundingBox())!.y;
 
     await page.goto('/about');
     await page.locator('#page-scroll').evaluate((element) => (element.scrollTop = 500));
     await navigateFromMobileHeader(page, destination);
+    await expect(heading).toHaveText(expectedHeading);
+    await page.evaluate(() => document.fonts.ready);
 
     await expect
       .poll(async () => Math.abs((await heading.boundingBox())!.y - expectedTop))
       .toBeLessThan(1);
-  }
-});
+  });
+}
 
 test('mobile header links to the current page close the menu and return to the top', async ({
   page,

@@ -14,33 +14,36 @@ async function navigateFromDesktopHeader(page: Page, destination: (typeof destin
     await nav.getByRole('button', { name: 'Resources', exact: true }).hover();
   }
   await nav.getByRole('link', { name: new RegExp(`^${destination.label}`) }).click();
-  await expect(page).toHaveURL(destination.path);
+  await page.waitForURL(destination.path);
 }
 
-test('desktop header navigation preserves heading spacing below the sticky header', async ({
-  page,
-  isMobile,
-}) => {
-  test.skip(isMobile, 'The mobile header has separate navigation coverage.');
-  await page.goto('/about');
-  await page.getByTestId('consent-banner-root').waitFor();
-  await page.getByRole('button', { name: 'Reject All', exact: true }).click();
+for (const destination of destinations) {
+  test(`desktop header ${destination.label} link preserves heading spacing below the sticky header`, async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, 'The mobile header has separate navigation coverage.');
+    await page.goto('/about');
+    await page.getByTestId('consent-banner-root').waitFor();
+    await page.getByRole('button', { name: 'Reject All', exact: true }).click();
 
-  for (const destination of destinations) {
     await page.goto(destination.path);
     await page.evaluate(() => document.fonts.ready);
     const heading = page.getByRole('heading', { level: 1 });
+    const expectedHeading = await heading.innerText();
     const expectedTop = (await heading.boundingBox())!.y;
 
     await page.goto('/about');
     await page.locator('#page-scroll').evaluate((element) => (element.scrollTop = 500));
     await navigateFromDesktopHeader(page, destination);
+    await expect(heading).toHaveText(expectedHeading);
+    await page.evaluate(() => document.fonts.ready);
 
     await expect
       .poll(async () => Math.abs((await heading.boundingBox())!.y - expectedTop))
       .toBeLessThan(1);
-  }
-});
+  });
+}
 
 test('desktop header links to the current page return to the top', async ({ page, isMobile }) => {
   test.skip(isMobile, 'The mobile header has separate navigation coverage.');
