@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
 
 import { IFooterMenuSection } from '@/types/common';
-import { pageScrollTo } from '@/lib/page-scroll';
 import { cn, isExternalLink } from '@/lib/utils';
+import { useNavigationScrollReset } from '@/hooks/use-navigation-scroll-reset';
 
 interface IFooterNavProps {
   className?: string;
@@ -15,16 +13,7 @@ interface IFooterNavProps {
 }
 
 function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNavProps) {
-  const pathname = usePathname();
-  const pendingDestination = useRef<string | null>(null);
-
-  // Next.js resets the document scroll, but this layout scrolls inside #page-scroll.
-  useEffect(() => {
-    if (pendingDestination.current === pathname) {
-      pageScrollTo({ top: 0, behavior: 'instant' });
-    }
-    pendingDestination.current = null;
-  }, [pathname]);
+  const navigationScrollProps = useNavigationScrollReset();
 
   return (
     <nav
@@ -42,25 +31,13 @@ function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNa
           <ul className="flex flex-col gap-y-3 text-[0.9375rem] leading-snug font-medium tracking-tight text-gray-60">
             {section.items.map((item) => {
               const isExternal = isExternalLink(item.href);
-              const shouldResetScroll = !isExternal && !item.href.includes('#');
 
               return (
                 <li key={item.label}>
                   <NextLink
                     className="transition-colors duration-200 hover:text-white"
                     href={item.href}
-                    scroll={shouldResetScroll ? false : undefined}
-                    onNavigate={
-                      shouldResetScroll
-                        ? () => {
-                            if (pathname === item.href) {
-                              pageScrollTo({ top: 0, behavior: 'instant' });
-                            } else {
-                              pendingDestination.current = item.href;
-                            }
-                          }
-                        : undefined
-                    }
+                    {...navigationScrollProps(item.href)}
                     prefetch={isExternal ? false : undefined}
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
