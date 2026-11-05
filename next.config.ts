@@ -269,6 +269,11 @@ const nextConfig: NextConfig = {
         destination: '/blog/using-unkey-with-auth',
         permanent: true,
       },
+      {
+        source: '/blog/replacing-serverless-with-a-vps',
+        destination: '/blog/serverless-exit',
+        statusCode: 301,
+      },
     ];
   },
 };
