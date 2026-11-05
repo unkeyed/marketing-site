@@ -330,7 +330,8 @@ module.exports = {
   siteUrl: process.env.NEXT_PUBLIC_DEFAULT_SITE_URL || 'https://www.unkey.com',
   generateRobotsTxt: true,
   // Route handlers back the `.md` twins via rewrites; they are not pages to index.
-  exclude: ['/api/*', '/hero-variant/*'],
+  // The retired slug 301s to /blog/serverless-exit and must not be listed.
+  exclude: ['/api/*', '/hero-variant/*', '/blog/replacing-serverless-with-a-vps'],
   additionalPaths: async (config) => [await config.transform(config, '/')],
   robotsTxtOptions: {
     // next-sitemap writes one User-agent block per policy object. A single `*`
