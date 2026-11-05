@@ -111,7 +111,7 @@ function buildApiManagementTable(): string {
 
   const free = apiManagementPricingPlans.find((p) => p.id === 'free');
   if (free) {
-    rows.push([free.name, formatPrice(free), '150K', '1k', '1 day', '3 days']);
+    rows.push([free.name, formatPrice(free), '150K', '1k', '7 days', '30 days']);
   }
 
   const pro = apiManagementPricingPlans.find((p) => p.id === 'pro');
@@ -125,8 +125,8 @@ function buildApiManagementTable(): string {
         `${formatUsd(tier.monthlyPrice)}/mo`,
         requests,
         '1M',
-        '7 days',
-        '14 days',
+        '90 days',
+        '90 days',
       ]);
     }
   }
