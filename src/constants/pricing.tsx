@@ -291,11 +291,11 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: '1-day logs retention',
+          label: '7-day logs retention',
           lucideIcon: 'check',
         },
         {
-          label: '3-day audit log retention',
+          label: '30-day audit log retention',
           lucideIcon: 'check',
         },
         {
@@ -385,11 +385,11 @@ export const apiManagementPricingPlans: IPricingPlan[] = [
           lucideIcon: 'check',
         },
         {
-          label: '7-day logs retention',
+          label: '90-day logs retention',
           lucideIcon: 'check',
         },
         {
-          label: '14-day audit log retention',
+          label: '90-day audit log retention',
           lucideIcon: 'check',
         },
         {
