@@ -23,6 +23,7 @@
   },
   "packageManager": "pnpm@11.1.2",
   "dependencies": {
+    "@databuddy/sdk": "3.3.0",
     "@hookform/resolvers": "5.2.2",
     "@number-flow/react": "0.6.0",
     "@radix-ui/react-accordion": "1.2.12",
