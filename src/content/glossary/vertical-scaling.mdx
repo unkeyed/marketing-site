@@ -1,7 +1,7 @@
 ---
-title: "Vertical Scaling: Essential Guide"
+title: 'Vertical Scaling: Essential Guide'
 description: Master vertical scaling concepts with expert insights. Learn key differences between vertical and horizontal scaling in cloud computing. Start now
-h1: "Vertical Scaling: Key Concepts & Best Practices"
+h1: 'Vertical Scaling: Key Concepts & Best Practices'
 term: vertical scaling
 categories: []
 takeaways:
@@ -18,20 +18,20 @@ takeaways:
     - Plan for Downtime
     - Evaluate Workload Characteristics
   historicalContext:
-    - key: "Introduced:"
+    - key: 'Introduced:'
       value: Early 1990s
-    - key: "Origin:"
+    - key: 'Origin:'
       value: Database Systems (vertical scaling)
-    - key: "Evolution:"
+    - key: 'Evolution:'
       value: Standardized vertical scaling
   recommendedReading:
-    - url: ""
+    - url: ''
       title: Vertical Scaling vs Horizontal Scaling
-    - url: ""
+    - url: ''
       title: Scaling Up vs Scaling Out
-    - url: ""
+    - url: ''
       title: Understanding Vertical Scaling
-    - url: ""
+    - url: ''
       title: Vertical Scaling in Cloud Environments
   definitionAndStructure:
     - key: Scaling Up
@@ -68,21 +68,24 @@ The mechanics of vertical scaling involve increasing the physical or virtual res
 ## Balancing the Pros and Cons of Vertical Scaling
 
 ### Pros:
+
 - **Simplicity**: Easier to implement as it does not require changes to the application architecture.
 - **Immediate Impact**: Enhances performance immediately without the complexities of distributing the workload across multiple servers.
 
 ### Cons:
+
 - **Limitations**: There's a physical or virtual limit to how much you can scale up a machine.
 - **Downtime**: Upgrading hardware might require downtime if not managed in a live-upgrade-compatible cloud environment.
 - **Cost Efficiency**: Beyond a certain point, it becomes more cost-effective to scale horizontally.
 
 ## Vertical Scaling vs Horizontal Scaling: A Comparative Analysis
 
-When considering **vertical scaling vs horizontal scaling**, it's important to note that vertical scaling involves adding more power to an existing machine, while horizontal scaling involves adding more machines to handle increased load. Horizontal scaling is generally more flexible and can handle failures more gracefully by distributing the load and redundancy across many machines. However, it requires the application to operate in a distributed environment, which can add complexity and overhead.
+When considering **vertical scaling vs horizontal scaling**, it's important to note that vertical scaling involves adding more power to an existing machine, while horizontal scaling involves adding more machines to handle increased load. Those extra machines share traffic through [load balancing](/glossary/load-balancing). Horizontal scaling is generally more flexible and can handle failures more gracefully by distributing the load and redundancy across many machines. However, it requires the application to operate in a distributed environment, which can add complexity and overhead.
 
 ## Practical Use Cases for Vertical Scaling
 
 Vertical scaling is ideal for applications with:
+
 - **Monolithic architectures** where application components are tightly coupled and cannot be easily distributed.
 - **Database servers** where horizontal scaling might introduce complexity in data consistency and synchronization.
 - **Legacy systems** that are difficult or costly to refactor for horizontal scaling.

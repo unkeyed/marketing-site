@@ -119,6 +119,8 @@ slug: api-caching
 
 API caching is a crucial technique for API developers aiming to enhance the performance and scalability of their applications. By temporarily storing copies of API responses, caching reduces the number of calls made to the actual API server. This not only decreases latency but also alleviates server load, which is essential for improving user experience and efficiently handling high traffic.
 
+Caching and [load balancing](/glossary/load-balancing) are different. A cache stores a response so the origin does less work. A load balancer chooses which server handles the request.
+
 ## Understanding API Caching Concepts
 
 API caching involves storing the output of requests and reusing it for subsequent requests. Effective caching strategies can significantly speed up response times and reduce the processing burden on API servers. Here are some common **API caching strategies**:

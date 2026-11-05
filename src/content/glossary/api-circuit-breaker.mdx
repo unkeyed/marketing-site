@@ -95,7 +95,7 @@ This example demonstrates how to use the resilience4j circuit breaker in a Sprin
 
 ## Integrating Circuit Breakers with API Gateways
 
-Integrating circuit breakers at the API Gateway level allows for centralized management of circuit breaking policies, which is particularly beneficial in microservices architectures. This setup protects downstream services by preventing requests to unhealthy services. API Gateways like Kong, AWS API Gateway, or Azure API Management can be configured to include circuit breaker capabilities, ensuring uniform application of these policies across all managed APIs.
+Integrating circuit breakers at the API Gateway level allows for centralized management of circuit breaking policies, which is particularly beneficial in microservices architectures. This setup protects downstream services by preventing requests to unhealthy services. A [load balancer](/glossary/load-balancing) does a narrower version of that job: it stops sending new requests to an instance that fails a health check. API Gateways like Kong, AWS API Gateway, or Azure API Management can be configured to include circuit breaker capabilities, ensuring uniform application of these policies across all managed APIs.
 
 ## Rate Limiting with Spring Cloud API Gateway
 
