@@ -1,0 +1,120 @@
+---
+title: 'What Autoscaling Is'
+description: 'How a system adds or removes capacity on its own as traffic changes.'
+seo:
+  title: 'What Autoscaling Is'
+  description: 'How a system adds or removes capacity on its own as traffic changes.'
+h1: 'What Autoscaling Is'
+term: Autoscaling
+categories: []
+takeaways:
+  tldr: Autoscaling is a loop that adds or removes capacity when a signal changes, inside a minimum and a maximum you set. The new capacity is not usable until it has started and passed a health check.
+  didYouKnow: On scale-down, the Kubernetes HorizontalPodAutoscaler holds the higher replica count for a stabilization window. The default is 300 seconds.
+  usageInAPIs:
+    tags:
+      - Replica count
+      - Min and max
+      - Lagging capacity
+    description: API autoscaling usually changes how many copies of the process are running. The load balancer must stop using a copy before it is removed, and a new copy must pass a health check before it receives traffic. More copies do not help a database that cannot take more connections.
+  bestPractices:
+    - Set a minimum that survives one instance dying, and a maximum that caps cost and runaway growth.
+    - Scale on a signal that tracks the scarce work, not only on a noisy latency average.
+    - Make scale-in slower than scale-out so a short dip does not remove the capacity you just added.
+    - Wait for readiness before sending user traffic to a new replica.
+    - Drain in-flight requests before stopping a replica, and treat drain time as a reducer of cuts rather than a proof that none happened.
+  historicalContext:
+    - key: Introduced
+      value: '2009'
+    - key: Origin
+      value: Cloud server pools
+    - key: Evolution
+      value: Metric controllers such as the Kubernetes HPA
+  recommendedReading:
+    - url: https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/
+      title: Kubernetes Horizontal Pod Autoscaler
+    - url: https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html
+      title: What is Amazon EC2 Auto Scaling
+    - url: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+      title: Kubernetes autoscaling overview
+  definitionAndStructure:
+    - key: Loop
+      value: Measure then add or remove
+    - key: Bounds
+      value: Minimum and maximum
+    - key: Delay
+      value: Boot plus health check
+faq:
+  - question: What is autoscaling?
+    answer: Autoscaling adds or removes capacity on its own as a signal changes. You set the signal, the target, a minimum, and a maximum. The controller compares the signal with the target and changes the replica count or the size of an instance. New capacity serves traffic only after it has started and a health check has passed.
+  - question: How is autoscaling different from horizontal and vertical scaling?
+    answer: Horizontal scaling means adding instances. Vertical scaling means making one instance larger. Autoscaling is the automatic decision to do either. Most HTTP APIs autoscale horizontally, because a new instance can join while the old ones keep serving. Growing one machine often needs a restart and still has a hardware ceiling.
+  - question: Why does autoscaling react late?
+    answer: The controller acts after the metric moves, and a new instance still has to boot and pass a health check. If the signal is CPU, the pool is already busy before the extra instance exists. A leading signal, such as queue depth or request rate, moves earlier. A higher minimum covers the gap when even that is too slow.
+  - question: What does a maximum replica count protect?
+    answer: It caps how far the loop can grow the fleet. A bug, a retry storm, or an attack can otherwise add instances until the bill or a downstream system fails. The maximum is also the point where the API should shed load, for example with a rate limit, instead of starting more copies.
+  - question: Does autoscaling prevent overload?
+    answer: No. It reacts within the bounds you set, and the reaction lags the traffic. A maximum that is too low leaves real traffic unserved. A maximum that is too high can overwhelm the database. Autoscaling changes instance count. It does not make a single-threaded bottleneck parallel, and it does not raise a connection limit you forgot to set.
+updatedAt: 2026-11-06T22:00:00.000Z
+slug: autoscaling
+---
+
+Autoscaling is how a system adds or removes capacity on its own as traffic changes. A controller reads a signal, compares it with a target, and changes capacity inside a minimum and a maximum you set. The decision is the autoscaler. The extra machine, process, or function is just capacity.
+
+[Horizontal scaling](/glossary/horizontal-scaling) is the act of adding instances. [Vertical scaling](/glossary/vertical-scaling) is the act of making one instance larger. Autoscaling is the loop that decides to do one of those without someone typing the new size.
+
+## What usually changes
+
+Most HTTP APIs scale horizontally: the controller changes the replica count. A new replica can start while the old ones keep serving. Making one machine larger often requires a restart, and the machine has a ceiling. Vertical autoscaling exists. It is a different loop, with a disruption the horizontal loop can avoid.
+
+The new replica is not useful at the moment the controller creates it. It has to boot, pass a health check, and join the [load balancer](/glossary/load-balancing). Until then the previous replicas still carry the traffic that triggered the change.
+
+## Which signal
+
+CPU and memory are easy to collect and late. By the time CPU is high, the instances are already busy. The extra replica arrives after that.
+
+Request rate and the number of requests in flight track the work more closely. Queue depth is the right signal for a worker, because the backlog is work that has not started. Latency is a noisy reason to add replicas. A slow database looks like the API needs more copies, and more copies can open more database connections and make the database slower.
+
+Match the signal to the thing that runs out. If the scarce resource is database connections, scaling the API on CPU can push that database over. If the scarce resource is CPU on the API itself, a CPU target is reasonable.
+
+## Bounds, delay, and flapping
+
+Set a minimum so a quiet hour does not remove the last instances unless you mean to scale to zero. A minimum of two survives one instance dying. Set a maximum so a bug, a retry storm, or an attack cannot grow the fleet without a bound. The maximum is also a cost ceiling. Past it, the service should reject or queue work instead of starting another copy. A [rate limit](/glossary/rate-limiting) is one way to shed that extra load.
+
+If you add a replica when CPU crosses 70 percent and remove it when CPU falls to 69 percent, the count flaps. Scale-in should wait longer than scale-out. A stabilization window holds the higher count through a short dip.
+
+The Kubernetes HorizontalPodAutoscaler is one implementation. This manifest keeps a deployment between 2 and 10 pods and targets an average CPU utilization near 70 percent:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: orders-api
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: orders-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+```
+
+`averageUtilization` is a percentage of the CPU request on each pod. If the container does not set a CPU request, utilization has no denominator and this metric will not scale the deployment. On the way down, Kubernetes holds the higher replica count for a stabilization window. The default is 300 seconds. The [Horizontal Pod Autoscaler documentation](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/) describes that default and the other metrics you can target. A cloud autoscaling group does the same kind of job for virtual machines. [Amazon EC2 Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html), launched in 2009, is one of those groups: it adjusts the number of instances from a signal you configure.
+
+A [serverless](/glossary/serverless) platform hides the loop and often allows the minimum to be zero. That is still autoscaling. The cold start is the cost of arriving from zero. [API hosting](/glossary/api-hosting) is where the replicas run. Autoscaling only changes how many are running.
+
+## What another replica does not fix
+
+The work has to be splittable. A lock that only one process can hold will not go faster because ten processes are waiting on it. A job that cannot be divided stays the same speed.
+
+Shared dependencies have their own ceilings. Ten app replicas with a pool of 20 database connections each want 200 connections. If the database allows 100, autoscaling the app makes the errors worse. Raise the useful limit, or cap the app, before you raise `maxReplicas`.
+
+Removing a replica can drop calls. The load balancer should stop sending it new requests, and the process should finish work it already accepted. A [container](/glossary/containerization) that exits on SIGTERM gives the platform a chance to do that. Connections that outlive the drain window are still cut. Drain time reduces dropped calls. It is not evidence that the count of dropped calls was zero.
+
+Autoscaling follows traffic inside the bounds you wrote down. It does not see a spike that has not hit the metric yet, and it does not create capacity that boots instantly. Size the minimum for the lag you can accept, and size the maximum for the dependency that fails first.
