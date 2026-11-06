@@ -37,6 +37,8 @@ export default defineConfig({
           // Existing tests expect the current hero. Variant tests opt into B
           // with the homepage-hero-variant cookie, and bot UAs still get B.
           HOMEPAGE_HERO_E2E_DEFAULT: 'a',
+          // Blank beats a developer's .env, so e2e bot requests never reach Databuddy.
+          NEXT_PUBLIC_DATABUDDY_CLIENT_ID: '',
         },
         reuseExistingServer: false,
         timeout: 120_000,
