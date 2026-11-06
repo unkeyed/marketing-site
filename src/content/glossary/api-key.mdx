@@ -1,0 +1,150 @@
+---
+title: 'What an API Key Is'
+description: 'A secret string a client sends so an API can tell who is calling it.'
+seo:
+  title: 'What an API Key Is'
+  description: 'A secret string a client sends so an API can tell who is calling it.'
+h1: 'What an API Key Is'
+term: API Key
+categories: []
+takeaways:
+  tldr: An API key is a secret a client sends with each request. The server looks the secret up, and possession of the string is what identifies the caller.
+  didYouKnow: A prefix such as key_live_ is a label for scanners. It is not the secret. The random bytes after it are what the server checks.
+  usageInAPIs:
+    tags:
+      - Caller identity
+      - Bearer secret
+      - Revocation
+    description: Servers issue an API key to a program or a customer project, store only a hash, and compare that hash on each request. Disabling the row revokes the key on the next call. A rate limit keyed by that id keeps one client from using the whole pool.
+  bestPractices:
+    - Generate at least 32 bytes from a cryptographic random source.
+    - Store a hash of the secret, and show the plaintext only when the key is created.
+    - Send the key in a header over TLS, not in the query string.
+    - Give each integration its own key, with the smallest scope that works.
+    - Rotate by issuing a second key, moving clients, then revoking the first.
+  historicalContext:
+    - key: Introduced
+      value: 'By 2006'
+    - key: Origin
+      value: Shared secrets on web API requests
+    - key: Evolution
+      value: Opaque lookup keys distinct from signed tokens
+  recommendedReading:
+    - url: https://www.rfc-editor.org/rfc/rfc6750
+      title: RFC 6750 - The OAuth 2.0 Authorization Framework Bearer Token Usage
+    - url: https://www.rfc-editor.org/rfc/rfc9110
+      title: RFC 9110 - HTTP Semantics
+    - url: https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html
+      title: OWASP REST Security Cheat Sheet
+  definitionAndStructure:
+    - key: What it is
+      value: A secret the client sends
+    - key: What it names
+      value: An integration rather than a person
+    - key: How it is checked
+      value: A server-side lookup of a hash
+faq:
+  - question: What is an API key?
+    answer: An API key is a secret string a client sends so the API can tell which integration is calling. The server compares it with a record it issued. If that record is active, the request continues as that caller. Anyone who copies the string can use it until the record is revoked.
+  - question: Is an API key the same as a password?
+    answer: No. A password authenticates a person and should be entered at login, not attached to every later call. An API key authenticates a program or a project and is sent on each request. Treat it as a credential you can revoke without changing the person's password.
+  - question: How is an API key different from a JWT?
+    answer: A JWT carries signed claims. The API can check the signature without a database read, and the token stays valid until it expires unless you keep a revocation list. An API key is opaque. The server looks it up, so disabling the row rejects the key on the next request.
+  - question: Where should a client send an API key?
+    answer: Send it in a header over TLS. Authorization Bearer is defined for bearer tokens, and a dedicated header such as X-API-Key is also common. Do not put the key in the query string. Query strings are copied into access logs, browser history, and Referer headers.
+  - question: How do you rotate an API key?
+    answer: Create a second key, deploy it to the client, and confirm that requests have moved. Then revoke the first key. Revoking the only working key before the client has the replacement causes an outage. Keep the two keys overlapped until the move is finished.
+updatedAt: 2026-11-06T22:00:00.000Z
+slug: api-key
+---
+
+An API key is a secret string a client sends with a request so the API can tell who is calling. The server compares that string with a record it issued. If the record is active, the request continues as that caller.
+
+Possession of the string is the check. Anyone who copies the key can call the API until you revoke the record.
+
+## What an API key is
+
+The key names an integration: one application, one service, or one customer project. It does not, by itself, name the person at a keyboard. The record behind the key can hold an owner, a scope, and an expiry. The secret should be random, at least 32 bytes from a cryptographic generator, so nobody can guess it.
+
+A label in front of the secret, such as `key_live_`, is not the secret. Scanners use the label to recognize a leaked string. The random bytes are what the server checks.
+
+## How a server checks a key
+
+Store a hash of the secret, not the secret. Show the plaintext once, when the key is created, and do not write it to application logs.
+
+A useful shape is a public id plus a secret, joined by one dot: `key_01J0AB.example-secret`. The id can be logged and indexed. The secret cannot. Encode the secret with base64url, which does not contain a dot, and split the token on the first dot only.
+
+```javascript
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+
+function createApiKey(id) {
+  const secret = randomBytes(32).toString('base64url');
+
+  return {
+    id,
+    plaintext: `${id}.${secret}`,
+    hash: createHash('sha256').update(secret, 'utf8').digest(),
+  };
+}
+
+function secretMatches(storedHash, presentedSecret) {
+  const actual = createHash('sha256').update(presentedSecret, 'utf8').digest();
+
+  if (actual.length !== storedHash.length) {
+    return false;
+  }
+
+  return timingSafeEqual(actual, storedHash);
+}
+```
+
+Persist `id` and `hash`. On a request, load the row by id and compare hashes. SHA-256 is appropriate when the secret is long and random. If a person chooses the secret, use a slow password hash such as scrypt. A fast hash of a short secret can be guessed offline.
+
+`timingSafeEqual` throws when the two buffers have different lengths, so check the length first. A normal string compare can also leak information through timing. Compare the hashes, not the raw secrets.
+
+## API keys, passwords, and JWTs
+
+A password proves a person, once, at login. An API key proves an integration on every call. Replacing a person's password should not be how you cut off one misbehaving service.
+
+A [JWT](/glossary/jwt) is a signed set of claims. Services that hold the verification key can trust the claims without a shared key database. The token remains valid until `exp` unless every verifier also checks a revocation list. An API key forces a lookup. That lookup is how you revoke it immediately, and it is also a request the key database has to answer.
+
+Use a key when a service needs a stable credential you can disable on the next call. Use a short-lived JWT when many services need to verify a user and you accept that early revoke is a separate problem.
+
+## Where to send the key
+
+Send the key in a header, and only over TLS. [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750) defines `Authorization: Bearer` for bearer tokens. An API key is one kind of bearer token: the string itself is the credential. A custom header such as `X-API-Key` is also common. Pick one place and document it.
+
+```http
+GET /v1/orders HTTP/1.1
+Host: api.example.com
+Authorization: Bearer key_01J0AB.example-secret
+Accept: application/json
+```
+
+The secret in that example is a placeholder. A real secret is the 32 random bytes from `createApiKey`, not a word.
+
+Do not put the key in the query string. URLs are copied into access logs, browser history, and `Referer` headers when the client loads another site. The [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html) treats that as a credential leak.
+
+On plain HTTP the key is visible to anything on the path. Require [TLS](/glossary/transport-layer-security).
+
+## Scope, expiry, and rotation
+
+A key should allow only the calls that client needs. A reporting job with a read-only key cannot delete data if the key leaks. A key used by two unrelated services cannot be revoked for one of them without breaking the other. Issue separate keys.
+
+Set an expiry when the client can refresh. A key with no expiry works until someone notices it leaked.
+
+Rotate by creating a second key, deploying it, and watching until requests use the new id. Then revoke the first. Overlap them. Revoking the only key the client has is an outage you scheduled.
+
+The key names the caller. A [rate limit](/glossary/rate-limiting) decides how many calls that caller may make. They are separate controls. A valid key can still be over its limit.
+
+## Common mistakes
+
+**Shipping the key to a browser or a mobile app.** Anything in the client can be extracted. Keep the key on a server you run, or give the end user a short-lived credential of their own.
+
+**Logging the header.** An access log that stores `Authorization` stores the secret. Log the key id if you need a correlation id.
+
+**Comparing the plaintext with `===`.** Hash first, check the lengths, then use a constant-time compare.
+
+**Treating the key as a user id.** The record names the integration. If the API has to know the person, that person needs their own login. Do not share one project key across every user of a product.
+
+**One key for every environment.** A key that works in production and in a laptop app will leak from the laptop. Use a different key, and a different scope, for each environment.
