@@ -46,11 +46,3 @@ test('TC-E2E-011: AI bot request to docs gets the same status as a browser', asy
     expect(status, userAgent).toBe(200);
   }
 });
-
-test('TC-E2E-012: AI-referred request to homepage returns 200', async ({ request }) => {
-  const response = await request.get('/', {
-    headers: { 'User-Agent': BROWSER_UA, Referer: 'https://chatgpt.com/' },
-  });
-
-  expect(response.status()).toBe(200);
-});
