@@ -11,7 +11,7 @@ tags: ['product:blue']
 
 You can limit which source addresses may authenticate with a root key. Set IPv4 or IPv6 addresses and CIDR ranges on the key. Requests from outside that list get HTTP 401, the same shape as a missing key, before Unkey runs the rest of the call.
 
-IP allowlists are a paid add-on. Contact support to enable them on your workspace. Until then, the dashboard shows a disabled field with a Contact support link. Denials are written to the audit log as `auth.ipDenied`, so you can alert on them with a log drain.
+IP allowlists are a paid add-on. Contact support to enable them on your workspace.
 
 Set the list in the dashboard under Root Keys, through the API, or with `--ip-allowlist` on `unkey root-keys create` and `unkey root-keys update`. See [Configure root keys](https://www.unkey.com/docs/platform/root-keys/configure) and [Audit log event types](https://www.unkey.com/docs/platform/workspace/audit-logs/event-types).
 
@@ -50,10 +50,6 @@ If a subscription payment fails, the dashboard shows a payment failed banner and
 ### New root keys use an `rk_` ID prefix
 
 New and rerolled root keys get IDs that start with `rk_`. Existing root keys keep their `key_` IDs. The secret format (`unkey_...`) is unchanged.
-
-### Pricing page log retention matches the plans
-
-The public pricing page now shows the same API Management log and audit log retention as the dashboard: 7 and 30 days on Free, 90 days on Pro. See [Pricing](https://www.unkey.com/pricing).
 
 ### More events in the audit log
 
