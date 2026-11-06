@@ -12,7 +12,6 @@ interface ICtaProps {
   poster: string;
   videos: { src: string; type: string }[];
   className?: string;
-  trackProperties?: Record<string, string>;
 }
 
 export default function Cta({
@@ -23,7 +22,6 @@ export default function Cta({
   poster,
   videos,
   className,
-  trackProperties,
 }: ICtaProps) {
   return (
     <section
@@ -63,7 +61,7 @@ export default function Cta({
           href={buttonHref}
           className="mt-auto w-fit lg:mt-13 xl:mt-auto"
           trackEvent="sign up"
-          trackProperties={{ location: 'CTA', ...trackProperties }}
+          trackProperties={{ location: 'CTA' }}
         >
           {buttonLabel}
         </TrackingLink>

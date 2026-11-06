@@ -99,7 +99,6 @@ export function renderHomeMarkdown(heroCopy: {
     `${cta.heading} ${cta.subheading}`,
     '',
     `- Start for free: ${hero.primaryCta.href}`,
-    `- View on GitHub: ${hero.secondaryCta.href}`,
     `- Read the docs: ${toAbsoluteSiteUrl('/docs')}`,
     `- See pricing: ${toAbsoluteSiteUrl('/pricing')}`,
     '',
