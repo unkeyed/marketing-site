@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { isExternalLink } from '@/lib/utils';
 import { BackgroundVideo } from '@/components/ui/background-video';
 import { Link } from '@/components/ui/link';
 import Logos from '@/components/pages/logos';
@@ -8,6 +9,7 @@ interface IHeroProps {
   title: string;
   description: string;
   primaryCta: { label: string; href: string };
+  secondaryCta: { label: string; href: string };
   poster: { src: string; width: number; height: number };
   videos: { src: string; type: string }[];
   logos: {
@@ -23,6 +25,7 @@ export default function Hero({
   title,
   description,
   primaryCta,
+  secondaryCta,
   poster,
   videos,
   logos,
@@ -79,6 +82,14 @@ export default function Hero({
             <div className="mt-1 flex w-full shrink-0 flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap md:mt-0">
               <Link href={primaryCta.href} variant="primary">
                 {primaryCta.label}
+              </Link>
+              <Link
+                href={secondaryCta.href}
+                variant="secondary"
+                target={isExternalLink(secondaryCta.href) ? '_blank' : undefined}
+                rel={isExternalLink(secondaryCta.href) ? 'noopener noreferrer' : undefined}
+              >
+                {secondaryCta.label}
               </Link>
             </div>
           </div>

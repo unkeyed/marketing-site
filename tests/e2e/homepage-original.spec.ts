@@ -7,6 +7,7 @@ const VARIANT_B_SUBHEAD =
   'Unkey unifies your infrastructure. Deploy APIs instantly, protect them with keys and rate limits, and understand usage in one place.';
 const FOUNDER_HREF = 'https://unkey.cal.com/james/sales';
 const GITHUB_HREF = 'https://github.com/unkeyed/unkey';
+const DOCS_HREF = 'https://www.unkey.com/docs';
 
 const CRAWLER_USER_AGENTS = [
   'GPTBot/1.2',
@@ -38,6 +39,8 @@ function assertOriginalHtml(body: string, label: string) {
   expect(html, label).not.toContain('data-hero-variant');
   expect(html, label).not.toContain('View on GitHub');
   expect(html, label).not.toContain(GITHUB_HREF);
+  expect(html, label).toContain('View docs');
+  expect(html, label).toContain(DOCS_HREF);
   expect(html, label).not.toContain('5.3k');
 }
 
@@ -72,6 +75,13 @@ test('TC-E2E-013: homepage serves the original hero without GitHub promotion', a
   await expect(
     page.getByRole('link', { name: 'Start for free', exact: true }).first(),
   ).toBeVisible();
+  const viewDocs = page
+    .locator('main > section')
+    .getByRole('link', { name: 'View docs', exact: true });
+  await expect(viewDocs).toBeVisible();
+  await expect(viewDocs).toHaveAttribute('href', DOCS_HREF);
+  await expect(viewDocs).toHaveAttribute('target', '_blank');
+  await expect(viewDocs).toHaveAttribute('rel', 'noopener noreferrer');
   await expect(page.locator('main')).not.toHaveAttribute('data-hero-variant', /.+/);
   await expect(page.locator(`a[href="${GITHUB_HREF}"]`)).toHaveCount(0);
   await expect(page.getByText('5.3k')).toHaveCount(0);
@@ -188,6 +198,7 @@ test('TC-E2E-016: homepage markdown stays original and retired experiment URLs r
     expect(body, userAgent).not.toContain(VARIANT_B_SUBHEAD);
     expect(body, userAgent).not.toContain('View on GitHub');
     expect(body, userAgent).not.toContain(GITHUB_HREF);
+    expect(body, userAgent).toContain(`- View docs: ${DOCS_HREF}`);
     expect(body, userAgent).not.toContain(FOUNDER_HREF);
   }
 

@@ -21,6 +21,8 @@ export const homeContentData = {
     description:
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
     primaryCta: { label: 'Start for free', href: APP_URL },
+    // Same destination as the header and footer Docs links.
+    secondaryCta: { label: 'View docs', href: 'https://www.unkey.com/docs' },
     poster: { src: heroPosterImage.src, width: 1533, height: 908 },
     videos: [
       { src: '/videos/home/hero-av1.mp4', type: 'video/mp4; codecs=av01' },
