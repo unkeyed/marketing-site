@@ -147,7 +147,8 @@ export const getComponents = (options: IGetComponentsOptions) => {
         src.includes('/images/changelog/2026-09-30/') ||
         src.includes('/images/changelog/2026-10-10/') ||
         src.includes('/images/blog-images/september-2026/') ||
-        src.includes('/images/blog-images/deploy-api-previews-monitoring/');
+        src.includes('/images/blog-images/deploy-api-previews-monitoring/') ||
+        src.includes('/images/blog-images/rate-limit-api-per-customer/');
 
       return (
         <Image
