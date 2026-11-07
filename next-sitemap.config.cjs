@@ -38,11 +38,7 @@ const CONTENT_SECTIONS = [
 const STATIC_PAGES = [
   {
     route: '/',
-    files: [
-      'src/app/(website)/hero-variant/[code]/page.tsx',
-      'src/constants/home.ts',
-      'src/lib/homepage-hero.ts',
-    ],
+    files: ['src/app/(website)/page.tsx', 'src/constants/home.ts'],
   },
   {
     route: '/about',

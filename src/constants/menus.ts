@@ -1,4 +1,4 @@
-import { BOOK_A_CALL_URL, GITHUB_URL } from '@/configs/website-config';
+import { BOOK_A_CALL_URL } from '@/configs/website-config';
 
 import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
 
@@ -46,7 +46,6 @@ export const MENUS = {
         items: [
           { label: 'About', href: '/about' },
           { label: 'Careers', href: '/careers' },
-          { label: 'Source Code', href: GITHUB_URL },
           { label: 'Status Page', href: 'https://status.unkey.com' },
           { label: 'Roadmap', href: 'https://feedback.unkey.com/roadmap' },
         ],
@@ -84,11 +83,6 @@ export const MENUS = {
         href: 'https://x.com/unkeydev',
         label: 'Follow us on X',
         icon: 'twitter',
-      },
-      {
-        href: GITHUB_URL,
-        label: 'Follow us on GitHub',
-        icon: 'github',
       },
       {
         href: 'https://unkey.com/discord',

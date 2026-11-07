@@ -9,7 +9,7 @@ interface IHeroProps {
   title: string;
   description: string;
   primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string; target?: string; rel?: string };
+  secondaryCta: { label: string; href: string };
   poster: { src: string; width: number; height: number };
   videos: { src: string; type: string }[];
   logos: {
@@ -86,13 +86,8 @@ export default function Hero({
               <Link
                 href={secondaryCta.href}
                 variant="secondary"
-                target={
-                  secondaryCta.target ?? (isExternalLink(secondaryCta.href) ? '_blank' : undefined)
-                }
-                rel={
-                  secondaryCta.rel ??
-                  (isExternalLink(secondaryCta.href) ? 'noopener noreferrer' : undefined)
-                }
+                target={isExternalLink(secondaryCta.href) ? '_blank' : undefined}
+                rel={isExternalLink(secondaryCta.href) ? 'noopener noreferrer' : undefined}
               >
                 {secondaryCta.label}
               </Link>

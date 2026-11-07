@@ -11,7 +11,6 @@ import { IMenuItem } from '@/types/common';
 import { cn, isExternalLink } from '@/lib/utils';
 import { useTrack } from '@/hooks/use-tracking';
 import { Link } from '@/components/ui/link';
-import { Icons } from '@/components/icons';
 
 interface MobileMenuProps {
   items: IMenuItem[];
@@ -21,7 +20,7 @@ function MobileMenu({ items }: MobileMenuProps) {
   const track = useTrack();
   const [open, setOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [discordLink, githubLink] = homeHeaderLinks.social;
+  const [discordLink] = homeHeaderLinks.social;
   const [loginLink, signUpLink] = homeHeaderLinks.auth;
   const pathname = usePathname();
 
@@ -196,18 +195,6 @@ function MobileMenu({ items }: MobileMenuProps) {
               rel="noopener noreferrer"
             >
               {discordLink.label}
-            </NextLink>
-            <NextLink
-              href={githubLink.href}
-              className="flex items-center gap-1 border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
-              onClick={() => setOpen(false)}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
-            >
-              <Icons.github className="text-background" size={18} aria-hidden="true" />
-              <span className="sr-only">{githubLink.label}</span>
-              <span>{githubLink.metric}</span>
             </NextLink>
           </nav>
 

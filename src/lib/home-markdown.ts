@@ -21,7 +21,7 @@ export function renderHomeMarkdown(heroCopy: {
     ...(heroCopy.intro ? [heroCopy.intro, ''] : []),
     `Source: ${toAbsoluteSiteUrl('/')}`,
     `Start for free: ${hero.primaryCta.href}`,
-    `Docs: ${toAbsoluteSiteUrl('/docs')}`,
+    `Docs: ${hero.secondaryCta.href}`,
     `Pricing: ${toAbsoluteSiteUrl('/pricing')} ([Markdown](${toAbsoluteSiteUrl('/pricing.md')}))`,
     '',
     '---',
@@ -99,8 +99,7 @@ export function renderHomeMarkdown(heroCopy: {
     `${cta.heading} ${cta.subheading}`,
     '',
     `- Start for free: ${hero.primaryCta.href}`,
-    `- View on GitHub: ${hero.secondaryCta.href}`,
-    `- Read the docs: ${toAbsoluteSiteUrl('/docs')}`,
+    `- ${hero.secondaryCta.label}: ${hero.secondaryCta.href}`,
     `- See pricing: ${toAbsoluteSiteUrl('/pricing')}`,
     '',
   ].join('\n');
