@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { ConsentProvider as C15tConsentProvider } from 'c15t/next';
-import { hosted, offline } from 'c15t/react';
+import { hosted, local } from 'c15t/react';
 
 import { consentTheme } from '@/lib/consent-theme';
 
@@ -12,9 +12,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
   return (
     <C15tConsentProvider
       options={{
-        mode: isHostedMode
-          ? hosted({ backendURL: 'https://production-unkey.inth.app/' })
-          : offline(),
+        mode: isHostedMode ? hosted({ backendURL: 'https://production-unkey.inth.app/' }) : local(),
         networkBlocker: {
           rules: [
             { domain: 'unpkg.com', category: 'necessary' },

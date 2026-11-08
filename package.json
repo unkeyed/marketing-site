@@ -44,7 +44,7 @@
     "@tailwindcss/postcss": "4.3.0",
     "@team-plain/typescript-sdk": "5.12.1",
     "@vercel/analytics": "2.0.1",
-    "c15t": "3.0.0",
+    "c15t": "3.2.2",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "copy-to-clipboard": "4.0.2",
