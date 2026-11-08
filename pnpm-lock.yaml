@@ -72,8 +72,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       c15t:
-        specifier: 3.0.0
-        version: 3.0.0(jiti@2.7.0)(magic-string@0.30.21)(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+        specifier: 3.2.2
+        version: 3.2.2(jiti@2.7.0)(magic-string@0.30.21)(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -300,11 +300,11 @@ packages:
   '@braintree/sanitize-url@7.1.2':
     resolution: {integrity: sha512-jigsZK+sMF/cuiB7sERuo9V7N9jx+dhmHHnQyDSVdpZwVutaBu7WvNYqMDLSgFgfB30n452TP3vjDAvFC973mA==}
 
-  '@c15t/astro@3.0.0':
-    resolution: {integrity: sha512-2EfbFHmTGIwFolTGncXGfMOybyG12fwSZolfMAnbshqrzhiWhqadp3pB5GywmMfJj/ObvfceOi4okoQG/1/16g==}
+  '@c15t/astro@3.2.2':
+    resolution: {integrity: sha512-gQE8afFIfYwUZ9MFOJVXdDMgeIAk3gSQMhu4WRvRGU1JlRpnkUEKvDa9hBpnKWlHvgLtl376P0MBFe/z23/Eow==}
     peerDependencies:
-      '@c15t/react': ^3.0.0
-      '@c15t/vue': ^3.0.0
+      '@c15t/react': ^3.2.2
+      '@c15t/vue': ^3.2.2
       astro: ^5.0.0 || ^6.0.0 || ^7.0.0
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -326,17 +326,17 @@ packages:
       vue:
         optional: true
 
-  '@c15t/core@3.0.0':
-    resolution: {integrity: sha512-OaP86YrkyUfxd6m5JiIlf+IAzXRqjSHCLGbO7hD+D06uHtDsNIyjXYUnyJR3La1gpYUAYJs4SLJ/ULeMRFmu0w==}
+  '@c15t/core@3.2.2':
+    resolution: {integrity: sha512-GqMuXlTUqz8CHUvuof8+boAi0o4b/Qmhuh599gB05EerWzU78TywVqEOT48ymEhzZHMiPwhZO8J29nVm91kdVA==}
 
-  '@c15t/dev-tools@3.0.0':
-    resolution: {integrity: sha512-9j3K7xUsurjPtjqOnxSarrkklByCAMISqQ8CbFM6C/8m7J5A8bT5cuSBW3yMqgvyDFwWGH08kTZOdp4YFJch5w==}
+  '@c15t/dev-tools@3.2.2':
+    resolution: {integrity: sha512-K+yO0sF77b4s8UlSMU788huSU7M1KMzWJi4LiJk0GTLU1UcJUBMH/cLA4+xSTRVP6QRCG9EW+mrQQTZfKh4qJw==}
 
-  '@c15t/iab@3.0.0':
-    resolution: {integrity: sha512-NzqgkdfhMOxFK2Z8Byia9TqKVX2y3BRg+z9tYeGFaOuWpkQTapvboP7W3mHnDw3uM9kEcAbw8pDSPjsT1mGxZw==}
+  '@c15t/iab@3.2.2':
+    resolution: {integrity: sha512-67Cun+PxdJPYHMuSgZHrje88XtqokDF7s3P18r00vTPl+aoQfpr1qGanFFmGXLAP3zjt1JAJr67Nw33+RzhNnw==}
 
-  '@c15t/nextjs@3.0.0':
-    resolution: {integrity: sha512-krIKy8X2+Cb9eMGSjLiDijINT9OMDg6DSG2GcrrvmXQK6NVSYqVfhhdVUeXzm3X/Yd/+tnIYvDKpPDvAzhmDwg==}
+  '@c15t/nextjs@3.2.2':
+    resolution: {integrity: sha512-eSTprkXK+3PMu4KDlZLocQlrYMyLlthFZ+3MqfO1lD9ejkQAnH+EeOxPUM+RSRdJwcneydYlw3PRth0SoRfwuw==}
     peerDependencies:
       next: ^15.0.0 || ^16.0.0
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
@@ -349,8 +349,8 @@ packages:
       react-dom:
         optional: true
 
-  '@c15t/react@3.0.0':
-    resolution: {integrity: sha512-jX/W7O51OGR/ZwK6yUAPwcMvsIUkgviaA5fr2ydkQJW+bdLUmTBMFsXMVAKQ46UPurG4DXf/1zGuBG1PlC+K2g==}
+  '@c15t/react@3.2.2':
+    resolution: {integrity: sha512-afO5v1F/N4ZGGrZhPZd3y+boQMWKKRMfbM4x5YthlP69bXL7smKRQV9YY2QOxm/9BqLUCqDWD0Y3be3n4kqJ0g==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
@@ -360,22 +360,22 @@ packages:
       react-dom:
         optional: true
 
-  '@c15t/schema@3.0.0':
-    resolution: {integrity: sha512-eIDclYzJblktI2DvkBhE62yTifYgGuQfT/tS5jl3Rw/ByiSvD+C7U80r5Ujv4cyNIHNAUUgkEQXWDvEzIyAohQ==}
+  '@c15t/schema@3.1.3':
+    resolution: {integrity: sha512-ZRa32yJgblybMF4SZQItPgRdMU+wRxu5NFYcg6vJHHhiWkutXszF8DZYmUrAzv/AtUcoxaftyVQd6s5ZksTRwg==}
 
-  '@c15t/svelte@3.0.0':
-    resolution: {integrity: sha512-TM0PBQIc+QFK5CQj3qD9q9Qlqc5Ucs3aRWXHx4o6f8gc3J1zZMeglV+26o/mdtxNfUjVas92c2zqGzZ77wy+oQ==}
+  '@c15t/svelte@3.2.2':
+    resolution: {integrity: sha512-WIM7JC63q27InzldRfVz0OJj2/bFxrnAdcBjufNySYBEVjgrtohUmiJk4r+cvEQpHRF3sfiOH4ZPlZb0BNkbAg==}
     peerDependencies:
       '@sveltejs/kit': ^2.63.0 || ^3.0.0
-      svelte: ^5.0.0
+      svelte: ^5.20.0
     peerDependenciesMeta:
       '@sveltejs/kit':
         optional: true
       svelte:
         optional: true
 
-  '@c15t/tanstack-start@3.0.0':
-    resolution: {integrity: sha512-fc8G0nPZ7T408NTy9qz5moEgvFjBuAYHx8Fj0C00s4fCydpZwe/IrbDDYre/ljIDVPOhNTRRXVAL17FVsFSLuw==}
+  '@c15t/tanstack-start@3.2.2':
+    resolution: {integrity: sha512-k2qaYR+ckMxbI6y9NrZ1eZLK8KPFikyCsGxvlTtPAeAIq0WYmRIBcUMDohqtjEpUhS25kiGKY3+tWxx+lnI9TQ==}
     peerDependencies:
       '@tanstack/react-router': ^1.170.41
       '@tanstack/react-start': ^1.168.60
@@ -391,14 +391,14 @@ packages:
       react-dom:
         optional: true
 
-  '@c15t/translations@3.0.0':
-    resolution: {integrity: sha512-HQg18k6BjCtyIYUhtefVeAywGMa4jkDi4GYZSwCW90cJPzuN+pl1XSmZo7yOnc+uIAhPu3jrbGUUY5ZRLdTs0w==}
+  '@c15t/translations@3.2.2':
+    resolution: {integrity: sha512-hjtwHbyOFtbG0iEIBmgiyZH1fQpxxnKR4voQTywZD+uKd0Vb1asgzb27WcL+Dua3pBcNFw0nbH6KTxwe+d3vHg==}
 
-  '@c15t/ui@3.0.0':
-    resolution: {integrity: sha512-aglVaWs6DpsNwxg3diIi4l3kD+r1V9reUiitXo9cN3A40U4LCDmlFqOZ88sTcZ7nlaXmQx7p3z3bQPwU0nTvRw==}
+  '@c15t/ui@3.1.2':
+    resolution: {integrity: sha512-xo758DbRhhlXAGLVRkwdgA6Ke6Zzx+C9EKt28a2WnVMXqXR+FyUy3ko4OE0CVgiBB8zYvCbJupGA2NrN7uZvsg==}
 
-  '@c15t/vue@3.0.0':
-    resolution: {integrity: sha512-oAWUg9+7EfXAxdld35ORsauctCoeA0K4B1nM17NbnQTvReZ2QO35kpf3XCuDEmEzPbczx7AJnlSiZsF/am/sJA==}
+  '@c15t/vue@3.2.2':
+    resolution: {integrity: sha512-XT7Ri8FVmw63MgD9kYF+84eIAlaeBdCht9N3M8/5TsguGY/TwnZcH3SyPBipi9MGf1j/UxOVpitX1LPA6D8Bxg==}
     peerDependencies:
       nuxt: ^3.0.0 || ^4.0.0
       vue: ^3.5.39 || ^3.6.0-0
@@ -1836,8 +1836,8 @@ packages:
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
-  c15t@3.0.0:
-    resolution: {integrity: sha512-nNMAzXVGZ5IurgE+mUCraaDnfTdcNz5aD/Sf/rBXGpFfi68hB/HyQWw2bV29+OIT4xVjuKSv4m83YNqBeKx1Kg==}
+  c15t@3.2.2:
+    resolution: {integrity: sha512-nFfawzWCX2Odu3cHLfJYrQUwh2dbn9LNDYwhZseH+O1LMTQOEUZF+Y0+5jhF8oyRx2hpQ5qpg9RAzOmRtEVYUA==}
 
   camera-controls@3.1.2:
     resolution: {integrity: sha512-xkxfpG2ECZ6Ww5/9+kf4mfg1VEYAoe9aDSY+IwF0UEs7qEzwy0aVRfs2grImIECs/PoBtWFrh7RXsQkwG922JA==}
@@ -3779,50 +3779,50 @@ snapshots:
 
   '@braintree/sanitize-url@7.1.2': {}
 
-  '@c15t/astro@3.0.0(@c15t/react@3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(@c15t/vue@3.0.0(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
+  '@c15t/astro@3.2.2(@c15t/react@3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(@c15t/vue@3.2.2(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/iab': 3.0.0(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/svelte': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
-      '@c15t/ui': 3.0.0(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/iab': 3.2.2(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/svelte': 3.2.2(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
+      '@c15t/ui': 3.1.2(typescript@6.0.3)
     optionalDependencies:
-      '@c15t/react': 3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/vue': 3.0.0(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3)
+      '@c15t/react': 3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/vue': 3.2.2(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
     transitivePeerDependencies:
       - '@sveltejs/kit'
       - typescript
 
-  '@c15t/core@3.0.0(typescript@6.0.3)':
+  '@c15t/core@3.2.2(typescript@6.0.3)':
     dependencies:
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/dev-tools@3.0.0(typescript@6.0.3)':
+  '@c15t/dev-tools@3.2.2(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/iab@3.0.0(typescript@6.0.3)':
+  '@c15t/iab@3.2.2(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
       '@iabtechlabtcf/core': 1.5.22
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/nextjs@3.0.0(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
+  '@c15t/nextjs@3.2.2(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/react': 3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/react': 3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
     optionalDependencies:
       next: 16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
@@ -3830,14 +3830,14 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/react@3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
+  '@c15t/react@3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/dev-tools': 3.0.0(typescript@6.0.3)
-      '@c15t/iab': 3.0.0(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
-      '@c15t/ui': 3.0.0(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/dev-tools': 3.2.2(typescript@6.0.3)
+      '@c15t/iab': 3.2.2(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
+      '@c15t/ui': 3.1.2(typescript@6.0.3)
       '@types/google.maps': 3.65.3
     optionalDependencies:
       react: 19.3.0
@@ -3845,56 +3845,56 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/schema@3.0.0(typescript@6.0.3)':
+  '@c15t/schema@3.1.3(typescript@6.0.3)':
     dependencies:
-      '@c15t/translations': 3.0.0
+      '@c15t/translations': 3.2.2
       base-x: 5.0.1
       valibot: 1.4.2(typescript@6.0.3)
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/svelte@3.0.0(typescript@6.0.3)':
+  '@c15t/svelte@3.2.2(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/dev-tools': 3.0.0(typescript@6.0.3)
-      '@c15t/iab': 3.0.0(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
-      '@c15t/ui': 3.0.0(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/dev-tools': 3.2.2(typescript@6.0.3)
+      '@c15t/iab': 3.2.2(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
+      '@c15t/ui': 3.1.2(typescript@6.0.3)
       clsx: 2.1.1
       esm-env: 1.2.2
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/tanstack-start@3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
+  '@c15t/tanstack-start@3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/react': 3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/react': 3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
     optionalDependencies:
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/translations@3.0.0': {}
+  '@c15t/translations@3.2.2': {}
 
-  '@c15t/ui@3.0.0(typescript@6.0.3)':
+  '@c15t/ui@3.1.2(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
     transitivePeerDependencies:
       - typescript
 
-  '@c15t/vue@3.0.0(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3)':
+  '@c15t/vue@3.2.2(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3)':
     dependencies:
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/dev-tools': 3.0.0(typescript@6.0.3)
-      '@c15t/iab': 3.0.0(typescript@6.0.3)
-      '@c15t/schema': 3.0.0(typescript@6.0.3)
-      '@c15t/translations': 3.0.0
-      '@c15t/ui': 3.0.0(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/dev-tools': 3.2.2(typescript@6.0.3)
+      '@c15t/iab': 3.2.2(typescript@6.0.3)
+      '@c15t/schema': 3.1.3(typescript@6.0.3)
+      '@c15t/translations': 3.2.2
+      '@c15t/ui': 3.1.2(typescript@6.0.3)
       '@nuxt/kit': 4.6.1(jiti@2.7.0)(magic-string@0.30.21)
       defu: 6.1.7
       ufo: 1.6.4
@@ -5274,15 +5274,16 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  c15t@3.0.0(jiti@2.7.0)(magic-string@0.30.21)(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3):
+  c15t@3.2.2(jiti@2.7.0)(magic-string@0.30.21)(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3):
     dependencies:
-      '@c15t/astro': 3.0.0(@c15t/react@3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(@c15t/vue@3.0.0(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/core': 3.0.0(typescript@6.0.3)
-      '@c15t/nextjs': 3.0.0(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/react': 3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/tanstack-start': 3.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      '@c15t/ui': 3.0.0(typescript@6.0.3)
-      '@c15t/vue': 3.0.0(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3)
+      '@c15t/astro': 3.2.2(@c15t/react@3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(@c15t/vue@3.2.2(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/core': 3.2.2(typescript@6.0.3)
+      '@c15t/nextjs': 3.2.2(next@16.4.3(@playwright/test@1.61.1)(@types/node@25.8.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/react': 3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/svelte': 3.2.2(typescript@6.0.3)
+      '@c15t/tanstack-start': 3.2.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      '@c15t/ui': 3.1.2(typescript@6.0.3)
+      '@c15t/vue': 3.2.2(jiti@2.7.0)(magic-string@0.30.21)(typescript@6.0.3)
     transitivePeerDependencies:
       - '@nuxt/schema'
       - '@sveltejs/kit'
