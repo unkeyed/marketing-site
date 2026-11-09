@@ -103,6 +103,24 @@ test('TC-E2E-013: homepage serves the original hero without GitHub promotion', a
   await expect(changelogHero.locator(`a[href="${GITHUB_HREF}"]`)).toHaveCount(0);
 });
 
+test('homepage hero actions stay on one row at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 833 });
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready);
+
+  const hero = page.locator('main > section').first();
+  const primary = await hero.getByRole('link', { name: 'Start for free' }).boundingBox();
+  const secondary = await hero.getByRole('link', { name: 'View docs' }).boundingBox();
+
+  expect(primary).not.toBeNull();
+  expect(secondary).not.toBeNull();
+  expect(Math.abs(primary!.y - secondary!.y)).toBeLessThan(1);
+  expect(primary!.x + primary!.width).toBeLessThan(secondary!.x);
+  expect(secondary!.x + secondary!.width).toBeLessThanOrEqual(300);
+  expect(primary!.height).toBeGreaterThanOrEqual(44);
+  expect(secondary!.height).toBeGreaterThanOrEqual(44);
+});
+
 test('TC-E2E-014: stale experiment cookies and query overrides still serve the original', async ({
   page,
   baseURL,

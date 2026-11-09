@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { submitYcApplication } from '@/app/(website)/yc/actions';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { submitYcApplication } from '@/app/(website)/yc/actions';
 
 const ycFormSchema = z.object({
   fullName: z.string().min(3, 'Name must be at least 3 characters'),
@@ -25,10 +25,7 @@ const ycFormSchema = z.object({
   workspaceId: z
     .string()
     .optional()
-    .refine(
-      (value) => !value || value.startsWith('ws_'),
-      "Workspace ID must start with 'ws_'",
-    ),
+    .refine((value) => !value || value.startsWith('ws_'), "Workspace ID must start with 'ws_'"),
   migratingFrom: z.string().optional(),
   moreInfo: z.string().optional(),
 });
@@ -55,13 +52,18 @@ export function YcApplicationForm() {
 
   const onSubmit = (values: TYcFormValues) => {
     setServerErrors([]);
+    setSubmitted(false);
     startTransition(async () => {
-      const result = await submitYcApplication(values);
-      if (result.status === 'success') {
-        setSubmitted(true);
-        form.reset();
-      } else {
-        setServerErrors(result.errors);
+      try {
+        const result = await submitYcApplication(values);
+        if (result.status === 'success') {
+          setSubmitted(true);
+          form.reset();
+        } else {
+          setServerErrors(result.errors);
+        }
+      } catch {
+        setServerErrors(['Could not submit your application. Please try again.']);
       }
     });
   };
@@ -171,13 +173,19 @@ export function YcApplicationForm() {
           />
 
           {submitted && (
-            <p className="rounded-md border border-green-glow/40 bg-green-glow/10 p-3 text-sm text-green-dot">
+            <p
+              role="status"
+              className="rounded-md border border-green-glow/40 bg-green-glow/10 p-3 text-sm text-green-dot"
+            >
               Thank you for your submission! We&apos;ll be in touch soon.
             </p>
           )}
 
           {serverErrors.length > 0 && (
-            <div className="rounded-md border border-red-glow/40 bg-red-glow/10 p-3 text-sm text-red-dot">
+            <div
+              role="alert"
+              className="rounded-md border border-red-glow/40 bg-red-glow/10 p-3 text-sm text-red-dot"
+            >
               {serverErrors.map((error) => (
                 <p key={error}>{error}</p>
               ))}

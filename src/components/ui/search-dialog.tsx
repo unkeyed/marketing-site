@@ -4,12 +4,11 @@ import { KeyboardEvent, useCallback, useEffect, useRef, useState, type RefObject
 import Link from 'next/link';
 import { BookOpen, FileText } from 'lucide-react';
 
-import type { IBlogSearchItem } from '@/types/blog';
 import { cn } from '@/lib/utils';
 import useDebounce from '@/hooks/use-debounce';
 import { useTouchDevice } from '@/hooks/use-touch-device';
 import { Button } from '@/components/ui/button';
-import { DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 type ContentCategory =
@@ -348,10 +347,6 @@ export default function SearchDialog({
     inputRef.current?.focus({ preventScroll: true });
   };
 
-  const handleCloseAutoFocus = (event: Event) => {
-    event.preventDefault();
-  };
-
   // Handle keyboard navigation
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown') {
@@ -399,11 +394,8 @@ export default function SearchDialog({
     if (selectedIndex !== null) {
       const selectedElement = document.querySelector(`[data-index="${selectedIndex}"]`);
       if (selectedElement) {
-        const blockOption = cn({
-          start: selectedIndex === 0,
-          end: selectedIndex === totalItems - 1,
-          nearest: selectedIndex > 0 && selectedIndex < totalItems - 1,
-        }) as ScrollLogicalPosition;
+        const blockOption: ScrollLogicalPosition =
+          selectedIndex === 0 ? 'start' : selectedIndex === totalItems - 1 ? 'end' : 'nearest';
         selectedElement.scrollIntoView({
           behavior: 'smooth',
           block: blockOption,
@@ -462,9 +454,11 @@ export default function SearchDialog({
     <DialogContent
       className="top-auto bottom-0 h-[75dvh] w-full max-w-(--breakpoint-sm) translate-y-0 rounded-t-xl p-0 shadow-none outline-hidden data-[state=closed]:zoom-out-100 data-[state=closed]:slide-out-to-bottom-1/2 data-[state=open]:zoom-in-100 data-[state=open]:slide-in-from-bottom-1/2 sm:top-[20dvh] sm:bottom-auto sm:h-auto sm:rounded-lg sm:data-[state=closed]:zoom-out-95 sm:data-[state=closed]:slide-out-to-bottom-1 sm:data-[state=open]:zoom-in-95 sm:data-[state=open]:slide-in-from-bottom-1"
       onOpenAutoFocus={handleOpenAutoFocus}
-      onCloseAutoFocus={handleCloseAutoFocus}
     >
       <DialogTitle className="sr-only">Search</DialogTitle>
+      <DialogDescription className="sr-only">
+        Search the available content and choose a result to open it.
+      </DialogDescription>
       <div className="relative flex flex-col" onKeyDown={handleKeyDown}>
         <div className="relative">
           <SearchInput

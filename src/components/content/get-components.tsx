@@ -120,15 +120,19 @@ export const getComponents = (options: IGetComponentsOptions) => {
       children,
       className,
       fileName,
+      highlightedLines: _highlightedLines,
+      'data-copy-code': copyCode,
       ...props
     }: PropsWithChildren<{
       className?: string;
       fileName?: string;
+      highlightedLines?: string;
+      'data-copy-code'?: string;
     }>) => {
       if (!isValidElement(children)) return null;
 
       return (
-        <CodeBlock fileName={fileName}>
+        <CodeBlock fileName={fileName} copyCode={copyCode ?? ''}>
           <pre className={className} {...props}>
             {children}
           </pre>

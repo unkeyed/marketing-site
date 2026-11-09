@@ -42,7 +42,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="flex min-w-0 flex-col">
-      <h1 className="sr-only">Blog - {categoryData.title}</h1>
+      <h2 className="sr-only">Blog - {categoryData.title}</h2>
       <PostsList posts={posts} />
       {totalPages > 1 && (
         <div className="mt-14 flex justify-center md:mt-20">

@@ -1,7 +1,10 @@
+'use client';
+
 import NextLink from 'next/link';
 
 import { IFooterMenuSection } from '@/types/common';
 import { cn, isExternalLink } from '@/lib/utils';
+import { useNavigationScrollReset } from '@/hooks/use-navigation-scroll-reset';
 
 interface IFooterNavProps {
   className?: string;
@@ -10,6 +13,8 @@ interface IFooterNavProps {
 }
 
 function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNavProps) {
+  const navigationScrollProps = useNavigationScrollReset();
+
   return (
     <nav
       aria-label={ariaLabel}
@@ -32,6 +37,8 @@ function Nav({ className, sections, ariaLabel = 'Footer navigation' }: IFooterNa
                   <NextLink
                     className="transition-colors duration-200 hover:text-white"
                     href={item.href}
+                    {...navigationScrollProps(item.href)}
+                    prefetch={isExternal ? false : undefined}
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
                   >
