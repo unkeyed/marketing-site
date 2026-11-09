@@ -642,3 +642,17 @@ export const enterpriseData = {
   buttonText: 'Contact sales',
   buttonUrl: ENTERPRISE_CONTACT_URL,
 };
+
+export const startupsData = {
+  title: 'Startups',
+  description:
+    'Raised less than $5M? Get $1,000 in credits every month for 12 months, plus hands-on help getting started. Raised more? Get 50% off your bill for 12 months.',
+  features: [
+    '$1,000/mo credits for 12 months',
+    'Priority support',
+    'Concierge onboarding',
+    'Migration help',
+  ],
+  buttonText: 'Apply now',
+  buttonUrl: '/startups',
+};
