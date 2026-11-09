@@ -20,7 +20,7 @@ export default function Hero({
         <div className="grid gap-10 md:gap-12 xl:grid-cols-[1fr_1fr] xl:items-end 2xl:gap-24">
           <div className="flex min-w-0 flex-col">
             <Label>{label}</Label>
-            <h1 className="mt-6 font-display text-4xl leading-[1.125] font-normal text-foreground md:mt-7 md:text-5xl lg:text-[3.25rem] xl:text-[4rem] [&_mark]:relative [&_mark]:-left-[0.15em] [&_mark]:-mr-[0.15em] [&_mark]:bg-transparent [&_mark]:bg-[linear-gradient(var(--color-yellow),var(--color-yellow))] [&_mark]:box-decoration-clone [&_mark]:[background-size:100%_0.96em] [&_mark]:[background-position:center_calc(50%_+_0.055em)] [&_mark]:bg-no-repeat [&_mark]:px-[0.1em] [&_mark]:text-black">
+            <h1 className="mt-6 font-display text-4xl leading-[1.125] font-normal text-foreground md:mt-7 md:text-5xl lg:text-[3.25rem] xl:text-[4rem] [&_mark]:relative [&_mark]:-left-[0.15em] [&_mark]:-mr-[0.15em] [&_mark]:bg-transparent [&_mark]:bg-[linear-gradient(var(--color-yellow),var(--color-yellow))] [&_mark]:box-decoration-clone [&_mark]:[background-size:100%_1.02em] [&_mark]:[background-position:center_calc(50%_+_0.17em)] [&_mark]:bg-no-repeat [&_mark]:px-[0.1em] [&_mark]:text-black">
               {title}
             </h1>
             <p className="mt-6 font-sans text-[1.125rem] leading-[1.375] font-normal tracking-[-0.015em] text-muted-foreground md:mt-7 md:max-w-xl lg:mt-8 xl:max-w-128">
