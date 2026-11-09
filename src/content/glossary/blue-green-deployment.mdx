@@ -49,7 +49,7 @@ faq:
   - question: How do database changes fit?
     answer: The common layout is two app environments and one database. You do not switch the database with the router. First ship a schema both versions can use, and keep that as a point you can return to. Then deploy the new app. After you will not roll the app back, remove the old schema in a later release. A migration that only the new version can read makes the old environment useless as a rollback.
   - question: How is this different from a canary or a rolling update?
-    answer: A canary sends a fraction of live traffic to the new version before the rest follows, so you see production behavior while most callers are still on the old version. A rolling update replaces instances in one environment a few at a time and does not keep a second full copy. Blue-green switches the whole router and keeps the previous full environment for rollback. It costs that idle capacity.
+    answer: A [canary deployment](/glossary/canary-deployment) sends a fraction of live traffic to the new version before the rest follows, so you see production behavior while most callers are still on the old version. A rolling update replaces instances in one environment a few at a time and does not keep a second full copy. Blue-green switches the whole router and keeps the previous full environment for rollback. It costs that idle capacity.
   - question: Why is DNS a weak way to switch?
     answer: Resolvers cache DNS records, so some clients keep using the old address after you change the name, and a rollback waits on those caches too. A router or load balancer in front of both environments can move new connections immediately and can move them back the same way. Existing connections still need a drain plan.
 updatedAt: 2026-11-06T22:00:00.000Z
@@ -90,7 +90,7 @@ Jobs have the same overlap problem. During the release both environments are up.
 
 ## Canary releases and rolling updates
 
-A canary sends a small share of live traffic to the new version first. Most callers stay on the old version while you read errors and latency from the slice. You need a way to split traffic, not only an on or off router, and you need enough traffic in the slice to trust the result. The [Google SRE workbook chapter on canarying](https://sre.google/workbook/canarying-releases/) is about how that partial traffic can mislead you if the slice is not representative. A canary can run as a step before a blue-green switch. It is not the same switch.
+A [canary deployment](/glossary/canary-deployment) sends a small share of live traffic to the new version first. Most callers stay on the old version while you read errors and latency from the slice. You need a way to split traffic, not only an on or off router, and you need enough traffic in the slice to trust the result. The [Google SRE workbook chapter on canarying](https://sre.google/workbook/canarying-releases/) is about how that partial traffic can mislead you if the slice is not representative. A canary can run as a step before a blue-green switch. It is not the same switch.
 
 A rolling update replaces instances inside one environment, a few at a time. It does not keep a second full copy of production, so the idle cost is lower than blue-green. Mixed versions serve traffic together. A bad release is already partly in production when you notice, and the old instances you have not replaced yet are the only rollback still running.
 
