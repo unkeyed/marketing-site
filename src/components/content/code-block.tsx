@@ -12,11 +12,11 @@ interface ISharedCodeBlockProps {
   className?: string;
   as?: 'figure' | 'div';
   fileName?: string;
+  copyCode?: string;
 }
 
 interface IDirectCodeBlockProps
-  extends ISharedCodeBlockProps,
-    Omit<ICodeBlock, 'language' | 'fileName'> {
+  extends ISharedCodeBlockProps, Omit<ICodeBlock, 'language' | 'fileName'> {
   code: string;
   language: BundledLanguage | string;
   children?: never;
@@ -31,13 +31,15 @@ interface IChildrenCodeBlockProps extends ISharedCodeBlockProps {
 type TCodeBlockProps = IDirectCodeBlockProps | IChildrenCodeBlockProps;
 
 async function CodeBlock(props: TCodeBlockProps) {
-  const { as = 'figure', className, fileName, code, language, children } = props;
+  const { as = 'figure', className, fileName, code, language, children, copyCode } = props;
 
   let renderedCode: React.ReactNode = null;
   let resolvedFileName: string | undefined = fileName;
+  let textToCopy = copyCode ?? '';
 
   if (code && language && !children) {
     const resolvedCode = code.trim();
+    textToCopy = resolvedCode;
     const lang = language.toLowerCase() as BundledLanguage;
     const html = await highlight(resolvedCode, {
       lang,
@@ -56,7 +58,12 @@ async function CodeBlock(props: TCodeBlockProps) {
   }
 
   return (
-    <CodeBlockWrapper className={cn('max-w-full', className)} fileName={resolvedFileName} as={as}>
+    <CodeBlockWrapper
+      className={cn('max-w-full', className)}
+      fileName={resolvedFileName}
+      code={textToCopy}
+      as={as}
+    >
       <ScrollArea className="w-full">
         <div className="code-block-body px-4 py-5 text-left font-mono text-sm">{renderedCode}</div>
         <ScrollBar className="invisible" orientation="horizontal" />

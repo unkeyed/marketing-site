@@ -139,18 +139,19 @@ function GlossaryStickyControls({
     };
   }, [availableLetters]);
 
+  // A clipped shadow paints the full-width divider without widening the scrollable content.
   return (
     <div
       id="glossary-sticky-controls"
       ref={stickyRef}
       className={cn(
-        "relative sticky top-[var(--sticky-header-height)] z-30 -mx-5 bg-background px-5 py-4 after:pointer-events-none after:absolute after:top-full after:left-1/2 after:w-screen after:-translate-x-1/2 after:border-b after:content-[''] md:-mx-8 md:px-8 md:py-4 xl:-mx-40 xl:px-40",
-        isStuck ? 'after:border-gray-20' : 'after:border-transparent',
+        "relative sticky top-[var(--sticky-header-height)] z-30 -mx-5 bg-background px-5 py-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-px after:bg-current after:[box-shadow:0_0_0_100vw_currentColor] after:content-[''] after:[clip-path:inset(0_-100vw)] md:-mx-8 md:px-8 md:py-4 xl:-mx-40 xl:px-40",
+        isStuck ? 'after:text-gray-20' : 'after:text-transparent',
       )}
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 2xl:gap-13">
         <SearchBar
-          className="!h-8 w-full justify-between rounded-sm border-gray-20 bg-gray-8 pr-[0.1875rem] pl-2 hover:bg-gray-8 md:max-w-[15rem] lg:pr-[0.3125rem] xl:w-54 xl:w-57 xl:shrink-0 [&_kbd]:h-6 [&_kbd]:rounded-sm [&_kbd]:border-gray-20 [&_kbd]:bg-gray-8 [&_kbd]:text-gray-70 [&_span]:text-gray-70"
+          className="!h-9 w-full justify-between rounded-sm border-gray-20 bg-gray-8 pr-[0.1875rem] pl-2 hover:bg-gray-8 md:!h-8 md:max-w-[15rem] lg:pr-[0.3125rem] xl:w-54 xl:w-57 xl:shrink-0 [&_kbd]:h-6 [&_kbd]:rounded-sm [&_kbd]:border-gray-20 [&_kbd]:bg-gray-8 [&_kbd]:text-gray-70 [&_span]:text-gray-70"
           placeholder="Search..."
           searchItems={searchItems}
           suggestions={suggestions}

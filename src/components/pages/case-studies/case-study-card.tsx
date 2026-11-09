@@ -135,7 +135,13 @@ export function FeaturedCaseStudyCard({
       )}
     >
       <div className="relative h-72 w-full overflow-hidden border-b border-border md:h-96 lg:h-full lg:border-r lg:border-b-0">
-        <Image src={imageSrc} alt={imageAlt} fill className="object-cover" />
+        <Image
+          src={imageSrc}
+          alt={imageAlt}
+          fill
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          className="object-cover"
+        />
       </div>
 
       <div className="flex flex-1 flex-col justify-end px-6 py-6 lg:py-12 lg:pr-12 lg:pl-12 xl:pr-12">
