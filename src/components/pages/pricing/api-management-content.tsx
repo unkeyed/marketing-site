@@ -1,9 +1,10 @@
 import { portfolioLogos } from '@/constants/logos';
-import { apiManagementPricingPlans } from '@/constants/pricing';
+import { apiManagementPricingPlans, startupsData } from '@/constants/pricing';
 
 import Logos from '@/components/pages/logos';
 
 import Hero from './hero-pricing/hero--pricing';
+import PlanBanner from './plan-banner';
 
 const PortfolioLogos = () => {
   return (
@@ -20,7 +21,12 @@ export default function ApiManagementContent() {
   return (
     <Hero
       plans={apiManagementPricingPlans}
-      bottomContent={<PortfolioLogos />}
+      bottomContent={
+        <>
+          <PortfolioLogos />
+          <PlanBanner data={startupsData} buttonVariant="secondary" className="border-t-0" />
+        </>
+      }
       className="mb-30 lg:mb-40"
     />
   );
