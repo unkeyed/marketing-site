@@ -35,7 +35,6 @@ export const VC_ACCELERATOR_OPTIONS = [
   'Techstars',
   'Uncork',
   'YC',
-  'Other',
 ] as const;
 
 const startupsFormSchema = z.object({
