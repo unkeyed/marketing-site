@@ -199,7 +199,60 @@ serve({ fetch: app.fetch, port: 3000 });
 
 We called it with no key, then a valid key, then a made-up key, then enough requests to hit the 5-per-minute limit.
 
-![curl against the Hono server: 401 with no key, 200 with a valid key, 401 NOT_FOUND for an unknown key, then 429 RATE_LIMITED](/images/blog-images/api-key-authentication/01-hono-curl-401-200-429.png)
+```bash
+curl -si http://localhost:3000/items/list
+```
+
+```http
+HTTP/1.1 401 Unauthorized
+content-type: application/json
+
+{"error":"unauthorized"}
+```
+
+```bash
+curl -si http://localhost:3000/items/list -H "Authorization: Bearer $KEY"
+```
+
+```http
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"items":[],"owner":"user_123","plan":"free","remaining":4}
+```
+
+```bash
+curl -si http://localhost:3000/items/list -H "Authorization: Bearer sk_live_fake"
+```
+
+```http
+HTTP/1.1 401 Unauthorized
+content-type: application/json
+
+{"error":"NOT_FOUND"}
+```
+
+```bash
+for i in 1 2 3 4; do
+  curl -s -o /dev/null -w "%{http_code} " http://localhost:3000/items/list \
+    -H "Authorization: Bearer $KEY"
+done
+```
+
+```text
+200 200 200 200
+```
+
+```bash
+curl -si http://localhost:3000/items/list -H "Authorization: Bearer $KEY"
+```
+
+```http
+HTTP/1.1 429 Too Many Requests
+content-type: application/json
+
+{"error":"RATE_LIMITED"}
+```
 
 On the valid request, the handler already knows who's calling (`"owner":"user_123"`) and what plan they're on (`"plan":"free"`) without touching your database.
 
@@ -207,7 +260,16 @@ A few spots are easy to get wrong.
 
 **Set `handleInvalidKey`.** The middleware only rejects a request by itself when the key is missing. That response is `401` and `{"error":"unauthorized"}`. When a key fails verification, it calls `handleInvalidKey` if you gave it one. If you didn't, it stores the failed result and calls `next()`. We ran it without the handler and sent a made-up key.
 
-![Without handleInvalidKey, an unknown key gets HTTP 200 and a body of items secret with valid false](/images/blog-images/api-key-authentication/04-hono-without-handleinvalidkey.png)
+```bash
+curl -si http://localhost:3002/items/list -H "Authorization: Bearer sk_live_fake"
+```
+
+```http
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"items":["secret"],"valid":false}
+```
 
 That run used a small route on port 3002 that printed the check. The response was HTTP 200 and `{"items":["secret"],"valid":false}`. The handler above returns `items: []` and does not echo `valid`. Set `handleInvalidKey`, or check `c.get('unkey').data.valid` in every route.
 
@@ -215,7 +277,16 @@ That run used a small route on port 3002 that printed the check. The response wa
 
 **Pass `permissions` if routes differ.** The middleware option is a permission query the key has to satisfy. `AND` binds tighter than `OR`, and parentheses group, so `documents.read AND (billing.read OR billing.write)` means what it looks like. A key created without `items.read` gets a 403.
 
-![A key without items.read gets 403 INSUFFICIENT_PERMISSIONS](/images/blog-images/api-key-authentication/02-insufficient-permissions-403.png)
+```bash
+curl -si http://localhost:3000/items/list -H "Authorization: Bearer $KEY_WITHOUT_ITEMS_READ"
+```
+
+```http
+HTTP/1.1 403 Forbidden
+content-type: application/json
+
+{"error":"INSUFFICIENT_PERMISSIONS"}
+```
 
 ### Any framework that speaks Request and Response
 
@@ -271,7 +342,17 @@ Bun.serve({ port: 3001, fetch: handler });
 
 `keys.verifyKey` doesn't set `Retry-After` for you. The handler works it out from the `reset` timestamp of whichever limit was exceeded. `reset` is Unix milliseconds.
 
-![The plain handler returns 429 with a Retry-After header](/images/blog-images/api-key-authentication/05-plain-handler-retry-after.png)
+```bash
+curl -si http://localhost:3001/items/list -H "Authorization: Bearer $KEY"
+```
+
+```http
+HTTP/1.1 429 Too Many Requests
+content-type: application/json;charset=utf-8
+retry-after: 22
+
+{"error":"RATE_LIMITED"}
+```
 
 In a fast burst of six requests, the sixth came back 200 when we expected 429. The verifications right after it were `RATE_LIMITED` with `remaining: 0`. Counts sync across regions within moments, so `remaining` is an estimate. Use the per-key limit to stop abuse. Don't use it as an exact meter. If you need an exact count for billing, use credits. Credit balances change on the request that spends them.
 
@@ -279,7 +360,19 @@ In a fast burst of six requests, the sixth came back 200 when we expected 429. T
 
 `keys.verifyKey` returns HTTP 200 for every outcome, even for a key that doesn't exist. Errors outside verification still use error statuses, like a 400 for a malformed body or a 401 for a bad root key.
 
-![keys.verifyKey called directly with an unknown key returns NOT_FOUND with HTTP 200](/images/blog-images/api-key-authentication/03-raw-verify-200-not-found.png)
+```bash
+curl -sS -D - -X POST https://api.unkey.com/v2/keys.verifyKey \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "key": "sk_live_fake" }'
+```
+
+```json
+{
+  "meta": { "requestId": "req_..." },
+  "data": { "valid": false, "code": "NOT_FOUND" }
+}
+```
 
 Read `data.valid` first, then `data.code`, and pick the status your API returns. The checks stop at the first failure, so a rate-limited request doesn't spend credits, and a request that runs out of credits has already counted against its rate limits.
 
@@ -323,7 +416,7 @@ const res = await unkey.keys.addRoles({
 
 The [permission reference](https://www.unkey.com/docs/platform/root-keys/permissions) lists the root key permissions these calls need.
 
-Rate limits work the same way. You set `ratelimits` on `keys.createKey` and can change them later with `keys.updateKey` without a deploy. A limit on a key only counts requests made with that key. If one customer has several keys that should share one allowance, put the limit on their identity instead. [Key and identity limits](https://www.unkey.com/docs/api-management/ratelimiting/key-and-identity-limits) covers that.
+Rate limits work the same way. You set `ratelimits` on `keys.createKey` and can change them later with `keys.updateKey` without a deploy. A limit on a key only counts requests made with that key. If one customer has several keys that should share one allowance, put the limit on their identity instead. [How to rate limit an API per customer or per API key](https://www.unkey.com/blog/rate-limit-api-per-customer) covers that.
 
 ## Step 6: Rotate a key without downtime
 
