@@ -1,127 +1,298 @@
 ---
-title: 'RESTful API: Design & Best Practices Guide'
-description: Unlock RESTful API design power. Learn essentials from experts. Master design patterns and naming conventions.
-h1: 'RESTful API: Design Patterns & Best Practices'
+title: 'REST API Best Practices'
+description: 'REST API best practices for resource naming, HTTP methods, status codes, versioning, pagination, error formats, and idempotency.'
+h1: 'REST API Best Practices'
 term: RESTful API
 categories: []
 takeaways:
-  tldr: RESTful API is a set of principles for designing networked applications. It uses HTTP requests to access and manipulate data.
-  definitionAndStructure:
-    - key: REST Compliance
-      value: Adherence to REST principles
-    - key: Delphi Study Methodology
-      value: Expert opinion gathering
-    - key: Richardson Maturity Model
-      value: HTTP methods and status codes usage
-    - key: Quality Attributes
-      value: Usability and maintainability
-    - key: Rule Categorization
-      value: Design rules classification
+  tldr: A REST API exposes resources over HTTP. Name those resources with nouns, use methods and status codes for their defined purpose, version breaking changes, paginate lists, return one error format, and make retries safe.
+  didYouKnow: REST stands for Representational State Transfer. Roy Fielding defined the style in 2000. HTTP is the protocol most REST APIs use, and the practices below are how that style is usually applied.
+  usageInAPIs:
+    tags:
+      - HTTP
+      - Resources
+      - JSON
+    description: Clients create, read, update, and delete resources with standard HTTP methods. Each request carries what the server needs, because the server does not keep client session state between calls.
+  bestPractices:
+    - Use plural nouns for collections and HTTP methods for actions.
+    - Return status codes that match the outcome, including 201, 204, 401, 404, 409, and 422.
+    - Put the major version in the path and keep that version backward compatible.
+    - Paginate collections with cursors and return one stable error format.
+    - Require an idempotency key on POST requests that clients may retry.
   historicalContext:
     - key: Introduced
       value: '2000'
     - key: Origin
-      value: Web Services (RESTful API)
+      value: Fielding dissertation
     - key: Evolution
-      value: Standardized RESTful API
-  usageInAPIs:
-    tags:
-      - HTTP
-      - REST
-      - API
-    description: RESTful APIs are used to create, read, update, and delete (CRUD) resources on a server. They use standard HTTP methods like GET, POST, PUT, DELETE. They are stateless, meaning each request from client to server must contain all the information needed to understand and process the request.
-  bestPractices:
-    - 'Use HTTP methods appropriately: GET for retrieving, POST for creating, PUT for updating, and DELETE for removing resources.'
-    - Design APIs to be stateless, each request should contain all the information necessary to service the request.
-    - Use meaningful and clear URIs that represent resources.
+      value: RFC 9110
   recommendedReading:
-    - url: https://www.researchgate.net/publication/344417926_Which_RESTful_API_Design_Rules_Are_Important_and_How_Do_They_Improve_Software_Quality_A_Delphi_Study_with_Industry_Experts
-      title: Which RESTful API Design Rules Are Important and How Do They Improve Software Quality? A Delphi Study with Industry Experts
-    - url: http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
-      title: RESTful Web Services
-    - url: https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
-      title: REST APIs must be hypertext-driven
-  didYouKnow: REST stands for Representational State Transfer. It was introduced in 2000 by Roy Fielding in his doctoral dissertation.
+    - url: https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
+      title: Roy Fielding - Architectural Styles and the Design of Network-based Software Architectures
+    - url: https://www.rfc-editor.org/rfc/rfc9110
+      title: RFC 9110 - HTTP Semantics
+    - url: https://www.rfc-editor.org/rfc/rfc9457
+      title: RFC 9457 - Problem Details for HTTP APIs
+  definitionAndStructure:
+    - key: Resource
+      value: noun path
+    - key: Method
+      value: GET, POST, PUT, PATCH, DELETE
+    - key: Response
+      value: status, body
 faq:
-  - answer: Writing good REST API documentation involves several key steps. First, plan your documentation structure carefully, ensuring it aligns with the API's functionality. Prioritize important sections such as API endpoints, request/response examples, and error codes. Maintain consistency in your language and format to make the documentation easy to follow. Keep your explanations simple and clear, avoiding unnecessary jargon. Add interactivity where possible, such as 'Try it out' features, to help users understand how the API works. Lastly, cater to all levels of technical expertise by providing detailed explanations for beginners and concise, technical details for experienced users.
-    question: How do you write a good REST API documentation?
-  - answer: Best practices for building a RESTful API include using clear, noun-based resource names for easy understanding. Implement security measures such as OAuth 2.0 and rate limiting to protect your API. Optimize performance by caching data and compressing responses. Make your API user-friendly by providing interactive documentation using tools like OpenAPI. Use semantic versioning to manage changes and updates. Ensure the quality of your API by conducting thorough unit, integration, and security testing. Lastly, monitor your API's health, usage, and performance to maintain its reliability and efficiency.
-    question: Which are examples of best practices for building a RESTful API?
-  - answer: 'The three fundamental principles of a RESTful API are: 1) Uniform Interface: This principle ensures that the API has a consistent interface, making it easier for clients to interact with the server. 2) Statelessness: This means that each request from the client to the server must contain all the information needed to understand and process the request. The server should not store any context between requests. 3) Layered System: This allows an architecture to be composed of hierarchical layers by constraining component behavior. Other principles include Cacheability and Code on Demand.'
-    question: What are the three principles for a RESTful API?
-  - answer: "A RESTful API consists of three major components: 1) Client: This is the application or software code that sends requests to the server for a resource. 2) Server: This is the application or software code that controls the resource. It processes the client's requests and sends responses. 3) Resource: This is the data or service that the client requests. It can be any information that can be named, such as a document or an image. The client interacts with a representation of the resource, rather than the resource itself."
-    question: What are the three components of a RESTful API?
-updatedAt: 2024-11-25T19:00:24.000Z
+  - question: What are REST API best practices?
+    answer: Name resources with nouns, use HTTP methods for their defined purpose, and return accurate status codes. Version breaking changes, paginate collections, use one error format, and make retries safe with idempotent methods or an idempotency key.
+  - question: How should you name REST API resources?
+    answer: Use plural nouns for collections, such as /v1/orders and /v1/orders/ord_123. Keep paths lowercase, avoid verbs such as /createOrder, and use query parameters for filtering, sorting, and pagination.
+  - question: Which HTTP status codes should a REST API return?
+    answer: Return 200 for a successful read, 201 when a resource is created, and 204 when there is no body. Use 400, 401, 403, 404, 409, and 422 for client errors, and 500 only when the server failed. Do not return 200 with an error payload.
+  - question: How do you paginate a REST API?
+    answer: Prefer cursor pagination for collections that change. The client requests a page size, and the server returns the items plus a cursor for the next page. Offset and limit are simpler, but rows can be skipped or repeated when data is inserted or deleted.
+  - question: How do you make a POST request idempotent?
+    answer: Accept an idempotency key header. Store the key with the first response, and return that same response when the client retries with the same key and the same body. If the same key arrives with a different body, return 409.
+updatedAt: 2026-11-01T00:00:00.000Z
 slug: restful-api
 ---
 
-A **RESTful API**, or **Representational State Transfer API**, is a set of principles that provide developers with guidelines and best practices for creating scalable web services. REST APIs utilize standard HTTP methods such as GET, POST, PUT, DELETE, and PATCH to perform CRUD operations. This architecture leverages the existing web infrastructure, making it a natural choice for building APIs that are easy to understand and use.
+A RESTful API exposes named resources over HTTP. Clients send a method, a path, and sometimes a body. Servers answer with a status code and a representation, usually JSON. These REST API best practices keep that contract predictable: resource naming, methods, status codes, versioning, pagination, error formats, and idempotency.
 
-## Understanding RESTful API Concepts
+The examples use a generic orders API. The same rules apply in any language.
 
-RESTful APIs are inherently **stateless**, meaning each request from a client to a server must contain all the information needed to understand and complete the request. The server does not store any state about the client session, which enhances scalability by reducing server memory requirements. Communication between client and server occurs using standard HTTP protocols, with data typically returned in **JSON** or **XML** format.
+## Resource naming
 
-## REST API Design Patterns and Best Practices
+Name the thing, not the action. Collections are plural nouns. An item lives under the collection.
 
-When designing RESTful APIs, adhering to **REST API standards** is crucial for ensuring reliability, maintainability, and scalability. Here are some essential **RESTful API design patterns and best practices**:
+```http
+GET /v1/orders?status=open HTTP/1.1
+Host: api.example.com
+```
 
-- Use nouns instead of verbs in endpoint paths to represent resources.
-- Implement idempotent operations where possible to improve reliability.
-- Utilize HTTP status codes correctly to communicate the outcome of API requests.
-- Leverage caching mechanisms to enhance performance.
+```http
+GET /v1/orders/ord_123 HTTP/1.1
+Host: api.example.com
+```
 
-## REST API URL Best Practices and Examples
+A verb in the path fights the method. `POST /v1/orders` creates an order. `POST /createOrder` hides that behind a custom name and is harder to extend.
 
-A well-designed REST API URL should be intuitive and convey the resource hierarchy, making it understandable and predictable. Here are some **REST API URL best practices**:
+A few rules cover most APIs:
 
-- Use plural nouns for resources (e.g., `/users`).
-- Keep URLs simple and concise.
-- Use query parameters for filtering, sorting, and pagination.
+- Use lowercase paths. Separate words with hyphens when a single word is awkward, as in `/v1/shipping-addresses`.
+- Nest a path only when the relationship is stable, as in `/v1/customers/cus_123/orders`. Two levels is usually enough.
+- Put filters, sort, and pagination in the query string: `/v1/orders?status=open&sort=created_at`.
+- Pick one identifier style and keep it. Opaque ids such as `ord_123` do not leak a database sequence.
+- Pick one JSON field style, `snake_case` or `camelCase`, and use it in every body.
+- Send timestamps as ISO 8601 strings in UTC, such as `2026-11-01T14:00:00Z`.
+- Choose whether paths have a trailing slash, then do not serve both.
 
-**Example:**
+`GET` must not create or change resources. If the caller needs to start work, use `POST`.
 
-- List of users: `GET /users`
-- User details: `GET /users/{id}`
+## HTTP methods
 
-## REST API Documentation and Examples
+Use the method that matches the effect on the server. Clients and intermediaries already know which methods are safe to retry.
 
-Effective **RESTful API documentation** is crucial for the success of any API. It should include:
+| Method | Purpose                                                           | Safe to retry                               |
+| ------ | ----------------------------------------------------------------- | ------------------------------------------- |
+| GET    | Read a representation                                             | Yes                                         |
+| POST   | Create a resource, or start an action that is not a simple update | No, unless you add an idempotency key       |
+| PUT    | Replace the resource with the request body                        | Yes                                         |
+| PATCH  | Change part of the resource                                       | Only if your patch definition is idempotent |
+| DELETE | Remove the resource                                               | Yes                                         |
 
-- A comprehensive overview of the API.
-- Clear, executable examples of requests and responses.
-- Authentication and authorization procedures.
-- Error codes and messages.
+`PUT` sends the full representation you want stored. Repeating the same `PUT` leaves the resource in that state. `PATCH` sends a partial change. A patch such as "set status to cancelled" is idempotent. A patch such as "increment quantity by 1" is not, because a retry applies it twice.
 
-**Example:**
+```http
+POST /v1/orders HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
 
-```json
-GET /users/123
-Response:
 {
-  "id": "123",
-  "name": "John Doe",
-  "email": "john.doe@example.com"
+  "customer_id": "cus_123",
+  "items": [
+    {
+      "sku": "book-01",
+      "quantity": 1
+    }
+  ]
 }
 ```
 
-## REST API Naming Conventions
+```http
+PUT /v1/orders/ord_123 HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
 
-Consistent naming conventions in REST API design enhance readability and usability. Common **REST API best practices for naming** include:
+{
+  "customer_id": "cus_123",
+  "status": "open",
+  "items": [
+    {
+      "sku": "book-01",
+      "quantity": 2
+    }
+  ]
+}
+```
 
-- Using camelCase or snake_case consistently across all endpoints.
-- Pluralizing nouns to represent collections or lists.
-- Keeping endpoint names concise and descriptive.
+```http
+PATCH /v1/orders/ord_123 HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
 
-## REST API Design Example
+{
+  "status": "cancelled"
+}
+```
 
-Consider an API for a simple blog platform:
+## Status codes
 
-- **List all posts**: `GET /posts`
-- **Create a new post**: `POST /posts`
-- **Read a specific post**: `GET /posts/{id}`
-- **Update a post**: `PUT /posts/{id}`
-- **Delete a post**: `DELETE /posts/{id}`
+The status code is the machine-readable result. The body can explain it. Do not return `200` with an error object and expect clients to notice.
 
-Each endpoint clearly represents the actions that can be performed on the `posts` resource, adhering to REST principles and using HTTP methods appropriately.
+| Status                    | When to use it                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| 200 OK                    | The request succeeded and the body is the representation                                           |
+| 201 Created               | A resource was created. Include a Location header                                                  |
+| 202 Accepted              | The work was accepted and is not finished yet                                                      |
+| 204 No Content            | The request succeeded and there is no body                                                         |
+| 400 Bad Request           | The server could not parse the request                                                             |
+| 401 Unauthorized          | Credentials are missing or invalid                                                                 |
+| 403 Forbidden             | The caller is authenticated and is not allowed                                                     |
+| 404 Not Found             | The resource does not exist, or the caller must not learn that it exists                           |
+| 409 Conflict              | The request conflicts with current state, including a reused idempotency key with a different body |
+| 422 Unprocessable Content | The syntax is valid and the values are not acceptable                                              |
+| 429 Too Many Requests     | The caller should slow down. Include Retry-After when you can                                      |
+| 500 Internal Server Error | The server failed. Do not use this for bad client input                                            |
+| 503 Service Unavailable   | The server cannot handle the call right now                                                        |
 
-By following these **REST API best practices**, developers can create robust, scalable, and user-friendly APIs that meet the needs of their applications. Whether you're new to API development or looking to refine your skills, understanding these concepts is essential for success in the field.
+A successful create looks like this:
+
+```http
+HTTP/1.1 201 Created
+Location: /v1/orders/ord_123
+Content-Type: application/json
+
+{
+  "id": "ord_123",
+  "customer_id": "cus_123",
+  "status": "open"
+}
+```
+
+`401` means "authenticate again". `403` means "this identity is not allowed". Mixing them up makes clients prompt for a password when they will never be allowed in.
+
+Deleting an already deleted resource does not change server state, so `DELETE` is still idempotent if the second call returns `404`. Document that choice and keep it. Some APIs return `204` both times. Either rule is fine if it never changes.
+
+## Versioning
+
+Put the major version in the path so it shows up in logs, traces, and client code.
+
+```http
+GET /v1/orders HTTP/1.1
+Host: api.example.com
+Accept: application/json
+```
+
+Keep every change inside `v1` backward compatible:
+
+- You can add a new field to a response.
+- You can add an optional field to a request.
+- You cannot rename or remove a field clients already use.
+- You cannot change the meaning of a field, the type of a value, or the success status of an existing call.
+
+When you must break that contract, publish `/v2` and run it beside `/v1`. Document the sunset date. If you can, send `Deprecation` and `Sunset` headers on the old version so clients can detect it.
+
+A header such as `Accept: application/vnd.example.v1+json` is a valid alternative. Path versions are easier for most clients to see and for servers to route. Pick one scheme.
+
+## Pagination
+
+Collections grow. Do not return every row in one response.
+
+Cursor pagination holds up when rows are inserted or deleted between pages. The client asks for a page size. The server returns that many items and a cursor that points at the next page. An absent or null cursor means there is no next page.
+
+```http
+GET /v1/orders?limit=20 HTTP/1.1
+Host: api.example.com
+```
+
+```json
+{
+  "data": [
+    {
+      "id": "ord_123",
+      "status": "open"
+    }
+  ],
+  "next_cursor": "eyJpZCI6Im9yZF8xMjMifQ"
+}
+```
+
+```http
+GET /v1/orders?limit=20&cursor=eyJpZCI6Im9yZF8xMjMifQ HTTP/1.1
+Host: api.example.com
+```
+
+The cursor is opaque. Clients pass it back as they received it. They do not parse it or build their own.
+
+`limit` and `offset` are easier to implement, and they are fine for a small collection that does not change while someone pages through it. On a live feed, offset skips rows that were inserted above the window and repeats rows that shifted up. Prefer a cursor there.
+
+Also cap `limit`. A client that asks for a million rows should get the maximum you document, not a timeout.
+
+## Error formats
+
+Use one JSON shape for every error, and use the HTTP status that matches it. Clients branch on a stable identifier. People read the message. The message can be edited. The identifier should not change once clients depend on it.
+
+[RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) problem details is a standard shape for this. Set `Content-Type` to `application/problem+json`.
+
+```json
+{
+  "type": "https://api.example.com/problems/validation-error",
+  "title": "Validation failed",
+  "status": 422,
+  "detail": "quantity must be at least 1",
+  "instance": "/v1/orders",
+  "errors": [
+    {
+      "pointer": "/items/0/quantity",
+      "detail": "quantity must be at least 1"
+    }
+  ]
+}
+```
+
+`type` is a stable identifier. `status` repeats the HTTP status. `detail` is safe to show a caller. `pointer` is a JSON Pointer to the bad field. `errors` is an extension member, which the RFC allows, so validation problems can list more than one field.
+
+Do not put stack traces, SQL, or secret values in this body. Log those on the server.
+
+## Idempotency
+
+An idempotent request can be repeated without changing the outcome after the first success. `GET`, `PUT`, and `DELETE` should behave that way when the request body and path are the same.
+
+`POST` is not idempotent. A timeout after a successful create is the usual failure: the client retries, and the server creates a second order. For any `POST` that creates something, charges someone, or sends a message, accept an `Idempotency-Key` header.
+
+```http
+POST /v1/orders HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+Idempotency-Key: 8f14e45f-ceea-467a-9a1a-9a5d6c1c1e11
+
+{
+  "customer_id": "cus_123",
+  "items": [
+    {
+      "sku": "book-01",
+      "quantity": 1
+    }
+  ]
+}
+```
+
+Store the key, a hash of the request, and the response you sent.
+
+- The first request runs and stores that response, status code included.
+- The same key and the same body return the stored response and do not create another order.
+- The same key with a different body returns `409`.
+- Keep the record at least as long as clients retry, often 24 hours.
+
+The client generates the key, one key per logical operation. A retry reuses it. A new order gets a new key.
+
+Taken together, the practices above give a client one way to list, create, read, replace, update, and delete a resource, and one way to recover when the network fails halfway through.

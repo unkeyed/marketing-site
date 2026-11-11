@@ -9,6 +9,7 @@ import { ChevronDown } from 'lucide-react';
 import { IMenuItem } from '@/types/common';
 import { subscribePageScroll } from '@/lib/page-scroll';
 import { cn, isExternalLink } from '@/lib/utils';
+import { useNavigationScrollReset } from '@/hooks/use-navigation-scroll-reset';
 
 import {
   HeaderPopover,
@@ -25,6 +26,7 @@ interface IHeaderNavProps {
 
 function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavProps) {
   const pathname = usePathname();
+  const navigationScrollProps = useNavigationScrollReset();
   const navRef = useRef<HTMLElement | null>(null);
   const lastPointerTypeRef = useRef<string>('');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -108,6 +110,15 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
             <div
               key={index}
               className="relative flex items-center justify-center"
+              onKeyDown={(event) => {
+                if (event.key === 'Escape' && isOpen) {
+                  event.preventDefault();
+                  closeDropdown();
+                  event.currentTarget
+                    .querySelector<HTMLButtonElement>('button[aria-expanded]')
+                    ?.focus();
+                }
+              }}
               onPointerEnter={(event) => {
                 if (event.pointerType !== 'mouse') {
                   return;
@@ -166,6 +177,8 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
                   <HeaderPopoverItem key={childIndex}>
                     <NextLink
                       href={child.href ?? '#'}
+                      {...navigationScrollProps(child.href ?? '#')}
+                      prefetch={isExternalLink(child.href) ? false : undefined}
                       onClick={closeDropdown}
                       target={isExternalLink(child.href) ? '_blank' : undefined}
                       rel={isExternalLink(child.href) ? 'noopener noreferrer' : undefined}
@@ -195,6 +208,8 @@ function Nav({ className, items, ariaLabel = 'Primary navigation' }: IHeaderNavP
           <NextLink
             key={index}
             href={href ?? '#'}
+            {...navigationScrollProps(href ?? '#')}
+            prefetch={isExternal ? false : undefined}
             aria-current={index === activeIndex ? 'page' : undefined}
             target={isExternal ? '_blank' : undefined}
             rel={isExternal ? 'noopener noreferrer' : undefined}

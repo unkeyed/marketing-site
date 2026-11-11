@@ -12,13 +12,13 @@ export const ycContentData = {
     '\nevery month for current YC batch',
   ),
   description:
-    '$1,000 in credits every month for the current YC batch. Everyone else gets 50% off their bill. Eligibility expires after raising $5 million.',
+    '$1,000 in credits every month for 12 months for the current YC batch. Raised more than $5 million? You still qualify for 50% off your bill for 12 months.',
   benefits: [
     {
       icon: CircleDot,
       title: '$1,000 in monthly credits',
       description:
-        "No catch. Get $1,000 in credits every month while you build and ship — we're happy to cover the bill.",
+        "No catch. Get $1,000 in credits every month for 12 months while you build and ship — we're happy to cover the bill.",
     },
     {
       icon: MessageSquare,

@@ -3,14 +3,11 @@ import { notFound } from 'next/navigation';
 import { changelogDescription } from '@/constants/changelog';
 
 import { getMetadata } from '@/lib/get-metadata';
+import { getPaginationPage } from '@/lib/pagination';
 import ChangelogHero from '@/components/pages/changelog/hero--changelog';
 import PostsList from '@/components/pages/changelog/posts-list';
 
-import {
-  getAllChangelogEntries,
-  getPaginatedChangelogEntries,
-  POSTS_PER_PAGE,
-} from '../../data';
+import { getAllChangelogEntries, getPaginatedChangelogEntries, POSTS_PER_PAGE } from '../../data';
 
 interface ChangelogPaginatedPageProps {
   params: Promise<{
@@ -30,11 +27,7 @@ export async function generateStaticParams() {
 }
 
 export default async function ChangelogPaginatedPage({ params }: ChangelogPaginatedPageProps) {
-  const pageNumber = parseInt((await params).page, 10);
-
-  if (isNaN(pageNumber) || pageNumber < 2) {
-    notFound();
-  }
+  const pageNumber = getPaginationPage((await params).page);
 
   const paginationData = await getPaginatedChangelogEntries(pageNumber);
 
@@ -63,7 +56,7 @@ export default async function ChangelogPaginatedPage({ params }: ChangelogPagina
 }
 
 export async function generateMetadata({ params }: ChangelogPaginatedPageProps): Promise<Metadata> {
-  const pageParam = (await params).page;
+  const pageParam = getPaginationPage((await params).page);
 
   return getMetadata({
     title: 'Changelog',

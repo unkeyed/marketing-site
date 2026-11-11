@@ -1,0 +1,123 @@
+---
+title: 'What Serverless Is'
+description: 'A way to run code where the cloud starts and stops it for you instead of keeping a server on.'
+seo:
+  title: 'What Serverless Is'
+  description: 'A way to run code where the cloud starts and stops it for you instead of keeping a server on.'
+h1: 'What Serverless Is'
+term: Serverless
+categories: []
+takeaways:
+  tldr: Serverless means the platform starts your code to handle work and can stop it when the work is done. The machines still exist. You do not keep a server process running yourself.
+  didYouKnow: AWS Lambda, announced in 2014, made the name ordinary. Google App Engine in 2008 already ran request handlers without giving you a machine to patch. You still operated the web server in older per-request models such as CGI.
+  usageInAPIs:
+    tags:
+      - Invoked per request
+      - Scale to zero
+      - Cold start
+    description: An HTTP API on a serverless platform is a handler the platform calls when a request arrives. The handler does not bind a port and wait. Any instance may serve the next call, and an idle instance may be stopped, so durable state belongs in another service.
+  bestPractices:
+    - Keep the handler stateless and put durable data in a service that outlives the instance.
+    - Set a concurrency cap so a spike cannot open more downstream connections than that system allows.
+    - Keep a minimum instance when a cold start is too slow for the caller.
+    - Read the platform maximum duration before you host a long request or a long-lived connection.
+    - Compare idle-time pricing with a small always-on process for steady traffic. There is no universal cutoff.
+  historicalContext:
+    - key: Introduced
+      value: '2014'
+    - key: Origin
+      value: The name spread with AWS Lambda
+    - key: Evolution
+      value: Functions and scale-to-zero containers
+  recommendedReading:
+    - url: https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf
+      title: CNCF Serverless Whitepaper v1.0
+    - url: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+      title: Kubernetes autoscaling
+  definitionAndStructure:
+    - key: What you run
+      value: A handler the platform invokes
+    - key: What you skip
+      value: A process that stays listening
+    - key: Idle behavior
+      value: The platform may stop the instance
+faq:
+  - question: What is serverless?
+    answer: Serverless is a way to run code where the platform starts an instance for the work and can stop it when the instance is idle. You do not provision a server and leave it on. The servers still exist. Someone else runs them, and you accept that platform's limits on duration, memory, and concurrency.
+  - question: Does serverless mean there are no servers?
+    answer: No. The name means those servers are not yours to patch, size, or keep running. A request still executes on a machine. The difference is that the platform decides when that machine's copy of your code exists.
+  - question: What is a cold start?
+    answer: A cold start is the time spent creating an instance before it can handle a request. The platform has to find capacity, start a runtime, and load your code. A later request on that same instance skips that work. Scale to zero makes cold starts more common, because the next request after idle often has no instance waiting.
+  - question: When is serverless a poor fit?
+    answer: It fits poorly when the caller cannot wait for a cold start, when the handler needs a large cache or connection pool that stays warm, or when the work runs longer than the platform allows. A process that stays up is the alternative. Long-lived connections need a platform that documents support for them, and they still usually have a time limit.
+  - question: Is autoscaling the same thing as serverless?
+    answer: No. Autoscaling is the loop that adds or removes capacity. Serverless platforms usually include that loop, often down to zero instances. You can also autoscale a service that stays running and never scales to zero. The hosting model and the scaling loop are separate choices.
+updatedAt: 2026-11-06T22:00:00.000Z
+slug: serverless
+---
+
+Serverless is a way to run code where the platform starts an instance to handle work and can stop that instance when it is idle. You do not keep a server process running yourself. The machines are still there. You do not patch them, choose their size one by one, or leave them on overnight.
+
+The usual trigger is an HTTP request or an event. The platform runs your handler and may freeze or destroy that instance after the response. A process that binds a port and waits is a different hosting model.
+
+## What you give the platform
+
+You give it a function, a handler, or a small container, and you accept limits on memory, run time, and concurrency. You do not call `listen()` and wait for the next connection. The platform invokes you.
+
+```javascript
+export function handler(request) {
+  const url = new URL(request.url);
+
+  if (url.pathname === '/health') {
+    return new Response('ok');
+  }
+
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { 'content-type': 'application/json' },
+  });
+}
+```
+
+This handler does not open a port. The platform calls `handler` when a request arrives and takes the response back. A process that stays up and calls `listen()` is described under [API hosting](/glossary/api-hosting).
+
+## Cold starts and scale to zero
+
+The first request after idle pays for startup. The platform finds capacity, starts a runtime, and loads your code. A later request on that same instance skips that work. The pause is a cold start. How long it is depends on the runtime, the size of the code, and the platform. There is no single number.
+
+Scale to zero means no instance is kept while traffic is absent, so the next request is often cold. Keeping a minimum of one instance removes that pause for the next call, and it means you are paying for an idle worker again. That minimum is a setting. It does not change the definition. The platform can still stop extra instances it started for a spike.
+
+## State
+
+Any instance may handle the next request, and the instance may disappear between requests. Local disk on that instance is temporary. Put durable data in a database or another service.
+
+A [stateless](/glossary/statelessness) handler fits. An in-memory cache on the instance can still help while that instance lives. It is empty after a cold start, so you cannot treat it as the only copy of anything.
+
+## How this differs from a server you keep
+
+[Containerization](/glossary/containerization) packages a process you can run for days. [Horizontal scaling](/glossary/horizontal-scaling) adds more of those processes. [Autoscaling](/glossary/autoscaling) is the loop that adds and removes capacity. Serverless platforms include that loop, and the floor is often zero. A container service can autoscale too, and still keep a process listening the whole time.
+
+|                       | Process you keep                | Serverless                             |
+| --------------------- | ------------------------------- | -------------------------------------- |
+| Lifetime              | Stays up until you stop it      | Starts for work and may stop when idle |
+| Idle                  | The machine stays reserved      | Extra instances can disappear          |
+| Local disk            | Present while the machine lives | Ephemeral                              |
+| Listening port        | The process binds one           | The platform invokes a handler         |
+| Long-lived connection | Ordinary, until you close it    | Often limited by a maximum duration    |
+
+Idle cost follows the platform's prices. Many serverless platforms charge for execution time and requests rather than for a machine that sits idle. A steady, busy API can cost more that way than a small process that stays up. Compare the two with your traffic, your cold-start budget, and the published prices. There is no universal cutoff.
+
+## When it fits
+
+Serverless fits work that can finish and then stop.
+
+- Traffic that is rare or spiky, where an always-on machine would sit idle.
+- A job with a clear end: resize an image, handle one [webhook](/glossary/webhook) delivery, run a scheduled task.
+- A small HTTP handler whose callers can tolerate a cold start, or where you pay for a minimum instance to avoid one.
+
+It fits poorly when the latency budget cannot absorb startup, when the code depends on a warm cache or a warm connection pool, or when a request must run longer than the platform allows. Read that maximum before you move a workload. It is a product limit, and products differ. A connection that must stay open, such as a websocket, needs a platform that documents that mode. Even then, the connection usually has a time limit. [Long polling](/glossary/long-polling) has the same constraint: it assumes something is willing to hold the request.
+
+## What serverless does not remove
+
+You still choose a region, handle timeouts, and limit concurrency. The platform can start instances faster than a database can accept connections. A [rate limit](/glossary/rate-limiting) in front of a scarce dependency still matters. Serverless removes the work of keeping a server on. It does not remove capacity planning.
+
+The [CNCF Serverless Whitepaper](https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf) is a longer definition of functions and the backends they call. It is a 2018 overview, not a promise about any current product.

@@ -1,7 +1,10 @@
 ---
 title: 'CORS in APIs: Comprehensive Guide'
 description: Unlock the power of CORS in API development. Learn essentials and key takeaways from expert examples. Dive into CORS API Gateway. Start now.
-h1: 'Understanding CORS: API Development Essentials'
+seo:
+  title: 'What CORS Is in a Web API'
+  description: 'How CORS lets a browser call an API on another origin, and which headers control it.'
+h1: 'What CORS Is in a Web API'
 term: CORS
 categories: []
 takeaways:
@@ -54,6 +57,8 @@ slug: cors
 ---
 
 CORS is a browser mechanism that relaxes the same-origin policy, governing how web applications from one origin (domain) can interact with resources from another origin. While its configuration affects security, CORS itself does not provide protection. This glossary entry delves into the essentials of CORS, its mechanisms, implementation strategies, and how to handle CORS errors, particularly in environments like AWS API Gateway.
+
+A reverse proxy is a separate mechanism. During local development, a reverse proxy can make the browser treat the API as the same origin. In production, a [load balancer](/glossary/load-balancing) is a reverse proxy that forwards each request to one of several servers. It does not disable CORS.
 
 ## Understanding CORS in API Development
 

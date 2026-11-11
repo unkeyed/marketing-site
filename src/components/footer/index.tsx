@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { ShieldCheck } from 'lucide-react';
 import config from '@/configs/website-config';
 import { MENUS } from '@/constants/menus';
+import { ShieldCheck } from 'lucide-react';
 
 import Nav from './nav';
 

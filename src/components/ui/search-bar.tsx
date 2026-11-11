@@ -71,7 +71,7 @@ function SearchBar({
           {...props}
         >
           <Search />
-          <span className="mr-auto ml-2 inline-flex text-[0.8125rem] font-normal">
+          <span className="mr-auto ml-2 inline-flex text-sm font-normal md:text-[0.8125rem]">
             {placeholder}
           </span>
           {!isTouchDevice && enableCmdK && (

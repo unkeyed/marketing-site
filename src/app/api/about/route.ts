@@ -10,7 +10,7 @@ export function GET() {
   const body = [
     '# About Unkey',
     '',
-    'Founded in 2023 by James Perkins and Andreas Thomas, Unkey is building a fast, scalable, and straightforward API management platform.',
+    'Founded in 2023 by James Perkins and Andreas Thomas, Unkey issues API keys, applies rate limits, and runs the APIs you deploy.',
     '',
     `Source: ${toAbsoluteSiteUrl('/about')}`,
     '',

@@ -1,0 +1,67 @@
+---
+title: Sign in to the CLI, query API request logs, and approve waiting deployments
+date: 2026-10-30
+metaDescription: 'Sign in to the CLI from your terminal, query the requests the Unkey API served for your workspace, and authorize or cancel a deployment from the API and CLI.'
+tags: ['product:blue']
+---
+
+## New features
+
+### Sign in to the CLI from your terminal
+
+You can sign in to the Unkey CLI with `unkey login` instead of pasting a root key. The CLI prints a code and a URL. You confirm the code in the dashboard, choose what the session can do, and the CLI stores a workspace session in your system keychain.
+
+Any role can approve a login, limited to the permissions that role can grant. Active sessions live under Settings, where you can revoke them. CI still uses a root key.
+
+See [unkey login](https://www.unkey.com/docs/platform/cli/login) and [CLI authentication](https://www.unkey.com/docs/platform/cli/authentication).
+
+### Query the requests the Unkey API served for your workspace
+
+You can list the requests Unkey served for your workspace. Filter by time, path, method, request ID, and status, and page through the results. A second endpoint counts those requests per time bucket, split by status class.
+
+Both are available on the API and as CLI commands. Calls to these endpoints are not logged themselves.
+
+See [list API requests](https://www.unkey.com/docs/platform/cli/logs/list-api-requests) and [API request metrics](https://www.unkey.com/docs/platform/cli/logs/get-api-request-metrics).
+
+### Authorize or cancel a deployment from the API and CLI
+
+Fork pull request deployments wait for a project member to approve them before they build. You can approve that wait from the API or with `unkey deployments authorize`.
+
+Cancel a queued, building, or deploying run with `unkey deployments cancel`.
+
+See [authorize a deployment](https://www.unkey.com/docs/compute/cli/deployments/authorize-deployment) and [cancel a deployment](https://www.unkey.com/docs/compute/cli/deployments/cancel-deployment).
+
+## Updates
+
+### Grid and list views for resource lists
+
+Keyspaces, rate limits, projects, and apps share the same list pattern. Search sits on the left, a grid or list toggle on the right, and a Show more button when the list is long. Your view choice sticks per list.
+
+![Projects list in grid view](/images/changelog/2026-10-30/resource-list-views.png)
+
+### Crash reasons in plain English
+
+When an instance crashes, the deployments list and related views show a short plain English reason instead of a raw status string. Hover to see the fix and the original reason.
+
+### Health check and shutdown settings
+
+Environment runtime settings now have health check timeout, failure threshold, and initial delay, plus the shutdown signal your app receives when an instance stops.
+
+![Advanced runtime health check settings](/images/changelog/2026-10-30/runtime-health-checks.png)
+
+### OpenAPI as JSON
+
+The Unkey API serves its OpenAPI specification as JSON at `https://api.unkey.com/openapi.json`, and www.unkey.com publishes an API discovery catalog that points agents and tools at it.
+
+### Walkthrough: deploy with previews and request logs
+
+We published a walkthrough of connecting a GitHub repository, getting preview environments, putting a key auth policy on the gateway, and reading request and runtime logs when something breaks. See [Deploy an API with preview environments and request logs](https://www.unkey.com/blog/deploy-api-previews-monitoring).
+
+## Bug fixes
+
+- Request log filters find status, method, and deployment values when you search
+- Older deployments show their domains again on apps with many routes
+- The audit log refreshes the current time range so new events appear when you return to it
+- Long log values no longer widen the logs table or blank out rows while you scroll
+- Keyspace IP allowlists are enforced on the gateway
+- A root key with an expiration can no longer reroll another root key into a longer lifetime

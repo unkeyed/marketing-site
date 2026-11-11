@@ -9,7 +9,7 @@ interface IHeroProps {
   title: string;
   description: string;
   primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string; target?: string; rel?: string };
+  secondaryCta: { label: string; href: string };
   poster: { src: string; width: number; height: number };
   videos: { src: string; type: string }[];
   logos: {
@@ -39,8 +39,8 @@ export default function Hero({
           fill
           loading="eager"
           fetchPriority="high"
-          sizes="(max-width: 640px) 960px"
-          className="pointer-events-none origin-top scale-[1.02] object-cover object-top sm:hidden"
+          sizes="(max-width: 640px) 960px, 100vw"
+          className="pointer-events-none origin-top scale-[1.02] object-cover object-top"
         />
 
         {/*  
@@ -50,7 +50,6 @@ export default function Hero({
             webm: ffmpeg -i hero.mov -c:v libvpx-vp9 -pix_fmt yuv420p10le -crf 35 -vf scale=2880:-2 -deadline best -an hero.webm
         */}
         <BackgroundVideo
-          poster={poster.src}
           preload="auto"
           videos={videos}
           sourceMedia="(min-width: 640px)"
@@ -80,19 +79,15 @@ export default function Hero({
               {description}
             </p>
             <div className="mt-1 flex w-full shrink-0 flex-wrap items-center gap-3 sm:w-auto sm:flex-nowrap md:mt-0">
-              <Link href={primaryCta.href} variant="primary">
+              <Link href={primaryCta.href} variant="primary" className="max-[360px]:px-3.5">
                 {primaryCta.label}
               </Link>
               <Link
                 href={secondaryCta.href}
                 variant="secondary"
-                target={
-                  secondaryCta.target ?? (isExternalLink(secondaryCta.href) ? '_blank' : undefined)
-                }
-                rel={
-                  secondaryCta.rel ??
-                  (isExternalLink(secondaryCta.href) ? 'noopener noreferrer' : undefined)
-                }
+                className="max-[360px]:px-3.5"
+                target={isExternalLink(secondaryCta.href) ? '_blank' : undefined}
+                rel={isExternalLink(secondaryCta.href) ? 'noopener noreferrer' : undefined}
               >
                 {secondaryCta.label}
               </Link>

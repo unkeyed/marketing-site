@@ -11,7 +11,7 @@ import observeDashImage from '@/assets/images/home/observe/dash.png';
 import portalDocsImage from '@/assets/images/home/portal/docs.png';
 import portalKeysImage from '@/assets/images/home/portal/keys.png';
 import portalZeroImage from '@/assets/images/home/portal/zero.png';
-import { APP_URL, GITHUB_URL } from '@/configs/website-config';
+import { APP_URL } from '@/configs/website-config';
 import { buildDeployTechnologyLogos, portfolioLogos } from '@/constants/logos';
 import type { Alignment, Fit } from '@rive-app/react-canvas';
 
@@ -21,7 +21,8 @@ export const homeContentData = {
     description:
       'Unkey unifies your infrastructure. Deploy APIs instantly, route traffic through global gateways, and understand usage in one place.',
     primaryCta: { label: 'Start for free', href: APP_URL },
-    secondaryCta: { label: 'View on GitHub', href: GITHUB_URL },
+    // Same destination as the header and footer Docs links.
+    secondaryCta: { label: 'View docs', href: 'https://www.unkey.com/docs' },
     poster: { src: heroPosterImage.src, width: 1533, height: 908 },
     videos: [
       { src: '/videos/home/hero-av1.mp4', type: 'video/mp4; codecs=av01' },
@@ -238,7 +239,7 @@ export const homeContentData = {
     description:
       'Platform that scales with you. Control, routing, and traffic handling are designed for multi-region from day one.',
     buttonLabel: 'Read the docs',
-    buttonHref: 'https://unkey.com/docs/build-and-deploy/regions',
+    buttonHref: 'https://www.unkey.com/docs/compute/concepts/regions',
     riveDefaults: {
       src: '/rive/home/scale/icons.riv',
       fit: 'cover' as Fit,
@@ -284,7 +285,7 @@ export const homeContentData = {
     },
     mobileImage: observeDashImage.src,
     buttonLabel: 'Read the docs',
-    buttonHref: 'https://unkey.com/docs/observability/overview',
+    buttonHref: 'https://www.unkey.com/docs/compute/observe/overview',
     columns: [
       {
         lead: 'Automatic logs and metrics collection.',

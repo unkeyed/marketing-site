@@ -7,7 +7,7 @@ import { YcApplicationForm } from '@/components/pages/yc/application-form';
 export const metadata = getMetadata({
   title: 'Y Combinator Program',
   description:
-    '$1,000 in credits every month for current YC batch companies. Everyone else gets 50% off their bill. Priority support and concierge onboarding included.',
+    '$1,000 in credits every month for 12 months for current YC batch companies. Raised more than $5M? Get 50% off your bill for 12 months. Priority support and concierge onboarding included.',
   pathname: '/yc',
 });
 

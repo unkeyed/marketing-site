@@ -33,13 +33,12 @@ export default defineConfig({
         command:
           process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? 'pnpm dev --hostname 127.0.0.1 --port 3100',
         url: baseURL,
-        // Empty values win over `.env`, so e2e runs never POST to the real ai-visibility ingest.
         env: {
-          AI_VIS_INGEST_URL: '',
-          AI_VIS_INGEST_SECRET: '',
-          // Existing tests expect the current hero. Variant tests opt into B
-          // with the homepage-hero-variant cookie, and bot UAs still get B.
-          HOMEPAGE_HERO_E2E_DEFAULT: 'a',
+          // Leftover experiment settings must not change the homepage.
+          HOMEPAGE_HERO_VARIANT: 'b',
+          HOMEPAGE_HERO_E2E_DEFAULT: 'b',
+          // Blank beats a developer's .env, so e2e bot requests never reach Databuddy.
+          NEXT_PUBLIC_DATABUDDY_CLIENT_ID: '',
         },
         reuseExistingServer: false,
         timeout: 120_000,

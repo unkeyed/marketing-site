@@ -49,6 +49,14 @@ export interface INewPostFrontmatter {
    * URL and stays indexable by search engines and AI crawlers.
    */
   isHidden?: boolean;
+  /**
+   * Metadata overrides. `title` stays the visible H1, as on other posts.
+   * `getMetadata()` appends " | Unkey" to the SEO title.
+   */
+  seo?: {
+    title?: string;
+    description?: string;
+  };
 }
 
 export interface IPostData extends Omit<IPostMeta, 'authors' | 'category'> {

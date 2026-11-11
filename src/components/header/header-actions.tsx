@@ -5,12 +5,11 @@ import { homeHeaderLinks } from '@/constants/home-header';
 
 import { useTrack } from '@/hooks/use-tracking';
 import { Link } from '@/components/ui/link';
-import { Icons } from '@/components/icons';
 
 export default function HeaderActions() {
   const track = useTrack();
   const [onLightSection, setOnLightSection] = useState(false);
-  const [discordLink, githubLink] = homeHeaderLinks.social;
+  const [discordLink] = homeHeaderLinks.social;
   const [loginLink, signUpLink] = homeHeaderLinks.auth;
 
   useEffect(() => {
@@ -39,18 +38,6 @@ export default function HeaderActions() {
       <div className="flex items-center gap-1">
         <Link href={discordLink.href} size="small" target="_blank" rel="noopener noreferrer">
           {discordLink.label}
-        </Link>
-        <Link
-          href={githubLink.href}
-          size="small"
-          className="gap-1 [&_svg]:size-4.5"
-          aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Icons.github className="text-background" size={18} aria-hidden="true" />
-          <span className="sr-only">{githubLink.label}</span>
-          <span>{githubLink.metric}</span>
         </Link>
       </div>
 

@@ -9,6 +9,7 @@ export interface IPlainSubmission {
   fullName: string;
   threadTitle: string;
   threadBody: string;
+  labelTypeIds?: string[];
 }
 
 export async function submitToPlain({
@@ -16,6 +17,7 @@ export async function submitToPlain({
   fullName,
   threadTitle,
   threadBody,
+  labelTypeIds,
 }: IPlainSubmission): Promise<PlainSubmissionResult> {
   const apiKey = process.env.PLAIN_API_KEY;
   if (!apiKey) {
@@ -38,11 +40,25 @@ export async function submitToPlain({
       return { status: 'error', errors: [upsertCustomerRes.error.message] };
     }
 
-    const createThreadRes = await client.createThread({
+    const threadInput = {
       customerIdentifier: { customerId: upsertCustomerRes.data.customer.id },
       title: threadTitle,
       components: [{ componentText: { text: threadBody } }],
-    });
+    };
+    const hasLabels = labelTypeIds !== undefined && labelTypeIds.length > 0;
+    let createThreadRes = await client.createThread(
+      hasLabels ? { ...threadInput, labelTypeIds } : threadInput,
+    );
+
+    // A bad or archived label id fails the whole mutation. Save the thread anyway.
+    if (createThreadRes.error && hasLabels) {
+      const code =
+        createThreadRes.error.type === 'mutation_error'
+          ? createThreadRes.error.errorDetails.code
+          : createThreadRes.error.type;
+      console.warn('Plain createThread label failed', code);
+      createThreadRes = await client.createThread(threadInput);
+    }
 
     if (createThreadRes.error) {
       return { status: 'error', errors: [createThreadRes.error.message] };

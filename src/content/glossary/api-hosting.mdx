@@ -1,0 +1,129 @@
+---
+title: 'What API Hosting Is'
+description: 'Where an API runs so clients on the internet can reach it.'
+seo:
+  title: 'What API Hosting Is'
+  description: 'Where an API runs so clients on the internet can reach it.'
+h1: 'What API Hosting Is'
+term: API Hosting
+categories: []
+takeaways:
+  tldr: API hosting is the process, address, and certificate that let a client open a connection to an API. The API is the contract. Hosting is where a process that implements the contract is running.
+  didYouKnow: A health-check path is part of hosting, not part of the product. The load balancer uses it to decide whether this process should receive traffic.
+  usageInAPIs:
+    tags:
+      - Public name
+      - TLS
+      - A listening process
+    description: Clients reach an IP address, complete TLS, and talk to a process. That process might be a virtual machine, a container, or a function the platform invokes. DNS should name the load balancer you intend to keep, not one machine you will replace.
+  bestPractices:
+    - Terminate TLS at a proxy you control, and keep the app port private.
+    - Point DNS at the load balancer, not at a single instance address.
+    - Expose a health check the load balancer can call before it sends user traffic.
+    - Keep the only copy of data off the instance disk. Instance disk goes away on replace.
+    - Size the new version for production traffic before you send production traffic to it.
+  historicalContext:
+    - key: Introduced
+      value: With public web servers
+    - key: Origin
+      value: A process bound to an address
+    - key: Evolution
+      value: VMs and containers and functions
+  recommendedReading:
+    - url: https://www.rfc-editor.org/rfc/rfc9110
+      title: RFC 9110 - HTTP Semantics
+    - url: https://kubernetes.io/docs/concepts/services-networking/service/
+      title: Kubernetes Service
+  definitionAndStructure:
+    - key: API
+      value: The contract clients call
+    - key: Hosting
+      value: Where the process runs
+    - key: Reachable
+      value: DNS plus TLS plus a live process
+faq:
+  - question: What is API hosting?
+    answer: API hosting is where an API runs so clients on the internet can reach it. That includes the process that handles requests, the DNS name clients use, the TLS certificate for that name, and the path from the client to a healthy process. The paths and JSON bodies are the API. Hosting is the machinery that answers.
+  - question: What is the difference between hosting an API and designing one?
+    answer: 'Design is the contract: resources, methods, status codes, and errors. Hosting is the deployment that makes some process implement that contract at a name clients can resolve. You can design an API that is not hosted yet. You can also move hosting, from a VM to a container, without changing the contract.'
+  - question: What has to be true before a client can call the API?
+    answer: DNS for the public name must resolve, TLS must succeed for the name the client used, and a process must accept the request. If a load balancer sits in front, it should send traffic only to a process whose health check is passing. A process that is running on a private port and has no route is not hosted for the internet.
+  - question: Is serverless a kind of API hosting?
+    answer: Yes. The platform invokes your handler per request and may stop it when idle. You still have a public name, a certificate, and a limit on how long a call may run. A virtual machine or a container that calls listen is hosting too. The difference is who keeps the process up.
+  - question: Does hosting include the database?
+    answer: Only if you choose to run the database on the same machine, which couples the API's lifetime to the data. Replacing that machine then risks the only copy. The usual split is an API process you can replace and a data service that outlives one deploy.
+updatedAt: 2026-11-06T22:00:00.000Z
+slug: api-hosting
+---
+
+API hosting is where an API runs so clients on the internet can reach it. The API is the contract: paths, methods, and bodies. Hosting is the process that implements that contract, plus the name, certificate, and network path a client uses to open a connection.
+
+A client does not reach an API in the abstract. It resolves a name, completes TLS, and sends HTTP to a process. If any of those is missing, the API is not hosted at that name.
+
+## What has to be in place
+
+Four pieces make a process reachable.
+
+**A process that accepts requests.** It might stay listening, or a platform might invoke it per request. Either way, something has to produce the response.
+
+**A DNS name.** Clients need a name that keeps working when you replace machines. Point the name at the load balancer or other stable address, not at one instance you plan to destroy.
+
+**A certificate for that name.** Browsers and API clients check the name against the certificate. See [TLS](/glossary/transport-layer-security). Terminating TLS at a proxy you control lets the app process listen on a private port.
+
+**A health check in front of user traffic.** A [load balancer](/glossary/load-balancing) should send a request only to a process that has answered a health check. The check is part of hosting. It is not a product endpoint, and a check that always returns success will send users to a process that cannot do the work.
+
+## A process that stays up
+
+This process listens until you stop it. The host chooses the port. `/health` is for the proxy. The public hostname and the certificate live on that proxy, not in this file.
+
+```javascript
+import { createServer } from 'node:http';
+
+const port = Number(process.env.PORT ?? 8080);
+
+const server = createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, { 'content-type': 'text/plain' });
+    res.end('ok');
+    return;
+  }
+
+  res.writeHead(200, { 'content-type': 'application/json' });
+  res.end(JSON.stringify({ ok: true }));
+});
+
+server.listen(port);
+```
+
+`PORT` has to be the port the proxy forwards to. Binding a port nobody routes to does not host the API. Returning `ok` from `/health` while the database is unreachable tells the proxy to send real traffic to a process that will fail those calls. Check the dependency you actually need, or use a separate readiness check that can fail without pretending the process is ready.
+
+## Where the process can run
+
+**A virtual machine.** You get an operating system. You patch it, you restart the process on deploy, and you can log in. Idle capacity is the size of the machine, whether or not requests are arriving.
+
+**A container.** You ship an image, and a host runs it. [Containerization](/glossary/containerization) is that packaging. You still need a host, a registry, and something that restarts the container. You usually rebuild the image when the base image changes, instead of patching a guest operating system in place.
+
+**A function.** The platform runs the code for a request and may stop it when idle. That is [serverless](/glossary/serverless) hosting. Nothing of yours calls `listen()`. Cold starts and a maximum duration are part of the choice. The public name and the certificate are still yours to point at that platform.
+
+[Autoscaling](/glossary/autoscaling) changes how many copies run. It does not choose the name, the certificate, or where the data lives. Hosting is the fact that the copies run somewhere a client can reach.
+
+|                | Virtual machine            | Container                         | Function                      |
+| -------------- | -------------------------- | --------------------------------- | ----------------------------- |
+| Who patches OS | You                        | Image rebuild, on a shared kernel | The platform                  |
+| Process        | Stays up until you stop it | Stays up until the host stops it  | Invoked, then may be stopped  |
+| Idle capacity  | The machine you reserved   | The capacity you reserved         | Often none, then a cold start |
+| Control        | Highest                    | High                              | Lowest                        |
+
+"Often none" describes the usual scale-to-zero setting. A function platform that you configure with a minimum instance reserves that instance. Read the setting. Do not assume every function host drops to zero.
+
+## Replacing a version
+
+A deploy is a hosting change. Start the new process, wait until its health check passes, send traffic, then stop the old process. [Blue-green deployment](/glossary/blue-green-deployment) keeps the old process up and moves the router. A rolling replacement swaps copies inside one pool.
+
+People use those strategies when they want a release that does not take the service offline. The name for that goal on this site is [zero-downtime API deployment](/glossary/zero-downtime-api-deployment). None of the strategies promise that no request fails. A bad build that passes a shallow health check still receives traffic. A connection that outlives the drain period is still cut.
+
+## What hosting does not decide
+
+Hosting does not design the resources, decide who may call, or store the only copy of your data. Disk on the instance disappears when the instance is replaced. Put data in a service that outlives one deploy.
+
+Hosting also does not make a private process public. A container running on a laptop, or a pod with no ingress, implements the API and is still unreachable to clients on the internet. The name, the certificate, and a route are the rest of the definition.

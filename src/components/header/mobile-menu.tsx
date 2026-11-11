@@ -9,9 +9,9 @@ import { ChevronDown } from 'lucide-react';
 
 import { IMenuItem } from '@/types/common';
 import { cn, isExternalLink } from '@/lib/utils';
+import { useNavigationScrollReset } from '@/hooks/use-navigation-scroll-reset';
 import { useTrack } from '@/hooks/use-tracking';
 import { Link } from '@/components/ui/link';
-import { Icons } from '@/components/icons';
 
 interface MobileMenuProps {
   items: IMenuItem[];
@@ -21,9 +21,10 @@ function MobileMenu({ items }: MobileMenuProps) {
   const track = useTrack();
   const [open, setOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [discordLink, githubLink] = homeHeaderLinks.social;
+  const [discordLink] = homeHeaderLinks.social;
   const [loginLink, signUpLink] = homeHeaderLinks.auth;
   const pathname = usePathname();
+  const navigationScrollProps = useNavigationScrollReset();
 
   useEffect(() => {
     setOpen(false);
@@ -114,6 +115,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                   <div key={index} className="border-b border-foreground/10">
                     <button
                       type="button"
+                      aria-expanded={isExpanded}
                       onClick={() => setExpandedIndex(isExpanded ? null : index)}
                       className="flex w-full items-center justify-between py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                     >
@@ -127,6 +129,7 @@ function MobileMenu({ items }: MobileMenuProps) {
                       />
                     </button>
                     <div
+                      inert={!isExpanded}
                       className={cn(
                         'grid transition-all duration-200',
                         isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
@@ -138,6 +141,8 @@ function MobileMenu({ items }: MobileMenuProps) {
                             <li key={ci}>
                               <NextLink
                                 href={child.href ?? '#'}
+                                {...navigationScrollProps(child.href ?? '#')}
+                                prefetch={isExternalLink(child.href) ? false : undefined}
                                 className="flex items-start gap-3 py-2.5 transition-colors hover:bg-foreground/5"
                                 onClick={() => setOpen(false)}
                                 target={isExternalLink(child.href) ? '_blank' : undefined}
@@ -179,6 +184,8 @@ function MobileMenu({ items }: MobileMenuProps) {
                 <NextLink
                   key={index}
                   href={item.href ?? '#'}
+                  {...navigationScrollProps(item.href ?? '#')}
+                  prefetch={isExternal ? false : undefined}
                   className="border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
                   onClick={() => setOpen(false)}
                   target={isExternal ? '_blank' : undefined}
@@ -196,18 +203,6 @@ function MobileMenu({ items }: MobileMenuProps) {
               rel="noopener noreferrer"
             >
               {discordLink.label}
-            </NextLink>
-            <NextLink
-              href={githubLink.href}
-              className="flex items-center gap-1 border-b border-foreground/10 py-3.5 text-base font-medium tracking-tight text-background transition-colors hover:text-gray-30"
-              onClick={() => setOpen(false)}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${githubLink.label} repository (${githubLink.metric} stars)`}
-            >
-              <Icons.github className="text-background" size={18} aria-hidden="true" />
-              <span className="sr-only">{githubLink.label}</span>
-              <span>{githubLink.metric}</span>
             </NextLink>
           </nav>
 

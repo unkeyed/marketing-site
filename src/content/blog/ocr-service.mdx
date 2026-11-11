@@ -7,7 +7,7 @@ author: wilfred
 tags: ['tutorials']
 ---
 
-[Unkey](https://unkey.com) is an open-source API key management tool with real-time API key creation, updating, and verification.
+[Unkey](https://unkey.com) handles API keys and rate limiting, with real-time key creation, updates, and verification.
 
 In this blog, we'll take a look at how we can use Unkey to make an Optical Character Recognition (OCR) API as a service. The OCR API takes in an image and returns the textual characters present in it.
 
@@ -228,7 +228,7 @@ To verify the key, we've made a middleware in the `middleware.ts` file.
 
 As shown in the above code block, the key is created in the `/signup` route in `index.ts`.
 
-Its params are explained in detail in the official [docs](https://www.unkey.com/docs/api-reference/v2/keys/create-api-key)
+Its params are explained in detail in the official [docs](https://www.unkey.com/docs/api-management/api-reference/keys/create-api-key)
 
 Following is a description of the params used in this example:
 

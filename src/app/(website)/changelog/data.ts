@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { compileMDX } from 'next-mdx-remote/rsc';
 
+import { resolveChangelogMetaDescription } from '@/lib/changelog/meta-description';
 import {
   getAllChangelogPosts,
   getChangelogPostBySlug,
@@ -39,6 +40,8 @@ interface GitHubContentEntry {
 function parseFrontmatter(source: string): {
   title: string;
   description?: string;
+  summary?: string;
+  metaDescription?: string;
   date?: string;
 } {
   const match = source.match(/^---\n([\s\S]*?)\n---/);
@@ -53,12 +56,26 @@ function parseFrontmatter(source: string): {
     return m ? m[1].replace(/^["']|["']$/g, '').trim() : undefined;
   };
 
-  return { title: get('title') ?? '', description: get('description'), date: get('date') };
+  return {
+    title: get('title') ?? '',
+    description: get('description'),
+    summary: get('summary'),
+    metaDescription: get('metaDescription'),
+    date: get('date'),
+  };
 }
 
-async function fetchRawChangelogs(): Promise<
-  Array<{ slug: string; date: string; title: string; description?: string; source: string }>
-> {
+interface IGitHubChangelogSource {
+  slug: string;
+  date: string;
+  title: string;
+  description?: string;
+  summary?: string;
+  metaDescription?: string;
+  source: string;
+}
+
+async function fetchRawChangelogs(): Promise<IGitHubChangelogSource[]> {
   try {
     const headers: HeadersInit = { Accept: 'application/vnd.github.v3+json' };
     if (process.env.GITHUB_TOKEN) {
@@ -91,9 +108,15 @@ async function fetchRawChangelogs(): Promise<
           }
           const source = (await raw.text()).replace(/^noindex:\s*.+$/m, '');
           const slug = file.name.slice(0, -4);
-          const { title, description, date: frontmatterDate } = parseFrontmatter(source);
+          const {
+            title,
+            description,
+            summary,
+            metaDescription,
+            date: frontmatterDate,
+          } = parseFrontmatter(source);
           const date = resolvePublishedDate(frontmatterDate, slug);
-          return { slug, date, title, description, source };
+          return { slug, date, title, description, summary, metaDescription, source };
         } catch (err) {
           console.error(`Failed to process changelog file ${file.name}:`, err);
           return null;
@@ -142,7 +165,7 @@ async function compileGitHubChangelogMdx(
 }
 
 async function buildGithubPost(
-  entry: { slug: string; date: string; title: string; description?: string; source: string },
+  entry: IGitHubChangelogSource,
   opts: { headingIdPrefix?: boolean } = {},
 ): Promise<IChangelogPost> {
   const safeSlugPrefix = entry.slug.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
@@ -150,19 +173,26 @@ async function buildGithubPost(
     headingIdPrefix: opts.headingIdPrefix && safeSlugPrefix ? `${safeSlugPrefix}--` : undefined,
   });
 
+  const body = entry.source.replace(/^---[\s\S]*?---/, '');
+
   return {
     slug: entry.slug,
     title: entry.title || entry.slug,
     isDraft: false,
     publishedAt: entry.date,
     publishedAtFormatted: getFormattedDate(entry.date, 'short'),
-    readingTime: getTimeToRead(entry.source.replace(/^---[\s\S]*?---/, '')),
+    readingTime: getTimeToRead(body),
     tags: GITHUB_TAGS,
     content,
-    rawContent: entry.source.replace(/^---[\s\S]*?---/, '').trim(),
+    rawContent: body.trim(),
     seo: {
       title: entry.title || entry.slug,
-      description: entry.description ?? '',
+      description: resolveChangelogMetaDescription({
+        metaDescription: entry.metaDescription,
+        summary: entry.summary,
+        description: entry.description,
+        body,
+      }),
       socialImage: '/social-previews/main.jpg',
       noIndex: false,
     },

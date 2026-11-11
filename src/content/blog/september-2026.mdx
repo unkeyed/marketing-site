@@ -25,7 +25,7 @@ The gateway now writes a base request log on every request. Five extra capture s
 
 `analytics.getGatewayRequests` runs SQL over the requests Unkey routed to your deployments. Break down paths, status codes, and latency from a trusted backend with a root key. `analytics.getRuntimeLogs` does the same for a deployment's stdout and stderr. Rate-limit data is queryable the same way: limits, rejections, and usage.
 
-See [gateway request analytics](https://www.unkey.com/docs/platform/analytics/get-gateway-requests), [runtime log analytics](https://www.unkey.com/docs/platform/analytics/get-runtime-logs), and [rate-limit analytics](https://www.unkey.com/docs/platform/analytics/get-ratelimits).
+See [gateway request analytics](https://www.unkey.com/docs/compute/observe/analytics-api), [runtime log analytics](https://www.unkey.com/docs/compute/observe/analytics-api), and [rate-limit analytics](https://www.unkey.com/docs/api-management/analytics/tables/ratelimits).
 
 ## Log drains
 
@@ -35,7 +35,7 @@ HTTP drains send JSON, NDJSON, or Splunk HEC, and that includes CrowdStrike NG-S
 
 Audit logs also record more key and rate-limit actions, so the trail is clearer when a key is created, updated, or verified, and when a rate limit is applied or overridden.
 
-See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains) and [audit log event types](https://www.unkey.com/docs/audit-log/types).
+See [log drains](https://www.unkey.com/docs/platform/workspace/log-drains) and [audit log event types](https://www.unkey.com/docs/platform/workspace/audit-logs/event-types).
 
 ![Create a log drain](/images/blog-images/september-2026/log-drains.png)
 
@@ -45,7 +45,7 @@ The new-app flow accepts a container image as a source, not only a GitHub repo. 
 
 Same gateway, now on localhost. Routes and policies come from a config file. Keys are verified against Unkey, and rate limits run in memory for that local process. Put it in front of a service on localhost and you get the same checks you run in production.
 
-See [deploying a pre-built image](https://www.unkey.com/docs/build-and-deploy/cli) and [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
+See [deploying a pre-built image](https://www.unkey.com/docs/compute/cli/deploy) and [local development with the gateway](https://www.unkey.com/docs/compute/gateway/local-development).
 
 ## Production environments, custom domains, and deploy checks
 
@@ -101,7 +101,7 @@ Gateway policies can match the client IP against `in` or `notIn` lists of addres
 
 A key auth policy can override credit cost, so an expensive route can cost more than a cheap one without a second key. A ratelimit policy can use a compound identifier, so you can limit "this user on this route" without a second limiter. Read and write on gateway policies are separate permissions. You can grant list access without granting updates.
 
-See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall) and [gateway policies](https://www.unkey.com/docs/platform/gateway/policies/overview).
+See [firewall policies](https://www.unkey.com/docs/compute/gateway/firewall) and [gateway policies](https://www.unkey.com/docs/compute/gateway/policies).
 
 ## Verification analytics in the portal
 
@@ -123,7 +123,7 @@ Upgrades and paywalls now open one plans screen for both Compute and API, and yo
 
 GitHub works the same way. You can install the GitHub app and connect repos through the API. One GitHub account or organization can connect to more than one workspace, and each workspace authorizes the connection separately.
 
-See the [CLI](https://www.unkey.com/docs/cli/overview).
+See the [CLI](https://www.unkey.com/docs/platform/cli/overview).
 
 ## Smaller updates
 

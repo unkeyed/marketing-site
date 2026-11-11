@@ -7,7 +7,7 @@ import { StartupsApplicationForm } from '@/components/pages/startups/application
 export const metadata = getMetadata({
   title: 'Startups Program',
   description:
-    'Get $1,000 in credits every month for a year for your startup, plus priority support, concierge onboarding, and hands-on migration help. Everyone else gets 50% off their bill.',
+    'Get $1,000 in credits every month for 12 months for your startup, plus priority support, concierge onboarding, and hands-on migration help. Raised more than $5M? Get 50% off your bill for 12 months.',
   pathname: '/startups',
 });
 

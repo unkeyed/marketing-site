@@ -1,4 +1,4 @@
-import { BOOK_A_CALL_URL, GITHUB_URL } from '@/configs/website-config';
+import { BOOK_A_CALL_URL } from '@/configs/website-config';
 
 import type { IFooterMenuSection, IMenuSocialItem } from '@/types/common';
 
@@ -35,7 +35,7 @@ export const MENUS = {
       ],
     },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Docs', href: 'https://unkey.com/docs/introduction' },
+    { label: 'Docs', href: 'https://www.unkey.com/docs' },
   ],
   footer: {
     description: 'Build better APIs faster',
@@ -45,7 +45,7 @@ export const MENUS = {
         title: 'Company',
         items: [
           { label: 'About', href: '/about' },
-          { label: 'Source Code', href: GITHUB_URL },
+          { label: 'Careers', href: '/careers' },
           { label: 'Status Page', href: 'https://status.unkey.com' },
           { label: 'Roadmap', href: 'https://feedback.unkey.com/roadmap' },
         ],
@@ -56,9 +56,10 @@ export const MENUS = {
           { label: 'Blog', href: '/blog' },
           { label: 'Case Studies', href: '/case-studies' },
           { label: 'Changelog', href: '/changelog' },
-          { label: 'Docs', href: 'https://unkey.com/docs/introduction' },
+          { label: 'Docs', href: 'https://www.unkey.com/docs' },
           { label: 'Glossary', href: '/glossary' },
           { label: 'Feature Request', href: 'https://feedback.unkey.com/' },
+          { label: 'Archive', href: '/blog/archive' },
         ],
       },
       {
@@ -83,11 +84,6 @@ export const MENUS = {
         href: 'https://x.com/unkeydev',
         label: 'Follow us on X',
         icon: 'twitter',
-      },
-      {
-        href: GITHUB_URL,
-        label: 'Follow us on GitHub',
-        icon: 'github',
       },
       {
         href: 'https://unkey.com/discord',

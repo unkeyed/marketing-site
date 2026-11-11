@@ -101,7 +101,7 @@ For billing we'll look at extracting two different values for a specific timefra
 To figure out the total usage per workspace, per month, we can simply query the original datasource and write the aggregated data to a materilized view:
 We filter out all verifications that were denied and then count all verifications per workspace and per month.
 
-````sql title="aggregate_verifications_monthly.pipe"
+```sql title="aggregate_verifications_monthly.pipe"
 SELECT
     workspaceId,
     apiId,
@@ -115,8 +115,7 @@ GROUP BY
     apiId,
     keyId,
     time
-    ```
-
+```
 
 Then we can write a second pipe that reads data from the materialized view. The beauty of Tinybird is that they expose an HTTP endpoint for you to query this pipe.
 You can even define query parameters like this: `{{ String(workspaceId, required=True) }}`
@@ -129,7 +128,7 @@ WHERE
     workspaceId = {{ String(workspaceId, required=True) }}
     AND time = makeDate({{ Int64(year) }}, {{ Int64(month) }}, 1)
 GROUP BY time
-````
+```
 
 We can now query this endpoint like this:
 
@@ -200,7 +199,7 @@ const workspaces = await io.runTask('list workspaces', async () =>
 );
 ```
 
-Afterwards we fetch the usage for both keys and verifications and finalize the invoice. The code is all open source, if you're interested: [create-invoice.ts](https://github.com/unkeyed/unkey/blob/main/apps/workflows/jobs/create-invoice.ts)
+Afterwards we fetch the usage for both keys and verifications and finalize the invoice. The code is on GitHub, if you're interested: [create-invoice.ts](https://github.com/unkeyed/unkey/blob/main/apps/workflows/jobs/create-invoice.ts)
 
 ## Results
 

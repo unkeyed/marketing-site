@@ -1,0 +1,155 @@
+---
+title: 'What Rate Limiting Is'
+description: 'How an API caps how many requests a client can make in a set time.'
+seo:
+  title: 'What Rate Limiting Is'
+  description: 'How an API caps how many requests a client can make in a set time.'
+h1: 'What Rate Limiting Is'
+term: Rate Limiting
+categories: []
+takeaways:
+  tldr: Rate limiting counts a caller's requests and rejects new ones once the caller passes a cap for that interval. The usual HTTP status is 429, with Retry-After telling the client how long to wait.
+  didYouKnow: A fixed window can allow twice the stated limit in a short span. The client sends a full quota at the end of one window and another full quota at the start of the next.
+  usageInAPIs:
+    tags:
+      - Per-caller caps
+      - 429 responses
+      - Shared counters
+    description: APIs attach a limit to an API key, a user, or a route so one client cannot consume the whole service. The counter has to be shared across instances. A counter that lives in one process allows the limit once per process.
+  bestPractices:
+    - Limit by the credential when the client has one, and treat client IP as a weak fallback.
+    - Trust X-Forwarded-For only from a proxy you operate.
+    - Return 429 and a Retry-After value the client can honor.
+    - Share the counter across every instance that can accept the request.
+    - Decide in advance whether a counter outage fails open or fails closed.
+  historicalContext:
+    - key: Introduced
+      value: 1980s
+    - key: Origin
+      value: Network traffic shaping
+    - key: Evolution
+      value: HTTP 429 in RFC 6585 (2012)
+  recommendedReading:
+    - url: https://www.rfc-editor.org/rfc/rfc9110#section-15.5.20
+      title: RFC 9110 - 429 Too Many Requests
+    - url: https://www.rfc-editor.org/rfc/rfc9110#name-retry-after
+      title: RFC 9110 - Retry-After
+    - url: https://www.rfc-editor.org/rfc/rfc6585
+      title: RFC 6585 - Additional HTTP Status Codes
+    - url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429
+      title: MDN - 429 Too Many Requests
+    - url: https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-ratelimit-headers
+      title: IETF draft - RateLimit header fields for HTTP
+    - url: https://api-security.owasp.org/editions/2023/en/0xa4-unrestricted-resource-consumption/
+      title: OWASP API4 - Unrestricted Resource Consumption
+  definitionAndStructure:
+    - key: Cap
+      value: A count per caller and interval
+    - key: Over the cap
+      value: Reject the request
+    - key: Usual status
+      value: 429 Too Many Requests
+faq:
+  - question: What is rate limiting?
+    answer: Rate limiting caps how many requests a client can make in a set time. The API counts calls for that client. Under the cap, the call proceeds. Over the cap, the API rejects it, usually with HTTP 429, until the window or the token bucket allows another call.
+  - question: What is the difference between a fixed window and a token bucket?
+    answer: A fixed window counts requests until a clock boundary, then resets the counter. A client can spend the full limit at the end of one window and again at the start of the next. A token bucket refills at a steady rate up to a burst size, so the sustained rate stays near the refill rate after the burst is gone.
+  - question: Why can a rate limit allow more traffic than the number you configured?
+    answer: A counter stored in process memory applies once per process. Two servers each enforcing 100 requests per minute allow 200 in that minute. The configured cap is a global cap only when every instance updates the same counter.
+  - question: Which identity should the limit use?
+    answer: Use the API key or the user id when the caller has one. An IP address is a fallback for anonymous traffic. Many people share one address, and one client can use many. If a proxy sits in front of the API, trust the forwarded client address only when that proxy is yours.
+  - question: What should a rate-limited response include?
+    answer: Return 429 Too Many Requests and a Retry-After value, either as a number of seconds or as an HTTP date. Vendor headers such as X-RateLimit-Remaining are hints. Their spelling is not a standard. The IETF RateLimit header fields are still a draft, so do not depend on one exact syntax yet.
+updatedAt: 2026-11-06T22:00:00.000Z
+slug: rate-limiting
+---
+
+Rate limiting is how an API caps how many requests a client can make in a set time. The API counts calls for that client. Under the cap, the call proceeds. Over the cap, the API rejects it, usually with `429 Too Many Requests`.
+
+The cap protects capacity. It keeps one client from crowding out the others, and it bounds work you pay another system to do. [OWASP API4](https://api-security.owasp.org/editions/2023/en/0xa4-unrestricted-resource-consumption/) describes what happens when that bound is missing: the API spends CPU, storage, or money on whoever sends the most traffic.
+
+## Fixed windows
+
+A fixed window counts requests in a bucket that resets on a clock. "100 per minute" can mean one counter per client per minute.
+
+```javascript
+const hits = new Map();
+
+function allow(clientId, limit, windowMs, now = Date.now()) {
+  const windowStart = Math.floor(now / windowMs) * windowMs;
+  const id = `${clientId}:${windowStart}`;
+  const count = hits.get(id) ?? 0;
+
+  if (count >= limit) {
+    return false;
+  }
+
+  hits.set(id, count + 1);
+  return true;
+}
+```
+
+The first `limit` calls in a window return true. The next call returns false until `windowMs` rolls forward. In Node.js this function is safe against interleaving only because it never waits: one process runs it to completion before another call starts. Two API processes each have their own `Map`. Each enforces `limit`, so the real ceiling is `limit` times the number of processes.
+
+A client can also send `limit` requests at the end of one window and `limit` at the start of the next. That is twice the advertised rate across a few milliseconds. A sliding window, which counts a trailing duration instead of a clock bucket, closes that gap. So does a token bucket.
+
+The map needs eviction. Each window creates a new id, and old ids stay in memory until you delete them.
+
+## Token buckets
+
+A token bucket holds tokens up to a capacity. Each allowed request takes one token. Tokens return at a steady rate. The capacity is the burst. The refill rate is the sustained rate.
+
+```javascript
+function createTokenBucket(capacity, refillPerSecond) {
+  let tokens = capacity;
+  let updatedAt = Date.now();
+
+  return function take() {
+    const now = Date.now();
+    const elapsedSeconds = (now - updatedAt) / 1000;
+    tokens = Math.min(capacity, tokens + elapsedSeconds * refillPerSecond);
+    updatedAt = now;
+
+    if (tokens < 1) {
+      return false;
+    }
+
+    tokens -= 1;
+    return true;
+  };
+}
+```
+
+A bucket created as `createTokenBucket(20, 10)` allows a burst of 20, then about 10 requests per second while the caller keeps going. Empty means reject until a token returns. This sketch has the same single-process limit as the fixed window. Nothing here coordinates two servers.
+
+A shared store makes the count global. That store is another network call on the request path, and it can fail. Choose the failure mode before it happens. Fail closed rejects requests when the counter is unreachable, which protects the API and can take the API down with the counter. Fail open allows requests, which keeps the API up and can overload it. Neither choice is free.
+
+## Who the limit names
+
+Prefer the credential. An [API key](/glossary/api-key) already identifies the integration, so a limit on that key id matches the caller you issued. A user id is the right key when the person, not the app, is the quota.
+
+An IP address is a fallback for anonymous traffic. It is a poor primary key. Carrier gateways and offices share one address, and a single client can spread across many. Behind a reverse proxy, the socket address is the proxy. The original client may be listed in [X-Forwarded-For](/glossary/x-forwarded-for). Trust that header only when the immediate peer is a proxy you run. A client can put any address in the header, and appending your own observation is the proxy's job.
+
+Routes can have separate buckets. A login attempt and a cheap health check should not draw from the same quota. Limit the thing that is scarce. A cap on health checks does nothing for a database that melts under search traffic.
+
+## What the client receives
+
+[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#section-15.5.20) defines `429 Too Many Requests`. [RFC 6585](https://www.rfc-editor.org/rfc/rfc6585) is where that status was introduced. [Retry-After](https://www.rfc-editor.org/rfc/rfc9110#name-retry-after) says how long to wait. The value is either a number of seconds or an HTTP date. [MDN's 429 page](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429) summarizes the same behavior for clients.
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+Content-Type: application/json
+
+{"error":"rate_limited"}
+```
+
+Many APIs also send a vendor header such as `X-RateLimit-Remaining`. The name is a convention, not a standard, and products spell it differently. The IETF [RateLimit header draft](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-ratelimit-headers) defines `RateLimit` and `RateLimit-Policy`. As of 2026 it is still an Internet-Draft, so the field syntax can change before it becomes an RFC. Clients can rely on the status code and on `Retry-After`. Treat other limit headers as hints.
+
+Clients that retry immediately undo the limit. They fill the bucket again and add load. Honor `Retry-After`, and retry a write only when sending it twice is safe.
+
+## Neighbors, and the tradeoff
+
+A [load balancer](/glossary/load-balancing) chooses which instance gets the next request. It does not cap one client. A [circuit breaker](/glossary/api-circuit-breaker) stops this service from calling a dependency that is already failing. A rate limit stops callers from exhausting this service. The three sit next to each other because they answer different questions.
+
+A tight limit rejects real traffic during a launch or a retry storm. A loose limit does not protect the scarce resource. Put the number on the thing that runs out first, measure how often legitimate clients hit it, and raise the cap when the rejections are the problem. The counter you configured is not the cap users experience until every accepting instance shares that counter.

@@ -45,6 +45,10 @@ export interface INewGlossaryFrontmatter {
   slug?: string;
   takeaways?: IGlossaryTakeaways;
   faq?: IGlossaryFaqItem[];
+  seo?: {
+    title?: string;
+    description?: string;
+  };
 }
 
 export interface IGlossaryTermData {

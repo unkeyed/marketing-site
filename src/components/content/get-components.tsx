@@ -120,15 +120,19 @@ export const getComponents = (options: IGetComponentsOptions) => {
       children,
       className,
       fileName,
+      highlightedLines: _highlightedLines,
+      'data-copy-code': copyCode,
       ...props
     }: PropsWithChildren<{
       className?: string;
       fileName?: string;
+      highlightedLines?: string;
+      'data-copy-code'?: string;
     }>) => {
       if (!isValidElement(children)) return null;
 
       return (
-        <CodeBlock fileName={fileName}>
+        <CodeBlock fileName={fileName} copyCode={copyCode ?? ''}>
           <pre className={className} {...props}>
             {children}
           </pre>
@@ -146,7 +150,9 @@ export const getComponents = (options: IGetComponentsOptions) => {
       const unoptimized =
         src.includes('/images/changelog/2026-09-30/') ||
         src.includes('/images/changelog/2026-10-10/') ||
-        src.includes('/images/blog-images/september-2026/');
+        src.includes('/images/blog-images/september-2026/') ||
+        src.includes('/images/blog-images/deploy-api-previews-monitoring/') ||
+        src.includes('/images/blog-images/rate-limit-api-per-customer/');
 
       return (
         <Image

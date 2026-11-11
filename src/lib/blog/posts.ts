@@ -85,6 +85,7 @@ function getPostDataBySlug(slug: string): IPostData | null {
       description,
       author,
       tags,
+      seo,
       isFeatured = false,
       isDraft = false,
       isHidden = false,
@@ -103,6 +104,10 @@ function getPostDataBySlug(slug: string): IPostData | null {
 
     const plainContent = removeMarkdownSymbols(content);
     const readingTime = getTimeToRead(plainContent);
+    const seoTitle = seo?.title?.trim() || title;
+    const seoDescription =
+      seo?.description?.trim() ||
+      (description ?? getExcerpt({ content: plainContent, length: 160 }));
 
     const post: IPostData = {
       slug: { current: slug },
@@ -120,8 +125,8 @@ function getPostDataBySlug(slug: string): IPostData | null {
       categories: categoriesResolved,
       readingTime,
       seo: {
-        title,
-        description: description ?? getExcerpt({ content: plainContent, length: 160 }),
+        title: seoTitle,
+        description: seoDescription,
         socialImage:
           normalizedImage && normalizedImage.startsWith('http')
             ? normalizedImage
@@ -197,17 +202,25 @@ function getAllPosts(): IPostData[] {
 }
 
 /**
- * Returns the posts that should be surfaced in listings — the feed, category
+ * Returns the posts that should be surfaced in the public blog feed, category
  * pages, pagination, search and related suggestions. Posts flagged
- * `isHidden` in their frontmatter are excluded here so they never appear in
- * any on-site discovery surface, while remaining fully reachable by their
- * direct URL and indexable by search engines / AI crawlers (which rely on
- * {@link getAllPosts} for static generation and the sitemap).
+ * `isHidden` in their frontmatter are excluded here. They stay reachable by
+ * direct URL, stay in the sitemap, and are listed together on `/blog/archive`.
  *
  * @returns {IPostData[]} Sorted array of non-hidden posts.
  */
 function getVisiblePosts(): IPostData[] {
   return getAllPosts().filter((post) => !post.isHidden);
+}
+
+/**
+ * Posts flagged `isHidden`. Kept off `/blog` and the category tabs, and listed
+ * on `/blog/archive` so crawlers have ordinary HTML links to each one.
+ *
+ * @returns {IPostData[]} Hidden posts, newest first.
+ */
+function getHiddenPosts(): IPostData[] {
+  return getAllPosts().filter((post) => post.isHidden);
 }
 
 /**
@@ -407,6 +420,7 @@ export {
   getPostBySlug,
   getAllPosts,
   getVisiblePosts,
+  getHiddenPosts,
   getCategories,
   getCategoryBySlug,
   getFeaturedPost,

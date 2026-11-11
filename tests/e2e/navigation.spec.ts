@@ -64,3 +64,56 @@ test('TC-E2E-003: responsive navigation exposes resource links', async ({ page }
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('');
   }
 });
+
+test('desktop keyboard navigation dismisses Resources and restores focus', async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile-chromium');
+  await page.goto('/');
+  await page.getByTestId('consent-banner-root').waitFor();
+
+  const header = page.getByRole('banner');
+  const resources = header.getByRole('button', { name: 'Resources', exact: true });
+  const blog = header.getByRole('link', { name: /Blog/ });
+
+  await resources.focus();
+  await page.keyboard.press('Enter');
+  await expect(resources).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Tab');
+  await expect(blog).toBeFocused();
+  await page.keyboard.press('Escape');
+
+  await expect(resources).toHaveAttribute('aria-expanded', 'false');
+  await expect(blog).not.toBeVisible();
+  await expect(resources).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(header.getByRole('link', { name: 'Pricing', exact: true })).toBeFocused();
+});
+
+test('mobile keyboard navigation skips collapsed Resources links', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium');
+  await page.goto('/');
+  await page.getByTestId('consent-banner-root').waitFor();
+
+  const header = page.getByRole('banner');
+  await header.getByRole('button', { name: 'Open menu' }).click();
+  const resources = header.getByRole('button', { name: 'Resources', exact: true });
+  const pricing = header.getByRole('link', { name: 'Pricing', exact: true });
+
+  await resources.focus();
+  await page.keyboard.press('Tab');
+  await expect(pricing).toBeFocused();
+
+  await page.keyboard.press('Shift+Tab');
+  await expect(resources).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(resources).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Tab');
+  await expect(header.getByRole('link', { name: /Blog/ })).toBeFocused();
+
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Enter');
+  await expect(resources).toHaveAttribute('aria-expanded', 'false');
+  await page.keyboard.press('Tab');
+  await expect(pricing).toBeFocused();
+});

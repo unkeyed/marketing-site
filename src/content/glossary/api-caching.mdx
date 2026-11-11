@@ -1,9 +1,10 @@
 ---
-title: 'API Caching: Best Practices & Examples Guide'
-description: >-
-  Unlock API performance with caching. Learn best practices and examples in
-  Java, C++, Python, C#. Explore REST API caching strategies.
-h1: 'API Caching: Practices, Examples & Strategies'
+title: 'What API Caching Is'
+description: 'How API caching stores responses so repeat calls stay fast without hitting the origin every time.'
+seo:
+  title: 'What API Caching Is'
+  description: 'How API caching stores responses so repeat calls stay fast without hitting the origin every time.'
+h1: 'What API Caching Is'
 term: API Caching
 categories: []
 takeaways:
@@ -118,6 +119,8 @@ slug: api-caching
 ---
 
 API caching is a crucial technique for API developers aiming to enhance the performance and scalability of their applications. By temporarily storing copies of API responses, caching reduces the number of calls made to the actual API server. This not only decreases latency but also alleviates server load, which is essential for improving user experience and efficiently handling high traffic.
+
+Caching and [load balancing](/glossary/load-balancing) are different. A cache stores a response so the origin does less work. A load balancer chooses which server handles the request.
 
 ## Understanding API Caching Concepts
 

@@ -1,49 +1,24 @@
 ---
 date: 2024-06-26
-title: 'Semantic caching'
-description: 'Faster, cheaper LLM API calls'
+title: 'Semantic caching for LLM apps'
+description: 'Semantic caching reuses a stored LLM answer when a new prompt means the same thing, so you pay for fewer model calls.'
+seo:
+  title: 'Semantic Caching for LLM Apps: How It Works'
 image: '/images/blog-images/covers/semantic-cache.jpg'
 author: dom
 tags: ['launchweek', 'marketing', 'AI']
 ---
 
-Large language models are getting faster and cheaper. The below charts show progress in OpenAI's GPT family of models over the past
-year:
+Large language model workflows often make several model calls: retrieval, generation, and retries.
+Each call adds latency and a charge. Semantic caching reuses a stored answer when a new prompt
+means the same thing, so those repeat calls can be skipped.
 
-_Cost per million tokens ($)_
-
-<Image
-  src="/images/blog-images/semantic-caching/cost-per-token-2.png"
-  alt="Chart of cost per token over time"
-  width="1920"
-  height="1080"
-/>
-
-_Tokens per second_
-
-<Image
-  src="/images/blog-images/semantic-caching/tokens-per-second-2.png"
-  alt="Chart of cost per token over time"
-  width="1920"
-  height="1080"
-/>
-
-Recent releases like Meta's Llama 3 and Gemini Flash have pushed the cost / speed frontier further:
-
-_Below data is for May 2024_
-
-<Image
-  src="/images/blog-images/semantic-caching/models-comparison.png"
-  alt="Chart comparing cost and speed of LLMs in May 2024"
-  width="1920"
-  height="1080"
-/>
-
-As cost and latency have decreased, more complex LLM workflows have become increasingly viable, which in turn bring their own set of challenges.
+Complex workflows still have their own challenges. A chain of steps can fail even when each step
+usually succeeds.
 
 <Image
   src="/images/blog-images/semantic-caching/llm-agent-tweet.png"
-  alt="Chart comparing cost and speed of LLMs in May 2024"
+  alt="Post about compounded error rates in multi-step AI agent workflows"
   width="1920"
   height="1080"
 />
@@ -91,10 +66,31 @@ the same question receive a cache hit. The below diagrams give an overview of th
   height="1080"
 />
 
+## Choosing a similarity threshold
+
+A semantic cache compares the embedding of a new prompt with embeddings already stored. The usual
+score is cosine similarity. It measures the angle between two vectors: 1 means they point the same
+way, and lower values mean they differ. Some systems store the same comparison as a distance, such
+as cosine distance or Euclidean distance, where a smaller number means a closer match.
+
+The threshold is the cutoff you treat as the same meaning. Start conservative. For cosine
+similarity, that means requiring a high score before you return a cached answer. A strict cutoff
+produces more cache misses and fewer false hits. A miss spends another model call. A false hit
+returns an answer that does not fit the new prompt.
+
+Measure both on prompts from the product you are caching. Count false hits, where the cached answer
+does not match the new intent, and misses, where a prompt should have reused an answer but did not.
+Move the threshold only as far as those counts support.
+
+Tune the cutoff for each use case. A support bot with a stable set of questions can reuse answers
+more often. A flow where a wrong answer is costly, such as billing or account changes, should stay
+stricter. No single threshold fits every app, and a cutoff that works for one embedding model can
+shift when you change models.
+
 ## Try it now
 
 In response to feedback from our AI customers, we're offering semantic caching now as part of Unkey. You can enable it now through
-[signing up](https://unkey.dev/semantic-caching) and changing the baseUrl parameter of the OpenAI SDK:
+signing up and changing the baseUrl parameter of the OpenAI SDK:
 
 ```typescript
 const openai = new OpenAI({
@@ -105,4 +101,4 @@ const openai = new OpenAI({
 
 Unkey's semantic caching is free, supports streaming, and comes with built-in observability and analytics. In future we will offer deeper integration with Unkey's API keys for enhanced security and performance.
 
-If you'd like to read more about how it works, check out our [documentation](https://unkey.dev/docs/semantic-caching).
+If you'd like to read more about how it works, check out our documentation.

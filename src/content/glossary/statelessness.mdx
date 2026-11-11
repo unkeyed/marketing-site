@@ -1,6 +1,9 @@
 ---
 title: 'Statelessness in APIs: Comprehensive Guide'
 description: Understand statelessness in APIs. Learn differences between stateless and stateful APIs, with examples. Explore REST API design.
+seo:
+  title: 'What a Stateless API Is'
+  description: 'What it means for an API to be stateless, and how that differs from a stateful design.'
 h1: 'Statelessness in API Design: Understanding & Examples'
 term: Statelessness
 categories: []
@@ -57,7 +60,7 @@ slug: statelessness
 
 ## Understanding Statelessness in APIs
 
-Statelessness in APIs means that every HTTP request occurs in complete isolation. When the server processes a request, it does not rely on any information stored from previous interactions. This design principle enhances reliability and scalability, as the server does not need to maintain, update, or communicate session state.
+Statelessness in APIs means that every HTTP request occurs in complete isolation. When the server processes a request, it does not rely on any information stored from previous interactions. This design principle enhances reliability and scalability, as the server does not need to maintain, update, or communicate session state. Any server can answer the request, so [load balancing](/glossary/load-balancing) can spread traffic without sticking a client to one machine.
 
 ## Stateless vs Stateful APIs: Key Differences
 

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { getPaginatedPosts, getTotalPages } from '@/lib/blog/posts';
 import { getMetadata } from '@/lib/get-metadata';
+import { getPaginationPage } from '@/lib/pagination';
 import Pagination from '@/components/pages/blog/pagination';
 import PostsList from '@/components/pages/blog/posts-lists--grid';
 
@@ -14,15 +15,7 @@ interface BlogPageProps {
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const { page } = await params;
-  const currentPage = parseInt(page, 10);
-
-  if (isNaN(currentPage) || currentPage < 1) {
-    notFound();
-  }
-
-  if (currentPage === 1) {
-    notFound();
-  }
+  const currentPage = getPaginationPage(page);
 
   const posts = getPaginatedPosts(currentPage, {
     nonFeaturedOnly: true,
@@ -35,7 +28,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   return (
     <div className="flex min-w-0 flex-col">
-      <h1 className="sr-only">Blog - page {currentPage}</h1>
+      <h2 className="sr-only">Blog - page {currentPage}</h2>
       <PostsList posts={posts} />
       {totalPages > 1 && (
         <div className="mt-14 flex justify-center md:mt-20">
@@ -60,7 +53,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
-  const { page } = await params;
+  const page = getPaginationPage((await params).page);
 
   return getMetadata({
     title: 'Blog',

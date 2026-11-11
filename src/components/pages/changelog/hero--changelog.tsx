@@ -13,7 +13,6 @@ interface ChangelogHeroProps {
 
 function ChangelogHero({ title, description, className, pageNumber }: ChangelogHeroProps) {
   const twitterLink = MENUS.footer.social.find((social) => social.icon === 'twitter');
-  const githubLink = MENUS.footer.social.find((social) => social.icon === 'github');
 
   return (
     <section className={cn('hero pt-10 pb-12 md:pt-16 md:pb-14 lg:pb-20 xl:pt-24', className)}>
@@ -37,16 +36,6 @@ function ChangelogHero({ title, description, className, pageNumber }: ChangelogH
           >
             <Icons.twitter className="size-3.5" />
             <span>Twitter</span>
-          </NextLink>
-          <span>and</span>
-          <NextLink
-            className="inline-flex items-center gap-2 text-gray-80 transition-colors duration-200 hover:text-foreground"
-            href={githubLink?.href ?? '/'}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Icons.github className="size-3.5" />
-            <span>GitHub</span>
           </NextLink>
         </p>
       </div>

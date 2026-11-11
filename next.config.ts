@@ -1,19 +1,5 @@
 import type { NextConfig } from 'next';
 
-// Local and CI builds sign precomputed flag codes with this value. Production and
-// Preview on Vercel must set FLAGS_SECRET (32 bytes, base64url) instead. Changing
-// the secret requires a rebuild: the static variant URLs are signed with it.
-const DEV_FLAGS_SECRET = 'NMceQol2euQCm9-6ONvsRIUECEDv3mwVlnARdpPQulk';
-
-if (!process.env.FLAGS_SECRET) {
-  if (process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview') {
-    throw new Error(
-      'FLAGS_SECRET is required on Vercel. Generate one with `node -e "console.log(crypto.randomBytes(32).toString(\'base64url\'))"` and set a different value for Production and Preview.',
-    );
-  }
-  process.env.FLAGS_SECRET = DEV_FLAGS_SECRET;
-}
-
 const siteUrl = (process.env.NEXT_PUBLIC_DEFAULT_SITE_URL ?? 'http://localhost:3000').replace(
   /\/$/,
   '',
@@ -38,17 +24,23 @@ const markdownRoutes = [
   { page: '/changelog', markdown: '/changelog.md', api: '/api/changelog' },
   // Static / standalone pages
   { page: '/', markdown: '/index.md', api: '/api/home' },
-  { page: '/', markdown: '/index-b.md', api: '/api/home-variant-b' },
   { page: '/pricing', markdown: '/pricing.md', api: '/api/pricing' },
   { page: '/about', markdown: '/about.md', api: '/api/about' },
   { page: '/startups', markdown: '/startups.md', api: '/api/startups' },
   { page: '/yc', markdown: '/yc.md', api: '/api/yc' },
+  { page: '/all-things-open', markdown: '/all-things-open.md', api: '/api/all-things-open' },
+  {
+    page: '/all-things-open/rules',
+    markdown: '/all-things-open/rules.md',
+    api: '/api/all-things-open/rules',
+  },
   { page: '/policies/terms', markdown: '/policies/terms.md', api: '/api/policies/terms' },
   { page: '/policies/privacy', markdown: '/policies/privacy.md', api: '/api/policies/privacy' },
 ];
 
 const nextConfig: NextConfig = {
   experimental: {
+    agentUpgrade: 'security',
     optimizePackageImports: ['lucide-react', 'three', '@react-three/drei', 'motion', 'shiki'],
   },
   outputFileTracingExcludes: {
@@ -90,16 +82,6 @@ const nextConfig: NextConfig = {
       // requested path, so this only affects direct `/api/*` hits, not the `.md` URLs.
       {
         source: '/api/:path*',
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
-      },
-      // Direct hits on a precomputed hero URL. Rewrites of `/` match the request
-      // path, so the public homepage does not inherit this header.
-      {
-        source: '/hero-variant/:path*',
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
-      },
-      {
-        source: '/index-b.md',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
       },
       // Point search engines at the HTML page so the markdown twin never competes with it.
@@ -181,19 +163,101 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/openapi.json',
+        destination: 'https://api.unkey.com/openapi.json',
+        permanent: true,
+      },
+      {
+        source: '/blog/deploy-api-previews-rollback-monitoring',
+        destination: '/blog/deploy-api-previews-monitoring',
+        permanent: true,
+      },
+      {
+        source: '/blog/deploy-api-previews-rollback-monitoring.md',
+        destination: '/blog/deploy-api-previews-monitoring.md',
+        permanent: true,
+      },
+      {
         source: '/discord',
         destination: 'https://discord.gg/fDbezjbJbD',
         permanent: false,
       },
       {
-        source: '/github',
-        destination: 'https://github.com/unkeyed/unkey',
-        permanent: false,
+        source: '/hero-variant/:code',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/index-b.md',
+        destination: '/index.md',
+        permanent: true,
+      },
+      {
+        source: '/api/home-variant-b',
+        destination: '/api/home',
+        permanent: true,
       },
       {
         source: '/meet',
         destination: 'https://cal.com/team/unkey',
         permanent: false,
+      },
+      // Retired URLs. statusCode 308 is a permanent redirect.
+      // remove this redirect when the 'How to deploy and host an API' post (branch perkinsjr/blog-how-to-deploy-and-host-an-api) merges, or the redirect will shadow the post.
+      {
+        source: '/blog/how-to-deploy-and-host-an-api',
+        destination: '/blog/git-push',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/heroku-alternatives-for-apis',
+        destination: '/blog/best-serverless-api-hosting-2026',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/deploy-a-docker-container',
+        destination: '/docs/compute/get-started/deploy-an-image',
+        statusCode: 308,
+      },
+      {
+        source: '/blog/how-to-rate-limit-an-api',
+        destination: '/blog/introducing-ratelimiting',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/ephemeral-environments',
+        destination: '/docs/compute/concepts/production-and-preview',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-key-management',
+        destination: '/blog/api-key-management-vs-gateway',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-rate-limiting',
+        destination: '/blog/introducing-ratelimiting',
+        statusCode: 308,
+      },
+      {
+        source: '/glossary/api-load-balancing',
+        destination: '/glossary/load-balancing',
+        permanent: true,
+      },
+      {
+        source: '/glossary/api-load-balancing.md',
+        destination: '/glossary/load-balancing.md',
+        permanent: true,
+      },
+      {
+        source: '/blog/using-auth',
+        destination: '/blog/using-unkey-with-auth',
+        permanent: true,
+      },
+      {
+        source: '/blog/replacing-serverless-with-a-vps',
+        destination: '/blog/serverless-exit',
+        statusCode: 301,
       },
     ];
   },

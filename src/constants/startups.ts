@@ -12,13 +12,13 @@ export const startupsContentData = {
     '\nevery month for your startup',
   ),
   description:
-    '$1,000 in credits every month, priority support, and hands-on migration help. Eligibility expires after raising $5 million — everyone else gets 50% off their bill.',
+    '$1,000 in credits every month for 12 months, priority support, and hands-on migration help. Raised more than $5 million? You still qualify for 50% off your bill for 12 months.',
   benefits: [
     {
       icon: CircleDot,
       title: '$1,000 in monthly credits',
       description:
-        "No catch. Get $1,000 in credits every month while you build and ship — we're happy to cover the bill.",
+        "No catch. Get $1,000 in credits every month for 12 months while you build and ship — we're happy to cover the bill.",
     },
     {
       icon: MessageSquare,

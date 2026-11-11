@@ -77,7 +77,7 @@ export default async function ChangelogPostPage({ params }: ChangelogPostPagePro
                 </time>
               </p>
             </div>
-            <h1 className="md:leading-tighter lg:leading-tighter mt-5 text-3xl leading-tight font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            <h1 className="mt-5 font-display text-4xl leading-[1.125] font-normal text-foreground md:text-5xl lg:text-[3.25rem] xl:text-[3.5rem]">
               {title}
             </h1>
 

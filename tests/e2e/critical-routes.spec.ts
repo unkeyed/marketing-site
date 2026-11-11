@@ -14,6 +14,11 @@ const criticalRoutes = [
     heading: 'Start for free, scale as you go with predictable usage-based pricing.',
   },
   {
+    name: 'about',
+    path: '/about',
+    heading: 'Building tools for fast and scalable software',
+  },
+  {
     name: 'startups application',
     path: '/startups',
     heading: '$1,000 in credits every month for your startup',
@@ -22,6 +27,16 @@ const criticalRoutes = [
     name: 'YC application',
     path: '/yc',
     heading: '$1,000 in credits every month for current YC batch',
+  },
+  {
+    name: 'All Things Open giveaway',
+    path: '/all-things-open',
+    heading: 'Win a Switch 2 or a NuPhy keyboard',
+  },
+  {
+    name: 'All Things Open giveaway rules',
+    path: '/all-things-open/rules',
+    heading: 'All Things Open Giveaway: Official Rules',
   },
   {
     name: 'blog',

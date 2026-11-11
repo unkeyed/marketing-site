@@ -1,0 +1,109 @@
+---
+title: 'What Blue-Green Deployment Is'
+description: 'How two identical environments let you switch traffic to a new version without downtime.'
+seo:
+  title: 'What Blue-Green Deployment Is'
+  description: 'How two identical environments let you switch traffic to a new version without downtime.'
+h1: 'What Blue-Green Deployment Is'
+term: Blue-Green Deployment
+categories: []
+takeaways:
+  tldr: Blue-green deployment keeps two production environments and points traffic at one of them. You test the new version on the idle side, then move the router. The move does not guarantee that every request succeeds.
+  didYouKnow: Martin Fowler's 2010 article credits the name to Dan North and Jez Humble. The article describes the router switch as a way to keep the cutover short. It also says database changes have to be deployed separately or rollback breaks.
+  usageInAPIs:
+    tags:
+      - Two environments
+      - Router switch
+      - Rollback
+    description: One environment serves the API while the other runs the release you are about to expose. After the switch, the previous environment stays up so the router can move back. A shared database still has to accept both versions during that overlap.
+  bestPractices:
+    - Give the idle environment the same capacity you expect it to serve, not a single small smoke-test machine.
+    - Switch a router in front of both environments. DNS caches make a name change a slow rollback.
+    - Stop new work on the old side and drain in-flight requests before you stop it.
+    - Change the schema so both versions can run, deploy the app, and remove the old schema later.
+    - Run cron and queue consumers on one side only, unless the job is safe to run twice.
+  historicalContext:
+    - key: Introduced
+      value: Named in 2010
+    - key: Origin
+      value: Two switchable production environments
+    - key: Evolution
+      value: Canary releases and rolling updates
+  recommendedReading:
+    - url: https://martinfowler.com/bliki/BlueGreenDeployment.html
+      title: Blue Green Deployment (Martin Fowler)
+    - url: https://sre.google/workbook/canarying-releases/
+      title: Google SRE workbook - Canarying Releases
+  definitionAndStructure:
+    - key: Blue and green
+      value: Two production environments
+    - key: Cutover
+      value: Point the router at the new side
+    - key: Rollback
+      value: Point the router back
+faq:
+  - question: What is blue-green deployment?
+    answer: Blue-green deployment runs two production environments. One receives live traffic. You install the new version on the other, check it, and then point the router at it. The previous environment stays up so you can point the router back. The two sides should have the same capacity. A smaller idle side is a staging box, and it will overload if you send it all production traffic.
+  - question: Does blue-green deployment guarantee zero downtime?
+    answer: No. The router change avoids taking the only environment offline to install the release. Requests still fail if the new environment is unhealthy, if the health check did not notice, if in-flight requests on the old side are cut off, or if the database change does not work for both versions. A drain period reduces cut connections. It does not prove the number of failures was zero.
+  - question: How do database changes fit?
+    answer: The common layout is two app environments and one database. You do not switch the database with the router. First ship a schema both versions can use, and keep that as a point you can return to. Then deploy the new app. After you will not roll the app back, remove the old schema in a later release. A migration that only the new version can read makes the old environment useless as a rollback.
+  - question: How is this different from a canary or a rolling update?
+    answer: A [canary deployment](/glossary/canary-deployment) sends a fraction of live traffic to the new version before the rest follows, so you see production behavior while most callers are still on the old version. A rolling update replaces instances in one environment a few at a time and does not keep a second full copy. Blue-green switches the whole router and keeps the previous full environment for rollback. It costs that idle capacity.
+  - question: Why is DNS a weak way to switch?
+    answer: Resolvers cache DNS records, so some clients keep using the old address after you change the name, and a rollback waits on those caches too. A router or load balancer in front of both environments can move new connections immediately and can move them back the same way. Existing connections still need a drain plan.
+updatedAt: 2026-11-06T22:00:00.000Z
+slug: blue-green-deployment
+---
+
+Blue-green deployment keeps two production environments and sends live traffic to one of them. You install the new version on the idle environment, check it there, and then point the router at it. The environment that was live stays up, so pointing the router back is the rollback.
+
+[Martin Fowler's March 2010 article](https://martinfowler.com/bliki/BlueGreenDeployment.html) is the write-up that fixed the name. He credits Dan North and Jez Humble for the name, and he treats the technique as older than the page. The aim he describes is a short cutover: you should not have to stop the only copy of the service to install a release. That is the sense in which the switch happens without taking the service down. It is not a guarantee of zero downtime, and the article does not make that guarantee. Requests still fail when the new side is unhealthy, when in-flight work is cut off, or when the data change is compatible with only one of the two versions.
+
+## Two environments, one router
+
+Call the live side blue and the idle side green. The names are arbitrary. On the next release they swap roles. What matters is that both sides can carry production, and that something in front can choose between them.
+
+Fowler's wording is "as identical as possible." The same capacity is part of that. Green with one small machine can pass a smoke test and then fall over when the router sends it every client. If green cannot serve the traffic you are about to give it, the pattern you ran was not blue-green. It was a cutover onto a smaller host.
+
+The two sides can be separate machines, separate clusters, or two slices of one cluster with different addresses. The [load balancer](/glossary/load-balancing) or another router is the switch. [API hosting](/glossary/api-hosting) is where those sides run. [Autoscaling](/glossary/autoscaling) on the idle side should already be at production size before the switch. Scaling it up after the router moves means the first minutes of the new version are under-capacity on purpose.
+
+Deploy the new version to green while blue still serves clients. Run the checks you actually trust: process up, dependencies reachable, and a real request that does more than return a constant. Then change the router so new connections go to green. Watch the errors. If green is bad, point the router at blue again.
+
+## Rollback only works while blue can still serve
+
+The rollback is the same routing change in the other direction. It works while blue is still running and can still read the data green wrote. Destroying blue as part of the switch removes that rollback. You would be redeploying the old build, which is a different and slower operation.
+
+Stop sending blue new work before you stop blue. Give in-flight requests a drain period. A request that runs longer than the drain period is cut when the process exits. The period reduces how many connections you interrupt. It is not a measurement that the number was zero, and it does not fix a green side that is returning errors to new callers.
+
+Sessions and caches that lived only in memory on blue disappear for those users at the switch. Sticky sessions that pin a client to blue keep that client off green until the pin expires. Put session state somewhere both sides can read, or accept that a switch logs those clients out.
+
+## The database is usually shared
+
+Two full databases that you also switch is a harder system: replication lag, and a risk of writing to both. The usual API layout is two app environments and one database. The router does not change the database.
+
+A schema change that only the new version understands breaks blue while blue is the rollback path. A change that only the old version understands breaks green, and it breaks the rollback if green has already written rows the old code cannot read.
+
+Separate the schema release from the app release. First make a change both versions can run against. Add a column, or stop reading one, and keep writes in a shape both versions accept. Deploy that schema, check it, and treat it as a point you can stay on. Then deploy the new app and move the router. After the new app has been live long enough that you will not roll it back, drop the old shape in a later release. [Backward compatibility](/glossary/backward-compatibility) is the rule that makes the overlap safe. Fowler's article describes the same split between a database refactoring and the app deploy.
+
+Jobs have the same overlap problem. During the release both environments are up. A cron task or a queue consumer that charges a card or sends mail will do that twice if both sides run it. Run those workers on one side, or make the job safe to run twice.
+
+## Canary releases and rolling updates
+
+A [canary deployment](/glossary/canary-deployment) sends a small share of live traffic to the new version first. Most callers stay on the old version while you read errors and latency from the slice. You need a way to split traffic, not only an on or off router, and you need enough traffic in the slice to trust the result. The [Google SRE workbook chapter on canarying](https://sre.google/workbook/canarying-releases/) is about how that partial traffic can mislead you if the slice is not representative. A canary can run as a step before a blue-green switch. It is not the same switch.
+
+A rolling update replaces instances inside one environment, a few at a time. It does not keep a second full copy of production, so the idle cost is lower than blue-green. Mixed versions serve traffic together. A bad release is already partly in production when you notice, and the old instances you have not replaced yet are the only rollback still running.
+
+Blue-green spends a second environment so the app cutover is a routing change and the previous version stays intact. The spend is real: you run about twice the app capacity for the length of the release. That purchase does not make the release correct. The checks on green, the data compatibility, and the drain behavior decide which requests fail.
+
+## What still fails
+
+[Zero-downtime API deployment](/glossary/zero-downtime-api-deployment) is the name for the goal of shipping a new version without taking the API offline. Blue-green is one strategy people use for that goal. These cases still produce failed requests:
+
+- The health check returns success while the app cannot reach a dependency it needs for real calls.
+- Green was tested with one instance, then received the full production rate.
+- In-flight requests on blue exceed the drain window and are closed.
+- The migration renames or drops a column the old version still reads, so the router cannot safely move back.
+- The switch is a DNS change. Resolvers keep the old address, and a rollback waits on the same caches. Prefer a router that already has both environments behind it.
+
+Use the second environment to test and to keep a way back. Do not describe the router flip as a promise that no caller saw an error.

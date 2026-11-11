@@ -93,7 +93,11 @@ Perhaps the most obvious solution would be to just ask Tinybird to raise the lim
 If we can't batch the events in a serverless function, then let's do it on a server instead. We've created a simple Go application that is api-compatible with Tinybird's `/v0/events` API. It accepts `NDJSON` events, buffers them, and then sends a batch to Tinybird in a single request.
 Because it's compatible, we don't need to change anything in our worker code, we just use a different `TINYBIRD_URL` and `TINYBIRD_TOKEN` and we're good to go.
 
-<img src="/images/blog-images/tinybird-proxy/tinybird-proxy.png" />
+<img
+  src="/images/blog-images/tinybird-proxy/tinybird-proxy.png"
+  alt="Before: a worker sends each event directly to Tinybird. After: a $5 VPS buffers events and sends one batch to Tinybird."
+  loading="lazy"
+/>
 
 ### Deployment
 

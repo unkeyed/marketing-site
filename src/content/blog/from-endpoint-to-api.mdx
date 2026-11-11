@@ -13,7 +13,7 @@ Where does it deploy? What domain does it use? Is TLS configured? How do custome
 
 The endpoint is rarely the hard part. Everything around it is, and that's usually where shipping slows down.
 
-# The API is not just the code
+## The API is not just the code
 
 Most APIs begin life as product code. Maybe they enrich data, run an AI workflow, search an index, send messages, or wrap an internal service so customers can build on top of it. The first version doesn't need much. The second version does.
 
@@ -32,7 +32,7 @@ The moment another team depends on your API, or worse, a paying customer, you're
 
 None of these are particularly exciting, and none of them stay optional for very long.
 
-# Infrastructure grows one decision at a time
+## Infrastructure grows one decision at a time
 
 Almost nobody sets out to design an overly complicated API platform. It happens gradually.
 
@@ -40,7 +40,7 @@ You deploy with one service because it's familiar. You add a gateway because aut
 
 Every one of these decisions is reasonable. The problem is that nobody is making them together. A year later, you've accidentally built an API platform out of six different products and three internal scripts, not because you wanted to, but because every customer request nudged the architecture a little further.
 
-# The mistake is not Redis
+## The mistake is not Redis
 
 People often assume the hard part is choosing the right tools. It usually isn't. Redis isn't the problem, and neither is your gateway.
 
@@ -48,31 +48,31 @@ The real mistake is solving infrastructure problems before you've decided how yo
 
 Those are product questions. Infrastructure should express the answers, not define them.
 
-# That is the workflow Unkey tries to collapse
+## That is the workflow Unkey tries to collapse
 
 Unkey started with API keys, but keys were never the whole job. Real APIs need a continuous workflow: deploy the service, protect requests before they hit your application, associate every request with a customer, measure usage, and understand what happened when something breaks. Then you repeat it all as the API evolves.
 
 The goal isn't another dashboard. It's shortening the distance between "I built an API" and "customers can safely depend on it."
 
-# Shipping is a loop
+## Shipping is a loop
 
 A production API is never really finished. You deploy, you learn, you adjust limits, you onboard new customers, you investigate unusual traffic, you change pricing, you rotate keys, and then you ship again.
 
 Good API infrastructure makes that loop smaller. Not because it removes the complexity, but because it keeps the complexity in one place.
 
-# Protecting requests is not enough
+## Protecting requests is not enough
 
 Authentication answers one question: who is making this request? Operating an API means answering several more. Should they be allowed? How much have they already used? Which plan are they on? Should this request count against credits? Should support be able to explain why it failed?
 
 None of those questions belong inside every route handler. They belong around the API.
 
-# Observability is more than debugging
+## Observability is more than debugging
 
 Most people think of logs as something you reach for during an incident, but they're just as useful on good days. When one customer suddenly triples their usage, that's a signal. When nobody touches a new endpoint for two weeks, that's a signal too.
 
 Observability isn't only about finding problems. It's how you learn whether the API you're building is actually becoming useful.
 
-# Ways to start
+## Ways to start
 
 If you're building a new API, start by deploying it with the operational pieces already in place.
 
@@ -80,7 +80,7 @@ If you already have traffic, start by replacing the homemade authentication and 
 
 Different starting points, same destination.
 
-# Ship the API
+## Ship the API
 
 Developers don't wake up excited to build key rotation systems, or usage dashboards, or rollback workflows. They build APIs because they're trying to solve someone else's problem.
 

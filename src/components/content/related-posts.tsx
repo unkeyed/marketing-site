@@ -33,9 +33,9 @@ function RelatedPostCard({ className, authors, categoryTitle, title, pathname }:
               {categoryTitle}
             </span>
           )}
-          <h1 className="line-clamp-3 text-xl leading-tight font-medium tracking-tight text-pretty text-foreground md:line-clamp-1 md:text-xl md:leading-snug">
+          <h3 className="line-clamp-3 text-xl leading-tight font-medium tracking-tight text-pretty text-foreground md:line-clamp-1 md:text-xl md:leading-snug">
             {title}
-          </h1>
+          </h3>
         </header>
         <Authors
           className="shrink-0 [&_img]:size-7 md:[&_img]:size-8"
