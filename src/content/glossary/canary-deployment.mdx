@@ -1,0 +1,114 @@
+---
+title: 'What a Canary Deployment Is'
+description: 'How a canary deployment sends a small share of traffic to a new version before you roll it out to everyone.'
+seo:
+  title: 'What a Canary Deployment Is'
+  description: 'How a canary deployment sends a small share of traffic to a new version before you roll it out to everyone.'
+h1: 'What a Canary Deployment Is'
+term: Canary Deployment
+categories: []
+takeaways:
+  tldr: A canary deployment sends a small share of live traffic to a new version and leaves the rest on the old one. You compare the two, then widen the share or send that traffic back. The small share does not prove the release is safe for everyone.
+  didYouKnow: The name comes from the canary miners carried in a cage. The bird reacted to bad air before the miners did. Danilo Sato's June 2014 article on Martin Fowler's site uses that early warning as the point of the technique.
+  usageInAPIs:
+    tags:
+      - Traffic split
+      - Canary and control
+      - Rollback
+    description: The API keeps serving the current version to most callers. A router sends a slice of requests to the new version. You read errors and latency on that slice against the rest, then increase the slice or move it back.
+  bestPractices:
+    - Split live traffic that the new version answers. A discarded copy of traffic is a different test.
+    - Compare the canary with the control over the same time window. A before and after chart mixes the release with the time of day.
+    - Break metrics out by version, and keep the metric window at or under the canary length.
+    - Make the slice long enough to see the requests you care about, including a busy period if load is what breaks you.
+    - Keep the schema usable by both versions for the whole rollout, and run one canary at a time.
+  historicalContext:
+    - key: Introduced
+      value: Named from the miner's canary
+    - key: Origin
+      value: Early warning on a small slice
+    - key: Evolution
+      value: Staged rollouts with a live control
+  recommendedReading:
+    - url: https://sre.google/workbook/canarying-releases/
+      title: Google SRE workbook - Canarying Releases
+    - url: https://martinfowler.com/bliki/CanaryRelease.html
+      title: Canary Release (Martin Fowler)
+  definitionAndStructure:
+    - key: Canary
+      value: The part running the new version
+    - key: Control
+      value: The part still on the old version
+    - key: Decision
+      value: Widen the share or roll it back
+faq:
+  - question: What is a canary deployment?
+    answer: A canary deployment runs the new version beside the old one and sends it a small share of live traffic. The Google SRE workbook calls that share the canary and the rest the control. You compare them over the same interval, then you increase the share or send it back. Danilo Sato's June 2014 article describes the same rollout. A subset of users goes first, then more, and the old version stays available as the way back.
+  - question: How is a canary different from blue-green deployment?
+    answer: A [blue-green deployment](/glossary/blue-green-deployment) keeps two production environments and points the router at one of them. The usual switch sends the new side all new traffic at once and leaves the old side idle for rollback. A canary uses a split instead of that single cutover. You can run the canary on the idle side by sending it only a fraction of traffic. The fraction and the full switch are different steps. The SRE workbook treats a full blue-green cutover as a before and after comparison, because the old version is no longer serving as a live control.
+  - question: Does a canary deployment mean zero downtime?
+    answer: No. [Zero-downtime API deployment](/glossary/zero-downtime-api-deployment) is the goal of shipping a new version without taking the API offline. A canary keeps the old version up for callers who are not in the slice, so you do not have to stop the only copy to install the release. Callers in the slice still see the new version's errors. Callers outside it still see a fault if the canary breaks something both versions share. A small share lowers how many requests a bad release can fail. It is not a count of zero failures.
+  - question: How large should the canary be?
+    answer: Large enough, and long enough, that the slice looks like the traffic you are judging. The SRE workbook says a handful of queries is a weak signal when requests differ, and that a canary in a quiet period can miss faults that appear under load. It also says the share should stay small enough that a bad release spends only a small part of the error budget. The book's worked example is a candidate that fails 20 percent of its own requests, placed on 5 percent of traffic, which shows up as 1 percent of all requests. That example shows how a small slice hides in the overall chart. It is not a recommended size. Run one canary at a time.
+  - question: How do database changes fit a canary?
+    answer: Both versions are serving writes during the rollout. A schema only the new version can use breaks the old version while the old version is the rollback. Sato's article says to change the database so it supports both versions until every caller is on the new one, and only then remove the old shape. Ship that compatible schema first and treat it as a point you can stay on. After you will not roll the app back, drop the old shape in a later release.
+updatedAt: 2026-11-09T20:00:00.000Z
+slug: canary-deployment
+---
+
+A canary deployment sends a small share of live traffic to a new version and leaves the rest on the version already serving. You compare the two while both are answering real requests, then you widen the share or you send that traffic back. The [Google SRE workbook chapter on canarying](https://sre.google/workbook/canarying-releases/) defines canarying as a partial and time-limited deployment of a change, plus an evaluation that decides whether the rollout continues. The part that receives the change is the canary. The remainder is the control.
+
+[Danilo Sato's June 2014 article](https://martinfowler.com/bliki/CanaryRelease.html) on Martin Fowler's site describes the same limit on blast radius. Roll the change out to a small subset of users before it is available to everybody. The name is the canary miners carried in a cage. The bird was an early warning. It was not a proof that the rest of the shift was safe.
+
+## A slice of real traffic
+
+Deploy the new version where it can run. At first you do not have to send it users. Sato's article starts there, in the same place a [blue-green deployment](/glossary/blue-green-deployment) starts. The new copy is up, and the router still sends clients to the old copy. The canary step is the next one. You route a few users, or a fraction of requests, to the new copy.
+
+The split can be a random sample, a set of internal users, or a group chosen by profile. In a large deployment the split is often a partition you already operate, such as one region or one brand. The SRE workbook lists practical ways to make the split: backend weights on a [load balancer](/glossary/load-balancing), a proxy configuration, or round-robin DNS. A DNS change is a weak split for the same reason it is a weak blue-green switch. Resolvers cache the old answer, so some clients do not move when you change the shares, and a rollback waits on those caches too. A router that already has both versions behind it can change the share and change it back.
+
+What you split is live traffic that the new version actually answers. The workbook treats artificial load, and a copy of production traffic whose responses are thrown away, as neighboring tests. It does not call them canarying. A synthetic client can miss the requests real callers send. A discarded copy can still share a cache or a database with production and change what production does. The evaluation that matters is the one on the requests you are about to trust with more of the traffic.
+
+The same chapter separates a binary release from a feature launch. A flag can turn one change on inside a build that is already deployed, and turn it off without shipping another build. That lever is not the traffic split. The split chooses who runs the new build. The flag chooses which behavior that build uses. You can use both. They answer different questions.
+
+## The slice can mislead you
+
+A small share hides a bad release on a chart of the whole service. The workbook's worked example is explicit about the arithmetic. The candidate fails 20 percent of its own requests. It receives 5 percent of traffic. The service as a whole then fails 1 percent of requests. A dashboard that only shows the whole service can treat that as noise. Break the same metric out by version, canary against control, over the same interval.
+
+The slice can also be the wrong slice. The workbook says a handful of queries is not a useful sample when requests do different work. Performance faults often show up under load, so a canary that runs only in a quiet hour can pass and still fail at the peak. The metric window has to be no longer than the canary. The book walks a false alarm where an unrelated error spike is followed by a 30 minute canary, and an hourly error count still includes the errors from before the canary started.
+
+Compare the canary and the control at the same time. A before and after comparison replaces the service, then looks back at the previous period. The workbook calls that risky because the time of day changes the traffic. A Monday release compared with the weekend is a different population, not a clean control.
+
+Sato's article draws a line that the routing makes easy to blur. The machinery can look like an A/B test. A canary is there to find regressions, and the article says that rollout should finish in minutes or hours. An A/B test of a product idea can need days of data before the result means anything. Using one slice for both jobs mixes the two signals. The workbook uses "A/B" for the comparison itself, the canary population against the control over one interval. That comparison is the evaluation. It is not a second experiment on the same users.
+
+Run one canary at a time. The workbook advises that. Two canaries at once overlap the signals, and they make it harder to say which change moved the metric.
+
+## Rollback is a routing change until the data says otherwise
+
+If the canary is bad, send its users back to the old version. Sato's article calls that the rollback. It works while the old version is still running and can still read what the new version wrote. Widening the share until the old version is gone removes that path. Putting the old build back is a new deploy, which is slower than moving the router.
+
+The schema has to accept both versions for the whole time they overlap. Sato points at a parallel change for the database. Expand the data so both versions can run, move the callers, and only then remove the old shape. [Backward compatibility](/glossary/backward-compatibility) is the same rule. A migration that only the new version can read turns the rollback into a data problem.
+
+The two versions share more than the router. The workbook notes that the canary and the control often use the same frontends, backends, networks, and data stores. A canary can answer a client in a way that changes that client's next request, and the next request can land on the control. A failed comparison means stop and look. It does not by itself prove the new version is the only cause.
+
+Keep the number of live versions small. Sato's article says you can run more than two, and that you should not. Each extra version is another behavior the API is serving.
+
+## Where this sits next to other releases
+
+[Blue-green deployment](/glossary/blue-green-deployment) keeps two full environments and moves the router from one to the other. The SRE workbook describes that full cutover as a before and after comparison. After you move everyone, the old version is no longer a live control. You can use the same two environments as a canary if you send only a fraction of traffic to the new side and leave the rest on the old side. That fraction is the canary. The full switch is a later step. Blue-green spends a second full copy of capacity so the later switch is a routing change. A canary spends a split, and it spends the time you are willing to watch the split.
+
+A rolling update replaces instances in one pool a few at a time. Old and new serve together, which is a kind of overlap, but you do not hold a fixed control group, and you do not keep a full previous environment once the roll has moved on. A bad release is already partly in production when you notice.
+
+[Zero-downtime API deployment](/glossary/zero-downtime-api-deployment) is the name for the goal of shipping a new version without taking the API offline. A canary is one strategy people use for that goal. It limits how many callers see a bad version. It does not make the number of failed requests zero. Callers in the slice still fail if the new version fails them. Callers outside the slice fail if the canary breaks a dependency both versions share.
+
+## What still fails
+
+These cases still produce a bad read, or a bad release that the read did not catch:
+
+- The only chart is the whole service, so a bad slice is a small bump on a large line.
+- The slice is a quiet period, or a few requests, and the fault needs the peak mix.
+- The metric is an hourly total and the canary is shorter than that hour.
+- The new version and the old version cannot read the same rows, so routing users back does not restore the old behavior.
+- The canary and the control share a database or a cache, and the canary changes what the control does.
+- More than one canary is in progress, and you cannot tell which change moved the metric.
+
+Use the slice to see production behavior while most callers are still on the old version. Do not treat the slice as a promise that the full rollout will match it.
