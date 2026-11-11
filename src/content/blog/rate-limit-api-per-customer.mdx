@@ -218,7 +218,7 @@ Too many requests
 
 ## `remaining` is an estimate
 
-Unkey uses a sliding window for key and identity limits. A sliding window weighs the previous window into the current count. That smooths the burst a fixed window allows at its boundary. The rate limit policy on the Compute gateway, later in this post, counts over a fixed window.
+Unkey uses a sliding window for key and identity limits. A sliding window weighs the previous window into the current count. That smooths the burst a fixed window allows at its boundary. The rate limit policy on the Compute gateway sends every check to the same ratelimit service the API uses, so it uses the same sliding window.
 
 We keep counters in several regions. [How rate limiting works](https://www.unkey.com/docs/api-management/ratelimiting/how-it-works) explains how. `remaining` is a close estimate. It isn't an exact count. Because the window slides, it can rise between two calls, and it doesn't snap back to the full limit the moment a wait ends. When one region sees most of an identifier's traffic, enforcement is tight. When traffic is split across regions, a short burst can get through in more than one region before the counts catch up. Use credits when you need an exact total.
 
@@ -468,7 +468,7 @@ curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
 Use the keyspace ID (`ks_...`) from Step 1 in `keyspaces`. Don't use the `api_` ID.
 
 - The **Key Auth** policy works the same way as `keys.verifyKey`, so it already enforces the identity and key limits from Steps 2 to 6.
-- The **Rate Limit** policy adds a second limit on top. `authenticatedSubject` resolves to the identity's `externalId` when the key has one, and to the key ID when it doesn't. It counts per customer. It counts over a fixed window.
+- The **Rate Limit** policy adds a second limit on top. `authenticatedSubject` resolves to the identity's `externalId` when the key has one, and to the key ID when it doesn't. It counts per customer. It uses the same sliding window.
 - Put the rate limit after key auth. If it runs first, every request counts as `unknown`.
 - Policy changes take effect on the next deployment, so redeploy after you save them. The root key needs `environment.*.set_policies`.
 - The gateway sends `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` (in Unix seconds) on its responses, plus `Retry-After` on a 429.
