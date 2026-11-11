@@ -32,14 +32,22 @@ Your backend talks to Unkey with a root key. A root key never belongs in a brows
 Sign in at [app.unkey.com](https://app.unkey.com).
 
 1. Open **Root Keys** in the sidebar. If it isn't there, the account isn't an admin.
+
+![Root Keys in the sidebar. New Root Key is the button at the top right.](/images/blog-images/api-key-authentication/root-keys.png)
+
 2. Click **New Root Key**.
 3. Give the key a name. **Name** is marked **Required**.
-4. Under **Permissions**, click **Start new**. Leave **Scope** on **Workspace**.
+4. Permissions opens on presets: **All read permissions**, **All write permissions**, **Verify keys**, and **Standalone ratelimiting**. Click **Start new** for a custom policy. Leave **Scope** on **Workspace**.
 5. Tick these boxes.
    - **Key management**, **Keyspaces**, **Write** (`api.*.create_api`)
    - **Key management**, **Keys**, **Write** (`api.*.create_key`) and **Verify** (`api.*.verify_key`). Tick **Delete** too if this key will revoke customer keys.
    - **Identity and RBAC**, **Roles**, **Write** and **Permissions**, **Write**, for the role step later.
    - **Portals**, **Portals**, **Write** and **Portal sessions**, **Write**, if this key will open the developer portal.
+
+![Custom root key policy. Keyspaces Write is ticked. Keys Write, Delete, and Verify are ticked.](/images/blog-images/api-key-authentication/new-root-key-permissions.png)
+
+![Same policy, scrolled down. Roles Write, Permissions Write, Portals Write, and Portal sessions Write are ticked.](/images/blog-images/api-key-authentication/new-root-key-rbac.png)
+
 6. Click **Add policy**, then **Create key**.
 7. Copy the key. We show it once. Store it as `UNKEY_ROOT_KEY` on your server.
 
@@ -116,7 +124,7 @@ The same form is in the dashboard. Open the keyspace, click **Create key**, and 
 
 _The API example uses prefix `sk_live` and external ID `user_123`. This is the empty form with prefix `blog`. Bytes defaults to 16, which is what we use when you omit `byteLength`._
 
-![The Ratelimit step, with the toggle on, name requests, limit 5, refill 1 minute, and Auto Apply checked](/images/blog-images/api-key-authentication/auth-create-key-dialog-ratelimit.png)
+![The Ratelimit step, toggle on, name requests, limit 5, refill interval 1m, and Auto Apply checked](/images/blog-images/api-key-authentication/auth-create-key-dialog-ratelimit.png)
 
 The dashboard also has an environment label on the general step, a free-text string like `live` or `test`. The API can't set it, and verification doesn't return it. If your backend needs the label, put it in `meta`.
 
@@ -436,7 +444,7 @@ The spec validates against OpenAPI 3.1 with `@apidevtools/swagger-parser`. If yo
 
 ## On Compute, the gateway checks the key
 
-If your API runs on Unkey Compute, you can skip the middleware. Open the app, go to **Policies**, click **Add policy**, and set **Type** to **Key Auth**. Pick the keyspace by its `ks_` ID. Leave **Key location** empty and the gateway reads `Authorization: Bearer`.
+If your API runs on Unkey Compute, you can skip the middleware. Open the app, go to **Policies**, and click **Add policy**. A new app has no policies yet. Set **Type** to **Key Auth**. The rule starts as a bearer token with no keyspace. Pick the keyspace by its `ks_` ID. Leave **Key location** empty and the gateway reads `Authorization: Bearer`. The panel says the change applies to the next deployment.
 
 We ran that. A request with no key got a 401 `missing_credentials`. A made-up key got a 401 `invalid_key`. A valid key reached the app. Policy changes apply to the next deployment. Until we redeployed, requests without a key still got through.
 
@@ -466,9 +474,9 @@ Rejected requests never reach your process. The gateway answers them.
 
 Request logs redact the `Authorization` header and every header or query parameter listed as a key location on any key auth policy, including policies that are turned off. The outcomes are on [API key authentication](https://www.unkey.com/docs/compute/gateway/api-key-auth).
 
-![Policies for a Compute app, with Require a key (Key Auth) first and 5 per minute per caller (Rate Limit) second](/images/blog-images/api-key-authentication/deploy-policies.png)
+![The Policies page on a Compute app before any policy is saved. Add policy is at the top right.](/images/blog-images/api-key-authentication/deploy-policies.png)
 
-![The Key Auth policy for the blog-draft-keyauth keyspace, reading a bearer token, with no extra key location](/images/blog-images/api-key-authentication/deploy-keyauth-policy.png)
+![Add policy, type Key Auth, matching every request, bearer token, no keyspace picked yet. Changes apply to the next deployment.](/images/blog-images/api-key-authentication/deploy-keyauth-policy.png)
 
 ## Same two calls in every other language
 
