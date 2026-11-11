@@ -22,13 +22,28 @@ You can run both. If a key and its identity both have a limit with the same name
 
 ## Step 1: Create a keyspace and a root key
 
-In the dashboard, open **Root Keys** and create a root key with the permissions below.
+Sign in at [app.unkey.com](https://app.unkey.com).
 
-- `api.*.create_api`, `api.*.create_key`, `api.*.verify_key`
-- `identity.*.create_identity`, `identity.*.update_identity`
-- `ratelimit.*.limit`, `ratelimit.*.create_namespace`, `ratelimit.*.set_override` (you only need these for the section on limiting things that aren't keys)
+1. Open **Root Keys** in the sidebar.
 
-Store it as `UNKEY_ROOT_KEY` on your server. Then create a keyspace for the keys you'll hand out. The endpoint calls that keyspace an API.
+![The Root Keys page. New Root Key is the black button at the top right.](/images/blog-images/rate-limit-api-per-customer/root-keys.png)
+
+2. Click **New Root Key**.
+3. Give the key a name. **Name** is marked **Required**.
+4. Under **Permissions**, click **Start new**. Leave **Scope** on **Workspace**.
+5. Tick these boxes. You only need the rate limiting boxes for the section on limiting things that aren't keys.
+   - **Key management**, **Keyspaces**, **Write** (`api.*.create_api`)
+   - **Key management**, **Keys**, **Write** (`api.*.create_key`) and **Verify** (`api.*.verify_key`)
+   - **Identity and RBAC**, **Identities**, **Write** (`identity.*.create_identity` and `identity.*.update_identity`)
+   - **Rate limiting**, **Rate limit namespaces**, **Write** (`ratelimit.*.create_namespace`) and **Limit** (`ratelimit.*.limit`)
+   - **Rate limiting**, **Rate limit overrides**, **Write** (`ratelimit.*.set_override`)
+
+![The New Root Key dialog on a custom policy. Write is ticked for Keyspaces, Keys, Identities, Rate limit namespaces, and Rate limit overrides. Verify is ticked for Keys. Limit is ticked for Rate limit namespaces.](/images/blog-images/rate-limit-api-per-customer/new-root-key-permissions.png)
+
+6. Click **Add policy**, then **Create key**.
+7. Copy the key and store it as `UNKEY_ROOT_KEY` on your server.
+
+Then create a keyspace for the keys you'll hand out. The endpoint calls that keyspace an API.
 
 Three names in Unkey are easy to mix up:
 
