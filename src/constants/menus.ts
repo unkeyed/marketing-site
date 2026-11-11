@@ -59,6 +59,7 @@ export const MENUS = {
           { label: 'Docs', href: 'https://www.unkey.com/docs' },
           { label: 'Glossary', href: '/glossary' },
           { label: 'Feature Request', href: 'https://feedback.unkey.com/' },
+          { label: 'Archive', href: '/blog/archive' },
         ],
       },
       {

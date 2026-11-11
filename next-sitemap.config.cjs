@@ -14,6 +14,15 @@ const CONTENT_SECTIONS = [
     indexFiles: ['src/app/(website)/blog/(list)/page.tsx'],
   },
   {
+    route: '/blog/archive',
+    dir: 'src/content/blog',
+    // Hidden posts stay off /blog. This listing is the HTML index crawlers follow.
+    // Each post URL is already emitted by the /blog section above.
+    match: (data) => data.isHidden === true,
+    indexOnly: true,
+    indexFiles: ['src/app/(website)/blog/(list)/archive/page.tsx'],
+  },
+  {
     route: '/case-studies',
     dir: 'src/content/case-studies',
     indexFiles: ['src/app/(website)/case-studies/page.tsx'],
@@ -237,13 +246,18 @@ function collectLastmods() {
       }
       const relPath = path.posix.join(section.dir, file);
       const { data } = matter(fs.readFileSync(path.join(absDir, file), 'utf8'));
+      if (section.match && !section.match(data)) {
+        continue;
+      }
       const result = contentFileLastmod(gitFiles, relPath, frontmatterDate(data));
       if (!result) {
         continue;
       }
-      const fileSlug = file.replace(/\.mdx?$/, '');
-      const slug = (section.frontmatterSlug && data.slug?.trim()) || fileSlug;
-      setRoute(`${section.route}/${slug.toLowerCase()}`, result);
+      if (!section.indexOnly) {
+        const fileSlug = file.replace(/\.mdx?$/, '');
+        const slug = (section.frontmatterSlug && data.slug?.trim()) || fileSlug;
+        setRoute(`${section.route}/${slug.toLowerCase()}`, result);
+      }
       if (!newestItem || Date.parse(result.iso) > Date.parse(newestItem.iso)) {
         newestItem = result;
       }
