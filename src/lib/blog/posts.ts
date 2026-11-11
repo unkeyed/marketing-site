@@ -85,6 +85,7 @@ function getPostDataBySlug(slug: string): IPostData | null {
       description,
       author,
       tags,
+      seo,
       isFeatured = false,
       isDraft = false,
       isHidden = false,
@@ -103,6 +104,10 @@ function getPostDataBySlug(slug: string): IPostData | null {
 
     const plainContent = removeMarkdownSymbols(content);
     const readingTime = getTimeToRead(plainContent);
+    const seoTitle = seo?.title?.trim() || title;
+    const seoDescription =
+      seo?.description?.trim() ||
+      (description ?? getExcerpt({ content: plainContent, length: 160 }));
 
     const post: IPostData = {
       slug: { current: slug },
@@ -120,8 +125,8 @@ function getPostDataBySlug(slug: string): IPostData | null {
       categories: categoriesResolved,
       readingTime,
       seo: {
-        title,
-        description: description ?? getExcerpt({ content: plainContent, length: 160 }),
+        title: seoTitle,
+        description: seoDescription,
         socialImage:
           normalizedImage && normalizedImage.startsWith('http')
             ? normalizedImage
