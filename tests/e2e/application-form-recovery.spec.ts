@@ -14,7 +14,7 @@ async function fillApplication(page: Page, path: string) {
     await page.getByRole('textbox', { name: 'YC Batch', exact: false }).fill('W26');
   } else {
     await page.getByRole('combobox').click();
-    await page.getByRole('option', { name: 'Other', exact: true }).click();
+    await page.getByRole('option', { name: 'Techstars', exact: true }).click();
   }
   await page.getByRole('textbox', { name: 'Workspace ID', exact: true }).fill('ws_example');
   await page.getByRole('textbox', { name: 'Migrating From', exact: true }).fill('Our old platform');
@@ -42,7 +42,7 @@ async function expectApplicationValues(page: Page, path: string) {
   if (path === '/yc') {
     await expect(page.getByRole('textbox', { name: 'YC Batch', exact: false })).toHaveValue('W26');
   } else {
-    await expect(page.getByRole('combobox')).toHaveText('Other');
+    await expect(page.getByRole('combobox')).toHaveText('Techstars');
   }
 }
 
