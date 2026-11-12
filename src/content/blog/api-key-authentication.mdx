@@ -21,9 +21,9 @@ If you build keys yourself, you own the whole system.
 - **Record usage** per key and per customer.
 - **Let customers manage** their own keys without a support ticket.
 
-[API key management vs. an API gateway](https://www.unkey.com/blog/api-key-management-vs-gateway) goes into why each item matters. Below we do every one of them with Unkey's API Management product from inside an existing app, then again with no code for apps that run on Unkey Compute.
+[API key management vs. an API gateway](https://www.unkey.com/blog/api-key-management-vs-gateway) covers why each item matters.
 
-The calls use `@unkey/api` and `@unkey/hono`. We ran the handlers on October 13 with `@unkey/api` 2.5.1 and `@unkey/hono` 2.0.0. Current `@unkey/api` is 2.5.6. The method names below are the same.
+The examples use `@unkey/api` 2.5.6 and `@unkey/hono` 2.0.0.
 
 ## Step 1: Create a root key and a keyspace
 
@@ -51,9 +51,7 @@ Sign in at [app.unkey.com](https://app.unkey.com).
 6. Click **Add policy**, then **Create key**.
 7. Copy the key. We show it once. Store it as `UNKEY_ROOT_KEY` on your server.
 
-Then create a keyspace for the keys you'll hand out. The endpoint calls that keyspace an API. The sidebar says **Keyspaces (APIs)**. Same object.
-
-Three names are easy to mix up.
+Then create a keyspace for the keys you'll hand out. The sidebar says **Keyspaces (APIs)**. The endpoint calls that object an API.
 
 - **Keyspace**: a group of keys. The API calls it an API, and its ID starts with `api_`. It also has a second ID starting with `ks_`, which the gateway uses.
 - **Identity**: your customer, created from the `externalId` you pass when you issue a key.
@@ -70,7 +68,7 @@ curl -X POST https://api.unkey.com/v2/apis.createApi \
 { "data": { "apiId": "api_7HF4gFZpu" }, "meta": { "requestId": "req_hVdmCjIrs" } }
 ```
 
-Save the `apiId` as `UNKEY_API_ID`. The gateway policy later in this post uses the keyspace ID (`ks_...`). Both IDs are on the keyspace's **Settings** page. Mixing them up is a bad afternoon.
+Save the `apiId` as `UNKEY_API_ID`. The gateway policy uses the keyspace ID (`ks_...`). Both IDs are on the keyspace's **Settings** page.
 
 ## Step 2: Issue a key when a customer signs up
 
@@ -108,13 +106,11 @@ const created = await unkey.keys.createKey({
 }
 ```
 
-A few of those fields are easy to misuse.
-
 - `prefix` gives you keys that start with `sk_live_`. Anyone who can see the key can see the prefix, so keep customer names and secrets out of it.
 - `externalId` is your own user or org ID. It has to match `^[a-zA-Z0-9_.-]+$`. Unkey creates an identity for it and sends it back on every verification, so your handler knows who is calling without a database lookup.
 - `meta` comes back on every verification too. Keep it small and leave secrets out of it.
-- `permissions` are created in the workspace if they don't exist yet. We created `items.read` by hand afterwards and got a 409, because the call above had already made it. Roles are the opposite. A role has to exist before you attach it, or `createKey` fails.
-- `ratelimits` puts a limit on this key. We used 5 per minute so you can watch it trip in Step 3. `duration` is the window in milliseconds. `autoApply` is required, and the call fails with a 400 if you leave it out. With `autoApply: true`, every verification counts against this limit. The window is a sliding window, so a caller can't spend the full limit at the end of one minute and the full limit again at the start of the next.
+- `permissions` are created in the workspace if they don't exist yet. Creating the same slug again returns 409. A role has to exist before you attach it, or `createKey` fails.
+- `ratelimits` puts a limit on this key. `duration` is the window in milliseconds. `autoApply` is required, and the call fails with a 400 if you leave it out. With `autoApply: true`, every verification counts against this limit. The window is a sliding window, so a caller can't spend the full limit at the end of one minute and the full limit again at the start of the next.
 
 The plaintext is `created.data.key`, and you only get it this once. We keep a hash, plus an encrypted copy if you asked for a recoverable key. Show the key to the user, store the `keyId`, and keep the response out of your logs.
 
@@ -122,7 +118,7 @@ The same form is in the dashboard. Open the keyspace, click **Create key**, and 
 
 ![Create key on General Setup, with prefix blog and bytes set to 16](/images/blog-images/api-key-authentication/auth-create-key-dialog.png)
 
-_The API example uses prefix `sk_live` and external ID `user_123`. This is the empty form with prefix `blog`. Bytes defaults to 16, which is what we use when you omit `byteLength`._
+_The API example uses prefix `sk_live` and external ID `user_123`. This form has prefix `blog`. Bytes defaults to 16, which is the `byteLength` you get when you omit it._
 
 ![The Ratelimit step, toggle on, name requests, limit 5, refill interval 1m, and Auto Apply checked](/images/blog-images/api-key-authentication/auth-create-key-dialog-ratelimit.png)
 
@@ -140,7 +136,7 @@ Install the server library the example uses.
 npm install hono @unkey/hono @hono/node-server
 ```
 
-`@unkey/hono` reads the bearer token, calls `keys.verifyKey`, and puts the result in context. This is the server we ran on Node.
+`@unkey/hono` reads the bearer token, calls `keys.verifyKey`, and puts the result in context.
 
 ```ts
 import { serve } from '@hono/node-server';
@@ -197,8 +193,6 @@ app.onError((err, c) => {
 serve({ fetch: app.fetch, port: 3000 });
 ```
 
-We called it with no key, then a valid key, then a made-up key, then enough requests to hit the 5-per-minute limit.
-
 ```bash
 curl -si http://localhost:3000/items/list
 ```
@@ -254,11 +248,9 @@ content-type: application/json
 {"error":"RATE_LIMITED"}
 ```
 
-On the valid request, the handler already knows who's calling (`"owner":"user_123"`) and what plan they're on (`"plan":"free"`) without touching your database.
+On the valid request, `owner` is `user_123` and `plan` is `free`. The handler got both from the verification, with no database lookup.
 
-A few spots are easy to get wrong.
-
-**Set `handleInvalidKey`.** The middleware only rejects a request by itself when the key is missing. That response is `401` and `{"error":"unauthorized"}`. When a key fails verification, it calls `handleInvalidKey` if you gave it one. If you didn't, it stores the failed result and calls `next()`. We ran it without the handler and sent a made-up key.
+**Set `handleInvalidKey`.** The middleware only rejects a request by itself when the key is missing. That response is `401` and `{"error":"unauthorized"}`. When a key fails verification, it calls `handleInvalidKey` if you gave it one. If you didn't, it stores the failed result and calls `next()`. A made-up key then reaches the route.
 
 ```bash
 curl -si http://localhost:3002/items/list -H "Authorization: Bearer sk_live_fake"
@@ -271,11 +263,11 @@ content-type: application/json
 {"items":["secret"],"valid":false}
 ```
 
-That run used a small route on port 3002 that printed the check. The response was HTTP 200 and `{"items":["secret"],"valid":false}`. The handler above returns `items: []` and does not echo `valid`. Set `handleInvalidKey`, or check `c.get('unkey').data.valid` in every route.
+That body is from a route that printed the check. The handler above returns `items: []` and does not echo `valid`. Set `handleInvalidKey`, or check `c.get('unkey').data.valid` in every route.
 
-**`onError` runs for Unkey API errors.** A rejected root key, throttling, or a 5xx that the SDK throws as `APIError` goes to `onError`. A network failure is not an `APIError`, so it is thrown, and `app.onError` is what answers it. Decide now whether an Unkey outage should fail closed with a 503, the way this code does, or fail open.
+**`onError` runs for Unkey API errors.** A rejected root key, throttling, or a 5xx that the SDK throws as `APIError` goes to `onError`. A network failure is not an `APIError`, so it is thrown, and `app.onError` is what answers it. This code answers both with a 503.
 
-**Pass `permissions` if routes differ.** The middleware option is a permission query the key has to satisfy. `AND` binds tighter than `OR`, and parentheses group, so `documents.read AND (billing.read OR billing.write)` means what it looks like. A key created without `items.read` gets a 403.
+**Pass `permissions` if routes differ.** The middleware option is a permission query the key has to satisfy. `AND` binds tighter than `OR`, and parentheses group, as in `documents.read AND (billing.read OR billing.write)`. A key created without `items.read` gets a 403.
 
 ```bash
 curl -si http://localhost:3000/items/list -H "Authorization: Bearer $KEY_WITHOUT_ITEMS_READ"
@@ -290,7 +282,7 @@ content-type: application/json
 
 ### Any framework that speaks Request and Response
 
-If you're not on Hono, call `keys.verifyKey` yourself. The handler below is a plain `(Request) => Promise<Response>`, so it works in Next.js route handlers, Bun, Deno, or Cloudflare Workers. We ran it with `Bun.serve`.
+If you're not on Hono, call `keys.verifyKey` yourself. The handler below is a plain `(Request) => Promise<Response>`, so it works in Next.js route handlers, Bun, Deno, or Cloudflare Workers.
 
 ```ts
 import { Unkey } from '@unkey/api';
@@ -354,7 +346,7 @@ retry-after: 22
 {"error":"RATE_LIMITED"}
 ```
 
-In a fast burst of six requests, the sixth came back 200 when we expected 429. The verifications right after it were `RATE_LIMITED` with `remaining: 0`. Counts sync across regions within moments, so `remaining` is an estimate. Use the per-key limit to stop abuse. Don't use it as an exact meter. If you need an exact count for billing, use credits. Credit balances change on the request that spends them.
+Counts sync across regions within moments, so `remaining` is an estimate. A short burst can get one more request through than the limit before the count catches up. Use the per-key limit to stop abuse. For an exact count, use credits. Credit balances change on the request that spends them.
 
 ## Step 4: Map the code to an HTTP status
 
@@ -387,13 +379,11 @@ Read `data.valid` first, then `data.code`, and pick the status your API returns.
 | `RATE_LIMITED` | A rate limit on the key or its identity is exceeded | 429 |
 | `USAGE_EXCEEDED` | Not enough credits | 402 or 429 |
 
-Watch the root key. If it lacks permission to verify this keyspace, you get a 200 with `NOT_FOUND` instead of a permission error, and it looks exactly like every customer's key is wrong. When keys you just created come back `NOT_FOUND`, check the root key's Verify permission before anything else.
+If the root key lacks permission to verify this keyspace, you get a 200 with `NOT_FOUND` instead of a permission error, which looks the same as a bad customer key. When keys you just created come back `NOT_FOUND`, check the root key's Verify permission before anything else.
 
 ## Step 5: Limit what a key can do
 
-You've already seen both pieces, `permissions` on the key and a permission query at verification time.
-
-Once you have more than a couple of permissions, group them into roles. This creates a permission and a role, then gives the role to the key that got a 403 earlier.
+Group permissions into roles once you have more than a couple. This creates a permission and a role, then attaches the role to a key.
 
 ```ts
 import { Unkey } from '@unkey/api';
@@ -412,15 +402,15 @@ const res = await unkey.keys.addRoles({
 });
 ```
 
-`createRole` can create a missing permission for you when the root key has permission to create permissions. `keys.addRoles` cannot. Every role in that call has to exist already, or the whole call fails. After the role was attached, the same key got a 200 from `/items/list`.
+`createRole` can create a missing permission for you when the root key has permission to create permissions. `keys.addRoles` cannot. Every role in that call has to exist already, or the whole call fails.
 
 The [permission reference](https://www.unkey.com/docs/platform/root-keys/permissions) lists the root key permissions these calls need.
 
-Rate limits work the same way. You set `ratelimits` on `keys.createKey` and can change them later with `keys.updateKey` without a deploy. A limit on a key only counts requests made with that key. If one customer has several keys that should share one allowance, put the limit on their identity instead. [How to rate limit an API per customer or per API key](https://www.unkey.com/blog/rate-limit-api-per-customer) covers that.
+You set `ratelimits` on `keys.createKey` and can change them later with `keys.updateKey` without a deploy. A limit on a key only counts requests made with that key. If one customer has several keys that should share one allowance, put the limit on their identity instead. [How to rate limit an API per customer or per API key](https://www.unkey.com/blog/rate-limit-api-per-customer) covers that.
 
 ## Step 6: Rotate a key without downtime
 
-`keys.rerollKey` creates a new key with the same settings and keeps the old one working for a grace period you pick. We used 24 hours.
+`keys.rerollKey` creates a new key with the same settings and keeps the old one working for a grace period. `expiration` is that period in milliseconds. `86400000` is 24 hours.
 
 ```bash
 curl -X POST https://api.unkey.com/v2/keys.rerollKey \
@@ -436,15 +426,15 @@ curl -X POST https://api.unkey.com/v2/keys.rerollKey \
 }
 ```
 
-You only see the new key once. It came with the old key's identity, metadata, permissions, credits, and rate limit. Our first request with it returned `"owner":"user_123","plan":"free"` with 4 of 5 requests remaining. The old key kept working too. It was already at its limit, so those requests were 429. `keys.getKey` on the old key showed `expires` had moved to about 24 hours later, rounded to the minute.
-
-A few edges are worth knowing. The [rerolling docs](https://www.unkey.com/docs/api-management/keys/rerolling-keys) have the rest.
+You only see the new key once. The new key copies the old key's identity, metadata, permissions, credits, and rate limit. The old key keeps its own `keyId`. Its `expires` moves to now plus `expiration`, rounded up to the next minute.
 
 - `expiration: 0` makes the old key's next verification `EXPIRED`. Any other value is rounded up to the next whole minute, so `1` can keep the old key alive for up to a minute.
 - `expiration: null` leaves the old key's expiry as it was.
 - The grace period applies even when the old key was due to expire sooner, so a reroll can make a key live longer.
 - You can't reroll a key that has already expired. The API returns 400 and creates nothing.
 - Analytics by `keyId` start over for the new key. Analytics by identity carry on.
+
+The [rerolling docs](https://www.unkey.com/docs/api-management/keys/rerolling-keys) cover the same cases.
 
 In the dashboard this is **Rotate key** in the key's actions menu. The grace period menu is revoke immediately, 15 minutes, 1 hour, 6 hours, 24 hours, or **Do not expire original key**.
 
@@ -470,15 +460,15 @@ await unkey.keys.deleteKey({ keyId: 'key_jSF1UzeET' });
 
 Once it's deleted, verification returns `NOT_FOUND`. `deleteKey` takes an optional `permanent` flag. The default keeps an audit record and the hash, so the same key string can't be issued again. `permanent: true` erases it, which is what you want for a deletion request that has to reuse that exact string. The dashboard always uses the default. Deletion can't be undone. The [enable, disable, and delete docs](https://www.unkey.com/docs/api-management/keys/enable-disable-delete) cover both.
 
-Don't promise an instant cutoff during an incident. A disable, delete, new expiry, or new permission can take up to 30 seconds to reach verification, and a request in that window can still see the old state. We saw it. Right after a delete, one direct verification still reported the key as `DISABLED` before it switched to `NOT_FOUND`. Wait out the 30 seconds in the runbook. Credit balances are the exception. They change on the request that spends them.
+A disable, delete, new expiry, or new permission can take up to 30 seconds to reach verification. A request in that window can still see the old state. Credit balances change on the request that spends them.
 
-The key's page lists each verification as Valid or Ratelimited. This one is `key_auD1h0pde`, the key we rerolled above.
+The key page lists each verification as Valid or Ratelimited.
 
 ![The key page for key_auD1h0pde with Valid and Ratelimited rows](/images/blog-images/api-key-authentication/auth-key-verifications.png)
 
 ## Customers can manage their own keys
 
-The last item on the list is a page where customers manage their own keys. We host that as the developer portal. Your backend creates a short-lived session for a user who is already signed in, and you redirect them to it. A user only sees keys whose identity `externalId` matches the session. Keys with no identity never show up.
+Unkey hosts a developer portal where customers manage their own keys. Your backend creates a short-lived session for a user who is already signed in, and you redirect them to it. A user only sees keys whose identity `externalId` matches the session. Keys with no identity never show up.
 
 The portal is in beta. For a keyspace, you can create it in the dashboard from the keyspace's **Customer portal** section, or with `portal.createPortal`. A portal for a Compute app is API or CLI only for now.
 
@@ -499,11 +489,11 @@ curl -X POST https://api.unkey.com/v2/portal.createSession \
         "scopes": ["keys:read", "keys:reroll", "analytics:read"] }'
 ```
 
-`data.url` is where you redirect the user. The exchange code in it works once and lasts 15 minutes. The portal swaps it for an access token that lasts 24 hours. We called this endpoint with a portal id that doesn't exist and got `portal_not_found`, which is the same 404 you get when the root key isn't allowed to create sessions for that portal.
+`data.url` is where you redirect the user. The exchange code in it works once and lasts 15 minutes. The portal swaps it for an access token that lasts 24 hours. A portal id that doesn't exist, or a root key that isn't allowed to create sessions for it, returns 404 `portal_not_found`.
 
 ## Put the key in your OpenAPI spec
 
-Clients and SDK generators need to know where to put the key. This part is plain OpenAPI and has nothing to do with Unkey. Declare a bearer scheme, and add an `apiKey` scheme if you also accept the key in a header. When you list them as separate entries under `security`, either one is accepted.
+Clients and SDK generators need to know where to put the key. Declare a bearer scheme, and add an `apiKey` scheme if you also accept the key in a header. When you list them as separate entries under `security`, either one is accepted.
 
 ```yaml
 openapi: 3.1.0
@@ -539,7 +529,7 @@ The spec validates against OpenAPI 3.1 with `@apidevtools/swagger-parser`. If yo
 
 If your API runs on Unkey Compute, you can skip the middleware. Open the app, go to **Policies**, and click **Add policy**. A new app has no policies yet. Set **Type** to **Key Auth**. The rule starts as a bearer token with no keyspace. Pick the keyspace by its `ks_` ID. Leave **Key location** empty and the gateway reads `Authorization: Bearer`. The panel says the change applies to the next deployment.
 
-We ran that. A request with no key got a 401 `missing_credentials`. A made-up key got a 401 `invalid_key`. A valid key reached the app. Policy changes apply to the next deployment. Until we redeployed, requests without a key still got through.
+Policy changes apply to the next deployment. The deployment that's already running keeps the policies it was created with, so a request with no key still reaches the app until you deploy again.
 
 ```json
 {
@@ -555,7 +545,7 @@ The same policy can require a permission query, spend credits, and check named r
 
 `gateway.setPolicies` replaces the environment's whole policy list. Read the current list first and include it, or this call removes policies you forgot. The root key needs `environment.*.set_policies`.
 
-When the key passes, your app gets the caller in `X-Unkey-Principal` as JSON. `subject` is the identity's `externalId`. If the key has no identity, `subject` is the key ID. `source.key` carries the key ID, `keySpaceId`, name, meta, roles, and permissions. The gateway strips any `X-Unkey-*` header the client sent before it sets this one, so inside a Compute deployment the header is the one we wrote. Run the same code on your laptop and anyone can send it.
+When the key passes, your app gets the caller in `X-Unkey-Principal` as JSON. `subject` is the identity's `externalId`. If the key has no identity, `subject` is the key ID. `source.key` carries the key ID, `keySpaceId`, name, meta, roles, and permissions. The gateway strips any `X-Unkey-*` header the client sent before it sets this one. Inside a Compute deployment, that header is the gateway's. Run the same code outside Compute and anyone who can reach the process can send the header.
 
 Rejected requests never reach your process. The gateway answers them.
 
@@ -574,9 +564,3 @@ Request logs redact the `Authorization` header and every header or query paramet
 ## Same two calls in every other language
 
 Every language uses `keys.createKey` when a customer needs a key and `keys.verifyKey` on every request. The docs have framework guides for [Go](https://www.unkey.com/docs/api-management/guides/go), [Python](https://www.unkey.com/docs/api-management/guides/python), [Next.js](https://www.unkey.com/docs/api-management/guides/nextjs), [Express](https://www.unkey.com/docs/api-management/guides/express), [Hono](https://www.unkey.com/docs/api-management/guides/hono), and [Cloudflare Workers](https://www.unkey.com/docs/api-management/guides/cloudflare-workers). The [quickstart](https://www.unkey.com/docs/api-management/get-started/quickstart) shows create and verify in curl, TypeScript, Go, and Python side by side. If you already store hashed keys in your own database, [migrating keys](https://www.unkey.com/docs/api-management/keys/migrating-keys) imports the hashes so your customers keep the keys they have.
-
-## If you still want to build it
-
-These are the parts that will bite you. Generate keys from a CSPRNG with at least 128 bits of randomness, and store only a hash. Compare keys in constant time. Strip keys from every log line, including the ones your reverse proxy writes. Support two valid keys per customer while they rotate, and make revocation a fast lookup so it doesn't wait on a cache expiry. After all that you still need per-key rate limiting, usage records, and a UI for your customers. Each step in this post replaces one of those jobs with an API call.
-
-Ship APIs, not infrastructure.
