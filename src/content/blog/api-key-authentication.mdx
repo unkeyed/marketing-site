@@ -9,8 +9,6 @@ tags: ['tutorials']
 
 You have an API, and your customers need keys to call it. This post issues keys for **your own** API. A lot of "API key" search results are a different job, using a key to call someone else's service like Google Cloud or OpenAI, and we don't cover that here.
 
-If you build keys yourself, you own the whole system.
-
 - **Generate** keys with enough entropy, and give them a readable prefix so people can tell `sk_live` from `sk_test` in logs.
 - **Hash** them before you store them, and never keep or log the plaintext.
 - **Store** the hash with an owner, metadata, expiry, and an enabled flag.
@@ -19,11 +17,6 @@ If you build keys yourself, you own the whole system.
 - **Revoke** a key the moment it leaks.
 - **Rate limit** each key, so one customer's runaway script doesn't take everyone else down.
 - **Record usage** per key and per customer.
-- **Let customers manage** their own keys without a support ticket.
-
-[API key management vs. an API gateway](https://www.unkey.com/blog/api-key-management-vs-gateway) covers why each item matters.
-
-The examples use `@unkey/api` 2.5.6 and `@unkey/hono` 2.0.0.
 
 ## Step 1: Create a root key and a keyspace
 
@@ -42,11 +35,10 @@ Sign in at [app.unkey.com](https://app.unkey.com).
    - **Key management**, **Keyspaces**, **Write** (`api.*.create_api`)
    - **Key management**, **Keys**, **Write** (`api.*.create_key`) and **Verify** (`api.*.verify_key`). Tick **Delete** too if this key will revoke customer keys.
    - **Identity and RBAC**, **Roles**, **Write** and **Permissions**, **Write**, for the role step later.
-   - **Portals**, **Portals**, **Write** and **Portal sessions**, **Write**, if this key will open the developer portal.
 
 ![Custom root key policy. Keyspaces Write is ticked. Keys Write, Delete, and Verify are ticked.](/images/blog-images/api-key-authentication/new-root-key-permissions.png)
 
-![Same policy, scrolled down. Roles Write, Permissions Write, Portals Write, and Portal sessions Write are ticked.](/images/blog-images/api-key-authentication/new-root-key-rbac.png)
+![Same policy, scrolled to Identity and RBAC. Roles Write and Permissions Write are ticked.](/images/blog-images/api-key-authentication/new-root-key-rbac.png)
 
 6. Click **Add policy**, then **Create key**.
 7. Copy the key. We show it once. Store it as `UNKEY_ROOT_KEY` on your server.
@@ -128,7 +120,7 @@ After **Create key**, the dialog shows the secret once, with a copy button. Copy
 
 ## Step 3: Check the key on every request
 
-### The Hono middleware reads the bearer token
+### Hono
 
 Install the server library the example uses.
 
@@ -280,7 +272,7 @@ content-type: application/json
 {"error":"INSUFFICIENT_PERMISSIONS"}
 ```
 
-### Any framework that speaks Request and Response
+### Other frameworks
 
 If you're not on Hono, call `keys.verifyKey` yourself. The handler below is a plain `(Request) => Promise<Response>`, so it works in Next.js route handlers, Bun, Deno, or Cloudflare Workers.
 
@@ -404,8 +396,6 @@ const res = await unkey.keys.addRoles({
 
 `createRole` can create a missing permission for you when the root key has permission to create permissions. `keys.addRoles` cannot. Every role in that call has to exist already, or the whole call fails.
 
-The [permission reference](https://www.unkey.com/docs/platform/root-keys/permissions) lists the root key permissions these calls need.
-
 You set `ratelimits` on `keys.createKey` and can change them later with `keys.updateKey` without a deploy. A limit on a key only counts requests made with that key. If one customer has several keys that should share one allowance, put the limit on their identity instead. [How to rate limit an API per customer or per API key](https://www.unkey.com/blog/rate-limit-api-per-customer) covers that.
 
 ## Step 6: Rotate a key without downtime
@@ -434,8 +424,6 @@ You only see the new key once. The new key copies the old key's identity, metada
 - You can't reroll a key that has already expired. The API returns 400 and creates nothing.
 - Analytics by `keyId` start over for the new key. Analytics by identity carry on.
 
-The [rerolling docs](https://www.unkey.com/docs/api-management/keys/rerolling-keys) cover the same cases.
-
 In the dashboard this is **Rotate key** in the key's actions menu. The grace period menu is revoke immediately, 15 minutes, 1 hour, 6 hours, 24 hours, or **Do not expire original key**.
 
 ![The Rotate key dialog with the grace period menu open and 24 hours selected](/images/blog-images/api-key-authentication/auth-rotate-dialog.png)
@@ -458,7 +446,7 @@ After that, verification returns `DISABLED`. While a key is disabled it doesn't 
 await unkey.keys.deleteKey({ keyId: 'key_jSF1UzeET' });
 ```
 
-Once it's deleted, verification returns `NOT_FOUND`. `deleteKey` takes an optional `permanent` flag. The default keeps an audit record and the hash, so the same key string can't be issued again. `permanent: true` erases it, which is what you want for a deletion request that has to reuse that exact string. The dashboard always uses the default. Deletion can't be undone. The [enable, disable, and delete docs](https://www.unkey.com/docs/api-management/keys/enable-disable-delete) cover both.
+Once it's deleted, verification returns `NOT_FOUND`. `deleteKey` takes an optional `permanent` flag. The default keeps an audit record and the hash, so the same key string can't be issued again. `permanent: true` erases it, which is what you want for a deletion request that has to reuse that exact string. The dashboard always uses the default. Deletion can't be undone.
 
 A disable, delete, new expiry, or new permission can take up to 30 seconds to reach verification. A request in that window can still see the old state. Credit balances change on the request that spends them.
 
@@ -466,32 +454,7 @@ The key page lists each verification as Valid or Ratelimited.
 
 ![The key page for key_auD1h0pde with Valid and Ratelimited rows](/images/blog-images/api-key-authentication/auth-key-verifications.png)
 
-## Customers can manage their own keys
-
-Unkey hosts a developer portal where customers manage their own keys. Your backend creates a short-lived session for a user who is already signed in, and you redirect them to it. A user only sees keys whose identity `externalId` matches the session. Keys with no identity never show up.
-
-The portal is in beta. For a keyspace, you can create it in the dashboard from the keyspace's **Customer portal** section, or with `portal.createPortal`. A portal for a Compute app is API or CLI only for now.
-
-```bash
-curl -X POST https://api.unkey.com/v2/portal.createPortal \
-  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{ "slug": "acme-portal", "displayName": "Acme", "keyspaceId": "ks_..." }'
-```
-
-Then mint a session. The root key needs `portal.*.create_portal_session`, and it needs the keyspace permission that matches each scope (`read_key` and `read_api` for `keys:read`, `create_key` for `keys:reroll`, `read_analytics` for `analytics:read`). `keys:reroll` and `analytics:read` also require `keys:read` in the same request, or you get a 400.
-
-```bash
-curl -X POST https://api.unkey.com/v2/portal.createSession \
-  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{ "portal": "acme-portal", "externalId": "user_123",
-        "scopes": ["keys:read", "keys:reroll", "analytics:read"] }'
-```
-
-`data.url` is where you redirect the user. The exchange code in it works once and lasts 15 minutes. The portal swaps it for an access token that lasts 24 hours. A portal id that doesn't exist, or a root key that isn't allowed to create sessions for it, returns 404 `portal_not_found`.
-
-## Put the key in your OpenAPI spec
+## OpenAPI
 
 Clients and SDK generators need to know where to put the key. Declare a bearer scheme, and add an `apiKey` scheme if you also accept the key in a header. When you list them as separate entries under `security`, either one is accepted.
 
@@ -525,7 +488,7 @@ paths:
 
 The spec validates against OpenAPI 3.1 with `@apidevtools/swagger-parser`. If you want `apiKey` in a query parameter or a cookie, the [Security Scheme Object](https://spec.openapis.org/oas/v3.1.0#security-scheme-object) section shows how. If you accept `X-API-Key`, the `@unkey/hono` middleware and the handler above both read only the `Authorization` header by default. Pass a `getKey` function that reads your header instead.
 
-## On Compute, the gateway checks the key
+## Verifying keys on Unkey Compute
 
 If your API runs on Unkey Compute, you can skip the middleware. Open the app, go to **Policies**, and click **Add policy**. A new app has no policies yet. Set **Type** to **Key Auth**. The rule starts as a bearer token with no keyspace. Pick the keyspace by its `ks_` ID. Leave **Key location** empty and the gateway reads `Authorization: Bearer`. The panel says the change applies to the next deployment.
 
@@ -547,7 +510,7 @@ The same policy can require a permission query, spend credits, and check named r
 
 When the key passes, your app gets the caller in `X-Unkey-Principal` as JSON. `subject` is the identity's `externalId`. If the key has no identity, `subject` is the key ID. `source.key` carries the key ID, `keySpaceId`, name, meta, roles, and permissions. The gateway strips any `X-Unkey-*` header the client sent before it sets this one. Inside a Compute deployment, that header is the gateway's. Run the same code outside Compute and anyone who can reach the process can send the header.
 
-Rejected requests never reach your process. The gateway answers them.
+Rejected requests never reach your process.
 
 - No key in any location the policy checks: `401` `err:frontline:client:missing_credentials`.
 - The key doesn't exist, is disabled or expired, the workspace is disabled, or the key is from a keyspace the policy doesn't list: `401` `err:frontline:client:invalid_key`. The caller can't tell those apart.
@@ -555,12 +518,12 @@ Rejected requests never reach your process. The gateway answers them.
 - A rate limit is used up: `429` `err:frontline:client:rate_limited`.
 - The key is out of credits: `429` `err:frontline:client:usage_exceeded`.
 
-Request logs redact the `Authorization` header and every header or query parameter listed as a key location on any key auth policy, including policies that are turned off. The outcomes are on [API key authentication](https://www.unkey.com/docs/compute/gateway/api-key-auth).
+Request logs redact the `Authorization` header and every header or query parameter listed as a key location on any key auth policy, including policies that are turned off.
 
 ![The Policies page on a Compute app before any policy is saved. Add policy is at the top right.](/images/blog-images/api-key-authentication/deploy-policies.png)
 
 ![Add policy, type Key Auth, matching every request, bearer token, no keyspace picked yet. Changes apply to the next deployment.](/images/blog-images/api-key-authentication/deploy-keyauth-policy.png)
 
-## Same two calls in every other language
+## Other languages
 
 Every language uses `keys.createKey` when a customer needs a key and `keys.verifyKey` on every request. The docs have framework guides for [Go](https://www.unkey.com/docs/api-management/guides/go), [Python](https://www.unkey.com/docs/api-management/guides/python), [Next.js](https://www.unkey.com/docs/api-management/guides/nextjs), [Express](https://www.unkey.com/docs/api-management/guides/express), [Hono](https://www.unkey.com/docs/api-management/guides/hono), and [Cloudflare Workers](https://www.unkey.com/docs/api-management/guides/cloudflare-workers). The [quickstart](https://www.unkey.com/docs/api-management/get-started/quickstart) shows create and verify in curl, TypeScript, Go, and Python side by side. If you already store hashed keys in your own database, [migrating keys](https://www.unkey.com/docs/api-management/keys/migrating-keys) imports the hashes so your customers keep the keys they have.
