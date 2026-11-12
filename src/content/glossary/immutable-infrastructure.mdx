@@ -1,0 +1,105 @@
+---
+title: 'What Immutable Infrastructure Is'
+description: 'How a deploy replaces a server with a new instance instead of patching the one that is running.'
+seo:
+  title: 'What Immutable Infrastructure Is'
+  description: 'How a deploy replaces a server with a new instance instead of patching the one that is running.'
+h1: 'What Immutable Infrastructure Is'
+term: Immutable Infrastructure
+categories: []
+takeaways:
+  tldr: Immutable infrastructure means a server is not changed after it is deployed. A new version is a new instance built from a known image. The old instance is replaced, not patched.
+  didYouKnow: Chad Fowler's essay on 23 June 2013 named this immutable infrastructure. Kief Morris had defined an immutable server on Martin Fowler's site ten days earlier, on 13 June 2013.
+  usageInAPIs:
+    tags:
+      - Replace
+      - Image
+      - External state
+    description: An API deploy starts new instances from an image and stops the old ones after they drain. The process does not keep the only copy of data. A schema change has to work for both versions while both are up.
+  bestPractices:
+    - Build the instance from a versioned image. Do not apply the change by logging in.
+    - Keep the only copy of data off the instance disk.
+    - Pass config and secrets in at start, not as a later edit on the live machine.
+    - Keep the previous image so you can start it again.
+    - Drain in-flight requests before you stop the old instance.
+  historicalContext:
+    - key: Introduced
+      value: '2013'
+    - key: Origin
+      value: Chad Fowler, June 2013
+    - key: Evolution
+      value: Replace the instance instead of converging it
+  recommendedReading:
+    - url: https://chadfowler.com/articles/trash-your-servers-and-burn-your-code.html
+      title: Trash Your Servers and Burn Your Code (Chad Fowler)
+    - url: https://martinfowler.com/bliki/ImmutableServer.html
+      title: Immutable Server (Kief Morris)
+    - url: https://martinfowler.com/bliki/PhoenixServer.html
+      title: Phoenix Server (Martin Fowler)
+    - url: https://martinfowler.com/bliki/SnowflakeServer.html
+      title: Snowflake Server (Martin Fowler)
+  definitionAndStructure:
+    - key: Mutable server
+      value: Changed in place
+    - key: Immutable server
+      value: Replaced, not patched
+    - key: Deploy
+      value: A new instance from an image
+faq:
+  - question: What is immutable infrastructure?
+    answer: Immutable infrastructure means a server is not changed after it is deployed. To ship a fix, a config change, or a new version, you build a new instance from a known image and replace the old instance. You do not log in and patch the machine that is serving traffic.
+  - question: How is an immutable server different from a mutable server?
+    answer: A mutable server is changed while it runs. Package installs, file edits, and one-off fixes accumulate until that machine is hard to rebuild. An immutable server is left alone after it starts. The next version is a new instance. The previous instance is stopped, not edited.
+  - question: How does a deploy work if you do not patch the server?
+    answer: You build an image, start a new instance from it, and wait until that instance passes a health check. Then you send it traffic and stop the old instance. The new behavior is the new instance. Nothing copies a binary onto the machine that was already running.
+  - question: What are the tradeoffs of immutable infrastructure?
+    answer: A small change takes a rebuild and a replacement, which is slower than editing a file on the live machine. You gain an instance you can rebuild from the image. Rollback depends on still having the previous image, or the previous instance. In-flight requests can be cut when the old instance stops, and a shared database still has to accept both versions during the switch.
+  - question: Does immutable infrastructure require containers?
+    answer: No. A container is a common way to do it, because the image and the process are already disposable. A virtual machine built from a versioned image and destroyed rather than patched is the same practice. The rule is that you replace the instance. The packaging can be either.
+updatedAt: 2026-11-12T14:30:00.000Z
+slug: immutable-infrastructure
+---
+
+Immutable infrastructure means a server is not changed after it is deployed. A fix, a config change, or a new version is a new instance built from a known image. The old instance is replaced. It is not patched in place.
+
+If the instance was created by automation and nothing has changed it since, you can rebuild that instance from the same inputs. A machine that has been edited by hand is no longer that artifact.
+
+## Mutable servers and immutable servers
+
+A mutable server is changed while it runs. Someone logs in, installs a package, edits a file, or applies a configuration tool to the live machine. Later it is hard to say which of those changes were intentional. [Martin Fowler's July 2012 page on snowflake servers](https://martinfowler.com/bliki/SnowflakeServer.html) describes the result as a machine that has become unique and hard to reproduce.
+
+An immutable server is not modified after it starts. [Kief Morris, on Fowler's site on 13 June 2013](https://martinfowler.com/bliki/ImmutableServer.html), describes a server that once deployed is never modified, and is replaced with a new instance when you need a change. Fixes go into the image the next instance is built from. They do not go into the instance that is serving traffic.
+
+A phoenix server is a different practice. [Fowler's July 2012 page](https://martinfowler.com/bliki/PhoenixServer.html) describes rebuilding servers on a regular schedule from a known baseline, so unrecorded edits do not accumulate. A configuration tool may still adjust the machine after boot. An immutable server skips that adjustment. After the instance exists, you replace it.
+
+[Chad Fowler's essay of 23 June 2013](https://chadfowler.com/articles/trash-your-servers-and-burn-your-code.html) gave the broader practice the name immutable infrastructure. He describes creating a system through automation and refusing to change it afterward. A new application revision is a new server or image. The old one is thrown away.
+
+## How a deploy replaces an instance
+
+You build an image that contains the userland you need, the application, and its dependencies. You start a new instance from that image. You wait until it passes a health check. You send it traffic. You stop the old instance.
+
+The running instance is not updated. There is no step that copies a new binary onto it or edits its config. Traffic moves to the new instance, which was built from the new image.
+
+[Blue-green deployment](/glossary/blue-green-deployment) keeps the previous instance up and moves the router. A [canary deployment](/glossary/canary-deployment) sends a fraction of traffic to the new instance first. Both still replace instances. They differ in how traffic moves. [Zero-downtime API deployment](/glossary/zero-downtime-api-deployment) is the name for shipping a new version without taking the API offline. Replacing instances does not guarantee that no request fails. A health check can pass while a real call fails. A request that outlives the drain period is cut when the old instance stops.
+
+Config that differs between environments is supplied when the instance starts. A secret written into a file on the live machine is a change to that machine. The next instance will not have it. Disk on the instance is the wrong place for the only copy of data. [API hosting](/glossary/api-hosting) has the same constraint. Instance disk goes away when the instance is replaced. Put data in a service that outlives one deploy.
+
+## Tradeoffs
+
+Replacing an instance takes longer than editing one file on a running machine. That extra time is the cost of keeping every running instance identical to an image you can rebuild. The live edit would make this instance different from the image, and the next instance would not have the edit.
+
+Rollback is starting the previous image, or pointing traffic back at an instance that is still running. Keep the previous image. If you delete it, rollback means a rebuild, which is slower than a routing change.
+
+Both versions can be serving during the switch, and both can be writing. A database change that only the new instance understands leaves you unable to send traffic back. Ship a schema both versions can use, replace the instances, and remove the old schema in a later release. [Backward compatibility](/glossary/backward-compatibility) is the rule for that overlap.
+
+An application process is a good fit. A new process can start while the old one still serves. A database primary is a poor fit for a full replace on every config edit. Keep the data, and replace the application instances. Replacing the application can happen while the database stays where it is.
+
+A container is a common way to get an instance you can delete. [Containerization](/glossary/containerization) already gives you an image and a process started from that image. Immutable infrastructure does not require containers. A virtual machine built from a versioned image, and destroyed rather than patched, follows the same rule.
+
+You can read logs and metrics from the instance. A hotfix applied on the instance is drift. The fix belongs in the next image, followed by a new instance. If you use a shell to find the bug, treat what you learn as input to that image, and discard the instance you changed.
+
+## What the instance does not hold
+
+The image does not include the data, the router, or the decision about who may call the API. [Autoscaling](/glossary/autoscaling) can add instances from the same image. It does not make a hand-patched instance match its neighbors. If two instances of the same version differ, one of them was changed after it started.
+
+The instance also does not keep a local edit across a replace. Cron jobs added on the box, packages installed during an incident, and config written outside the image disappear with that instance. Put anything that must survive into the image, or into a service outside the instance.
