@@ -1,0 +1,210 @@
+---
+date: 2026-11-12
+title: 'How to Handle 429 Too Many Requests Errors'
+description: 'What an HTTP 429 Too Many Requests response means, how to retry it, and how to set the limit on each API key.'
+author: james
+isDraft: false
+tags: ['tutorials']
+---
+
+HTTP 429 Too Many Requests means the caller has sent more requests than the server will accept right now. The server understood the request. The client should wait, then try again.
+
+## What a 429 means
+
+[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#section-15.5.20) defines `429 Too Many Requests`. [RFC 6585](https://www.rfc-editor.org/rfc/rfc6585) is where the status was added. The caller is allowed to use the API, and has used up the allowance for this window. A 400 means the request was malformed. A 401 or 403 means the caller is not allowed. A 500 means the server failed.
+
+Servers often send `Retry-After` and rate limit headers with that 429.
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1763251200
+Content-Type: application/json
+
+{"error":"too_many_requests"}
+```
+
+Those header values are an example, for a limit of 100 with 30 seconds left in the window.
+
+### Retry-After
+
+[Retry-After](https://www.rfc-editor.org/rfc/rfc9110#name-retry-after) says how long to wait. The value is either a number of seconds or an HTTP date.
+
+```http
+Retry-After: 30
+Retry-After: Wed, 21 Oct 2026 07:28:00 GMT
+```
+
+Clients have to accept both. When the Unkey Compute gateway sends `Retry-After`, the value is whole seconds and never lower than 1.
+
+### Rate limit headers
+
+Many APIs also send `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Those names are a convention. They are not part of HTTP, and products spell them differently. The IETF [RateLimit header fields](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-ratelimit-headers) draft defines `RateLimit` and `RateLimit-Policy`. As of 2026 that draft is not an RFC, so the field syntax can still change. Clients can rely on the status code and on `Retry-After`. Treat the other headers as hints.
+
+The Compute gateway sends `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` on responses a limit applies to, including responses that succeeded, so a client can slow down before the next call fails. `X-RateLimit-Reset` is a Unix timestamp in seconds. If several limits apply, the headers describe the strictest one. See [rate_limited](https://www.unkey.com/docs/errors/frontline/client/rate_limited).
+
+`keys.verifyKey` does not set `Retry-After` or `X-RateLimit-*`. Your server copies `limit`, `remaining`, and `reset` out of the verification body when you want those headers on your own 429.
+
+## How clients should handle a 429
+
+Wait for `Retry-After` when it is present. A number is seconds. A date is the moment to try again. Add a little random jitter so clients that were limited together do not retry on the same millisecond.
+
+If the header is missing or not a number or a date, use exponential backoff. Double the wait on each attempt, cap it, and pick a random delay up to that cap. The function below gives up after four retries and returns the 429. Retrying immediately fills the window again. Retry a write only when sending it twice is safe.
+
+```ts
+function waitMs(retryAfter: string | null, attempt: number): number {
+  if (retryAfter) {
+    const seconds = Number(retryAfter);
+    if (Number.isFinite(seconds) && seconds >= 0) {
+      return seconds * 1000 + Math.random() * 250;
+    }
+    const date = Date.parse(retryAfter);
+    if (Number.isFinite(date)) {
+      return Math.max(0, date - Date.now()) + Math.random() * 250;
+    }
+  }
+
+  const capMs = Math.min(32_000, 2 ** attempt * 1000);
+  return Math.random() * capMs;
+}
+
+export async function fetchWithRetry(
+  url: string,
+  init: RequestInit = {},
+  maxRetries = 4,
+): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    const response = await fetch(url, init);
+    if (response.status !== 429 || attempt >= maxRetries) {
+      return response;
+    }
+    const delay = waitMs(response.headers.get('Retry-After'), attempt);
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+}
+```
+
+## Rate limits per API key
+
+Put the limit on the API key when the caller has one. An IP address is a weak stand-in. Many customers share one address, and one customer can send from many.
+
+In Unkey API Management, `ratelimits` on `keys.createKey` stores named limits on the key. Each entry needs `name` (3 to 128 characters), `limit` (1 or more), `duration` in milliseconds (1000 or more), and `autoApply`. `autoApply` is required. Leaving it out fails with HTTP 400 and `missing property 'autoApply'`. With `autoApply: true`, every verification checks that limit. The window is a sliding window, so a caller cannot spend the full limit at the end of one window and the full limit again at the start of the next. [Key and identity rate limits](https://www.unkey.com/docs/api-management/ratelimiting/key-and-identity-limits) is the reference.
+
+```ts
+import { Unkey } from '@unkey/api';
+
+const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY ?? '' });
+
+await unkey.keys.createKey({
+  apiId: 'api_...',
+  prefix: 'sk_live',
+  ratelimits: [{ name: 'requests', limit: 100, duration: 60_000, autoApply: true }],
+});
+```
+
+`duration: 60_000` is 100 requests per 60 seconds. The plaintext key is `data.key`, and this response is the only time Unkey returns it. A limit on the key counts that key alone. A limit on the customer's identity counts every key that customer holds. If one customer should share a single budget across keys, put the limit on the identity. [How to rate limit an API per customer or per API key](https://www.unkey.com/blog/rate-limit-api-per-customer) walks through that.
+
+## What verify returns when a key is rate limited
+
+`keys.verifyKey` returns HTTP 200 when the key is over its limit. Read the body. `data.valid` is `false` and `data.code` is `RATE_LIMITED`. Each checked limit is in `data.ratelimits`, with `id`, `name`, `limit`, `duration`, `remaining`, `reset`, `exceeded`, and `autoApply`. `reset` is Unix milliseconds. `remaining` is an estimate, because another region may have accepted requests that this response has not counted yet. [Verifying keys](https://www.unkey.com/docs/api-management/keys/verifying-keys) lists every `code`.
+
+```json
+{
+  "meta": { "requestId": "req_..." },
+  "data": {
+    "valid": false,
+    "code": "RATE_LIMITED",
+    "keyId": "key_...",
+    "ratelimits": [
+      {
+        "id": "rl_...",
+        "name": "requests",
+        "limit": 100,
+        "duration": 60000,
+        "remaining": 0,
+        "reset": 1704067260000,
+        "exceeded": true,
+        "autoApply": true
+      }
+    ]
+  }
+}
+```
+
+Your server returns the 429. Set `Retry-After` from the exceeded limit's `reset`, and keep it at least 1 second. Divide `reset` by 1000 for `X-RateLimit-Reset` so it matches the Unix seconds the Compute gateway sends. Denied requests do not count, so retrying while limited does not move `reset` later. Capacity comes back gradually after `reset`.
+
+```ts
+const { data } = await unkey.keys.verifyKey({ key });
+
+if (data.code === 'RATE_LIMITED') {
+  const hit = data.ratelimits?.find((limit) => limit.exceeded);
+  const resetMs = hit?.reset ?? Date.now();
+  const retryAfter = Math.max(1, Math.ceil((resetMs - Date.now()) / 1000));
+  const headers = new Headers({ 'Retry-After': String(retryAfter) });
+
+  if (hit) {
+    headers.set('X-RateLimit-Limit', String(hit.limit));
+    headers.set('X-RateLimit-Remaining', String(hit.remaining));
+    headers.set('X-RateLimit-Reset', String(Math.ceil(hit.reset / 1000)));
+  }
+
+  return new Response('Too many requests', { status: 429, headers });
+}
+```
+
+`USAGE_EXCEEDED` is a different check. It means the key's credits cannot cover the request. Your server can return 429 for that too. It is the credit balance, separate from this window. If the rate limit check cannot run, verification continues as if every limit passed, so a counter outage does not lock out a valid key.
+
+## Gateway rate limits on Unkey Compute
+
+On Unkey Compute, a gateway rate limit policy rejects extra requests before they reach the app. The policy sends every check to the same shared ratelimit service as `keys.verifyKey` and `ratelimit.limit`. The count is a sliding window. It is never a fixed window. [Rate limit policy](https://www.unkey.com/docs/compute/gateway/rate-limiting) is the reference, and [How rate limiting works](https://www.unkey.com/docs/api-management/ratelimiting/how-it-works) describes the window.
+
+The policy sets `limit`, `windowMs` (milliseconds, at least 1), and 1 to 5 `identifiers`. Each unique combination of identifier values gets its own counter, with the same limit and window. `authenticatedSubject` counts by the caller's `subject` from an earlier API key policy. For a key linked to an identity, `subject` is that identity's `externalId`. Otherwise it is the key ID. Put that rate limit after key auth. Saving one without a key auth policy above it fails validation.
+
+A value that cannot be found, such as a missing header, counts as `unknown`. Every request missing that value shares one counter. If none of the identifiers can be resolved, the gateway rejects the request with 429 and `Rate limit configuration error. Unable to identify the request.`
+
+```bash
+curl -X POST https://api.unkey.com/v2/gateway.setPolicies \
+  -H "Authorization: Bearer $UNKEY_ROOT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "project": "my-project",
+    "app": "api",
+    "environment": "production",
+    "policies": [
+      {
+        "name": "Require a key",
+        "enabled": true,
+        "keyauth": { "keyspaces": ["ks_1234abcd"] }
+      },
+      {
+        "name": "100 per minute per caller",
+        "enabled": true,
+        "ratelimit": {
+          "limit": 100,
+          "windowMs": 60000,
+          "identifiers": [{ "authenticatedSubject": {} }]
+        }
+      }
+    ]
+  }'
+```
+
+`gateway.setPolicies` replaces the environment's whole policy list. Read the current list with `gateway.listPolicies` and include the policies you want to keep. The change applies to the next deployment. Replacing the list resets every counter once that deployment is live. Every request counts as 1.
+
+Over the limit, the caller gets 429 `err:frontline:client:rate_limited`.
+
+```json
+{
+  "meta": { "requestId": "req_..." },
+  "error": {
+    "code": "err:frontline:client:rate_limited",
+    "message": "Rate limit exceeded. Please try again later."
+  }
+}
+```
+
+The response includes `Retry-After` in whole seconds, at least 1, plus `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` in Unix seconds. If rate limiting itself fails, the gateway returns 500 and does not let the request through.
+
+A key auth policy can also enforce the named limits on the key. That is the same check `keys.verifyKey` runs, including the sliding window, and it returns 429 `rate_limited` with the same headers. Per-key limits belong there. The rate limit policy is a separate counter, for an IP, a header, a path, or the caller.
