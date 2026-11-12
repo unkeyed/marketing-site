@@ -1,7 +1,7 @@
 ---
 date: 2026-08-24
-title: 'How to Ship a Node.js API or Backend Without Managing Infrastructure'
-description: No SSH, no YAML pipeline. Next.js and a Node API with a single push
+title: 'How to Deploy a Node.js API from GitHub with git push'
+description: 'Connect a GitHub repo and every push builds and deploys your Node.js API, with no servers or YAML to manage.'
 image: /images/blog-images/covers/git-push-deploy.png
 author: james
 isHidden: true
@@ -116,6 +116,30 @@ Most Git-push deploy platforms stop at "your code is running." Unkey's broader p
 This matters most for teams building an API product — not just an internal service, but something with external consumers, tiered plans, or usage-based billing. Instead of deploying your API on one platform and wiring up a separate auth/rate-limiting layer (Kong, a custom middleware, or a third SaaS), you can deploy and manage the full lifecycle of the API in the same place.
 
 If your use case is a simple internal service with no need for key-based auth or rate limiting, a general-purpose Git-push deploy platform may be all you need. If you're shipping an API that other developers or services will consume, evaluate platforms that combine deploy with the API-specific primitives you'll eventually need — since retrofitting auth and rate limiting after launch is more work than building it in from the first deploy.
+
+## Check API keys at the gateway
+
+Every deployment on Unkey Compute sits behind the gateway. With no policies, the gateway forwards each request to the app. API Management is a separate product. It issues the API keys. A policy on the Compute gateway can check those keys before the app sees the request.
+
+An [API key authentication policy](https://www.unkey.com/docs/compute/gateway/api-key-auth) checks a key from one to five keyspaces in the same workspace. The checks match `keys.verifyKey`. By default the gateway reads the key from the `Authorization: Bearer` header. You can also read a named header or a query parameter.
+
+A request with no key gets `401` and `err:frontline:client:missing_credentials`. A key that does not exist, is disabled, has expired, or comes from a keyspace the policy does not list gets `401` and `err:frontline:client:invalid_key`. A key that fails the permission query gets `403` and `err:frontline:client:insufficient_permissions`. A key with no credits left gets `429` and `err:frontline:client:usage_exceeded`. The app does not see those requests. When the key is valid, the gateway forwards the request and sets `X-Unkey-Principal` to JSON that names the caller.
+
+Rate limiting on the gateway is a sliding window, never a fixed window. A [rate limit policy](https://www.unkey.com/docs/compute/gateway/rate-limiting) counts requests over a window you set, such as 100 requests per 60 seconds, by client IP, a header, the path, the authenticated subject, or a string field on the principal. Per-key limits on the authentication policy use a sliding window too. A caller who spends the whole limit at the end of one window does not get a new full limit at the start of the next. Over the limit, the gateway returns `429` and `err:frontline:client:rate_limited`, and it does not call the app. The response includes `Retry-After` in whole seconds, at least 1, plus `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` as a Unix timestamp in seconds.
+
+Put a rate limit that counts by `authenticatedSubject` after the API key policy. The subject comes from that earlier policy. The deployment keeps the policies it was created with. Adding or editing a policy applies to the next deployment.
+
+```json
+{
+  "name": "Key auth for the public API",
+  "enabled": true,
+  "match": [{ "path": { "path": { "prefix": "/v1/" } } }],
+  "keyauth": {
+    "keyspaces": ["ks_1234abcd"],
+    "permissionQuery": "api.read"
+  }
+}
+```
 
 ## Getting started
 
