@@ -42,7 +42,8 @@ for (const route of ['/blog']) {
     ).toHaveAttribute('href', route);
 
     if (lastPagePath !== `${route}/page/2`) {
-      const lastPage = pagination.locator(`a[href="${lastPagePath}"]`);
+      const pageNumber = lastPagePath?.split('/').pop();
+      const lastPage = pagination.getByRole('link', { name: `Page ${pageNumber}`, exact: true });
       await lastPage.focus();
       await page.keyboard.press('Enter');
     }

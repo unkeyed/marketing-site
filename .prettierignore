@@ -46,3 +46,7 @@ public/robots.txt
 # Misc
 *.pem
 .eslintcache
+
+# Keep the API key authentication draft byte-for-byte. Prettier rewrites
+# fenced samples (quotes, JSON, import order) and emphasis markers.
+src/content/blog/api-key-authentication.mdx
