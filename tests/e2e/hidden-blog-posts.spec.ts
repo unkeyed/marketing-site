@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 const hiddenPosts = [
   {
     slug: 'git-push',
-    title: 'How to Ship a Node.js API or Backend Without Managing Infrastructure',
+    title: 'How to Deploy a Node.js API from GitHub with git push',
     category: 'tutorials',
   },
   {
