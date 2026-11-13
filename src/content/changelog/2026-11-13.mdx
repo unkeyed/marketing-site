@@ -1,19 +1,9 @@
 ---
-title: Serve the developer portal on your own domain, and install the CLI again
+title: Install the CLI again
 date: 2026-11-13
-metaDescription: 'Serve the developer portal on your own domain, install the CLI again, list Custom domains and Subdomains as separate rows, and load log tables as you scroll.'
+metaDescription: 'Install the CLI again, subdomains have their own row on Limits, and log tables load as you scroll.'
 tags: ['product:blue']
 ---
-
-## New features
-
-### Custom domains for the developer portal
-
-You can serve your developer portal from a hostname you own, such as `developers.acme.com`, instead of Unkey's portal host. Attach the domain to a portal, publish a CNAME or ALIAS record and a TXT record, and Unkey verifies them, routes the hostname to your portal, and issues a certificate.
-
-A workspace can hold up to 10 portal domains. A name can be attached once, to one portal or one Compute environment, not both. If your DNS provider supports Domain Connect, `portal.createDomain` returns a link that creates the records in one step. After 24 hours without the right records, verification fails and you can start a new window with `portal.verifyDomain`. Deleting a portal also removes its domains.
-
-`portal.createSession` still returns a URL on Unkey's portal host. Replace the host with your domain before you redirect users. The rest of the URL, including the one-time code, stays the same. See [Portal custom domains](https://www.unkey.com/docs/api-management/portal/custom-domains).
 
 ## Updates
 
