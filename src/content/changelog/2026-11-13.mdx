@@ -1,0 +1,82 @@
+---
+title: Serve the developer portal on your own domain, and install the CLI again
+date: 2026-11-13
+metaDescription: 'Serve the developer portal on your own domain, install the CLI again, list Custom domains and Subdomains as separate rows, and load log tables as you scroll.'
+tags: ['product:blue']
+---
+
+## New features
+
+### Custom domains for the developer portal
+
+You can serve your developer portal from a hostname you own, such as `developers.acme.com`, instead of Unkey's portal host. Attach the domain to a portal, publish a CNAME or ALIAS record and a TXT record, and Unkey verifies them, routes the hostname to your portal, and issues a certificate.
+
+A workspace can hold up to 10 portal domains. A name can be attached once, to one portal or one Compute environment, not both. If your DNS provider supports Domain Connect, `portal.createDomain` returns a link that creates the records in one step. After 24 hours without the right records, verification fails and you can start a new window with `portal.verifyDomain`. Deleting a portal also removes its domains.
+
+`portal.createSession` still returns a URL on Unkey's portal host. Replace the host with your domain before you redirect users. The rest of the URL, including the one-time code, stays the same. See [Portal custom domains](https://www.unkey.com/docs/api-management/portal/custom-domains).
+
+## Updates
+
+### Subdomains have their own row on Limits
+
+The Limits page lists Custom domains and Subdomains as separate rows. Custom domains still shows a usage bar against your plan and counts root domains only, so `acme.com` and `api.acme.com` together count as one. Subdomains says Unlimited on plans that include custom domains, and Not included on Free. It has no usage bar.
+
+![Limits page with separate Custom domains and Subdomains rows](/images/changelog/2026-11-13/limits-subdomains.png)
+
+### Log tables load as you scroll
+
+Pagination on log tables moved into the filter bar, and more rows load as you scroll. Bulk actions sit in one floating bar. Row contrast is higher, short columns keep a fixed width, and the table scrolls sideways when the window is narrow instead of stacking columns on top of each other.
+
+![Audit log table with the filter bar](/images/changelog/2026-11-13/log-tables.png)
+
+### Instance usage as a range
+
+CPU and memory charts show a minimum-to-maximum band across instances when none is selected. Hover or highlight an instance to see its own line.
+
+### Type into comboboxes in place
+
+Dashboard comboboxes no longer open a second search box under the field. Click the field and type in place. On Create key, an unknown External ID shows a compact Create row that you can select with Enter.
+
+![Create key External ID picker with a compact Create row](/images/changelog/2026-11-13/combobox-create-identity.png)
+
+### Settings switches apply when you click Save
+
+The Auto-deploy switch, the repository picker in Build settings, and the environment switches in the Edit policy panel now save only when you click Save. Closing the policy panel with unsaved switch changes asks you to discard them.
+
+### Faster loading after login and between pages
+
+After login, the dashboard goes straight to Projects and shows one page skeleton instead of a blank screen and a second spinner. Sidebar clicks preload the next page. Keyspace charts no longer wait two seconds before they load.
+
+### Overview metrics show real zeros
+
+A metric that is zero shows a flat line. No data appears only when nothing came in. Each overview metric cell opens its chart, and the expanded chart has a button through to the matching requests or logs.
+
+![App overview metrics with zero requests and a no data state](/images/changelog/2026-11-13/overview-metrics-zeros.png)
+
+### Environment variables capped at 512 KiB in total
+
+The variables in one environment are limited to 512 KiB in total. The size is measured from the encrypted values, so the cap can apply a little below 512 KiB of plaintext. A `setEnvironmentVariables` call that would go over the limit returns HTTP 400 and stores nothing. A deploy is rejected if the environment is already over the limit, so you need to remove or shorten variables first. See [Environment variables](https://www.unkey.com/docs/compute/configure/environment-variables).
+
+### Startups card on the pricing page
+
+The pricing page has a Startups card on both the Deploy and API Management tabs. It links to the [Startups program](https://www.unkey.com/startups): $1,000 in credits each month for 12 months, and 50% off your bill for 12 months if you have raised more than $5 million. See [Pricing](https://www.unkey.com/pricing).
+
+### Root keys require URN permissions
+
+Many API endpoints now accept only canonical URN permissions on root keys, in the form `unkey:v1:...#action`, and no longer accept the older permission tuples. If a call starts failing with HTTP 403, check the key in the dashboard or see [Root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions).
+
+## Bug fixes
+
+- `npm install -g unkey` works again from CLI 2.0.157. Versions through 2.0.156 still fail because they download the binary from the now-private `unkeyed/unkey` repository. See [Install the CLI](https://www.unkey.com/docs/platform/cli/install)
+- Two concurrent `keys.rerollKey` calls on a key you are retiring can no longer both copy the remaining credits. A reroll is refused if the source key is already expired
+- Timed-out API requests return HTTP 408 instead of 500
+- After you delete an API, its keys stop verifying on the node that handled the delete
+- A revoked CLI session can no longer authenticate from cache on the node that revoked it
+- The last-used time on a rate limit override matches that identifier exactly, not a partial match
+- If the workspace fails to load, the dashboard shows the error and a Retry button instead of spinning forever
+- A page crash keeps the sidebar and top nav
+- Log tables can be used from the keyboard: Tab reaches page controls first, and Enter opens a row
+- On Safari 16, adding a root key policy no longer crashes the page, and saving a role keeps its key and permission changes
+- The error rate sparkline shows a spike at the time it happened, not at the right edge as if it were current
+- A bad time filter on a log or chart page returns 400 instead of a server error
+- When a workspace is rate limited, the dashboard still allows 1,000 requests a minute
