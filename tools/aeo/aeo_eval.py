@@ -233,15 +233,45 @@ def domain(u):
     return ".".join(parts[-2:]) if len(parts) >= 2 else h
 
 
-def build_distractors(qids, daily_path, k=3):
+def canonical_url(url):
+    """Prefer the publisher's URL when the same document is cited on a mirror host.
+
+    A GitHub checkout of published docs, the Google China docs host, and the IETF
+    datatracker HTML copy of an RFC are the same content as the canonical page.
+    Citations of the mirror count toward that canonical URL.
+    """
+    bare = clean_url(url).split("?")[0].rstrip("/")
+    mirrored = (
+        (r"^https?://github\.com/cloudflare/cloudflare-docs/blob/[^/]+/src/content/docs/(.+?)(?:\.mdx?)?$",
+         "https://developers.cloudflare.com/{}/"),
+        (r"^https?://github\.com/MicrosoftDocs/azure-docs/blob/[^/]+/articles/(.+?)(?:\.md)?$",
+         "https://learn.microsoft.com/en-us/azure/{}"),
+    )
+    for pattern, template in mirrored:
+        match = re.match(pattern, bare, re.I)
+        if match:
+            return template.format(match.group(1).strip("/"))
+    parsed = urllib.parse.urlparse(bare)
+    host = parsed.netloc.lower()
+    host = host[4:] if host.startswith("www.") else host
+    if host == "docs.cloud.google.cn":
+        return urllib.parse.urlunparse(parsed._replace(netloc="docs.cloud.google.com", query="", fragment=""))
+    rfc = re.match(r"^/doc/(?:html|rfc)/rfc(\d+)$", parsed.path, re.I)
+    if host == "datatracker.ietf.org" and rfc:
+        return f"https://www.rfc-editor.org/rfc/rfc{rfc.group(1)}.html"
+    return clean_url(url)
+
+
+def build_distractors(qids, daily_path, k=3, cache=None):
     """Per question: top-k non-Unkey URLs the live engines cited (count desc, first-seen order), one per domain,
-    fetched once. Falls back to other target questions' citations when fewer than k pages could be fetched."""
+    fetched once. Falls back to other target questions' citations when fewer than k pages could be fetched.
+    `cache` is an optional `{url: (body_or_None, how)}` map so repeated builds reuse fetches."""
     daily = json.load(open(daily_path))
     cited = {}
     for r in daily["results"]:
         q = r.get("canonical_id") or r["question_id"]
         lst = cited.setdefault(q, [])
-        lst.extend(clean_url(u) for u in r.get("cited_urls") or [])
+        lst.extend(canonical_url(u) for u in r.get("cited_urls") or [])
 
     def ranked(q):
         seen, order = {}, []
@@ -253,10 +283,12 @@ def build_distractors(qids, daily_path, k=3):
             seen[u] += 1
         return sorted(order, key=lambda u: (-seen[u], order.index(u)))
 
-    cache, out = {}, {}
+    if cache is None:
+        cache = {}
+    out, failures = {}, []
     for q in qids:
         pool = ranked(q) + [u for o in qids if o != q for u in ranked(o)]
-        picked, doms = [], set()
+        picked, doms, tried = [], set(), []
         for u in pool:
             if len(picked) == k:
                 break
@@ -267,13 +299,19 @@ def build_distractors(qids, daily_path, k=3):
                 body = page_body(md) if md else ""
                 cache[u] = (body, how) if len(body) >= 200 else (None, how)
             body, how = cache[u]
+            tried.append((u, how, bool(body)))
             if body:
                 picked.append(dict(url=u, how=how, text=body, sha256=hashlib.sha256(body.encode()).hexdigest()))
                 doms.add(domain(u))
+            else:
+                failures.append(dict(qid=q, url=u, how=how))
         if len(picked) < k:
-            raise SystemExit(f"Q{q}: only {len(picked)} competitor pages could be fetched; supply --distractors")
+            missed = [f"{u} ({how})" for u, how, ok in tried if not ok]
+            raise SystemExit(f"Q{q}: only {len(picked)} competitor pages could be fetched; failed: {missed[:8]}")
         out[str(q)] = picked
-    return dict(source=os.path.basename(daily_path), fetched_at=now_et().strftime("%Y-%m-%d %H:%M %Z"), per_question=out)
+    built = dict(source=os.path.basename(daily_path), fetched_at=now_et().strftime("%Y-%m-%d %H:%M %Z"), per_question=out)
+    built["_failures"] = failures
+    return built
 
 
 # ----------------------------------------------------------------------------- plan

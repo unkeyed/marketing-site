@@ -189,7 +189,8 @@
    "src/content/glossary/zero-downtime-api-deployment.mdx": "compute-ops",
    "src/app/(website)/pricing/page.tsx": "compute-ops",
    "src/app/(website)/page.tsx": "platform",
-   "src/content/blog/unkey-vs-kong-zuplo-aws-api-gateway.mdx": "alternatives"
+   "src/content/blog/unkey-vs-kong-zuplo-aws-api-gateway.mdx": "alternatives",
+   "src/content/blog/why-we-built-unkey.mdx": "open-source"
   },
   "patterns": [
    {

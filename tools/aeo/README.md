@@ -48,7 +48,7 @@ python3 aeo_eval.py --self-test   # mock client, no network: checks stats, parsi
    - Targets are the category's questions from `config/harness.json` (at most 6) plus any extras.
    - The guard set is Q1, Q11, Q17, Q20, Q23, Q26, Q29, Q30, minus any target question.
 2. **Distractors.**
-   - For each question, take the top 3 non-Unkey URLs the live engines cited in the latest `YYYY-MM-DD.json`. Rank by citation count, then first-seen order. Allow one URL per domain and skip PDFs.
+   - For each question, take the top 3 non-Unkey URLs the live engines cited in the latest `YYYY-MM-DD.json`. Rank by citation count, then first-seen order. Allow one URL per domain and skip PDFs. A mirrored copy of the same document (a GitHub checkout of published docs, `docs.cloud.google.cn`, or the IETF datatracker HTML of an RFC) is counted as the publisher's canonical URL instead.
    - Each page is fetched once (free, plain HTTP; `.md` twin first) and frozen.
    - Commit the frozen file before a paid run. Its sha256 goes into the justification block.
 3. **Conditions** (P's slot rotates 1→4 by run index, distractors are identical across D_old and D_new):
