@@ -1,0 +1,267 @@
+# Opt-in AEO evaluation. Each paid run is about $1.76 of Treg credit.
+# It does not run on push. Add the aeo-eval label, or run workflow_dispatch.
+#
+# The $10 monthly cap is the max of two records:
+# - sticky PR comments (aeo-ledger-entry markers), readable across pull requests
+# - actions/cache, which GitHub scopes to one branch, so it is only a same-branch copy
+# Paid calls are skipped when the comment ledger cannot be read, unless force is set.
+name: AEO evaluation
+
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number to evaluate
+        required: true
+        type: string
+      force:
+        description: Run paid calls even if the monthly comment ledger cannot be read
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: aeo-eval-${{ github.event.pull_request.number || inputs.pr || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  aeo-eval:
+    name: AEO evaluation
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'aeo-eval'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tools/aeo/requirements.txt
+
+      - name: Install page checker dependencies
+        run: python -m pip install -r tools/aeo/requirements.txt
+
+      - name: Resolve the pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PR: ${{ inputs.pr }}
+          EVENT_PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            PR="$INPUT_PR"
+          else
+            PR="$EVENT_PR"
+          fi
+          case "$PR" in
+            ""|*[!0-9]*)
+              echo "Pull request number must be digits." >&2
+              exit 1
+              ;;
+          esac
+          gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json number,headRefOid,baseRefOid,body,isCrossRepository,url > "$RUNNER_TEMP/pr.json"
+          python3 - <<'PY'
+          import json, os
+          pr = json.load(open(os.environ["RUNNER_TEMP"] + "/pr.json", encoding="utf-8"))
+          fork = "true" if pr.get("isCrossRepository") else "false"
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write(f"number={pr['number']}\n")
+              fh.write(f"head={pr['headRefOid']}\n")
+              fh.write(f"base={pr['baseRefOid']}\n")
+              fh.write(f"fork={fork}\n")
+          body = pr.get("body") or ""
+          with open(os.environ["RUNNER_TEMP"] + "/pr-body.md", "w", encoding="utf-8") as fh:
+              fh.write(body)
+          PY
+
+      - name: Check out the pull request head
+        env:
+          BASE: ${{ steps.pr.outputs.base }}
+          HEAD: ${{ steps.pr.outputs.head }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "pull/${PR}/head"
+          if ! git cat-file -e "${HEAD}^{commit}"; then
+            echo "Pull request head ${HEAD} was not fetched." >&2
+            exit 1
+          fi
+          if ! git cat-file -e "${BASE}^{commit}"; then
+            git fetch --no-tags origin main
+          fi
+          if ! git cat-file -e "${BASE}^{commit}"; then
+            echo "Base commit ${BASE} is not in the repository history." >&2
+            exit 1
+          fi
+          git checkout --detach "$HEAD"
+
+      - name: Self-test the harness and the CI glue
+        run: |
+          set -euo pipefail
+          python3 tools/aeo/aeo_eval.py --self-test
+          python3 tools/aeo/select_pages.py --self-check
+          python3 tools/aeo/ledger_store.py
+          python3 tools/aeo/ci_gate.py --self-check
+          python3 tools/aeo/pr_comment.py --self-check
+
+      - name: Select changed pages
+        env:
+          BASE: ${{ steps.pr.outputs.base }}
+          HEAD: ${{ steps.pr.outputs.head }}
+        run: |
+          set -euo pipefail
+          git -c core.quotePath=false diff --name-status -M "$BASE" "$HEAD" -- src/content src/app > "$RUNNER_TEMP/aeo-name-status.txt"
+          python3 tools/aeo/select_pages.py \
+            --repo "$GITHUB_WORKSPACE" \
+            --base "$BASE" \
+            --head "$HEAD" \
+            --name-status "$RUNNER_TEMP/aeo-name-status.txt" \
+            --pr-body "$RUNNER_TEMP/pr-body.md" \
+            --out "$RUNNER_TEMP/aeo-pages"
+
+      - name: Ledger month
+        id: month
+        run: |
+          set -euo pipefail
+          ym=$(python3 -c 'from zoneinfo import ZoneInfo; import datetime; print(datetime.datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m"))')
+          echo "ym=$ym" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the same-branch ledger cache
+        id: ledger
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: tools/aeo/ledger.jsonl
+          key: aeo-ledger-${{ steps.month.outputs.ym }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            aeo-ledger-${{ steps.month.outputs.ym }}-
+
+      - name: Check whether the Treg token is configured
+        id: token
+        env:
+          TREG_API_TOKEN: ${{ secrets.TREG_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "$TREG_API_TOKEN" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare the monthly ledger
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TOKEN_CONFIGURED: ${{ steps.token.outputs.configured }}
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}
+          LEDGER_MONTH: ${{ steps.month.outputs.ym }}
+          LEDGER_OUTCOME: ${{ steps.ledger.outcome }}
+          LEDGER_MATCHED_KEY: ${{ steps.ledger.outputs.cache-matched-key }}
+        run: |
+          set -euo pipefail
+          python3 tools/aeo/ci_gate.py \
+            --plan "$RUNNER_TEMP/aeo-pages/plan.json" \
+            --ledger tools/aeo/ledger.jsonl \
+            --snapshot "$RUNNER_TEMP/ledger-before.jsonl" \
+            --out "$RUNNER_TEMP/aeo-gate.json"
+
+      - name: Dry-run
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aeo-runs"
+          python3 tools/aeo/run_evals.py \
+            --mode dry-run \
+            --plan "$RUNNER_TEMP/aeo-pages/plan.json" \
+            --runs "$RUNNER_TEMP/aeo-runs"
+
+      - name: Paid evaluation
+        if: steps.gate.outputs.run_paid == 'true'
+        env:
+          TREG_API_TOKEN: ${{ secrets.TREG_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 tools/aeo/run_evals.py \
+            --mode paid \
+            --plan "$RUNNER_TEMP/aeo-pages/plan.json" \
+            --runs "$RUNNER_TEMP/aeo-runs" \
+            --pr "${{ steps.pr.outputs.number }}"
+
+      - name: Save the same-branch ledger cache
+        id: ledger_file
+        if: always() && steps.gate.outputs.run_paid == 'true'
+        run: |
+          set -euo pipefail
+          if [ -f tools/aeo/ledger.jsonl ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Persist the ledger cache
+        if: always() && steps.ledger_file.outputs.present == 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: tools/aeo/ledger.jsonl
+          key: aeo-ledger-${{ steps.month.outputs.ym }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Collect the run artifact
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aeo-runs"
+          if [ -f tools/aeo/ledger.jsonl ]; then
+            cp tools/aeo/ledger.jsonl "$RUNNER_TEMP/aeo-runs/ledger.jsonl"
+          fi
+
+      - name: Post the sticky pull request comment
+        if: always() && steps.pr.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          COMMENT_REQUIRED: ${{ steps.pr.outputs.fork != 'true' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ARTIFACT: aeo-eval-${{ steps.pr.outputs.number }}-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aeo-runs"
+          python3 tools/aeo/pr_comment.py render \
+            --plan "$RUNNER_TEMP/aeo-pages/plan.json" \
+            --runs "$RUNNER_TEMP/aeo-runs" \
+            --gate "$RUNNER_TEMP/aeo-gate.json" \
+            --pr "$PR_NUMBER" \
+            --run-url "$RUN_URL" \
+            --artifact "$ARTIFACT" \
+            --ledger-before "$RUNNER_TEMP/ledger-before.jsonl" \
+            --ledger "$GITHUB_WORKSPACE/tools/aeo/ledger.jsonl" \
+            --out "$RUNNER_TEMP/aeo-comment.md"
+          cp "$RUNNER_TEMP/aeo-comment.md" "$RUNNER_TEMP/aeo-runs/comment.md"
+          python3 tools/aeo/pr_comment.py post --pr "$PR_NUMBER" --body "$RUNNER_TEMP/aeo-comment.md"
+
+      - name: Upload the raw run directory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aeo-eval-${{ steps.pr.outputs.number || github.run_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/aeo-runs/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Fail closed when the ledger could not be read
+        if: always() && steps.gate.outputs.fail_closed == 'true'
+        run: |
+          echo "Refusing the paid evaluation because the monthly ledger could not be read." >&2
+          exit 1

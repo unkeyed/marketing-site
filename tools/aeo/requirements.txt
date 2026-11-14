@@ -1,0 +1,4 @@
+# Direct dependencies of page_check.py. The paid Treg client in aeo_eval.py uses the stdlib.
+requests==2.34.2
+beautifulsoup4==4.15.0
+lxml==6.1.3
