@@ -1,0 +1,155 @@
+{
+ "source": "analyze.py Q/CAT (30-question set, from 2026-11-05)",
+ "questions": {
+  "1": {
+   "text": "Where should I deploy a Node/TypeScript API so it's fast globally and I don't have to manage servers?",
+   "category": "compute/deploy",
+   "category_volume": 590
+  },
+  "2": {
+   "text": "What's the easiest way to host a REST API in 2026?",
+   "category": "compute/deploy",
+   "category_volume": 590
+  },
+  "3": {
+   "text": "What's a good free or cheap place to host an API backend for a side project?",
+   "category": "compute/deploy",
+   "category_volume": 590
+  },
+  "4": {
+   "text": "How do I deploy a Docker container as an API without setting up Kubernetes?",
+   "category": "compute/deploy",
+   "category_volume": 590
+  },
+  "5": {
+   "text": "Is there a Heroku-like platform built specifically for APIs?",
+   "category": "compute/deploy",
+   "category_volume": 590
+  },
+  "6": {
+   "text": "How do I get preview deployments for every pull request on my API?",
+   "category": "compute/deploy",
+   "category_volume": 590
+  },
+  "7": {
+   "text": "How do I roll back a bad API deploy instantly?",
+   "category": "compute/ops",
+   "category_volume": 970
+  },
+  "8": {
+   "text": "How do I do zero-downtime deploys for my API?",
+   "category": "compute/ops",
+   "category_volume": 970
+  },
+  "9": {
+   "text": "How can I run my API in multiple regions to cut latency for users?",
+   "category": "compute/ops",
+   "category_volume": 970
+  },
+  "10": {
+   "text": "How do I autoscale an API without paying for idle servers?",
+   "category": "compute/ops",
+   "category_volume": 970
+  },
+  "11": {
+   "text": "What's the best way to see logs, latency and errors for my deployed API?",
+   "category": "compute/observability",
+   "category_volume": 740
+  },
+  "12": {
+   "text": "Is there an open source platform I can self-host to deploy my APIs?",
+   "category": "compute/open source",
+   "category_volume": 50
+  },
+  "13": {
+   "text": "What are good alternatives to Vercel or Railway for hosting a backend API?",
+   "category": "compute/alternatives",
+   "category_volume": 0
+  },
+  "14": {
+   "text": "Should I host my API on AWS Lambda or on a container platform?",
+   "category": "compute/comparison",
+   "category_volume": 10
+  },
+  "15": {
+   "text": "How do I host an API and add API keys and rate limiting without stitching together five services?",
+   "category": "compute/platform",
+   "category_volume": 1300
+  },
+  "16": {
+   "text": "Which hosting platform charges predictably as my API traffic grows?",
+   "category": "compute/pricing",
+   "category_volume": 520
+  },
+  "17": {
+   "text": "How do I add API key authentication to my API without writing my own key system?",
+   "category": "api keys/auth",
+   "category_volume": 540
+  },
+  "18": {
+   "text": "What's the safest way to generate, store and rotate API keys for my customers?",
+   "category": "api keys/auth",
+   "category_volume": 540
+  },
+  "19": {
+   "text": "Should I use API keys or OAuth/JWT for my public API?",
+   "category": "api keys/auth",
+   "category_volume": 540
+  },
+  "20": {
+   "text": "What's the best way to rate limit an API per customer or per key?",
+   "category": "rate limiting",
+   "category_volume": 1850
+  },
+  "21": {
+   "text": "How do I add rate limiting to a Next.js or Express API?",
+   "category": "rate limiting",
+   "category_volume": 1850
+  },
+  "22": {
+   "text": "How do I rate limit my API across multiple servers or regions without running Redis?",
+   "category": "rate limiting",
+   "category_volume": 1850
+  },
+  "23": {
+   "text": "How can I track usage per customer on my API so I can bill them?",
+   "category": "usage/billing",
+   "category_volume": 330
+  },
+  "24": {
+   "text": "How do I set up usage-based pricing for my API with Stripe?",
+   "category": "usage/billing",
+   "category_volume": 330
+  },
+  "25": {
+   "text": "How do I see which customers and endpoints are using my API the most?",
+   "category": "analytics",
+   "category_volume": 210
+  },
+  "26": {
+   "text": "Is there an open source alternative to building API keys, rate limiting and usage tracking in house?",
+   "category": "open source/self-host",
+   "category_volume": 500
+  },
+  "27": {
+   "text": "Can I self-host my API keys and rate limiting infrastructure?",
+   "category": "open source/self-host",
+   "category_volume": 500
+  },
+  "28": {
+   "text": "How do I give AI agents secure, scoped access to my API?",
+   "category": "ai agents",
+   "category_volume": 1
+  },
+  "29": {
+   "text": "What's a simpler alternative to Kong for a small team?",
+   "category": "alternatives",
+   "category_volume": 170
+  },
+  "30": {
+   "text": "What should I use instead of AWS API Gateway for a small API?",
+   "category": "alternatives",
+   "category_volume": 170
+  }
+ }
+}
